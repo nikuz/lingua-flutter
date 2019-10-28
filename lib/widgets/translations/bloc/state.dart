@@ -11,6 +11,9 @@ abstract class TranslationsState extends Equatable {
   List<Object> get props => [];
 
   List<TranslationsItem> get translations => [];
+  int get from => 0;
+  int get to => 20;
+  int get totalAmount => 0;
 }
 
 class TranslationsUninitialized extends TranslationsState {}

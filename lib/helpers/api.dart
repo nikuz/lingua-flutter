@@ -14,20 +14,33 @@ String getApiUri() {
   return Uri.http(apiUrl, '').toString();
 }
 
-Future<Map<String, dynamic>> apiGet({
+Future<Map<String, dynamic>> apiRequest({
+  @required String method,
   @required http.Client client,
   @required String url,
   Map<String, String> params,
   Map<String, String> headers,
 }) async {
   final uri = Uri.http(apiUrl, url, params);
-  final response = await client.get(
-    uri,
-    headers: {
-      HttpHeaders.authorizationHeader: appConfig.apiKey,
-      ...?headers
-    },
-  );
+  final headersProps = {
+    HttpHeaders.authorizationHeader: appConfig.apiKey,
+    ...?headers
+  };
+
+  http.Response response;
+
+  if (method == 'get') {
+    response = await client.get(
+      uri,
+      headers: headersProps,
+    );
+
+  } else if (method == 'delete') {
+    response = await client.delete(
+      uri,
+      headers: headersProps,
+    );
+  }
 
   final body = jsonDecode(response.body);
 
@@ -36,4 +49,37 @@ Future<Map<String, dynamic>> apiGet({
   } else {
     throw ApiException(body);
   }
+}
+
+Future<Map<String, dynamic>> apiGet({
+  @required http.Client client,
+  @required String url,
+  Map<String, String> params,
+  Map<String, String> headers,
+  String method,
+}) async {
+  Future<Map<String, dynamic>> response = apiRequest(
+    method: 'get',
+    client: client,
+    url: url,
+    params: params,
+  );
+
+  return response;
+}
+
+Future<Map<String, dynamic>> apiDelete({
+  @required http.Client client,
+  @required String url,
+  Map<String, String> params,
+  Map<String, String> headers,
+}) async {
+  Future<Map<String, dynamic>> response = apiRequest(
+      method: 'delete',
+      client: client,
+      url: url,
+      params: params,
+  );
+
+  return response;
 }

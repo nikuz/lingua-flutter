@@ -25,7 +25,6 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
       try {
         if (currentState is TranslationsUninitialized) {
           final Translations translationsList = await _fetchTranslationsList(0, 20);
-          print(translationsList);
           yield TranslationsLoaded(
               from: translationsList.from,
               to: translationsList.to,
@@ -33,6 +32,29 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
               translations: translationsList.translations,
           );
           return;
+        }
+      } on ApiException catch (e) {
+        yield TranslationsError(e);
+      } catch (e, s) {
+        print(e);
+        print(s);
+      }
+    } else if (event is TranslationsItemRemove) {
+      try {
+        final bool itemSuccessfullyRemoved = await _removeTranslationsItem(event.id);
+        if (itemSuccessfullyRemoved) {
+          final Translations translationsList = await _fetchTranslationsList(
+              currentState.from,
+              currentState.to
+          );
+          yield TranslationsLoaded(
+            from: translationsList.from,
+            to: translationsList.to,
+            totalAmount: translationsList.totalAmount,
+            translations: translationsList.translations,
+          );
+        } else {
+          yield TranslationsError();
         }
       } on ApiException catch (e) {
         yield TranslationsError(e);
@@ -68,5 +90,21 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
           )
       )).toList(),
     );
+  }
+
+  Future<bool> _removeTranslationsItem(int id) async {
+    final Map<String, dynamic> response = await apiDelete(
+        client: httpClient,
+        url: '/translate',
+        params: {
+          'id': '$id',
+        }
+    );
+
+    if (response['success'] == true) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

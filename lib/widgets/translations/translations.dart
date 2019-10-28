@@ -6,6 +6,7 @@ import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
 
 import './model/item.dart';
 import './bloc/state.dart';
+import './bloc/events.dart';
 import './bloc/bloc.dart';
 
 class TranslationsList extends StatelessWidget {
@@ -58,7 +59,12 @@ class TranslationsListItemWidget extends StatelessWidget {
           content: Text('Are you sure you wish to delete "${translationItem.word}" word?'),
           actions: <Widget>[
             FlatButton(
-                onPressed: () => Navigator.of(context).pop(true),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                  BlocProvider.of<TranslationsBloc>(context).add(
+                      TranslationsItemRemove(translationItem.id)
+                  );
+                },
                 child: const Text("DELETE")
             ),
             FlatButton(

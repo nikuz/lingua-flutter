@@ -6,3 +6,9 @@ abstract class TranslationsEvent extends Equatable {
 }
 
 class TranslationsRequest extends TranslationsEvent {}
+
+class TranslationsItemRemove extends TranslationsEvent {
+  final int id;
+
+  TranslationsItemRemove(this.id) : assert(id != null);
+}
