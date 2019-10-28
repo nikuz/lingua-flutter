@@ -49,25 +49,72 @@ class TranslationsListItemWidget extends StatelessWidget {
 
   TranslationsListItemWidget({Key key, @required this.translationItem}) : super(key: key);
 
+  Future<bool> confirmRowDelete(context) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm'),
+          content: Text('Are you sure you wish to delete "${translationItem.word}" word?'),
+          actions: <Widget>[
+            FlatButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text("DELETE")
+            ),
+            FlatButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text("CANCEL"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: PronunciationWidget(pronunciationUrl: translationItem.pronunciation),
-      title: Text(
-        translationItem.word,
-        style: TextStyle(fontSize: 17),
+    return Dismissible(
+      key: Key(translationItem.word),
+      background: Container(
+        color: Colors.red,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            Container(
+              width: 80,
+              child: Icon(
+                Icons.delete,
+                color: Colors.white,
+                size: 30,
+              ),
+            ),
+          ],
+        ),
       ),
-//      isThreeLine: true,
-      subtitle: Text(
-        translationItem.translation,
-        style: TextStyle(fontSize: 15),
-      ),
-      dense: true,
-      trailing: Container(
-        width: 50,
-        child: Image.network(
-          '${getApiUri()}${translationItem.image}',
-          fit: BoxFit.fitHeight,
+      confirmDismiss: (DismissDirection direction) async {
+        return await confirmRowDelete(context);
+      },
+      direction: DismissDirection.endToStart,
+      onDismissed: (direction) {
+        print(direction);
+      },
+      child: ListTile(
+        leading: PronunciationWidget(pronunciationUrl: translationItem.pronunciation),
+        title: Text(
+          translationItem.word,
+          style: TextStyle(fontSize: 17),
+        ),
+        subtitle: Text(
+          translationItem.translation,
+          style: TextStyle(fontSize: 15),
+        ),
+        dense: true,
+        trailing: Container(
+          width: 50,
+          child: Image.network(
+            '${getApiUri()}${translationItem.image}',
+            fit: BoxFit.fitHeight,
+          ),
         ),
       ),
     );
