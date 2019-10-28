@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:lingua_flutter/utils/api.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
@@ -33,41 +34,39 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
           );
           return;
         }
-      } catch (e) {
-        print(e);
+      } on ApiException catch (e) {
         yield TranslationsError(e);
+      } catch (e, s) {
+        print(e);
+        print(s);
       }
     }
   }
 
   Future<Translations> _fetchTranslationsList(int from, int to) async {
-    try {
-      final Map<String, dynamic> response = await apiGet(
-          client: httpClient,
-          url: '/translations',
-          params: {
-            'from': '$from',
-            'to': '$to',
-          }
-      );
+    final Map<String, dynamic> response = await apiGet(
+        client: httpClient,
+        url: '/translations',
+        params: {
+          'from': '$from',
+          'to': '$to',
+        }
+    );
 
-      return Translations(
-        from: response['from'],
-        to: response['to'],
-        totalAmount: response['totalAmount'],
-        translations: response['translations'].map<TranslationsItem>((rawTranslation) => (
-            TranslationsItem(
-              id: rawTranslation['id'],
-              word: rawTranslation['word'],
-              translation: rawTranslation['translation'],
-              pronunciation: rawTranslation['pronunciation'],
-              image: rawTranslation['image'],
-              createdAt: rawTranslation['created_at'],
-            )
-        )).toList(),
-      );
-    } catch(e) {
-      throw e;
-    }
+    return Translations(
+      from: response['from'],
+      to: response['to'],
+      totalAmount: response['totalAmount'],
+      translations: response['translations'].map<TranslationsItem>((rawTranslation) => (
+          TranslationsItem(
+            id: rawTranslation['id'],
+            word: rawTranslation['word'],
+            translation: rawTranslation['translation'],
+            pronunciation: rawTranslation['pronunciation'],
+            image: rawTranslation['image'],
+            createdAt: rawTranslation['created_at'],
+          )
+      )).toList(),
+    );
   }
 }

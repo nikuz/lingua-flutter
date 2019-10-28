@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import './model/item.dart';
+import 'package:lingua_flutter/helpers/api.dart';
+import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
 
+import './model/item.dart';
 import './bloc/state.dart';
 import './bloc/bloc.dart';
 
@@ -45,19 +47,29 @@ class TranslationsList extends StatelessWidget {
 class TranslationsListItemWidget extends StatelessWidget {
   final TranslationsItem translationItem;
 
-  const TranslationsListItemWidget({Key key, @required this.translationItem}) : super(key: key);
+  TranslationsListItemWidget({Key key, @required this.translationItem}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Text(
-        '${translationItem.id}',
-        style: TextStyle(fontSize: 10.0),
+      leading: PronunciationWidget(pronunciationUrl: translationItem.pronunciation),
+      title: Text(
+        translationItem.word,
+        style: TextStyle(fontSize: 17),
       ),
-      title: Text(translationItem.word),
-      isThreeLine: true,
-      subtitle: Text(translationItem.translation),
+//      isThreeLine: true,
+      subtitle: Text(
+        translationItem.translation,
+        style: TextStyle(fontSize: 15),
+      ),
       dense: true,
+      trailing: Container(
+        width: 50,
+        child: Image.network(
+          '${getApiUri()}${translationItem.image}',
+          fit: BoxFit.fitHeight,
+        ),
+      ),
     );
   }
 }

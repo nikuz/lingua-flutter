@@ -1,19 +1,9 @@
-import 'dart:convert';
-
-class ApiResponse {
-  final String body;
-
-  ApiResponse([this.body]) : assert(body != null);
-
-  List<Object> get props => [body];
-}
 
 class ApiException implements Exception {
   int code;
   String message;
 
-  ApiException(String apiResponse) {
-    final errorBody = jsonDecode(apiResponse);
+  ApiException(Map<String, dynamic> errorBody) {
     final errorCode = errorBody['error'];
     final errorMessage = errorBody['message'];
 

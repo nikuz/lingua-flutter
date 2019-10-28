@@ -8,8 +8,10 @@ import 'package:http/http.dart' as http;
 import 'package:lingua_flutter/app_config.dart' as appConfig;
 import 'package:lingua_flutter/utils/api.dart';
 
-String getApiUrl() {
-  return '${appConfig.apiUrl}:${appConfig.apiPort}';
+String apiUrl = '${appConfig.apiUrl}:${appConfig.apiPort}';
+
+String getApiUri() {
+  return Uri.http(apiUrl, '').toString();
 }
 
 Future<Map<String, dynamic>> apiGet({
@@ -18,7 +20,7 @@ Future<Map<String, dynamic>> apiGet({
   Map<String, String> params,
   Map<String, String> headers,
 }) async {
-  final uri = Uri.http(getApiUrl(), url, params);
+  final uri = Uri.http(apiUrl, url, params);
   final response = await client.get(
     uri,
     headers: {
@@ -27,9 +29,11 @@ Future<Map<String, dynamic>> apiGet({
     },
   );
 
+  final body = jsonDecode(response.body);
+
   if (response.statusCode == 200) {
-    return jsonDecode(response.body);
+    return body;
   } else {
-    throw ApiException(response.body);
+    throw ApiException(body);
   }
 }
