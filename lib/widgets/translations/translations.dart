@@ -9,7 +9,34 @@ import './bloc/state.dart';
 import './bloc/events.dart';
 import './bloc/bloc.dart';
 
-class TranslationsList extends StatelessWidget {
+class TranslationsList extends StatefulWidget {
+  @override
+  _TranslationsListState createState() => _TranslationsListState();
+}
+
+class _TranslationsListState extends State<TranslationsList> {
+  final _scrollController = ScrollController();
+  TranslationsBloc _translationsBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+    _translationsBloc = BlocProvider.of<TranslationsBloc>(context);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      _translationsBloc.add(TranslationsRequest());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TranslationsBloc, TranslationsState>(
@@ -23,11 +50,14 @@ class TranslationsList extends StatelessWidget {
 
           return ListView.builder(
             itemBuilder: (BuildContext context, int index) {
-              return TranslationsListItemWidget(
-                  translationItem: state.translations[index]
-              );
+              return index >= state.translations.length
+                  ? BottomLoader()
+                  : TranslationsListItemWidget(
+                      translationItem: state.translations[index]
+                  );
             },
-            itemCount: state.translations.length,
+            itemCount: state.translations.length + 1,
+            controller: _scrollController,
           );
         }
 
@@ -120,6 +150,24 @@ class TranslationsListItemWidget extends StatelessWidget {
           child: Image.network(
             '${getApiUri()}${translationItem.image}',
             fit: BoxFit.fitHeight,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class BottomLoader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      child: Center(
+        child: SizedBox(
+          width: 33,
+          height: 33,
+          child: CircularProgressIndicator(
+            strokeWidth: 1.5,
           ),
         ),
       ),

@@ -12,6 +12,7 @@ import './state.dart';
 
 class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
   final http.Client httpClient;
+  final int _pagerSize = 20;
 
   TranslationsBloc({@required this.httpClient});
 
@@ -23,16 +24,18 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
     final currentState = state;
     if (event is TranslationsRequest) {
       try {
+        int from = currentState.to;
         if (currentState is TranslationsUninitialized) {
-          final Translations translationsList = await _fetchTranslationsList(0, 20);
-          yield TranslationsLoaded(
-              from: translationsList.from,
-              to: translationsList.to,
-              totalAmount: translationsList.totalAmount,
-              translations: translationsList.translations,
-          );
-          return;
+          from = 0;
         }
+        int to = from + _pagerSize;
+        final Translations translationsList = await _fetchTranslationsList(from, to);
+        yield TranslationsLoaded(
+          from: translationsList.from,
+          to: translationsList.to,
+          totalAmount: translationsList.totalAmount,
+          translations: currentState.translations + translationsList.translations,
+        );
       } on ApiException catch (e) {
         yield TranslationsError(e);
       } catch (e, s) {
