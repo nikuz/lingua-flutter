@@ -42,6 +42,22 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
         print(e);
         print(s);
       }
+    } else if (event is TranslationsRefreshRequest) {
+      yield TranslationsRefreshLoading();
+      try {
+        final Translations translationsList = await _fetchTranslationsList(0, _pagerSize);
+        yield TranslationsLoaded(
+          from: translationsList.from,
+          to: translationsList.to,
+          totalAmount: translationsList.totalAmount,
+          translations: translationsList.translations,
+        );
+      } on ApiException catch (e) {
+        yield TranslationsError(e);
+      } catch (e, s) {
+        print(e);
+        print(s);
+      }
     } else if (event is TranslationsItemRemove) {
       try {
         final bool itemSuccessfullyRemoved = await _removeTranslationsItem(event.id);

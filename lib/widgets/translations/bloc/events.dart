@@ -7,6 +7,8 @@ abstract class TranslationsEvent extends Equatable {
 
 class TranslationsRequest extends TranslationsEvent {}
 
+class TranslationsRefreshRequest extends TranslationsEvent {}
+
 class TranslationsItemRemove extends TranslationsEvent {
   final int id;
 

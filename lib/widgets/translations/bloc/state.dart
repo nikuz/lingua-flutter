@@ -30,6 +30,8 @@ class TranslationsError extends TranslationsState {
   String toString() => error.toString();
 }
 
+class TranslationsRefreshLoading extends TranslationsState {}
+
 class TranslationsLoaded extends TranslationsState {
   final int from;
   final int to;

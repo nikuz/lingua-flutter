@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,12 +18,14 @@ class TranslationsList extends StatefulWidget {
 class _TranslationsListState extends State<TranslationsList> {
   final _scrollController = ScrollController();
   TranslationsBloc _translationsBloc;
+  Completer<void> _refreshCompleter;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
     _translationsBloc = BlocProvider.of<TranslationsBloc>(context);
+    _refreshCompleter = Completer<void>();
   }
 
   @override
@@ -39,38 +42,53 @@ class _TranslationsListState extends State<TranslationsList> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TranslationsBloc, TranslationsState>(
-      builder: (context, state) {
+    return BlocListener<TranslationsBloc, TranslationsState>(
+      listener: (context, state) {
         if (state is TranslationsLoaded) {
-          if (state.translations.isEmpty) {
-            return Center(
-              child: Text('no translations'),
+          _refreshCompleter?.complete();
+          _refreshCompleter = Completer();
+        }
+      },
+      child: BlocBuilder<TranslationsBloc, TranslationsState>(
+        builder: (context, state) {
+          if (state is TranslationsLoaded) {
+            if (state.translations.isEmpty) {
+              return Center(
+                child: Text('no translations'),
+              );
+            }
+
+            return new RefreshIndicator(
+              onRefresh: () {
+                _translationsBloc.add(TranslationsRefreshRequest());
+                return _refreshCompleter.future;
+              },
+              child: ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                itemBuilder: (BuildContext context, int index) {
+                  return index >= state.translations.length
+                      ? BottomLoader()
+                      : TranslationsListItemWidget(
+                      translationItem: state.translations[index]
+                  );
+                },
+                itemCount: state.translations.length + 1,
+                controller: _scrollController,
+              ),
             );
           }
 
-          return ListView.builder(
-            itemBuilder: (BuildContext context, int index) {
-              return index >= state.translations.length
-                  ? BottomLoader()
-                  : TranslationsListItemWidget(
-                      translationItem: state.translations[index]
-                  );
-            },
-            itemCount: state.translations.length + 1,
-            controller: _scrollController,
-          );
-        }
+          if (state is TranslationsError) {
+            return Center(
+              child: Text(state.error.message),
+            );
+          }
 
-        if (state is TranslationsError) {
           return Center(
-            child: Text(state.error.message),
+            child: CircularProgressIndicator(),
           );
-        }
-
-        return Center(
-          child: CircularProgressIndicator(),
-        );
-      },
+        },
+      ),
     );
   }
 }
