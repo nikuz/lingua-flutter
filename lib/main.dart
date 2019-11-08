@@ -28,10 +28,9 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'Lingua',
       home: Scaffold(
-        appBar: AppBar(
-          title: Text('Lingua'),
+        body: SafeArea(
+          child: HomePage(),
         ),
-        body: HomePage(),
       ),
     );
   }

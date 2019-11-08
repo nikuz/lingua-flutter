@@ -8,6 +8,7 @@ import 'package:lingua_flutter/app_config.dart' as appConfig;
 import 'package:lingua_flutter/widgets/translations/translations.dart';
 import 'package:lingua_flutter/widgets/translations/bloc/events.dart';
 import 'package:lingua_flutter/widgets/translations/bloc/bloc.dart';
+import 'package:lingua_flutter/widgets/search/search.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -46,12 +47,21 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (!apiUrlDownloaded) {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
+    Widget list = Center(
+      child: CircularProgressIndicator(),
+    );
+
+    if (apiUrlDownloaded == true) {
+      list = TranslationsList();
     }
 
-    return TranslationsList();
+    return Column(
+      children: <Widget>[
+        Search(),
+        Expanded(
+          child: list,
+        ),
+      ],
+    );
   }
 }
