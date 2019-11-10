@@ -6,6 +6,7 @@ import 'package:lingua_flutter/helpers/api.dart';
 import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
 
 import './model/item.dart';
+import './model/list.dart';
 import './bloc/state.dart';
 import './bloc/events.dart';
 import './bloc/bloc.dart';
@@ -36,7 +37,7 @@ class _TranslationsListState extends State<TranslationsList> {
 
   void _onScroll() {
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-      _translationsBloc.add(TranslationsRequest());
+      _translationsBloc.add(TranslationsRequestMore());
     }
   }
 
@@ -51,7 +52,7 @@ class _TranslationsListState extends State<TranslationsList> {
       },
       child: BlocBuilder<TranslationsBloc, TranslationsState>(
         builder: (context, state) {
-          if (state is TranslationsLoaded) {
+          if (state.translations.isNotEmpty) {
             if (state.translations.isEmpty) {
               return Center(
                 child: Text('no translations'),
@@ -60,7 +61,7 @@ class _TranslationsListState extends State<TranslationsList> {
 
             return new RefreshIndicator(
               onRefresh: () {
-                _translationsBloc.add(TranslationsRefreshRequest());
+                _translationsBloc.add(TranslationsRequest());
                 return _refreshCompleter.future;
               },
               child: ListView.builder(
@@ -178,17 +179,26 @@ class TranslationsListItemWidget extends StatelessWidget {
 class BottomLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      child: Center(
-        child: SizedBox(
-          width: 33,
-          height: 33,
-          child: CircularProgressIndicator(
-            strokeWidth: 1.5,
-          ),
-        ),
-      ),
+    return BlocBuilder<TranslationsBloc, TranslationsState>(
+      builder: (context, state) {
+        final int listLength = state.translations.length;
+        if (listLength >= LIST_PAGE_SIZE && listLength < state.totalAmount) {
+          return Container(
+            alignment: Alignment.center,
+            child: Center(
+              child: SizedBox(
+                width: 33,
+                height: 33,
+                child: CircularProgressIndicator(
+                  strokeWidth: 1.5,
+                ),
+              ),
+            ),
+          );
+        }
+
+        return Container();
+      }
     );
   }
 }

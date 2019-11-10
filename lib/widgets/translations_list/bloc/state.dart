@@ -30,7 +30,21 @@ class TranslationsError extends TranslationsState {
   String toString() => error.toString();
 }
 
-class TranslationsRefreshLoading extends TranslationsState {}
+class TranslationsRequestLoading extends TranslationsState {
+  final List<TranslationsItem> translations;
+
+  const TranslationsRequestLoading(this.translations) : assert(translations != null);
+}
+
+class TranslationsRequestMoreLoading extends TranslationsState {
+  final int totalAmount;
+  final List<TranslationsItem> translations;
+
+  const TranslationsRequestMoreLoading(this.totalAmount, this.translations)
+      : assert(totalAmount != null, translations != null);
+}
+
+class TranslationsSearchLoading extends TranslationsState {}
 
 class TranslationsLoaded extends TranslationsState {
   final int from;

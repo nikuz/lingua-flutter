@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:lingua_flutter/widgets/translations_list/bloc/bloc.dart';
+import 'package:lingua_flutter/widgets/translations_list/bloc/events.dart';
 
 class Search extends StatefulWidget {
   @override
@@ -7,6 +11,13 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   final _textController = TextEditingController();
+  TranslationsBloc _translationsBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _translationsBloc = BlocProvider.of<TranslationsBloc>(context);
+  }
 
   @override
   void dispose() {
@@ -20,25 +31,32 @@ class _SearchState extends State<Search> {
       controller: _textController,
       autocorrect: false,
       onChanged: (text) {
-        print(text);
-//        _githubSearchBloc.add(
-//          TextChanged(text: text),
-//        );
+        if (text.length > 1) {
+          _translationsBloc.add(TranslationsSearch(text));
+        }
+      },
+      onEditingComplete: () {
+        if (_textController.text.length > 1) {
+          Navigator.pushNamed(
+            context,
+            '/translation-view',
+            arguments: { 'word': _textController.text },
+          );
+        }
       },
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.search),
         suffixIcon: GestureDetector(
           child: Icon(Icons.clear),
-          onTap: _onClearTapped,
+          onTap: () {
+            if (_textController.text != '') {
+              _textController.text = '';
+              _translationsBloc.add(TranslationsRequest());
+            }
+          },
         ),
-//        border: InputBorder.none,
         hintText: 'Search word',
       ),
     );
-  }
-
-  void _onClearTapped() {
-    _textController.text = '';
-//    _githubSearchBloc.add(TextChanged(text: ''));
   }
 }

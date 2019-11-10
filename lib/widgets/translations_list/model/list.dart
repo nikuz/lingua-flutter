@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 
 import './item.dart';
 
+const LIST_PAGE_SIZE = 20;
+
 class Translations extends Equatable {
   final int from;
   final int to;

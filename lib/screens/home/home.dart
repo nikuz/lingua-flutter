@@ -5,9 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/app_config.dart' as appConfig;
 
-import 'package:lingua_flutter/widgets/translations/translations.dart';
-import 'package:lingua_flutter/widgets/translations/bloc/events.dart';
-import 'package:lingua_flutter/widgets/translations/bloc/bloc.dart';
+import 'package:lingua_flutter/widgets/translations_list/translations_list.dart';
+import 'package:lingua_flutter/widgets/translations_list/bloc/events.dart';
+import 'package:lingua_flutter/widgets/translations_list/bloc/bloc.dart';
 import 'package:lingua_flutter/widgets/search/search.dart';
 
 class HomePage extends StatefulWidget {
@@ -55,13 +55,17 @@ class _HomePageState extends State<HomePage> {
       list = TranslationsList();
     }
 
-    return Column(
-      children: <Widget>[
-        Search(),
-        Expanded(
-          child: list,
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: <Widget>[
+            Search(),
+            Expanded(
+              child: list,
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

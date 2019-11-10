@@ -12,7 +12,6 @@ import './state.dart';
 
 class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
   final http.Client httpClient;
-  final int _pagerSize = 20;
 
   TranslationsBloc({@required this.httpClient});
 
@@ -24,12 +23,32 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
     final currentState = state;
     if (event is TranslationsRequest) {
       try {
-        int from = currentState.to;
-        if (currentState is TranslationsUninitialized) {
-          from = 0;
+        yield TranslationsRequestLoading(currentState.translations);
+        try {
+          final Translations translationsList = await _fetchTranslationsList(0, LIST_PAGE_SIZE);
+          yield TranslationsLoaded(
+            from: translationsList.from,
+            to: translationsList.to,
+            totalAmount: translationsList.totalAmount,
+            translations: translationsList.translations,
+          );
+        } on ApiException catch (e) {
+          yield TranslationsError(e);
+        } catch (e, s) {
+          print(e);
+          print(s);
         }
-        int to = from + _pagerSize;
-        final Translations translationsList = await _fetchTranslationsList(from, to);
+      } on ApiException catch (e) {
+        yield TranslationsError(e);
+      } catch (e, s) {
+        print(e);
+        print(s);
+      }
+    } else if (event is TranslationsRequestMore) {
+      yield TranslationsRequestMoreLoading(currentState.totalAmount, currentState.translations);
+      try {
+        int from = currentState.to;
+        final Translations translationsList = await _fetchTranslationsList(from, from + LIST_PAGE_SIZE);
         yield TranslationsLoaded(
           from: translationsList.from,
           to: translationsList.to,
@@ -42,10 +61,14 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
         print(e);
         print(s);
       }
-    } else if (event is TranslationsRefreshRequest) {
-      yield TranslationsRefreshLoading();
+    } else if (event is TranslationsSearch) {
+      yield TranslationsSearchLoading();
       try {
-        final Translations translationsList = await _fetchTranslationsList(0, _pagerSize);
+        final Translations translationsList = await _fetchTranslationsList(
+            0,
+            LIST_PAGE_SIZE,
+            searchText: event.text
+        );
         yield TranslationsLoaded(
           from: translationsList.from,
           to: translationsList.to,
@@ -84,11 +107,13 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
     }
   }
 
-  Future<Translations> _fetchTranslationsList(int from, int to) async {
+  Future<Translations> _fetchTranslationsList(int from, int to, {String searchText}) async {
+    final String url = searchText == null ? '/translations' : '/translate/search';
     final Map<String, dynamic> response = await apiGet(
         client: httpClient,
-        url: '/translations',
+        url: url,
         params: {
+          'q': searchText,
           'from': '$from',
           'to': '$to',
         }
