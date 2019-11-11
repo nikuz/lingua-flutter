@@ -28,7 +28,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'Lingua',
       initialRoute: HOME,
-      onGenerateRoute: Router.generateRoute,
+      onGenerateRoute: generateRoute,
     );
   }
 }

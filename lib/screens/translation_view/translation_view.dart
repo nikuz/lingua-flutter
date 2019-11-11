@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class TranslationView extends StatefulWidget {
   final String word;
 
-  TranslationView(this.word);
+  TranslationView(this.word) : assert(word != null);
 
   @override
   _TranslationViewState createState() => _TranslationViewState();

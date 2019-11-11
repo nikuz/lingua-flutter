@@ -13,7 +13,7 @@ import './state.dart';
 class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
   final http.Client httpClient;
 
-  TranslationsBloc({@required this.httpClient});
+  TranslationsBloc({@required this.httpClient}) : assert(httpClient is http.Client);
 
   @override
   TranslationsState get initialState => TranslationsUninitialized();

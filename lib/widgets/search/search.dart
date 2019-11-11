@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:lingua_flutter/router.dart';
 import 'package:lingua_flutter/widgets/translations_list/bloc/bloc.dart';
 import 'package:lingua_flutter/widgets/translations_list/bloc/events.dart';
 
@@ -39,8 +40,8 @@ class _SearchState extends State<Search> {
         if (_textController.text.length > 1) {
           Navigator.pushNamed(
             context,
-            '/translation-view',
-            arguments: { 'word': _textController.text },
+            TRANSLATION_VIEW,
+            arguments: _textController.text,
           );
         }
       },
