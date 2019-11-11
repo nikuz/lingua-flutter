@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:lingua_flutter/utils/api.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:lingua_flutter/utils/api.dart';
 import 'package:lingua_flutter/helpers/api.dart';
 import '../model/list.dart';
 import '../model/item.dart';
@@ -24,20 +24,13 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
     if (event is TranslationsRequest) {
       try {
         yield TranslationsRequestLoading(currentState.translations);
-        try {
-          final Translations translationsList = await _fetchTranslationsList(0, LIST_PAGE_SIZE);
-          yield TranslationsLoaded(
-            from: translationsList.from,
-            to: translationsList.to,
-            totalAmount: translationsList.totalAmount,
-            translations: translationsList.translations,
-          );
-        } on ApiException catch (e) {
-          yield TranslationsError(e);
-        } catch (e, s) {
-          print(e);
-          print(s);
-        }
+        final Translations translationsList = await _fetchTranslationsList(0, LIST_PAGE_SIZE);
+        yield TranslationsLoaded(
+          from: translationsList.from,
+          to: translationsList.to,
+          totalAmount: translationsList.totalAmount,
+          translations: translationsList.translations,
+        );
       } on ApiException catch (e) {
         yield TranslationsError(e);
       } catch (e, s) {

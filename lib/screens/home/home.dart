@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/app_config.dart' as appConfig;
+import 'package:lingua_flutter/router.dart';
 
 import 'package:lingua_flutter/widgets/translations_list/translations_list.dart';
 import 'package:lingua_flutter/widgets/translations_list/bloc/events.dart';
@@ -43,6 +45,14 @@ class _HomePageState extends State<HomePage> {
       apiUrlDownloaded = true;
     });
     BlocProvider.of<TranslationsBloc>(context).add(TranslationsRequest());
+
+    Timer.run(() {
+      Navigator.pushNamed(
+        context,
+        TRANSLATION_VIEW,
+        arguments: 'mittens',
+      );
+    });
   }
 
   @override
