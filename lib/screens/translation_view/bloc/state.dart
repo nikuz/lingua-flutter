@@ -29,25 +29,51 @@ class TranslationRequestLoading extends TranslationState {}
 class TranslationLoaded extends TranslationState {
   final int id;
   final String word;
-  final String translation;
+  final String translationWord;
   final String pronunciation;
-  final List<dynamic> raw;
+  final List<dynamic> highestRelevantTranslation;
+  final List<dynamic> otherTranslations;
+  final List<dynamic> definitions;
+  final List<dynamic> definitionsSynonyms;
+  final List<dynamic> examples;
+  final String autoSpellingFix;
+  final bool strangeWord;
   final String image;
   final String createdAt;
 
   TranslationLoaded({
     @required this.id,
     @required this.word,
-    @required this.translation,
+    @required this.translationWord,
     @required this.pronunciation,
-    @required this.raw,
     @required this.image,
+    @required this.highestRelevantTranslation,
+    @required this.otherTranslations,
+    @required this.definitions,
+    @required this.definitionsSynonyms,
+    @required this.examples,
+    @required this.autoSpellingFix,
+    @required this.strangeWord,
     @required this.createdAt,
-  }) : assert(word != null && raw != null);
+  }) : assert(word != null && translationWord != null);
 
   @override
-  List<Object> get props => [id, word, translation, pronunciation, raw, image, createdAt];
+  List<Object> get props => [
+    id,
+    word,
+    translationWord,
+    pronunciation,
+    image,
+    highestRelevantTranslation,
+    otherTranslations,
+    definitions,
+    definitionsSynonyms,
+    examples,
+    autoSpellingFix,
+    strangeWord,
+    createdAt,
+  ];
 
   @override
-  String toString() => '$word -> $translation';
+  String toString() => '$word -> $translationWord';
 }

@@ -7,8 +7,14 @@ import 'package:lingua_flutter/helpers/api.dart';
 class PronunciationWidget extends StatefulWidget {
   final String pronunciationUrl;
   final int size;
+  final Color color;
 
-  const PronunciationWidget({Key key, @required this.pronunciationUrl, this.size}) : super(key: key);
+  const PronunciationWidget({
+    Key key,
+    @required this.pronunciationUrl,
+    this.size,
+    this.color,
+  }) : super(key: key);
 
   @override
   _PronunciationWidgetState createState() => _PronunciationWidgetState();
@@ -61,7 +67,7 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
     return IconButton(
       icon: Icon(
         _isPlayerStopped(_playerState) ? Icons.play_circle_filled : Icons.stop,
-        color: Colors.black26,
+        color: widget.color != null ? widget.color : Colors.black26,
       ),
       iconSize: widget.size != null ? widget.size : 36,
       onPressed: () {

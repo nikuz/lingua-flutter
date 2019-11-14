@@ -35,6 +35,7 @@ class App extends StatelessWidget {
       title: 'Lingua',
       initialRoute: HOME,
       onGenerateRoute: generateRoute,
+      theme: ThemeData(fontFamily: 'Montserrat'),
     );
   }
 }

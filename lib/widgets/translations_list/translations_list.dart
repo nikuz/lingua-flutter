@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/helpers/api.dart';
 import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
+import 'package:lingua_flutter/router.dart';
 
 import './model/item.dart';
 import './model/list.dart';
@@ -52,13 +53,13 @@ class _TranslationsListState extends State<TranslationsList> {
       },
       child: BlocBuilder<TranslationsBloc, TranslationsState>(
         builder: (context, state) {
-          if (state.translations.isNotEmpty) {
-            if (state.translations.isEmpty) {
-              return Center(
-                child: Text('no translations'),
-              );
-            }
+          if (state is TranslationsLoaded && state.translations.isEmpty) {
+            return Center(
+              child: Text('no translations'),
+            );
+          }
 
+          if (state.translations.isNotEmpty) {
             return new RefreshIndicator(
               onRefresh: () {
                 _translationsBloc.add(TranslationsRequest());
@@ -67,10 +68,12 @@ class _TranslationsListState extends State<TranslationsList> {
               child: ListView.builder(
                 physics: const AlwaysScrollableScrollPhysics(),
                 itemBuilder: (BuildContext context, int index) {
-                  return index >= state.translations.length
-                      ? BottomLoader()
-                      : TranslationsListItemWidget(
-                      translationItem: state.translations[index]
+                  if (index >= state.translations.length) {
+                    return BottomLoader();
+                  }
+
+                  return TranslationsListItemWidget(
+                    translationItem: state.translations[index]
                   );
                 },
                 itemCount: state.translations.length + 1,
@@ -85,9 +88,13 @@ class _TranslationsListState extends State<TranslationsList> {
             );
           }
 
-          return Center(
-            child: CircularProgressIndicator(),
-          );
+          if (!(state is TranslationsLoaded)) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          return null;
         },
       ),
     );
@@ -171,6 +178,13 @@ class TranslationsListItemWidget extends StatelessWidget {
             fit: BoxFit.fitHeight,
           ),
         ),
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            TRANSLATION_VIEW,
+            arguments: translationItem.word,
+          );
+        },
       ),
     );
   }
