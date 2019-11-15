@@ -76,6 +76,8 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
         print(e);
         print(s);
       }
+    } else if (event is TranslationClear) {
+      yield TranslationUninitialized();
     }
   }
 

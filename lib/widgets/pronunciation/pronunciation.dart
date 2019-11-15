@@ -6,14 +6,16 @@ import 'package:lingua_flutter/helpers/api.dart';
 
 class PronunciationWidget extends StatefulWidget {
   final String pronunciationUrl;
-  final int size;
+  final double size;
   final Color color;
+  final bool autoPlay;
 
   const PronunciationWidget({
     Key key,
     @required this.pronunciationUrl,
     this.size,
     this.color,
+    this.autoPlay,
   }) : super(key: key);
 
   @override
@@ -54,6 +56,9 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
         _onPlayerStateChange,
         onError: _onPlayerStateChangeError
     );
+    if (widget.autoPlay == true) {
+      _playPronunciation();
+    }
   }
 
   @override

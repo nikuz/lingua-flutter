@@ -81,6 +81,8 @@ class TranslationViewHeader extends StatelessWidget {
                       PronunciationWidget(
                         pronunciationUrl: pronunciation,
                         color: Colors.white,
+                        size: 50.0,
+                        autoPlay: true,
                       )
                       : null,
                     Container(

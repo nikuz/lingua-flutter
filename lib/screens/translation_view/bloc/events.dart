@@ -10,3 +10,5 @@ class TranslationRequest extends TranslationEvent {
 
   TranslationRequest([this.word]) : assert(word != null);
 }
+
+class TranslationClear extends TranslationEvent {}

@@ -32,7 +32,10 @@ class _TranslationViewState extends State<TranslationView> {
           //or `false` if you want to force your own back button every where
           title: Text('${widget.word[0].toUpperCase()}${widget.word.substring(1)}'),
           leading: IconButton(icon:Icon(Icons.arrow_back),
-            onPressed:() => Navigator.pop(context, false),
+            onPressed: () {
+              Navigator.pop(context, false);
+              BlocProvider.of<TranslationBloc>(context).add(TranslationClear());
+            },
           ),
           elevation: 0,
       ),
