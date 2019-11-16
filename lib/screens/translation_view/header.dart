@@ -37,14 +37,27 @@ class TranslationViewHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Wrap(
-                  direction: Axis.horizontal,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(
-                        right: 15,
-                      ),
-                      child: Text(
+                Center(
+                  child: Container(
+                    width: 150,
+                    height: 150,
+                    margin: EdgeInsets.only(
+                      top: 10,
+                      bottom: 10,
+                    ),
+                    child: image != null ?
+                    Image.network(
+                      '${getApiUri()}$image',
+                      fit: BoxFit.fitHeight,
+                    )
+                      : null,
+                  ),
+                ),
+                Center(
+                  child: Wrap(
+                    direction: Axis.horizontal,
+                    children: <Widget>[
+                      Text(
                         state.translationWord != null ? state.translationWord : '',
                         style: TextStyle(
                           fontFamily: 'Merriweather',
@@ -53,50 +66,32 @@ class TranslationViewHeader extends StatelessWidget {
                           letterSpacing: 1,
                         ),
                       ),
-                    ),
-                    Icon(
-                      verified ? Icons.check_circle_outline : null,
-                      color: Colors.white,
-                    ),
-                  ],
-                ),
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.only(
-                    top: transcription != null ? 10 : 0,
-                  ),
-                  child: Text(
-                    transcription != null ? transcription : '',
-                    style: TextStyle(
-                      fontSize: transcription != null ? 15 : 0,
-                      color: Colors.white,
-                    ),
+                      Container(
+                        padding: EdgeInsets.only(
+                          left: verified ? 5 : 0,
+                        ),
+                        child: Icon(
+                          verified ? Icons.check_circle_outline : null,
+                          color: Colors.white,
+                          size: verified ? 25 : 0,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    pronunciation != null ?
-                      PronunciationWidget(
-                        pronunciationUrl: pronunciation,
+                    PronunciationWidget(
+                      pronunciationUrl: pronunciation != null ? pronunciation : '',
+                      color: Colors.white,
+                      size: 50.0,
+                      autoPlay: true,
+                    ),
+                    Text(
+                      transcription != null ? transcription : '',
+                      style: TextStyle(
                         color: Colors.white,
-                        size: 50.0,
-                        autoPlay: true,
-                      )
-                      : null,
-                    Container(
-                      width: 150,
-                      margin: EdgeInsets.only(
-                        top: 10,
-                        bottom: 10,
                       ),
-                      child: image != null ?
-                        Image.network(
-                          '${getApiUri()}$image',
-                          fit: BoxFit.fitHeight,
-                        )
-                        : null,
                     )
                   ],
                 )

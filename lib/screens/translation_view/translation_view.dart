@@ -6,6 +6,7 @@ import './bloc/events.dart';
 import './bloc/state.dart';
 
 import './header.dart';
+import './other_translations.dart';
 
 class TranslationView extends StatefulWidget {
   final String word;
@@ -43,10 +44,13 @@ class _TranslationViewState extends State<TranslationView> {
         child: BlocBuilder<TranslationBloc, TranslationState>(
           builder: (context, state) {
             if (state is TranslationLoaded) {
-              return Column(
-                children: <Widget>[
-                  TranslationViewHeader(),
-                ],
+              return SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    TranslationViewHeader(),
+                    OtherTranslations(),
+                  ],
+                ),
               );
             }
 

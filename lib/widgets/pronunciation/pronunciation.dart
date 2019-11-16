@@ -71,7 +71,7 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
   Widget build(BuildContext context) {
     return IconButton(
       icon: Icon(
-        _isPlayerStopped(_playerState) ? Icons.play_circle_filled : Icons.stop,
+        _isPlayerStopped(_playerState) ? Icons.volume_up : Icons.stop,
         color: widget.color != null ? widget.color : Colors.black26,
       ),
       iconSize: widget.size != null ? widget.size : 36,
