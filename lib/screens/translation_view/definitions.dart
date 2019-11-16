@@ -4,14 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import './bloc/bloc.dart';
 import './bloc/state.dart';
 
-const SHOW_MIN_TRANSLATIONS = 5;
+const SHOW_MIN_DEFINITIONS = 1;
 
-class OtherTranslations extends StatefulWidget {
+class Definitions extends StatefulWidget {
   @override
-  _OtherTranslationsState createState() => _OtherTranslationsState();
+  _DefinitionsState createState() => _DefinitionsState();
 }
 
-class _OtherTranslationsState extends State<OtherTranslations> {
+class _DefinitionsState extends State<Definitions> {
   bool expanded = false;
   int counter = 0;
 
@@ -22,10 +22,10 @@ class _OtherTranslationsState extends State<OtherTranslations> {
         if (state is TranslationLoaded) {
           int hiddenItemsAmount = 0;
           if (!expanded) {
-            for (int i = 0, l = state.otherTranslations.length; i < l; i++) {
-              final List<dynamic> translations = state.otherTranslations[i][2];
-              if (translations.length > SHOW_MIN_TRANSLATIONS) {
-                hiddenItemsAmount += translations.length - SHOW_MIN_TRANSLATIONS;
+            for (int i = 0, l = state.definitions.length; i < l; i++) {
+              final List<dynamic> definitions = state.definitions[i][1];
+              if (definitions.length > SHOW_MIN_DEFINITIONS) {
+                hiddenItemsAmount += definitions.length - SHOW_MIN_DEFINITIONS;
               }
             }
           }
@@ -53,8 +53,8 @@ class _OtherTranslationsState extends State<OtherTranslations> {
                   ),
                   Text(
                     expanded
-                      ? 'Show less translations'
-                      : 'Show more $hiddenItemsAmount translations',
+                      ? 'Show less definitions'
+                      : 'Show more $hiddenItemsAmount definitions',
                     style: TextStyle(color: Colors.white),
                   )
                 ],
@@ -94,7 +94,7 @@ class _OtherTranslationsState extends State<OtherTranslations> {
                       Row(
                         children: <Widget>[
                           Text(
-                            'Translations of ',
+                            'Definitions of ',
                             style: TextStyle(
                               fontSize: 16,
                               color: Color.fromRGBO(119, 119, 119, 1),
@@ -117,12 +117,13 @@ class _OtherTranslationsState extends State<OtherTranslations> {
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (BuildContext context, int index) {
-                          return OtherTranslationsCategory(
-                            category: state.otherTranslations[index],
+                          return DefinitionsCategory(
+                            category: state.definitions[index],
+                            synonyms: state.definitionsSynonyms,
                             expanded: expanded,
                           );
                         },
-                        itemCount: state.otherTranslations.length,
+                        itemCount: state.definitions.length,
                       ),
                     ],
                   ),
@@ -140,24 +141,35 @@ class _OtherTranslationsState extends State<OtherTranslations> {
 }
 
 
-class OtherTranslationsCategory extends StatelessWidget {
+class DefinitionsCategory extends StatelessWidget {
   final List<dynamic> category;
+  final List<dynamic> synonyms;
   final bool expanded;
 
-  OtherTranslationsCategory({
+  DefinitionsCategory({
     Key key,
     @required this.category,
+    @required this.synonyms,
     @required this.expanded
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final String categoryName = category[0];
-    final List<dynamic> translations = category[2];
-    int translationsCount = translations.length;
+    final List<dynamic> definitions = category[1];
+    int definitionsCount = definitions.length;
+    List<dynamic> synonymsCategory;
 
-    if (!expanded && translationsCount > SHOW_MIN_TRANSLATIONS) {
-      translationsCount = SHOW_MIN_TRANSLATIONS;
+    if (!expanded && definitionsCount > SHOW_MIN_DEFINITIONS) {
+      definitionsCount = SHOW_MIN_DEFINITIONS;
+    }
+
+    if (synonyms != null && synonyms.isNotEmpty) {
+      for (int i = 0, l = synonyms.length; i < l; i++) {
+        if (synonyms[i][0] == categoryName) {
+          synonymsCategory = synonyms[i][1];
+        }
+      }
     }
 
     return Container(
@@ -183,11 +195,13 @@ class OtherTranslationsCategory extends StatelessWidget {
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (BuildContext context, int index) {
-              return OtherTranslationsItem(
-                item: translations[index]
+              return DefinitionsItem(
+                id: index + 1,
+                item: definitions[index],
+                synonymsCategory: synonymsCategory,
               );
             },
-            itemCount: translationsCount,
+            itemCount: definitionsCount,
           ),
         ],
       ),
@@ -195,22 +209,31 @@ class OtherTranslationsCategory extends StatelessWidget {
   }
 }
 
-class OtherTranslationsItem extends StatelessWidget {
+class DefinitionsItem extends StatelessWidget {
+  final int id;
   final List<dynamic> item;
+  final List<dynamic> synonymsCategory;
 
-  OtherTranslationsItem({Key key, @required this.item}) : super(key: key);
+  DefinitionsItem({
+    Key key,
+    @required this.id,
+    @required this.item,
+    @required this.synonymsCategory,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final String word = item[0];
+    final String definition = item[0];
+    final String synonymsId = item[1];
+    final String example = item[2];
     List<dynamic> synonyms;
-    double frequency;
 
-    if (item[1] != null) {
-      synonyms = item[1];
-    }
-    if (item.length >= 4) {
-      frequency = item[3];
+    if (synonymsCategory != null && synonymsCategory.isNotEmpty) {
+      for (int i = 0, l = synonymsCategory.length; i < l; i++) {
+        if (synonymsCategory[i][1] == synonymsId) {
+          synonyms = synonymsCategory[i][0];
+        }
+      }
     }
 
     return Container(
@@ -223,28 +246,39 @@ class OtherTranslationsItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            width: MediaQuery.of(context).size.width * 0.4,
-            child: Text(
-              word,
-              style: TextStyle(
-                fontSize: 18,
+            width: 20,
+            height: 20,
+            margin: EdgeInsets.only(right: 20),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Color.fromRGBO(0, 0, 0, 0.38),
+                width: 1.0,
+                style: BorderStyle.solid
+              ),
+              borderRadius: BorderRadius.all(Radius.circular(20.0)),
+            ),
+            child: Center(
+              child: Text(
+                id.toString(),
+                style: TextStyle(
+                  fontSize: 12,
+                ),
               ),
             ),
           ),
           Container(
-            width: MediaQuery.of(context).size.width * 0.37,
-            child: _getSynonymsList(synonyms),
-          ),
-          Container(
-            padding: EdgeInsets.only(
-              top: 8,
-              left: 10,
-            ),
-            child: Row(
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: Column(
               children: <Widget>[
-                _getFrequencyBarItem(true),
-                _getFrequencyBarItem(frequency != null && frequency > 0.001),
-                _getFrequencyBarItem(frequency != null && frequency > 0.1),
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    definition,
+                    style: TextStyle(color: Color.fromRGBO(34, 34, 34, 1)),
+                  ),
+                ),
+                _getExample(example),
+                _getSynonymsList(synonyms),
               ],
             ),
           ),
@@ -253,30 +287,55 @@ class OtherTranslationsItem extends StatelessWidget {
     );
   }
 
+  Widget _getExample(final String example) {
+    if (example != null) {
+      return Container(
+        margin: EdgeInsets.only(top: 5),
+        child: Align(
+          alignment: Alignment.bottomLeft,
+          child: Text(
+            example,
+            style: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.54)),
+          ),
+        ),
+      );
+    }
+
+    return Container(width: 0, height: 0);
+  }
+
   Widget _getSynonymsList(List<dynamic> synonyms) {
+    if (synonyms == null) {
+      return Container(width: 0, height: 0);
+    }
+
     List<Widget> list = List<Widget>();
     for (int i = 0, l = synonyms.length; i < l; i++) {
-      list.add(Text(i == l - 1 ? synonyms[i] : '${synonyms[i]}, '));
+      list.add(
+        Container(
+          padding: EdgeInsets.only(
+            top: 5,
+            right: 10,
+            bottom: 5,
+            left: 10,
+          ),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Color.fromRGBO(218, 220, 224, 1),
+              width: 1.0,
+              style: BorderStyle.solid
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          ),
+          child: Text(i == l - 1 ? synonyms[i] : '${synonyms[i]}, '),
+        )
+      );
     }
 
     return Wrap(
       direction: Axis.horizontal,
       runSpacing: 7,
       children: list,
-    );
-  }
-
-  Widget _getFrequencyBarItem(bool active) {
-    return Container(
-      width: 10,
-      height: 3,
-      margin: EdgeInsets.only(right: 2),
-      decoration: BoxDecoration(
-        color: active
-          ? Color.fromRGBO(66, 133, 224, 1)
-          : Color.fromRGBO(218, 220, 224, 1),
-        borderRadius: BorderRadius.all(Radius.circular(1.0)),
-      ),
     );
   }
 }

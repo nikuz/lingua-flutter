@@ -7,6 +7,7 @@ import './bloc/state.dart';
 
 import './header.dart';
 import './other_translations.dart';
+import './definitions.dart';
 
 class TranslationView extends StatefulWidget {
   final String word;
@@ -49,6 +50,7 @@ class _TranslationViewState extends State<TranslationView> {
                   children: <Widget>[
                     TranslationViewHeader(),
                     OtherTranslations(),
+                    Definitions(),
                   ],
                 ),
               );
