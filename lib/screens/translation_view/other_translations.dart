@@ -3,109 +3,36 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import './bloc/bloc.dart';
 import './bloc/state.dart';
-import './widgets/expand_button.dart';
+import './widgets/container.dart';
 
 const SHOW_MIN_TRANSLATIONS = 5;
 
-class OtherTranslations extends StatefulWidget {
-  @override
-  _OtherTranslationsState createState() => _OtherTranslationsState();
-}
-
-class _OtherTranslationsState extends State<OtherTranslations> {
-  bool expanded = false;
-  int counter = 0;
-
+class OtherTranslations extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TranslationBloc, TranslationState>(
       builder: (context, state) {
         if (state is TranslationLoaded && state.otherTranslations != null) {
-          int hiddenItemsAmount;
+          int itemsLength = 0;
 
           for (int i = 0, l = state.otherTranslations.length; i < l; i++) {
             final List<dynamic> translations = state.otherTranslations[i][2];
-            if (translations.length > SHOW_MIN_TRANSLATIONS) {
-              if (hiddenItemsAmount == null) {
-                hiddenItemsAmount = 0;
-              }
-              if (!expanded) {
-                hiddenItemsAmount += translations.length - SHOW_MIN_TRANSLATIONS;
-              }
-            }
+            itemsLength += translations.length;
           }
 
-          return Container(
-            width: double.infinity,
-            margin: EdgeInsets.only(
-              top: 10,
-              left: 10,
-              right: 10,
-            ),
-            child: Column(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Color.fromRGBO(218, 220, 224, 1),
-                      width: 1.0,
-                      style: BorderStyle.solid
-                    ),
-                    borderRadius: BorderRadius.vertical(
-                      top: new Radius.circular(8.0),
-                      bottom: new Radius.circular(hiddenItemsAmount != null ? 0 : 8.0),
-                    ),
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Text(
-                            'Translations of ',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Color.fromRGBO(119, 119, 119, 1),
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(left: 5),
-                            child: Text(
-                              state.word,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Color.fromRGBO(34, 34, 34, 1),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemBuilder: (BuildContext context, int index) {
-                          return OtherTranslationsCategory(
-                            category: state.otherTranslations[index],
-                            expanded: expanded,
-                          );
-                        },
-                        itemCount: state.otherTranslations.length,
-                      ),
-                    ],
-                  ),
-                ),
-                ExpandButton(
-                  amount: hiddenItemsAmount,
-                  entity: 'translations',
-                  expanded: expanded,
-                  onPressed: () {
-                    setState(() {
-                      expanded = !expanded;
-                    });
-                  },
-                ),
-              ],
+          return TranslationViewContainer(
+            title: state.word,
+            entity: 'translations',
+            itemsLength: itemsLength,
+            maxItemsToShow: SHOW_MIN_TRANSLATIONS,
+            childBuilder: (bool expanded) => ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (BuildContext context, int index) => OtherTranslationsCategory(
+                category: state.otherTranslations[index],
+                expanded: expanded,
+              ),
+              itemCount: state.otherTranslations.length,
             ),
           );
         }
