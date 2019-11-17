@@ -4,6 +4,7 @@ import 'package:flutter_html/flutter_html.dart';
 
 import './bloc/bloc.dart';
 import './bloc/state.dart';
+import './widgets/expand_button.dart';
 
 const SHOW_MIN_EXAMPLES = 1;
 
@@ -21,48 +22,16 @@ class _ExamplesState extends State<Examples> {
     return BlocBuilder<TranslationBloc, TranslationState>(
       builder: (context, state) {
         if (state is TranslationLoaded && state.examples != null) {
-          int hiddenItemsAmount = 0;
+          int hiddenItemsAmount;
           final List<dynamic> examples = state.examples[0];
 
-          if (!expanded && examples.length > SHOW_MIN_EXAMPLES) {
-            hiddenItemsAmount += examples.length - SHOW_MIN_EXAMPLES;
-          }
-
-          Widget expandButton = Container(width: 0, height: 0);
-
-          if (expanded || hiddenItemsAmount > 0) {
-            expandButton = FlatButton(
-              shape: new RoundedRectangleBorder(
-                borderRadius: new BorderRadius.only(
-                  bottomLeft: Radius.circular(8.0),
-                  bottomRight: Radius.circular(8.0),
-                ),
-              ),
-              color: Color.fromRGBO(26, 88, 136, 1),
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              child: Row( // Replace with a Row for horizontal icon + text
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(right: 10),
-                    child: Icon(
-                      expanded ? Icons.expand_less : Icons.expand_more,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(
-                    expanded
-                      ? 'Show less examoples'
-                      : 'Show more $hiddenItemsAmount examoples',
-                    style: TextStyle(color: Colors.white),
-                  )
-                ],
-              ),
-              onPressed: () {
-                setState(() {
-                  expanded = !expanded;
-                });
-              },
-            );
+          if (examples.length > SHOW_MIN_EXAMPLES) {
+            if (hiddenItemsAmount == null) {
+              hiddenItemsAmount = 0;
+            }
+            if (!expanded) {
+              hiddenItemsAmount += examples.length - SHOW_MIN_EXAMPLES;
+            }
           }
 
           return Container(
@@ -84,7 +53,7 @@ class _ExamplesState extends State<Examples> {
                     ),
                     borderRadius: BorderRadius.vertical(
                       top: new Radius.circular(8.0),
-                      bottom: new Radius.circular(expandButton is FlatButton ? 0 : 8.0),
+                      bottom: new Radius.circular(hiddenItemsAmount != null ? 0 : 8.0),
                     ),
                   ),
                   child: Column(
@@ -124,7 +93,16 @@ class _ExamplesState extends State<Examples> {
                     ],
                   ),
                 ),
-                expandButton,
+                ExpandButton(
+                  amount: hiddenItemsAmount,
+                  entity: 'examples',
+                  expanded: expanded,
+                  onPressed: () {
+                    setState(() {
+                      expanded = !expanded;
+                    });
+                  },
+                ),
               ],
             ),
           );

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import './bloc/bloc.dart';
 import './bloc/state.dart';
+import './widgets/expand_button.dart';
 
 const SHOW_MIN_TRANSLATIONS = 5;
 
@@ -20,51 +21,18 @@ class _OtherTranslationsState extends State<OtherTranslations> {
     return BlocBuilder<TranslationBloc, TranslationState>(
       builder: (context, state) {
         if (state is TranslationLoaded && state.otherTranslations != null) {
-          int hiddenItemsAmount = 0;
-          if (!expanded) {
-            for (int i = 0, l = state.otherTranslations.length; i < l; i++) {
-              final List<dynamic> translations = state.otherTranslations[i][2];
-              if (translations.length > SHOW_MIN_TRANSLATIONS) {
+          int hiddenItemsAmount;
+
+          for (int i = 0, l = state.otherTranslations.length; i < l; i++) {
+            final List<dynamic> translations = state.otherTranslations[i][2];
+            if (translations.length > SHOW_MIN_TRANSLATIONS) {
+              if (hiddenItemsAmount == null) {
+                hiddenItemsAmount = 0;
+              }
+              if (!expanded) {
                 hiddenItemsAmount += translations.length - SHOW_MIN_TRANSLATIONS;
               }
             }
-          }
-
-          Widget expandButton = Container(width: 0, height: 0);
-
-          if (expanded || hiddenItemsAmount > 0) {
-            expandButton = FlatButton(
-              shape: new RoundedRectangleBorder(
-                borderRadius: new BorderRadius.only(
-                  bottomLeft: Radius.circular(8.0),
-                  bottomRight: Radius.circular(8.0),
-                ),
-              ),
-              color: Color.fromRGBO(26, 88, 136, 1),
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              child: Row( // Replace with a Row for horizontal icon + text
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(right: 10),
-                    child: Icon(
-                      expanded ? Icons.expand_less : Icons.expand_more,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(
-                    expanded
-                      ? 'Show less translations'
-                      : 'Show more $hiddenItemsAmount translations',
-                    style: TextStyle(color: Colors.white),
-                  )
-                ],
-              ),
-              onPressed: () {
-                setState(() {
-                  expanded = !expanded;
-                });
-              },
-            );
           }
 
           return Container(
@@ -86,7 +54,7 @@ class _OtherTranslationsState extends State<OtherTranslations> {
                     ),
                     borderRadius: BorderRadius.vertical(
                       top: new Radius.circular(8.0),
-                      bottom: new Radius.circular(expandButton is FlatButton ? 0 : 8.0),
+                      bottom: new Radius.circular(hiddenItemsAmount != null ? 0 : 8.0),
                     ),
                   ),
                   child: Column(
@@ -127,7 +95,16 @@ class _OtherTranslationsState extends State<OtherTranslations> {
                     ],
                   ),
                 ),
-                expandButton,
+                ExpandButton(
+                  amount: hiddenItemsAmount,
+                  entity: 'translations',
+                  expanded: expanded,
+                  onPressed: () {
+                    setState(() {
+                      expanded = !expanded;
+                    });
+                  },
+                ),
               ],
             ),
           );

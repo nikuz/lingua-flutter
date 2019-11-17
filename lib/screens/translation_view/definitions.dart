@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import './bloc/bloc.dart';
 import './bloc/state.dart';
+import './widgets/expand_button.dart';
 
 const SHOW_MIN_DEFINITIONS = 1;
 
@@ -20,51 +21,18 @@ class _DefinitionsState extends State<Definitions> {
     return BlocBuilder<TranslationBloc, TranslationState>(
       builder: (context, state) {
         if (state is TranslationLoaded && state.definitions != null) {
-          int hiddenItemsAmount = 0;
-          if (!expanded) {
-            for (int i = 0, l = state.definitions.length; i < l; i++) {
-              final List<dynamic> definitions = state.definitions[i][1];
-              if (definitions.length > SHOW_MIN_DEFINITIONS) {
+
+          int hiddenItemsAmount;
+          for (int i = 0, l = state.definitions.length; i < l; i++) {
+            final List<dynamic> definitions = state.definitions[i][1];
+            if (definitions.length > SHOW_MIN_DEFINITIONS) {
+              if (hiddenItemsAmount == null) {
+                hiddenItemsAmount = 0;
+              }
+              if (!expanded) {
                 hiddenItemsAmount += definitions.length - SHOW_MIN_DEFINITIONS;
               }
             }
-          }
-
-          Widget expandButton = Container(width: 0, height: 0);
-
-          if (expanded || hiddenItemsAmount > 0) {
-            expandButton = FlatButton(
-              shape: new RoundedRectangleBorder(
-                borderRadius: new BorderRadius.only(
-                  bottomLeft: Radius.circular(8.0),
-                  bottomRight: Radius.circular(8.0),
-                ),
-              ),
-              color: Color.fromRGBO(26, 88, 136, 1),
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              child: Row( // Replace with a Row for horizontal icon + text
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(right: 10),
-                    child: Icon(
-                      expanded ? Icons.expand_less : Icons.expand_more,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(
-                    expanded
-                      ? 'Show less definitions'
-                      : 'Show more $hiddenItemsAmount definitions',
-                    style: TextStyle(color: Colors.white),
-                  )
-                ],
-              ),
-              onPressed: () {
-                setState(() {
-                  expanded = !expanded;
-                });
-              },
-            );
           }
 
           return Container(
@@ -86,7 +54,7 @@ class _DefinitionsState extends State<Definitions> {
                     ),
                     borderRadius: BorderRadius.vertical(
                       top: new Radius.circular(8.0),
-                      bottom: new Radius.circular(expandButton is FlatButton ? 0 : 8.0),
+                      bottom: new Radius.circular(hiddenItemsAmount != null ? 0 : 8.0),
                     ),
                   ),
                   child: Column(
@@ -128,7 +96,16 @@ class _DefinitionsState extends State<Definitions> {
                     ],
                   ),
                 ),
-                expandButton,
+                ExpandButton(
+                  amount: hiddenItemsAmount,
+                  entity: 'definitions',
+                  expanded: expanded,
+                  onPressed: () {
+                    setState(() {
+                      expanded = !expanded;
+                    });
+                  },
+                ),
               ],
             ),
           );
