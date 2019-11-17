@@ -19,7 +19,7 @@ class _OtherTranslationsState extends State<OtherTranslations> {
   Widget build(BuildContext context) {
     return BlocBuilder<TranslationBloc, TranslationState>(
       builder: (context, state) {
-        if (state is TranslationLoaded) {
+        if (state is TranslationLoaded && state.otherTranslations != null) {
           int hiddenItemsAmount = 0;
           if (!expanded) {
             for (int i = 0, l = state.otherTranslations.length; i < l; i++) {
@@ -133,7 +133,7 @@ class _OtherTranslationsState extends State<OtherTranslations> {
           );
         }
 
-        return null;
+        return Container();
       }
     );
   }
@@ -163,19 +163,17 @@ class OtherTranslationsCategory extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(top: 15),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
             margin: EdgeInsets.only(
               bottom: 5,
             ),
-            child: Align(
-              alignment: Alignment.bottomLeft,
-              child: Text(
-                '${categoryName[0].toUpperCase()}${categoryName.substring(1)}',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color.fromRGBO(66, 133, 224, 1),
-                ),
+            child: Text(
+              '${categoryName[0].toUpperCase()}${categoryName.substring(1)}',
+              style: TextStyle(
+                fontSize: 16,
+                color: Color.fromRGBO(66, 133, 224, 1),
               ),
             ),
           ),

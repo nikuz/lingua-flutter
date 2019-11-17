@@ -19,7 +19,7 @@ class _DefinitionsState extends State<Definitions> {
   Widget build(BuildContext context) {
     return BlocBuilder<TranslationBloc, TranslationState>(
       builder: (context, state) {
-        if (state is TranslationLoaded) {
+        if (state is TranslationLoaded && state.definitions != null) {
           int hiddenItemsAmount = 0;
           if (!expanded) {
             for (int i = 0, l = state.definitions.length; i < l; i++) {
@@ -134,7 +134,7 @@ class _DefinitionsState extends State<Definitions> {
           );
         }
 
-        return null;
+        return Container();
       }
     );
   }
@@ -175,19 +175,17 @@ class DefinitionsCategory extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(top: 15),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
             margin: EdgeInsets.only(
               bottom: 5,
             ),
-            child: Align(
-              alignment: Alignment.bottomLeft,
-              child: Text(
-                '${categoryName[0].toUpperCase()}${categoryName.substring(1)}',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color.fromRGBO(66, 133, 224, 1),
-                ),
+            child: Text(
+              '${categoryName[0].toUpperCase()}${categoryName.substring(1)}',
+              style: TextStyle(
+                fontSize: 16,
+                color: Color.fromRGBO(66, 133, 224, 1),
               ),
             ),
           ),
@@ -225,8 +223,12 @@ class DefinitionsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final String definition = item[0];
     final String synonymsId = item[1];
-    final String example = item[2];
+    String example;
     List<dynamic> synonyms;
+
+    if (item.length >= 3) {
+      example = item[2];
+    }
 
     if (synonymsCategory != null && synonymsCategory.isNotEmpty) {
       for (int i = 0, l = synonymsCategory.length; i < l; i++) {
@@ -242,7 +244,6 @@ class DefinitionsItem extends StatelessWidget {
         bottom: 5,
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
@@ -269,13 +270,12 @@ class DefinitionsItem extends StatelessWidget {
           Container(
             width: MediaQuery.of(context).size.width * 0.8,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Text(
-                    definition,
-                    style: TextStyle(color: Color.fromRGBO(34, 34, 34, 1)),
-                  ),
+                Text(
+                  definition,
+                  style: TextStyle(color: Color.fromRGBO(34, 34, 34, 1)),
                 ),
                 _getExample(example),
                 _getSynonymsList(synonyms),
@@ -291,12 +291,9 @@ class DefinitionsItem extends StatelessWidget {
     if (example != null) {
       return Container(
         margin: EdgeInsets.only(top: 5),
-        child: Align(
-          alignment: Alignment.bottomLeft,
-          child: Text(
-            example,
-            style: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.54)),
-          ),
+        child: Text(
+          example,
+          style: TextStyle(color: Color.fromRGBO(0, 0, 0, 0.54)),
         ),
       );
     }
@@ -314,10 +311,10 @@ class DefinitionsItem extends StatelessWidget {
       list.add(
         Container(
           padding: EdgeInsets.only(
-            top: 5,
-            right: 10,
+            top: 3,
+            right: 8,
             bottom: 5,
-            left: 10,
+            left: 8,
           ),
           decoration: BoxDecoration(
             border: Border.all(
@@ -325,17 +322,35 @@ class DefinitionsItem extends StatelessWidget {
               width: 1.0,
               style: BorderStyle.solid
             ),
-            borderRadius: BorderRadius.all(Radius.circular(5.0)),
+            borderRadius: BorderRadius.all(Radius.circular(7.0)),
           ),
-          child: Text(i == l - 1 ? synonyms[i] : '${synonyms[i]}, '),
+          child: Text(synonyms[i]),
         )
       );
     }
 
-    return Wrap(
-      direction: Axis.horizontal,
-      runSpacing: 7,
-      children: list,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(
+            top: 15,
+            bottom: 10,
+          ),
+          child: Text(
+            'Synonyms',
+            style: TextStyle(
+              color: Color.fromRGBO(0, 0, 0, 0.54),
+            ),
+          ),
+        ),
+        Wrap(
+          direction: Axis.horizontal,
+          spacing: 7,
+          runSpacing: 7,
+          children: list,
+        )
+      ],
     );
   }
 }

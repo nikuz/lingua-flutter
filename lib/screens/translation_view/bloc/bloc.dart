@@ -37,6 +37,9 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
           final List<dynamic> raw = translation.raw;
           highestRelevantTranslation = raw[0];
           otherTranslations = raw[1];
+          if (raw.length >= 12) {
+            definitionsSynonyms = raw[11];
+          }
           if (raw.length >= 13) {
             definitions = raw[12];
           }
