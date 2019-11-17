@@ -1,10 +1,10 @@
-import 'dart:convert';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/helpers/api.dart';
+import 'package:lingua_flutter/router.dart';
 import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
+import 'package:lingua_flutter/utils//images.dart';
 
 import './bloc/bloc.dart';
 import './bloc/state.dart';
@@ -34,10 +34,8 @@ class TranslationViewHeader extends StatelessWidget {
           );
 
           if (imageSource != null) {
-            final RegExp base64Reg = RegExp(r'data:image[^,]+,');
-            if (imageSource.indexOf(base64Reg) == 0) {
-              Uint8List bytes = base64Decode(imageSource.replaceFirst(base64Reg, ''));
-              image = Image.memory(bytes);
+            if (imageSource.indexOf('data:image') == 0) {
+              image = Image.memory(getImageBytesFrom64String(imageSource));
             } else {
               image = Image.network(
                 '${getApiUri()}$imageSource',
@@ -59,15 +57,28 @@ class TranslationViewHeader extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               children: [
                 Center(
-                  child: Container(
-                    width: 150,
-                    height: 150,
-                    margin: EdgeInsets.only(
-                      top: 10,
-                      bottom: 10,
+                  child: FlatButton(
+                    child: Container(
+                      width: 150,
+                      height: 150,
+                      margin: EdgeInsets.only(
+                        top: 10,
+                        bottom: 10,
+                      ),
+                      child: image,
                     ),
-                    child: image,
-                  ),
+                    onPressed: () {
+                      if (state.id != null) {
+
+                      } else {
+                        Navigator.pushNamed(
+                          context,
+                          TRANSLATION_VIEW_IMAGES_PICKER,
+                          arguments: state.imageSearchWord,
+                        );
+                      }
+                    },
+                  )
                 ),
                 Center(
                   child: Wrap(

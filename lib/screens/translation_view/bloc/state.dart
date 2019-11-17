@@ -40,6 +40,8 @@ class TranslationLoaded extends TranslationState {
   final bool strangeWord;
   final String image;
   final List<dynamic> images;
+  final String imageSearchWord;
+  final bool imageLoading;
   final String createdAt;
 
   TranslationLoaded({
@@ -49,6 +51,8 @@ class TranslationLoaded extends TranslationState {
     @required this.pronunciation,
     @required this.image,
     @required this.images,
+    @required this.imageSearchWord,
+    @required this.imageLoading,
     @required this.highestRelevantTranslation,
     @required this.otherTranslations,
     @required this.definitions,
@@ -61,14 +65,19 @@ class TranslationLoaded extends TranslationState {
 
   TranslationLoaded copyWith({
     List<dynamic> images,
+    bool imageLoading,
+    String image,
+    String imageSearchWord,
   }) {
     return TranslationLoaded(
       id: this.id,
       word: this.word,
       translationWord: this.translationWord,
       pronunciation: this.pronunciation,
-      image: images[0],
-      images: images,
+      image: image ?? (images != null ? images[0] : this.image),
+      imageLoading: imageLoading ?? this.imageLoading,
+      images: images ?? this.images,
+      imageSearchWord: imageSearchWord ?? this.imageSearchWord,
       highestRelevantTranslation: this.highestRelevantTranslation,
       otherTranslations: this.otherTranslations,
       definitions: this.definitions,
@@ -87,6 +96,7 @@ class TranslationLoaded extends TranslationState {
     translationWord,
     pronunciation,
     image,
+    imageLoading,
     highestRelevantTranslation,
     otherTranslations,
     definitions,

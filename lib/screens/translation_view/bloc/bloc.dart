@@ -67,6 +67,8 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
           pronunciation: translation.pronunciation,
           image: translation.image,
           images: [],
+          imageSearchWord: word,
+          imageLoading: translation.image == null,
           createdAt: translation.createdAt,
           highestRelevantTranslation: highestRelevantTranslation,
           otherTranslations: otherTranslations,
@@ -84,11 +86,16 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
       }
     } else if (event is TranslationRequestImage) {
       try {
-        final List<dynamic> imagesData = await _fetchImage(event.word);
-        print(currentState);
         if (currentState is TranslationLoaded) {
           yield currentState.copyWith(
+            imageLoading: true,
+            imageSearchWord: event.word,
+          );
+          final List<dynamic> imagesData = await _fetchImage(event.word);
+          yield currentState.copyWith(
             images: imagesData,
+            imageLoading: false,
+            imageSearchWord: event.word,
           );
         }
       } on ApiException catch (e) {
@@ -96,6 +103,12 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
       } catch (e, s) {
         print(e);
         print(s);
+      }
+    } else if (event is TranslationSelectImage) {
+      if (currentState is TranslationLoaded) {
+        yield currentState.copyWith(
+          image: event.source,
+        );
       }
     } else if (event is TranslationClear) {
       yield TranslationUninitialized();

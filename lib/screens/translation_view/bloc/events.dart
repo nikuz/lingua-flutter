@@ -18,3 +18,9 @@ class TranslationRequestImage extends TranslationEvent {
 
   TranslationRequestImage([this.word]) : assert(word != null);
 }
+
+class TranslationSelectImage extends TranslationEvent {
+  final String source;
+
+  TranslationSelectImage([this.source]) : assert(source != null);
+}

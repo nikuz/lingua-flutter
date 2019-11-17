@@ -36,12 +36,12 @@ class _SearchState extends State<Search> {
           _translationsBloc.add(TranslationsSearch(text));
         }
       },
-      onEditingComplete: () {
-        if (_textController.text.length > 1) {
+      onSubmitted: (String value) {
+        if (value.length > 1) {
           Navigator.pushNamed(
             context,
             TRANSLATION_VIEW,
-            arguments: _textController.text,
+            arguments: value,
           );
         }
       },
