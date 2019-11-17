@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import './blocs/delegate.dart';
-import './widgets/translations_list/bloc/bloc.dart';
+import './screens/home/bloc/bloc.dart';
 import './screens/translation_view/bloc/bloc.dart';
 
 import './router.dart';

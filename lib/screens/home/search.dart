@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/router.dart';
-import 'package:lingua_flutter/widgets/translations_list/bloc/bloc.dart';
-import 'package:lingua_flutter/widgets/translations_list/bloc/events.dart';
+import './bloc/bloc.dart';
+import './bloc/events.dart';
 
 class Search extends StatefulWidget {
   @override

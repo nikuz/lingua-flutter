@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/app_config.dart' as appConfig;
 
-import 'package:lingua_flutter/widgets/translations_list/translations_list.dart';
-import 'package:lingua_flutter/widgets/translations_list/bloc/events.dart';
-import 'package:lingua_flutter/widgets/translations_list/bloc/bloc.dart';
-import 'package:lingua_flutter/widgets/search/search.dart';
+import 'translations_list.dart';
+import './bloc/events.dart';
+import './bloc/bloc.dart';
+import './search.dart';
 
 class HomePage extends StatefulWidget {
   @override
