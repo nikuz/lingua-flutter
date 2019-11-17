@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import './bloc/bloc.dart';
 import './bloc/state.dart';
 import './widgets/container.dart';
+import './widgets/category.dart';
 
 const SHOW_MIN_DEFINITIONS = 1;
 
@@ -28,10 +29,31 @@ class Definitions extends StatelessWidget {
             childBuilder: (bool expanded) => ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (BuildContext context, int index) => DefinitionsCategory(
+              itemBuilder: (BuildContext context, int index) => TranslationViewCategory(
                 category: state.definitions[index],
-                synonyms: state.definitionsSynonyms,
+                maxItemsToShow: SHOW_MIN_DEFINITIONS,
                 expanded: expanded,
+                itemBuilder: (BuildContext context, int itemIndex) {
+                  final category = state.definitions[index];
+                  final String categoryName = category[0];
+                  final List<dynamic> definitions = category[1];
+                  final List<dynamic> synonyms = state.definitionsSynonyms;
+                  List<dynamic> synonymsCategory;
+
+                  if (synonyms != null && synonyms.isNotEmpty) {
+                    for (int i = 0, l = synonyms.length; i < l; i++) {
+                      if (synonyms[i][0] == categoryName) {
+                        synonymsCategory = synonyms[i][1];
+                      }
+                    }
+                  }
+
+                  return DefinitionsItem(
+                    id: itemIndex + 1,
+                    item: definitions[itemIndex],
+                    synonymsCategory: synonymsCategory,
+                  );
+                }
               ),
               itemCount: state.definitions.length,
             ),
@@ -44,72 +66,6 @@ class Definitions extends StatelessWidget {
   }
 }
 
-
-class DefinitionsCategory extends StatelessWidget {
-  final List<dynamic> category;
-  final List<dynamic> synonyms;
-  final bool expanded;
-
-  DefinitionsCategory({
-    Key key,
-    @required this.category,
-    @required this.synonyms,
-    @required this.expanded
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final String categoryName = category[0];
-    final List<dynamic> definitions = category[1];
-    int definitionsCount = definitions.length;
-    List<dynamic> synonymsCategory;
-
-    if (!expanded && definitionsCount > SHOW_MIN_DEFINITIONS) {
-      definitionsCount = SHOW_MIN_DEFINITIONS;
-    }
-
-    if (synonyms != null && synonyms.isNotEmpty) {
-      for (int i = 0, l = synonyms.length; i < l; i++) {
-        if (synonyms[i][0] == categoryName) {
-          synonymsCategory = synonyms[i][1];
-        }
-      }
-    }
-
-    return Container(
-      margin: EdgeInsets.only(top: 15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(
-              bottom: 5,
-            ),
-            child: Text(
-              '${categoryName[0].toUpperCase()}${categoryName.substring(1)}',
-              style: TextStyle(
-                fontSize: 16,
-                color: Color.fromRGBO(66, 133, 224, 1),
-              ),
-            ),
-          ),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemBuilder: (BuildContext context, int index) {
-              return DefinitionsItem(
-                id: index + 1,
-                item: definitions[index],
-                synonymsCategory: synonymsCategory,
-              );
-            },
-            itemCount: definitionsCount,
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class DefinitionsItem extends StatelessWidget {
   final int id;

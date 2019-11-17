@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import './bloc/bloc.dart';
 import './bloc/state.dart';
 import './widgets/container.dart';
+import './widgets/category.dart';
 
 const SHOW_MIN_TRANSLATIONS = 5;
 
@@ -28,9 +29,18 @@ class OtherTranslations extends StatelessWidget {
             childBuilder: (bool expanded) => ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (BuildContext context, int index) => OtherTranslationsCategory(
+              itemBuilder: (BuildContext context, int index) => TranslationViewCategory(
                 category: state.otherTranslations[index],
+                maxItemsToShow: SHOW_MIN_TRANSLATIONS,
                 expanded: expanded,
+                itemBuilder: (BuildContext context, int itemIndex) {
+                  final category = state.otherTranslations[index];
+                  final List<dynamic> translations = category[2];
+
+                  return OtherTranslationsItem(
+                    item: translations[itemIndex],
+                  );
+                }
               ),
               itemCount: state.otherTranslations.length,
             ),
@@ -39,60 +49,6 @@ class OtherTranslations extends StatelessWidget {
 
         return Container();
       }
-    );
-  }
-}
-
-
-class OtherTranslationsCategory extends StatelessWidget {
-  final List<dynamic> category;
-  final bool expanded;
-
-  OtherTranslationsCategory({
-    Key key,
-    @required this.category,
-    @required this.expanded
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final String categoryName = category[0];
-    final List<dynamic> translations = category[2];
-    int translationsCount = translations.length;
-
-    if (!expanded && translationsCount > SHOW_MIN_TRANSLATIONS) {
-      translationsCount = SHOW_MIN_TRANSLATIONS;
-    }
-
-    return Container(
-      margin: EdgeInsets.only(top: 15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(
-              bottom: 5,
-            ),
-            child: Text(
-              '${categoryName[0].toUpperCase()}${categoryName.substring(1)}',
-              style: TextStyle(
-                fontSize: 16,
-                color: Color.fromRGBO(66, 133, 224, 1),
-              ),
-            ),
-          ),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemBuilder: (BuildContext context, int index) {
-              return OtherTranslationsItem(
-                item: translations[index]
-              );
-            },
-            itemCount: translationsCount,
-          ),
-        ],
-      ),
     );
   }
 }

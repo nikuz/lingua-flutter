@@ -64,7 +64,7 @@ class _TranslationViewContainerState extends State<TranslationViewContainer> {
                 Row(
                   children: <Widget>[
                     Text(
-                      'Examples of ',
+                      '${widget.entity[0].toUpperCase()}${widget.entity.substring(1)} of ',
                       style: TextStyle(
                         fontSize: 16,
                         color: Color.fromRGBO(119, 119, 119, 1),
