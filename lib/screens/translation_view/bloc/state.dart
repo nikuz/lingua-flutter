@@ -39,6 +39,7 @@ class TranslationLoaded extends TranslationState {
   final String autoSpellingFix;
   final bool strangeWord;
   final String image;
+  final List<dynamic> images;
   final String createdAt;
 
   TranslationLoaded({
@@ -47,6 +48,7 @@ class TranslationLoaded extends TranslationState {
     @required this.translationWord,
     @required this.pronunciation,
     @required this.image,
+    @required this.images,
     @required this.highestRelevantTranslation,
     @required this.otherTranslations,
     @required this.definitions,
@@ -56,6 +58,27 @@ class TranslationLoaded extends TranslationState {
     @required this.strangeWord,
     @required this.createdAt,
   }) : assert(word != null && translationWord != null);
+
+  TranslationLoaded copyWith({
+    List<dynamic> images,
+  }) {
+    return TranslationLoaded(
+      id: this.id,
+      word: this.word,
+      translationWord: this.translationWord,
+      pronunciation: this.pronunciation,
+      image: images[0],
+      images: images,
+      highestRelevantTranslation: this.highestRelevantTranslation,
+      otherTranslations: this.otherTranslations,
+      definitions: this.definitions,
+      definitionsSynonyms: this.definitionsSynonyms,
+      examples: this.examples,
+      autoSpellingFix: this.autoSpellingFix,
+      strangeWord: this.strangeWord,
+      createdAt: this.createdAt,
+    );
+  }
 
   @override
   List<Object> get props => [

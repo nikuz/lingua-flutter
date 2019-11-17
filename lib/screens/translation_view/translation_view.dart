@@ -20,10 +20,13 @@ class TranslationView extends StatefulWidget {
 }
 
 class _TranslationViewState extends State<TranslationView> {
+  TranslationBloc _translationBloc;
+
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<TranslationBloc>(context).add(TranslationRequest(widget.word));
+    _translationBloc = BlocProvider.of<TranslationBloc>(context);
+    _translationBloc.add(TranslationRequest(widget.word));
   }
 
   @override
@@ -43,25 +46,38 @@ class _TranslationViewState extends State<TranslationView> {
           elevation: 0,
       ),
       body: SafeArea(
-        child: BlocBuilder<TranslationBloc, TranslationState>(
-          builder: (context, state) {
-            if (state is TranslationLoaded) {
-              return SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    TranslationViewHeader(),
-                    OtherTranslations(),
-                    Definitions(),
-                    Examples(),
-                  ],
-                ),
-              );
+        child: BlocListener<TranslationBloc, TranslationState>(
+          listener: (context, state) {
+            if (state is TranslationLoaded && state.image == null && state.images.isEmpty) {
+              _translationBloc.add(TranslationRequestImage(state.word));
             }
-
-            return Center(
-              child: CircularProgressIndicator(),
-            );
           },
+          child: BlocBuilder<TranslationBloc, TranslationState>(
+            builder: (context, state) {
+              if (state is TranslationLoaded) {
+                return SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      TranslationViewHeader(),
+                      OtherTranslations(),
+                      Definitions(),
+                      Examples(),
+                    ],
+                  ),
+                );
+              }
+
+              if (state is TranslationError) {
+                return Center(
+                  child: Text(state.error.message),
+                );
+              }
+
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+          ),
         ),
       ),
     );

@@ -19,6 +19,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
 
   @override
   Stream<TranslationState> mapEventToState(TranslationEvent event) async* {
+    final currentState = state;
     if (event is TranslationRequest) {
       try {
         yield TranslationRequestLoading();
@@ -58,12 +59,14 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
 
           strangeWord = word.toLowerCase() == translationWord.toLowerCase();
         }
+
         yield TranslationLoaded(
           id: translation.id,
           word: word,
           translationWord: translationWord,
           pronunciation: translation.pronunciation,
           image: translation.image,
+          images: [],
           createdAt: translation.createdAt,
           highestRelevantTranslation: highestRelevantTranslation,
           otherTranslations: otherTranslations,
@@ -73,6 +76,21 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
           autoSpellingFix: autoSpellingFix,
           strangeWord: strangeWord,
         );
+      } on ApiException catch (e) {
+        yield TranslationError(e);
+      } catch (e, s) {
+        print(e);
+        print(s);
+      }
+    } else if (event is TranslationRequestImage) {
+      try {
+        final List<dynamic> imagesData = await _fetchImage(event.word);
+        print(currentState);
+        if (currentState is TranslationLoaded) {
+          yield currentState.copyWith(
+            images: imagesData,
+          );
+        }
       } on ApiException catch (e) {
         yield TranslationError(e);
       } catch (e, s) {
@@ -102,5 +120,17 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
       raw: response['raw'],
       createdAt: response['created_at'],
     );
+  }
+
+  Future<List<dynamic>> _fetchImage(String word) async {
+    final Map<String, dynamic> response = await apiGet(
+        client: httpClient,
+        url: '/image',
+        params: {
+          'q': '$word',
+        }
+    );
+
+    return response['images'];
   }
 }

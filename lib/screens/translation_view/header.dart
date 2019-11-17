@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,11 +20,30 @@ class TranslationViewHeader extends StatelessWidget {
           final bool verified = translationWord == highestRelevantTranslation[0][0]
             && highestRelevantTranslation[0][4] != 0;
           String pronunciation = state.pronunciation;
-          String image = state.image;
+          String imageSource = state.image;
           String transcription;
 
           if (highestRelevantTranslation[1] != null && highestRelevantTranslation[1].length >= 4) {
             transcription = highestRelevantTranslation[1][3];
+          }
+
+          Widget image = Center(
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.white,
+            ),
+          );
+
+          if (imageSource != null) {
+            final RegExp base64Reg = RegExp(r'data:image[^,]+,');
+            if (imageSource.indexOf(base64Reg) == 0) {
+              Uint8List bytes = base64Decode(imageSource.replaceFirst(base64Reg, ''));
+              image = Image.memory(bytes);
+            } else {
+              image = Image.network(
+                '${getApiUri()}$imageSource',
+                fit: BoxFit.fitHeight,
+              );
+            }
           }
 
           return Container(
@@ -45,12 +66,7 @@ class TranslationViewHeader extends StatelessWidget {
                       top: 10,
                       bottom: 10,
                     ),
-                    child: image != null ?
-                    Image.network(
-                      '${getApiUri()}$image',
-                      fit: BoxFit.fitHeight,
-                    )
-                      : null,
+                    child: image,
                   ),
                 ),
                 Center(

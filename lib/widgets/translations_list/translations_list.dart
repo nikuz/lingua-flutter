@@ -115,13 +115,13 @@ class TranslationsListItemWidget extends StatelessWidget {
           content: Text('Are you sure you wish to delete "${translationItem.word}" word?'),
           actions: <Widget>[
             FlatButton(
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                  BlocProvider.of<TranslationsBloc>(context).add(
-                      TranslationsItemRemove(translationItem.id)
-                  );
-                },
-                child: const Text("DELETE")
+              onPressed: () {
+                Navigator.of(context).pop(true);
+                BlocProvider.of<TranslationsBloc>(context).add(
+                  TranslationsItemRemove(translationItem.id)
+                );
+              },
+              child: const Text("DELETE")
             ),
             FlatButton(
               onPressed: () => Navigator.of(context).pop(false),

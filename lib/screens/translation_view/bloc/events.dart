@@ -12,3 +12,9 @@ class TranslationRequest extends TranslationEvent {
 }
 
 class TranslationClear extends TranslationEvent {}
+
+class TranslationRequestImage extends TranslationEvent {
+  final String word;
+
+  TranslationRequestImage([this.word]) : assert(word != null);
+}
