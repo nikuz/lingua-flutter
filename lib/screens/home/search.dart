@@ -61,6 +61,7 @@ class _SearchState extends State<Search> {
             },
           ),
           hintText: 'Search word',
+          contentPadding: EdgeInsets.only(top: 15),
         ),
       ),
     );

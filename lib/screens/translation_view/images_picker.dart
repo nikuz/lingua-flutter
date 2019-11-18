@@ -36,16 +36,16 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue,
       body: SafeArea(
+        bottom: false,
         child: BlocBuilder<TranslationBloc, TranslationState>(
           builder: (context, state) {
             if (state is TranslationLoaded) {
-              Widget imagesList = Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  CircularProgressIndicator(),
-                ],
+              Widget imagesList = Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                ),
               );
 
               if (state.imageLoading == false) {
@@ -55,8 +55,6 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
 
                     return Center(
                       child: Container(
-                        width: MediaQuery.of(context).size.width * 0.7,
-                        height: MediaQuery.of(context).size.width * 0.7,
                         margin: EdgeInsets.only(
                           top: 10,
                           bottom: 10,
@@ -79,35 +77,43 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
 
               return Column(
                 children: <Widget>[
-                  TextField(
-                    controller: _textController,
-                    autocorrect: false,
-                    onSubmitted: (String value) {
-                      if (value.length > 1 && value != state.word) {
-                        _translationBloc.add(
-                          TranslationRequestImage(value)
-                        );
-                      }
-                    },
-                    decoration: InputDecoration(
-                      prefixIcon: GestureDetector(
-                        child: Icon(Icons.arrow_back),
-                        onTap: () {
-                          Navigator.pop(context, false);
-                        },
+                  Container(
+                    color: Colors.white,
+                    child: TextField(
+                      controller: _textController,
+                      autocorrect: false,
+                      onSubmitted: (String value) {
+                        if (value.length > 1 && value != state.imageSearchWord) {
+                          _translationBloc.add(
+                            TranslationRequestImage(value)
+                          );
+                        }
+                      },
+                      decoration: InputDecoration(
+                        prefixIcon: GestureDetector(
+                          child: Icon(Icons.arrow_back),
+                          onTap: () {
+                            Navigator.pop(context, false);
+                          },
+                        ),
+                        suffixIcon: GestureDetector(
+                          child: Icon(Icons.clear),
+                          onTap: () {
+                            if (_textController.text != '') {
+                              _textController.text = '';
+                            }
+                          },
+                        ),
+                        hintText: 'Search image',
                       ),
-                      suffixIcon: GestureDetector(
-                        child: Icon(Icons.clear),
-                        onTap: () {
-                          if (_textController.text != '') {
-                            _textController.text = '';
-                          }
-                        },
-                      ),
-                      hintText: 'Search image',
                     ),
                   ),
-                  Expanded(child: imagesList),
+                  Expanded(
+                    child: Container(
+                      color: Colors.white,
+                      child: imagesList
+                    ),
+                  ),
                 ]
               );
             }
