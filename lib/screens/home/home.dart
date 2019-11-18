@@ -56,7 +56,13 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: Text('Lingua'),
+      ),
       body: SafeArea(
+        bottom: false,
         child: Column(
           children: <Widget>[
             Search(),

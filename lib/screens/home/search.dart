@@ -28,35 +28,40 @@ class _SearchState extends State<Search> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _textController,
-      autocorrect: false,
-      onChanged: (text) {
-        if (text.length > 1) {
-          _translationsBloc.add(TranslationsSearch(text));
-        }
-      },
-      onSubmitted: (String value) {
-        if (value.length > 1) {
-          Navigator.pushNamed(
-            context,
-            TRANSLATION_VIEW,
-            arguments: value,
-          );
-        }
-      },
-      decoration: InputDecoration(
-        prefixIcon: Icon(Icons.search),
-        suffixIcon: GestureDetector(
-          child: Icon(Icons.clear),
-          onTap: () {
-            if (_textController.text != '') {
-              _textController.text = '';
-              _translationsBloc.add(TranslationsRequest());
-            }
-          },
+    return Container(
+      color: Colors.white,
+      child: TextField(
+        controller: _textController,
+        autocorrect: false,
+        onChanged: (text) {
+          if (text.length > 1) {
+            _translationsBloc.add(TranslationsSearch(text));
+          } else if (text.length == 0) {
+            _translationsBloc.add(TranslationsRequest());
+          }
+        },
+        onSubmitted: (String value) {
+          if (value.length > 1) {
+            Navigator.pushNamed(
+              context,
+              TRANSLATION_VIEW,
+              arguments: value,
+            );
+          }
+        },
+        decoration: InputDecoration(
+          prefixIcon: Icon(Icons.search),
+          suffixIcon: GestureDetector(
+            child: Icon(Icons.clear),
+            onTap: () {
+              if (_textController.text != '') {
+                _textController.text = '';
+                _translationsBloc.add(TranslationsRequest());
+              }
+            },
+          ),
+          hintText: 'Search word',
         ),
-        hintText: 'Search word',
       ),
     );
   }

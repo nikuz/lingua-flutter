@@ -60,24 +60,42 @@ class _TranslationsListState extends State<TranslationsList> {
           }
 
           if (state.translations.isNotEmpty) {
-            return new RefreshIndicator(
-              onRefresh: () {
-                _translationsBloc.add(TranslationsRequest());
-                return _refreshCompleter.future;
-              },
-              child: ListView.builder(
-                physics: const AlwaysScrollableScrollPhysics(),
-                itemBuilder: (BuildContext context, int index) {
-                  if (index >= state.translations.length) {
-                    return BottomLoader();
-                  }
-
-                  return TranslationsListItemWidget(
-                    translationItem: state.translations[index]
-                  );
+            return Container(
+              color: Colors.white,
+              child: RefreshIndicator(
+                onRefresh: () {
+                  _translationsBloc.add(TranslationsRequest());
+                  return _refreshCompleter.future;
                 },
-                itemCount: state.translations.length + 1,
-                controller: _scrollController,
+                child: ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemBuilder: (BuildContext context, int index) {
+                    if (index == 0) {
+                      return Container(
+                        padding: EdgeInsets.only(
+                          left: 15,
+                          top: 10,
+                        ),
+                        child: Row(
+                          children: <Widget>[
+                            Text('Total: '),
+                            Text('${state.totalAmount}', style: TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      );
+                    }
+
+                    if (index - 1 == state.translations.length) {
+                      return BottomLoader();
+                    }
+
+                    return TranslationsListItemWidget(
+                      translationItem: state.translations[index - 1]
+                    );
+                  },
+                  itemCount: state.translations.length + 2,
+                  controller: _scrollController,
+                ),
               ),
             );
           }
@@ -161,7 +179,13 @@ class TranslationsListItemWidget extends StatelessWidget {
         print(direction);
       },
       child: ListTile(
-        leading: PronunciationWidget(pronunciationUrl: translationItem.pronunciation),
+        leading: Container(
+          width: 50,
+          child: Image.network(
+            '${getApiUri()}${translationItem.image}',
+            fit: BoxFit.fitHeight,
+          ),
+        ),
         title: Text(
           translationItem.word,
           style: TextStyle(fontSize: 17),
@@ -171,13 +195,7 @@ class TranslationsListItemWidget extends StatelessWidget {
           style: TextStyle(fontSize: 15),
         ),
         dense: true,
-        trailing: Container(
-          width: 50,
-          child: Image.network(
-            '${getApiUri()}${translationItem.image}',
-            fit: BoxFit.fitHeight,
-          ),
-        ),
+        trailing: PronunciationWidget(pronunciationUrl: translationItem.pronunciation),
         onTap: () {
           Navigator.pushNamed(
             context,
