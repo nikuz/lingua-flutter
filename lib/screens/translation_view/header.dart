@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:lingua_flutter/helpers/api.dart';
 import 'package:lingua_flutter/router.dart';
-import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
-import 'package:lingua_flutter/utils/images.dart';
+import 'package:lingua_flutter/widgets/pronunciation.dart';
+import 'package:lingua_flutter/widgets/resizable_image.dart';
 import 'package:lingua_flutter/utils/string.dart';
 
 import './bloc/bloc.dart';
@@ -52,7 +51,11 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
           }
 
           if (imageSource != null) {
-            image = _getImage(imageSource);
+            image = ResizableImage(
+              width: 150,
+              height: 150,
+              imageSource: imageSource,
+            );
           }
 
           return Container(
@@ -151,17 +154,6 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
     );
   }
 
-  Image _getImage(String imageSource) {
-    if (imageSource.indexOf('data:image') == 0) {
-      return Image.memory(getImageBytesFrom64String(imageSource));
-    } else {
-      return Image.network(
-        '${getApiUri()}$imageSource',
-        fit: BoxFit.fitHeight,
-      );
-    }
-  }
-
   OverlayEntry _createOverlayEntry(String imageSource) => OverlayEntry(
     builder: (context) => Positioned(
       left: 0,
@@ -169,12 +161,13 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
       bottom: 0,
       width: MediaQuery.of(context).size.width,
       child: Material(
+        color: Color.fromRGBO(255, 255, 255, 0.7),
         elevation: 4.0,
         child: FlatButton(
-          child: Container(
+          child: ResizableImage(
             width: 300,
             height: 300,
-            child: _getImage(imageSource),
+            imageSource: imageSource,
           ),
           onPressed: () {
             this._overlayEntry.remove();

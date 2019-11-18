@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/helpers/api.dart';
-import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
+import 'package:lingua_flutter/widgets/pronunciation.dart';
 import 'package:lingua_flutter/router.dart';
 
 import './model/item.dart';

@@ -106,6 +106,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                           },
                         ),
                         hintText: 'Search image',
+                        contentPadding: EdgeInsets.only(top: 15),
                       ),
                     ),
                   ),
