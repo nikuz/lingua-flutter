@@ -9,7 +9,15 @@ import 'package:lingua_flutter/utils//images.dart';
 import './bloc/bloc.dart';
 import './bloc/state.dart';
 
-class TranslationViewHeader extends StatelessWidget {
+class TranslationViewHeader extends StatefulWidget {
+  @override
+  _TranslationViewHeaderState createState() => _TranslationViewHeaderState();
+}
+
+class _TranslationViewHeaderState extends State<TranslationViewHeader> {
+  OverlayEntry _overlayEntry;
+  final LayerLink _layerLink = LayerLink();
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TranslationBloc, TranslationState>(
@@ -34,14 +42,10 @@ class TranslationViewHeader extends StatelessWidget {
           );
 
           if (imageSource != null) {
-            if (imageSource.indexOf('data:image') == 0) {
-              image = Image.memory(getImageBytesFrom64String(imageSource));
-            } else {
-              image = Image.network(
-                '${getApiUri()}$imageSource',
-                fit: BoxFit.fitHeight,
-              );
-            }
+            image = CompositedTransformTarget(
+              link: this._layerLink,
+              child: getImage(imageSource),
+            );
           }
 
           return Container(
@@ -69,7 +73,8 @@ class TranslationViewHeader extends StatelessWidget {
                     ),
                     onPressed: () {
                       if (state.id != null) {
-
+                        this._overlayEntry = this._createOverlayEntry(imageSource);
+                        Overlay.of(context).insert(this._overlayEntry);
                       } else {
                         Navigator.pushNamed(
                           context,
@@ -131,4 +136,37 @@ class TranslationViewHeader extends StatelessWidget {
       }
     );
   }
+
+  Image getImage(String imageSource) {
+    if (imageSource.indexOf('data:image') == 0) {
+      return Image.memory(getImageBytesFrom64String(imageSource));
+    } else {
+      return Image.network(
+        '${getApiUri()}$imageSource',
+        fit: BoxFit.fitHeight,
+      );
+    }
+  }
+
+  OverlayEntry _createOverlayEntry(String imageSource) => OverlayEntry(
+    builder: (context) => Positioned(
+      left: 0,
+      top: 0,
+      bottom: 0,
+      width: MediaQuery.of(context).size.width,
+      child: Material(
+        elevation: 4.0,
+        child: FlatButton(
+          child: Container(
+            width: 300,
+            height: 300,
+            child: getImage(imageSource),
+          ),
+          onPressed: () {
+            this._overlayEntry.remove();
+          },
+        ),
+      ),
+    )
+  );
 }
