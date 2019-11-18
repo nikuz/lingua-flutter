@@ -68,7 +68,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
           image: translation.image,
           images: [],
           imageSearchWord: word,
-          imageLoading: translation.image == null,
+          imageLoading: false,
           createdAt: translation.createdAt,
           highestRelevantTranslation: highestRelevantTranslation,
           otherTranslations: otherTranslations,

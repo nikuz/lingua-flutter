@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:lingua_flutter/utils/string.dart';
+
 import './bloc/bloc.dart';
 import './bloc/events.dart';
 import './bloc/state.dart';
@@ -48,17 +50,51 @@ class _TranslationViewState extends State<TranslationView> {
       body: SafeArea(
         child: BlocListener<TranslationBloc, TranslationState>(
           listener: (context, state) {
-            if (state is TranslationLoaded && state.image == null && state.images.isEmpty) {
+            if (
+              state is TranslationLoaded
+              && state.image == null
+              && state.images.isEmpty
+              && state.strangeWord == false
+              && state.imageLoading == false
+              && isCyrillicWord(state.word) == false
+            ) {
               _translationBloc.add(TranslationRequestImage(state.word));
             }
           },
           child: BlocBuilder<TranslationBloc, TranslationState>(
             builder: (context, state) {
+              Widget autoSpellingFix = Container();
+
+              if (state is TranslationLoaded && state.autoSpellingFix != null) {
+                autoSpellingFix = Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.only(
+                    left: 10,
+                    top: 4,
+                    right: 10,
+                    bottom: 6,
+                  ),
+                  color: Colors.red,
+                  child: Wrap(
+                    direction: Axis.horizontal,
+                    children: <Widget>[
+                      Text('Original word ', style: TextStyle(color: Colors.white)),
+                      Text(
+                        '"${state.autoSpellingFix}"',
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                      Text(' had a spelling mistake', style: TextStyle(color: Colors.white))
+                    ],
+                  ),
+                );
+              }
+
               if (state is TranslationLoaded) {
                 return SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
                       TranslationViewHeader(),
+                      autoSpellingFix,
                       OtherTranslations(),
                       Definitions(),
                       Examples(),

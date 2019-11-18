@@ -126,7 +126,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                       ),
                     )
                   ],
-                )
+                ),
               ],
             ),
           );
