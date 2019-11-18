@@ -4,7 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/helpers/api.dart';
 import 'package:lingua_flutter/router.dart';
 import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
-import 'package:lingua_flutter/utils//images.dart';
+import 'package:lingua_flutter/utils/images.dart';
+import 'package:lingua_flutter/utils/string.dart';
 
 import './bloc/bloc.dart';
 import './bloc/state.dart';
@@ -16,7 +17,6 @@ class TranslationViewHeader extends StatefulWidget {
 
 class _TranslationViewHeaderState extends State<TranslationViewHeader> {
   OverlayEntry _overlayEntry;
-  final LayerLink _layerLink = LayerLink();
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +27,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
           final List<dynamic> highestRelevantTranslation = state.highestRelevantTranslation;
           final bool verified = translationWord == highestRelevantTranslation[0][0]
             && highestRelevantTranslation[0][4] != 0;
+          final bool cyrillicWord = isCyrillicWord(state.word);
           String pronunciation = state.pronunciation;
           String imageSource = state.image;
           String transcription;
@@ -35,17 +36,28 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
             transcription = highestRelevantTranslation[1][3];
           }
 
-          Widget image = Center(
-            child: CircularProgressIndicator(
-              backgroundColor: Colors.white,
-            ),
-          );
+          Widget image = Container();
+
+          if (state.imageLoading) {
+            image = Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.white,
+              ),
+            );
+          }
+
+          if (cyrillicWord == true) {
+            image = Center(
+              child: Icon(
+                Icons.broken_image,
+                color: Colors.white,
+                size: 100,
+              ),
+            );
+          }
 
           if (imageSource != null) {
-            image = CompositedTransformTarget(
-              link: this._layerLink,
-              child: getImage(imageSource),
-            );
+            image = _getImage(imageSource);
           }
 
           return Container(
@@ -86,16 +98,38 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                   )
                 ),
                 Center(
-                  child: Wrap(
-                    direction: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(
-                        state.translationWord != null ? state.translationWord : '',
-                        style: TextStyle(
-                          fontFamily: 'Merriweather',
-                          fontSize: 20,
+                      Container(
+                        padding: EdgeInsets.only(
+                          left: verified ? 30 : 0,
+                        ),
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.85,
+                        ),
+                        child: FlatButton(
                           color: Colors.white,
-                          letterSpacing: 1,
+                          textColor: Colors.blue,
+                          child: Text(
+                            state.translationWord != null ? state.translationWord : '',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 5,
+                            style: TextStyle(
+                              fontFamily: 'Merriweather',
+                              fontSize: 20,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                          onPressed: () {
+                            if (cyrillicWord == true) {
+                              Navigator.pushReplacementNamed(
+                                context,
+                                TRANSLATION_VIEW,
+                                arguments: state.translationWord,
+                              );
+                            }
+                          },
                         ),
                       ),
                       Container(
@@ -111,21 +145,12 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                     ],
                   ),
                 ),
-                Row(
-                  children: [
-                    PronunciationWidget(
-                      pronunciationUrl: pronunciation != null ? pronunciation : '',
-                      color: Colors.white,
-                      size: 50.0,
-                      autoPlay: true,
-                    ),
-                    Text(
-                      transcription != null ? transcription : '',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    )
-                  ],
+                _getFooter(
+                  id: state.id,
+                  pronunciation: pronunciation,
+                  transcription: transcription,
+                  cyrillicWord: cyrillicWord,
+                  loading: state.updateLoading,
                 ),
               ],
             ),
@@ -137,7 +162,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
     );
   }
 
-  Image getImage(String imageSource) {
+  Image _getImage(String imageSource) {
     if (imageSource.indexOf('data:image') == 0) {
       return Image.memory(getImageBytesFrom64String(imageSource));
     } else {
@@ -160,7 +185,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
           child: Container(
             width: 300,
             height: 300,
-            child: getImage(imageSource),
+            child: _getImage(imageSource),
           ),
           onPressed: () {
             this._overlayEntry.remove();
@@ -169,4 +194,81 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
       ),
     )
   );
+
+  Widget _getFooter({
+    int id,
+    String pronunciation,
+    String transcription,
+    bool cyrillicWord,
+    bool loading,
+  }) {
+    if (cyrillicWord == true) {
+      return Container(
+        margin: EdgeInsets.only(bottom: 10),
+      );
+    }
+
+    final bool newWord = id == null;
+
+    Widget icon = Icon(
+      newWord ? Icons.save_alt : Icons.check,
+      color: newWord ? Colors.green : Colors.yellowAccent,
+      size: 35,
+    );
+
+    if (loading) {
+      icon = CircularProgressIndicator(
+        backgroundColor: Colors.white,
+      );
+    }
+
+    return Container(
+      margin: EdgeInsets.only(
+        top: 10,
+        bottom: 10,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Row(
+            children: [
+              PronunciationWidget(
+                pronunciationUrl: pronunciation != null ? pronunciation : '',
+                color: Colors.blue,
+                size: 45.0,
+                autoPlay: true,
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 10),
+                child: Text(
+                  transcription != null ? transcription : '',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          ButtonTheme(
+            minWidth: 65,
+            height: 65,
+            child: FlatButton(
+              color: newWord ? Colors.white : Colors.blue,
+              shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.all(
+                  Radius.circular(45),
+                ),
+              ),
+              child: icon,
+              onPressed: () {
+                if (newWord) {
+
+                }
+              },
+            ),
+          )
+        ],
+      ),
+    );
+  }
 }

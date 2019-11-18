@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/utils/string.dart';
 
+import 'package:lingua_flutter/screens/home/bloc/bloc.dart';
+import 'package:lingua_flutter/screens/home/bloc/events.dart';
+
 import './bloc/bloc.dart';
 import './bloc/events.dart';
 import './bloc/state.dart';
@@ -59,6 +62,12 @@ class _TranslationViewState extends State<TranslationView> {
               && isCyrillicWord(state.word) == false
             ) {
               _translationBloc.add(TranslationRequestImage(state.word));
+            }
+
+            if (state is TranslationLoaded && state.updateSuccess == true) {
+              Navigator.pop(context, false);
+              _translationBloc.add(TranslationClear());
+              BlocProvider.of<TranslationsBloc>(context).add(TranslationsRequest());
             }
           },
           child: BlocBuilder<TranslationBloc, TranslationState>(

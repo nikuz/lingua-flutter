@@ -21,7 +21,6 @@ Future<Map<String, dynamic>> apiRequest({
   Map<String, String> params,
   Map<String, String> headers,
 }) async {
-  final uri = Uri.http(apiUrl, url, params);
   final headersProps = {
     HttpHeaders.authorizationHeader: appConfig.apiKey,
     ...?headers
@@ -30,12 +29,21 @@ Future<Map<String, dynamic>> apiRequest({
   http.Response response;
 
   if (method == 'get') {
+    final Uri uri = Uri.http(apiUrl, url, params);
     response = await client.get(
       uri,
       headers: headersProps,
     );
-
+  } else if (method == 'put') {
+    final Uri uri = Uri.http(apiUrl, url);
+    print(uri);
+    response = await client.put(
+      uri,
+      headers: headersProps,
+      body: params,
+    );
   } else if (method == 'delete') {
+    final Uri uri = Uri.http(apiUrl, url, params);
     response = await client.delete(
       uri,
       headers: headersProps,
@@ -60,6 +68,23 @@ Future<Map<String, dynamic>> apiGet({
 }) async {
   Future<Map<String, dynamic>> response = apiRequest(
     method: 'get',
+    client: client,
+    url: url,
+    params: params,
+  );
+
+  return response;
+}
+
+Future<Map<String, dynamic>> apiPut({
+  @required http.Client client,
+  @required String url,
+  Map<String, String> params,
+  Map<String, String> headers,
+  String method,
+}) async {
+  Future<Map<String, dynamic>> response = apiRequest(
+    method: 'put',
     client: client,
     url: url,
     params: params,

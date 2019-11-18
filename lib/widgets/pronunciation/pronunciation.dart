@@ -69,19 +69,31 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(
-        _isPlayerStopped(_playerState) ? Icons.volume_up : Icons.stop,
-        color: widget.color != null ? widget.color : Colors.black26,
+    final double size = widget.size ?? 36.0;
+    return ButtonTheme(
+      minWidth: size + 20,
+      height: size + 20,
+      padding: EdgeInsets.all(0),
+      child: FlatButton(
+        color: Colors.white,
+        shape: new RoundedRectangleBorder(
+          borderRadius: new BorderRadius.all(
+            Radius.circular(size),
+          ),
+        ),
+        child: Icon(
+          _isPlayerStopped(_playerState) ? Icons.volume_up : Icons.stop,
+          color: widget.color != null ? widget.color : Colors.blueGrey,
+          size: size,
+        ),
+        onPressed: () {
+          if (_isPlayerStopped(_playerState)) {
+            _playPronunciation();
+          } else {
+            _stopPronunciation();
+          }
+        },
       ),
-      iconSize: widget.size != null ? widget.size : 36,
-      onPressed: () {
-        if (_isPlayerStopped(_playerState)) {
-          _playPronunciation();
-        } else {
-          _stopPronunciation();
-        }
-      },
     );
   }
 }

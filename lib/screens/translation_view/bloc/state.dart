@@ -43,6 +43,8 @@ class TranslationLoaded extends TranslationState {
   final String imageSearchWord;
   final bool imageLoading;
   final String createdAt;
+  final bool updateLoading;
+  final bool updateSuccess;
 
   TranslationLoaded({
     @required this.id,
@@ -61,6 +63,8 @@ class TranslationLoaded extends TranslationState {
     @required this.autoSpellingFix,
     @required this.strangeWord,
     @required this.createdAt,
+    @required this.updateLoading,
+    @required this.updateSuccess,
   }) : assert(word != null && translationWord != null);
 
   TranslationLoaded copyWith({
@@ -68,6 +72,8 @@ class TranslationLoaded extends TranslationState {
     bool imageLoading,
     String image,
     String imageSearchWord,
+    bool updateLoading,
+    bool updateSuccess,
   }) {
     return TranslationLoaded(
       id: this.id,
@@ -86,6 +92,8 @@ class TranslationLoaded extends TranslationState {
       autoSpellingFix: this.autoSpellingFix,
       strangeWord: this.strangeWord,
       createdAt: this.createdAt,
+      updateLoading: updateLoading ?? this.updateLoading,
+      updateSuccess: updateSuccess ?? this.updateSuccess,
     );
   }
 
@@ -105,6 +113,8 @@ class TranslationLoaded extends TranslationState {
     autoSpellingFix,
     strangeWord,
     createdAt,
+    updateLoading,
+    updateSuccess,
   ];
 
   @override

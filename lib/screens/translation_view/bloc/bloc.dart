@@ -77,6 +77,8 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
           examples: examples,
           autoSpellingFix: autoSpellingFix,
           strangeWord: strangeWord,
+          updateLoading: false,
+          updateSuccess: null,
         );
       } on ApiException catch (e) {
         yield TranslationError(e);
@@ -96,6 +98,24 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
             images: imagesData,
             imageLoading: false,
             imageSearchWord: event.word,
+          );
+        }
+      } on ApiException catch (e) {
+        yield TranslationError(e);
+      } catch (e, s) {
+        print(e);
+        print(s);
+      }
+    } else if (event is TranslationUpdate) {
+      try {
+        if (currentState is TranslationLoaded) {
+          yield currentState.copyWith(
+            updateLoading: true,
+          );
+          await _fetchUpdate(currentState.word, event.word);
+          yield currentState.copyWith(
+            updateLoading: false,
+            updateSuccess: true,
           );
         }
       } on ApiException catch (e) {
@@ -141,6 +161,19 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
         url: '/image',
         params: {
           'q': '$word',
+        }
+    );
+
+    return response['images'];
+  }
+
+  Future<List<dynamic>> _fetchUpdate(String word, String translation) async {
+    final Map<String, dynamic> response = await apiPut(
+        client: httpClient,
+        url: '/translate',
+        params: {
+          'word': '$word',
+          'translation': '$translation',
         }
     );
 

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import './bloc/bloc.dart';
 import './bloc/state.dart';
+import './bloc/events.dart';
 import './widgets/container.dart';
 import './widgets/category.dart';
 
@@ -81,16 +82,24 @@ class OtherTranslationsItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            width: MediaQuery.of(context).size.width * 0.4,
-            child: Text(
-              word,
-              style: TextStyle(
-                fontSize: 18,
+            width: MediaQuery.of(context).size.width * 0.40,
+            margin: EdgeInsets.only(right: 10),
+            child: GestureDetector(
+              child: Text(
+                word,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                style: TextStyle(
+                  fontSize: 18,
+                ),
               ),
+              onTap: () {
+                BlocProvider.of<TranslationBloc>(context).add(TranslationUpdate(word));
+              },
             ),
           ),
           Container(
-            width: MediaQuery.of(context).size.width * 0.37,
+            width: MediaQuery.of(context).size.width * 0.36,
             child: _getSynonymsList(synonyms),
           ),
           Container(
