@@ -82,6 +82,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                     child: TextField(
                       controller: _textController,
                       autocorrect: false,
+                      textInputAction: TextInputAction.search,
                       onSubmitted: (String value) {
                         if (value.length > 1 && value != state.imageSearchWord) {
                           _translationBloc.add(

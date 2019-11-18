@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class TranslationEvent extends Equatable {
@@ -29,4 +30,20 @@ class TranslationUpdate extends TranslationEvent {
   final String word;
 
   TranslationUpdate([this.word]) : assert(word != null);
+}
+
+class TranslationSave extends TranslationEvent {
+  final String word;
+  final String translation;
+  final String pronunciationURL;
+  final String image;
+  final List<dynamic> raw;
+
+  TranslationSave({
+    @required this.word,
+    @required this.translation,
+    @required this.pronunciationURL,
+    @required this.image,
+    @required this.raw,
+  }) : assert(word != null && translation != null && pronunciationURL != null && image != null && raw != null);
 }

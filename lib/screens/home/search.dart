@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/router.dart';
+import 'package:lingua_flutter/screens/translation_view/bloc/bloc.dart';
+import 'package:lingua_flutter/screens/translation_view/bloc/state.dart';
+
 import './bloc/bloc.dart';
 import './bloc/events.dart';
 
@@ -28,40 +31,48 @@ class _SearchState extends State<Search> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: TextField(
-        controller: _textController,
-        autocorrect: false,
-        onChanged: (text) {
-          if (text.length > 1) {
-            _translationsBloc.add(TranslationsSearch(text));
-          } else if (text.length == 0) {
-            _translationsBloc.add(TranslationsRequest());
-          }
-        },
-        onSubmitted: (String value) {
-          if (value.length > 1) {
-            Navigator.pushNamed(
-              context,
-              TRANSLATION_VIEW,
-              arguments: value,
-            );
-          }
-        },
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.search),
-          suffixIcon: GestureDetector(
-            child: Icon(Icons.clear),
-            onTap: () {
-              if (_textController.text != '') {
-                _textController.text = '';
-                _translationsBloc.add(TranslationsRequest());
-              }
-            },
+    return BlocListener<TranslationBloc, TranslationState>(
+      listener: (context, state) {
+        if (state is TranslationLoaded && state.saveSuccess == true) {
+          _textController.text = '';
+        }
+      },
+      child: Container(
+        color: Colors.white,
+        child: TextField(
+          controller: _textController,
+          autocorrect: false,
+          textInputAction: TextInputAction.search,
+          onChanged: (text) {
+            if (text.length > 1) {
+              _translationsBloc.add(TranslationsSearch(text));
+            } else if (text.length == 0) {
+              _translationsBloc.add(TranslationsRequest());
+            }
+          },
+          onSubmitted: (String value) {
+            if (value.length > 1) {
+              Navigator.pushNamed(
+                context,
+                TRANSLATION_VIEW,
+                arguments: value,
+              );
+            }
+          },
+          decoration: InputDecoration(
+            prefixIcon: Icon(Icons.search),
+            suffixIcon: GestureDetector(
+              child: Icon(Icons.clear),
+              onTap: () {
+                if (_textController.text != '') {
+                  _textController.text = '';
+                  _translationsBloc.add(TranslationsRequest());
+                }
+              },
+            ),
+            hintText: 'Search word',
+            contentPadding: EdgeInsets.only(top: 15),
           ),
-          hintText: 'Search word',
-          contentPadding: EdgeInsets.only(top: 15),
         ),
       ),
     );

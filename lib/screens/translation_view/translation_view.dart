@@ -64,7 +64,10 @@ class _TranslationViewState extends State<TranslationView> {
               _translationBloc.add(TranslationRequestImage(state.word));
             }
 
-            if (state is TranslationLoaded && state.updateSuccess == true) {
+            if (
+              state is TranslationLoaded
+              && (state.updateSuccess == true || state.saveSuccess == true)
+            ) {
               Navigator.pop(context, false);
               _translationBloc.add(TranslationClear());
               BlocProvider.of<TranslationsBloc>(context).add(TranslationsRequest());

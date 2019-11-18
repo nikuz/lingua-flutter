@@ -39,6 +39,7 @@ class OtherTranslations extends StatelessWidget {
                   final List<dynamic> translations = category[2];
 
                   return OtherTranslationsItem(
+                    state: state,
                     item: translations[itemIndex],
                   );
                 }
@@ -55,9 +56,14 @@ class OtherTranslations extends StatelessWidget {
 }
 
 class OtherTranslationsItem extends StatelessWidget {
+  final TranslationLoaded state;
   final List<dynamic> item;
 
-  OtherTranslationsItem({Key key, @required this.item}) : super(key: key);
+  OtherTranslationsItem({
+    Key key,
+    @required this.state,
+    @required this.item,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +100,17 @@ class OtherTranslationsItem extends StatelessWidget {
                 ),
               ),
               onTap: () {
-                BlocProvider.of<TranslationBloc>(context).add(TranslationUpdate(word));
+                if (state.id == null) {
+                  BlocProvider.of<TranslationBloc>(context).add(TranslationSave(
+                    word: state.word,
+                    translation: word,
+                    pronunciationURL: state.pronunciation,
+                    image: state.image,
+                    raw: state.raw,
+                  ));
+                } else {
+                  BlocProvider.of<TranslationBloc>(context).add(TranslationUpdate(word));
+                }
               },
             ),
           ),

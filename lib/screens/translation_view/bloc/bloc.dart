@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:lingua_flutter/utils/api.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
@@ -77,8 +78,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
           examples: examples,
           autoSpellingFix: autoSpellingFix,
           strangeWord: strangeWord,
-          updateLoading: false,
-          updateSuccess: null,
+          raw: translation.raw,
         );
       } on ApiException catch (e) {
         yield TranslationError(e);
@@ -98,6 +98,30 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
             images: imagesData,
             imageLoading: false,
             imageSearchWord: event.word,
+          );
+        }
+      } on ApiException catch (e) {
+        yield TranslationError(e);
+      } catch (e, s) {
+        print(e);
+        print(s);
+      }
+    } else if (event is TranslationSave) {
+      try {
+        if (currentState is TranslationLoaded) {
+          yield currentState.copyWith(
+            saveLoading: true,
+          );
+          await _fetchSave(
+            word: event.word,
+            translation: event.translation,
+            pronunciationURL: event.pronunciationURL,
+            image: event.image,
+            raw: event.raw,
+          );
+          yield currentState.copyWith(
+            saveLoading: false,
+            saveSuccess: true,
           );
         }
       } on ApiException catch (e) {
@@ -167,8 +191,30 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     return response['images'];
   }
 
-  Future<List<dynamic>> _fetchUpdate(String word, String translation) async {
-    final Map<String, dynamic> response = await apiPut(
+  Future<bool> _fetchSave({
+    String word,
+    String translation,
+    String pronunciationURL,
+    String image,
+    List<dynamic> raw,
+  }) async {
+    await apiPost(
+        client: httpClient,
+        url: '/translate',
+        params: {
+          'word': '$word',
+          'translation': '$translation',
+          'pronunciationURL': '$pronunciationURL',
+          'image': '$image',
+          'raw': jsonEncode(raw),
+        }
+    );
+
+    return true;
+  }
+
+  Future<bool> _fetchUpdate(String word, String translation) async {
+    await apiPut(
         client: httpClient,
         url: '/translate',
         params: {
@@ -177,6 +223,6 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
         }
     );
 
-    return response['images'];
+    return true;
   }
 }

@@ -34,9 +34,15 @@ Future<Map<String, dynamic>> apiRequest({
       uri,
       headers: headersProps,
     );
+  } else if (method == 'post') {
+    final Uri uri = Uri.http(apiUrl, url);
+    response = await client.post(
+      uri,
+      headers: headersProps,
+      body: params,
+    );
   } else if (method == 'put') {
     final Uri uri = Uri.http(apiUrl, url);
-    print(uri);
     response = await client.put(
       uri,
       headers: headersProps,
@@ -68,6 +74,23 @@ Future<Map<String, dynamic>> apiGet({
 }) async {
   Future<Map<String, dynamic>> response = apiRequest(
     method: 'get',
+    client: client,
+    url: url,
+    params: params,
+  );
+
+  return response;
+}
+
+Future<Map<String, dynamic>> apiPost({
+  @required http.Client client,
+  @required String url,
+  Map<String, String> params,
+  Map<String, String> headers,
+  String method,
+}) async {
+  Future<Map<String, dynamic>> response = apiRequest(
+    method: 'post',
     client: client,
     url: url,
     params: params,

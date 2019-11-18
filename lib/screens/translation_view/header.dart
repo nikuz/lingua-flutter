@@ -9,6 +9,7 @@ import 'package:lingua_flutter/utils/string.dart';
 
 import './bloc/bloc.dart';
 import './bloc/state.dart';
+import './bloc/events.dart';
 
 class TranslationViewHeader extends StatefulWidget {
   @override
@@ -28,13 +29,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
           final bool verified = translationWord == highestRelevantTranslation[0][0]
             && highestRelevantTranslation[0][4] != 0;
           final bool cyrillicWord = isCyrillicWord(state.word);
-          String pronunciation = state.pronunciation;
           String imageSource = state.image;
-          String transcription;
-
-          if (highestRelevantTranslation[1] != null && highestRelevantTranslation[1].length >= 4) {
-            transcription = highestRelevantTranslation[1][3];
-          }
 
           Widget image = Container();
 
@@ -46,7 +41,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
             );
           }
 
-          if (cyrillicWord == true) {
+          if (cyrillicWord == true || state.strangeWord) {
             image = Center(
               child: Icon(
                 Icons.broken_image,
@@ -145,13 +140,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                     ],
                   ),
                 ),
-                _getFooter(
-                  id: state.id,
-                  pronunciation: pronunciation,
-                  transcription: transcription,
-                  cyrillicWord: cyrillicWord,
-                  loading: state.updateLoading,
-                ),
+                _getFooter(state),
               ],
             ),
           );
@@ -195,20 +184,23 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
     )
   );
 
-  Widget _getFooter({
-    int id,
-    String pronunciation,
-    String transcription,
-    bool cyrillicWord,
-    bool loading,
-  }) {
-    if (cyrillicWord == true) {
+  Widget _getFooter(TranslationLoaded state) {
+    final List<dynamic> highestRelevantTranslation = state.highestRelevantTranslation;
+    final bool cyrillicWord = isCyrillicWord(state.word);
+    final String pronunciation = state.pronunciation;
+    String transcription;
+
+    if (highestRelevantTranslation[1] != null && highestRelevantTranslation[1].length >= 4) {
+      transcription = highestRelevantTranslation[1][3];
+    }
+
+    if (cyrillicWord == true || state.strangeWord) {
       return Container(
         margin: EdgeInsets.only(bottom: 10),
       );
     }
 
-    final bool newWord = id == null;
+    final bool newWord = state.id == null;
 
     Widget icon = Icon(
       newWord ? Icons.save_alt : Icons.check,
@@ -216,7 +208,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
       size: 35,
     );
 
-    if (loading) {
+    if (state.updateLoading == true || state.saveLoading == true) {
       icon = CircularProgressIndicator(
         backgroundColor: Colors.white,
       );
@@ -261,8 +253,15 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
               ),
               child: icon,
               onPressed: () {
+                print(newWord);
                 if (newWord) {
-
+                  BlocProvider.of<TranslationBloc>(context).add(TranslationSave(
+                    word: state.word,
+                    translation: state.translationWord,
+                    pronunciationURL: pronunciation,
+                    image: state.image,
+                    raw: state.raw,
+                  ));
                 }
               },
             ),
