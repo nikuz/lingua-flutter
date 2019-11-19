@@ -35,6 +35,12 @@ class _TranslationViewState extends State<TranslationView> {
   }
 
   @override
+  void dispose() {
+    _translationBloc.add(TranslationClear());
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -45,7 +51,6 @@ class _TranslationViewState extends State<TranslationView> {
           leading: IconButton(icon:Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context, false);
-              BlocProvider.of<TranslationBloc>(context).add(TranslationClear());
             },
           ),
           elevation: 0,

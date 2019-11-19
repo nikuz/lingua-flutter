@@ -73,3 +73,5 @@
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
 lib/app_config.dart
+key.properties
+android/key.jks
