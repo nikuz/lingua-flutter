@@ -51,12 +51,14 @@ class TranslationsLoaded extends TranslationsState {
   final int to;
   final int totalAmount;
   final List<TranslationsItem> translations;
+  final String search;
 
   const TranslationsLoaded({
     @required this.from,
     @required this.to,
     @required this.totalAmount,
     @required this.translations,
+    this.search,
   }) : assert(from != null && to != null && totalAmount != null && translations != null);
 
   TranslationsLoaded copyWith({
@@ -74,7 +76,7 @@ class TranslationsLoaded extends TranslationsState {
   }
 
   @override
-  List<Object> get props => [translations, from, to, totalAmount];
+  List<Object> get props => [from, to, totalAmount, translations, search];
 
   @override
   String toString() => 'Translations list length: ${translations.length}';

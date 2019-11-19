@@ -37,7 +37,10 @@ class _TranslationsListState extends State<TranslationsList> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+    if (
+      _scrollController.position.pixels > 0.0
+      && _scrollController.position.pixels == _scrollController.position.maxScrollExtent
+    ) {
       _translationsBloc.add(TranslationsRequestMore());
     }
   }
@@ -64,7 +67,11 @@ class _TranslationsListState extends State<TranslationsList> {
               color: Colors.white,
               child: RefreshIndicator(
                 onRefresh: () {
-                  _translationsBloc.add(TranslationsRequest());
+                  if (state is TranslationsLoaded && state.search != null) {
+                    _translationsBloc.add(TranslationsSearch(state.search));
+                  } else {
+                    _translationsBloc.add(TranslationsRequest());
+                  }
                   return _refreshCompleter.future;
                 },
                 child: ListView.builder(
@@ -90,7 +97,8 @@ class _TranslationsListState extends State<TranslationsList> {
                     }
 
                     return TranslationsListItemWidget(
-                      translationItem: state.translations[index - 1]
+                      translationItem: state.translations[index - 1],
+                      withBorder: index < state.translations.length,
                     );
                   },
                   itemCount: state.translations.length + 2,
@@ -121,8 +129,13 @@ class _TranslationsListState extends State<TranslationsList> {
 
 class TranslationsListItemWidget extends StatelessWidget {
   final TranslationsItem translationItem;
+  final bool withBorder;
 
-  TranslationsListItemWidget({Key key, @required this.translationItem}) : super(key: key);
+  TranslationsListItemWidget({
+    Key key,
+    @required this.translationItem,
+    @required this.withBorder,
+  }) : super(key: key);
 
   Future<bool> confirmRowDelete(context) async {
     return await showDialog(
@@ -178,31 +191,40 @@ class TranslationsListItemWidget extends StatelessWidget {
       onDismissed: (direction) {
         print(direction);
       },
-      child: ListTile(
-        leading: Container(
-          width: 50,
-          child: Image.network(
-            '${getApiUri()}${translationItem.image}',
-            fit: BoxFit.fitHeight,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: withBorder ? Color.fromRGBO(0, 0, 0, 0.1) : Color.fromRGBO(0, 0, 0, 0.0),
+            ),
           ),
         ),
-        title: Text(
-          translationItem.word,
-          style: TextStyle(fontSize: 17),
+        child: ListTile(
+          leading: Container(
+            width: 50,
+            child: Image.network(
+              '${getApiUri()}${translationItem.image}',
+              fit: BoxFit.fitHeight,
+            ),
+          ),
+          title: Text(
+            translationItem.word,
+            style: TextStyle(fontSize: 17),
+          ),
+          subtitle: Text(
+            translationItem.translation,
+            style: TextStyle(fontSize: 15),
+          ),
+          dense: true,
+          trailing: PronunciationWidget(pronunciationUrl: translationItem.pronunciation),
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              TRANSLATION_VIEW,
+              arguments: translationItem.word,
+            );
+          },
         ),
-        subtitle: Text(
-          translationItem.translation,
-          style: TextStyle(fontSize: 15),
-        ),
-        dense: true,
-        trailing: PronunciationWidget(pronunciationUrl: translationItem.pronunciation),
-        onTap: () {
-          Navigator.pushNamed(
-            context,
-            TRANSLATION_VIEW,
-            arguments: translationItem.word,
-          );
-        },
       ),
     );
   }
@@ -216,7 +238,10 @@ class BottomLoader extends StatelessWidget {
         final int listLength = state.translations.length;
         if (listLength >= LIST_PAGE_SIZE && listLength < state.totalAmount) {
           return Container(
-            alignment: Alignment.center,
+            padding: EdgeInsets.only(
+              top: 10,
+              bottom: 10,
+            ),
             child: Center(
               child: SizedBox(
                 width: 33,

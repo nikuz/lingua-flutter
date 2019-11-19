@@ -67,6 +67,7 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
           to: translationsList.to,
           totalAmount: translationsList.totalAmount,
           translations: translationsList.translations,
+          search: event.text,
         );
       } on ApiException catch (e) {
         yield TranslationsError(e);
