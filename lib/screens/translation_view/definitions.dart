@@ -25,7 +25,7 @@ class Definitions extends StatelessWidget {
             title: state.word,
             entity: 'definitions',
             itemsLength: itemsLength,
-            maxItemsToShow: SHOW_MIN_DEFINITIONS,
+            maxItemsToShow: SHOW_MIN_DEFINITIONS * state.definitions.length,
             childBuilder: (bool expanded) => ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
