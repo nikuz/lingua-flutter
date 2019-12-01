@@ -108,6 +108,7 @@ class _TranslationViewState extends State<TranslationView> {
 
               if (state is TranslationLoaded) {
                 return SingleChildScrollView(
+                  physics: new ClampingScrollPhysics(),
                   child: Column(
                     children: <Widget>[
                       TranslationViewHeader(),
