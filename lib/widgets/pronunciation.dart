@@ -23,7 +23,7 @@ class PronunciationWidget extends StatefulWidget {
 }
 
 class _PronunciationWidgetState extends State<PronunciationWidget> {
-  AudioPlayer _audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  AudioPlayer _audioPlayer = AudioPlayer();
   StreamSubscription<AudioPlayerState> _audioPlayerStateSubscription;
   AudioPlayerState _playerState = AudioPlayerState.STOPPED;
   bool _isPlayerStopped(state) => (
@@ -31,6 +31,7 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
   );
 
   Future<void> _playPronunciation() async {
+    print(widget.pronunciationUrl);
     final pronunciationUrl = '${getApiUri()}${widget.pronunciationUrl}';
     await _audioPlayer.play(pronunciationUrl);
     setState(() => this._playerState = AudioPlayerState.PLAYING);

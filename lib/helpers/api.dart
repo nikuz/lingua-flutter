@@ -29,6 +29,8 @@ Future<Map<String, dynamic>> apiRequest({
   http.Response response;
 
   if (method == 'get') {
+    print(apiUrl);
+
     final Uri uri = Uri.http(apiUrl, url, params);
     response = await client.get(
       uri,

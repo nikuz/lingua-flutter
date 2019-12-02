@@ -65,17 +65,17 @@ flutter:
   fonts:
     - family: Montserrat
       fonts:
-        - asset: fonts/Montserrat-latin.woff2
+        - asset: fonts/Montserrat-latin.ttf
     - family: Montserrat
       fonts:
-        - asset: fonts/Montserrat-bold-latin.woff2
+        - asset: fonts/Montserrat-bold-latin.ttf
           weight: 700
     - family: Merriweather
       fonts:
-        - asset: fonts/Merriweather-cyrillic.woff2
+        - asset: fonts/Merriweather-cyrillic.ttf
     - family: Merriweather
       fonts:
-        - asset: fonts/Merriweather-bold-cyrillic.woff2
+        - asset: fonts/Merriweather-bold-cyrillic.ttf
           weight: 700
 
   # For details regarding fonts from package dependencies,

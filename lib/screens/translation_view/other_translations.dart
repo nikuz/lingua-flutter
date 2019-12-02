@@ -96,6 +96,7 @@ class OtherTranslationsItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
                 style: TextStyle(
+                  fontFamily: 'Merriweather',
                   fontSize: 18,
                 ),
               ),

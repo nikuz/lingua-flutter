@@ -13,7 +13,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
   switch (settings.name) {
     case HOME:
-      print('home again');
       builder = (BuildContext _) => HomePage();
       break;
     case TRANSLATION_VIEW:

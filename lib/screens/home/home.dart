@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
     if (kReleaseMode) {
       _getApiUrl();
     } else {
-      _loadData(appConfig.apiDebugUrl);
+      _loadData(appConfig.getApiDebugUrl());
     }
   }
 
