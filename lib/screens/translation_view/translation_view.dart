@@ -36,7 +36,9 @@ class _TranslationViewState extends State<TranslationView> {
 
   @override
   void dispose() {
-    _translationBloc.add(TranslationClear());
+    if (!(_translationBloc.state is TranslationRequestLoading)) {
+      _translationBloc.add(TranslationClear());
+    }
     super.dispose();
   }
 

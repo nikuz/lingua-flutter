@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:lingua_flutter/router.dart';
 import 'package:lingua_flutter/utils/string.dart';
 
 import './bloc/bloc.dart';
@@ -105,7 +106,13 @@ class OtherTranslationsItem extends StatelessWidget {
                 ),
               ),
               onTap: () {
-                if (state.id == null) {
+                if (isCyrillicWord(state.word)) {
+                  Navigator.pushReplacementNamed(
+                    context,
+                    TRANSLATION_VIEW,
+                    arguments: word,
+                  );
+                } else if (state.id == null) {
                   BlocProvider.of<TranslationBloc>(context).add(TranslationSave(
                     word: state.word,
                     translation: word,
