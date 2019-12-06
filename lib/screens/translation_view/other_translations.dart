@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:lingua_flutter/utils/string.dart';
+
 import './bloc/bloc.dart';
 import './bloc/state.dart';
 import './bloc/events.dart';
@@ -78,6 +80,8 @@ class OtherTranslationsItem extends StatelessWidget {
       frequency = item[3];
     }
 
+    final bool cyrillicWord = isCyrillicWord(word);
+
     return Container(
       margin: EdgeInsets.only(
         top: 5,
@@ -96,7 +100,7 @@ class OtherTranslationsItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
                 style: TextStyle(
-                  fontFamily: 'Merriweather',
+                  fontFamily: cyrillicWord ? 'Merriweather' : 'Montserrat',
                   fontSize: 18,
                 ),
               ),
@@ -116,6 +120,9 @@ class OtherTranslationsItem extends StatelessWidget {
             ),
           ),
           Container(
+            padding: EdgeInsets.only(
+              top: 4,
+            ),
             width: MediaQuery.of(context).size.width * 0.36,
             child: _getSynonymsList(synonyms),
           ),
