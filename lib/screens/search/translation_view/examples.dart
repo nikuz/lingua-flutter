@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 
-import './bloc/bloc.dart';
-import './bloc/state.dart';
-import './widgets/container.dart';
+import 'bloc/bloc.dart';
+import 'bloc/state.dart';
+import 'widgets/container.dart';
 
 const SHOW_MIN_EXAMPLES = 1;
 

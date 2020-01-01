@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:lingua_flutter/router.dart';
-import 'package:lingua_flutter/screens/translation_view/bloc/bloc.dart';
-import 'package:lingua_flutter/screens/translation_view/bloc/state.dart';
+import 'package:lingua_flutter/screens/search/router.dart';
+import 'package:lingua_flutter/screens/search/translation_view/bloc/bloc.dart';
+import 'package:lingua_flutter/screens/search/translation_view/bloc/state.dart';
 
-import './bloc/bloc.dart';
-import './bloc/events.dart';
+import 'bloc/bloc.dart';
+import 'bloc/events.dart';
 
 class Search extends StatefulWidget {
   @override
@@ -54,7 +54,7 @@ class _SearchState extends State<Search> {
             if (value.length > 1) {
               Navigator.pushNamed(
                 context,
-                TRANSLATION_VIEW,
+                SearchNavigatorRoutes.translation_view,
                 arguments: value,
               );
             }

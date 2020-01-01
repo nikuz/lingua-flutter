@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import './expand_button.dart';
+import 'expand_button.dart';
 
 class TranslationViewContainer extends StatefulWidget {
   final String title;

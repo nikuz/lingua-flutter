@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:lingua_flutter/router.dart';
+import 'package:lingua_flutter/screens/search/router.dart';
 import 'package:lingua_flutter/utils/string.dart';
 
-import './bloc/bloc.dart';
-import './bloc/state.dart';
-import './bloc/events.dart';
-import './widgets/container.dart';
-import './widgets/category.dart';
+import 'bloc/bloc.dart';
+import 'bloc/state.dart';
+import 'bloc/events.dart';
+import 'widgets/container.dart';
+import 'widgets/category.dart';
 
 const SHOW_MIN_TRANSLATIONS = 5;
 
@@ -109,7 +109,7 @@ class OtherTranslationsItem extends StatelessWidget {
                 if (isCyrillicWord(state.word)) {
                   Navigator.pushReplacementNamed(
                     context,
-                    TRANSLATION_VIEW,
+                    SearchNavigatorRoutes.translation_view,
                     arguments: word,
                   );
                 } else if (state.id == null) {

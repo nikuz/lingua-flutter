@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:lingua_flutter/router.dart';
+import 'package:lingua_flutter/screens/search/router.dart';
 import 'package:lingua_flutter/widgets/pronunciation.dart';
 import 'package:lingua_flutter/widgets/resizable_image.dart';
 import 'package:lingua_flutter/utils/string.dart';
 
-import './bloc/bloc.dart';
-import './bloc/state.dart';
-import './bloc/events.dart';
+import 'bloc/bloc.dart';
+import 'bloc/state.dart';
+import 'bloc/events.dart';
 
 class TranslationViewHeader extends StatefulWidget {
   @override
@@ -88,7 +88,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                       } else {
                         Navigator.pushNamed(
                           context,
-                          TRANSLATION_VIEW_IMAGES_PICKER,
+                          SearchNavigatorRoutes.translation_view_images_picker,
                           arguments: state.imageSearchWord,
                         );
                       }
@@ -123,7 +123,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                             if (cyrillicWord == true) {
                               Navigator.pushReplacementNamed(
                                 context,
-                                TRANSLATION_VIEW,
+                                SearchNavigatorRoutes.translation_view,
                                 arguments: state.translationWord,
                               );
                             }

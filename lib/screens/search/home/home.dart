@@ -6,16 +6,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/app_config.dart' as appConfig;
 
 import 'translations_list.dart';
-import './bloc/events.dart';
-import './bloc/bloc.dart';
-import './search.dart';
+import 'bloc/events.dart';
+import 'bloc/bloc.dart';
+import 'search.dart';
 
-class HomePage extends StatefulWidget {
+class SearchHomePage extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _SearchHomePageState createState() => _SearchHomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _SearchHomePageState extends State<SearchHomePage> {
   bool apiUrlDownloaded = false;
 
   @override

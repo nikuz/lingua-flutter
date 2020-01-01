@@ -7,8 +7,8 @@ import 'package:http/http.dart' as http;
 
 import 'package:lingua_flutter/helpers/api.dart';
 import '../model/item.dart';
-import './events.dart';
-import './state.dart';
+import 'events.dart';
+import 'state.dart';
 
 class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
   final http.Client httpClient;

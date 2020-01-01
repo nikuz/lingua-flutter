@@ -3,17 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/utils/string.dart';
 
-import 'package:lingua_flutter/screens/home/bloc/bloc.dart';
-import 'package:lingua_flutter/screens/home/bloc/events.dart';
+import 'package:lingua_flutter/screens/search/home/bloc/bloc.dart';
+import 'package:lingua_flutter/screens/search/home/bloc/events.dart';
 
-import './bloc/bloc.dart';
-import './bloc/events.dart';
-import './bloc/state.dart';
+import 'bloc/bloc.dart';
+import 'bloc/events.dart';
+import 'bloc/state.dart';
 
-import './header.dart';
-import './other_translations.dart';
-import './definitions.dart';
-import './examples.dart';
+import 'header.dart';
+import 'other_translations.dart';
+import 'definitions.dart';
+import 'examples.dart';
 
 class TranslationView extends StatefulWidget {
   final String word;

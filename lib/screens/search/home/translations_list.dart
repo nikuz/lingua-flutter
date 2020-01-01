@@ -4,13 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/helpers/api.dart';
 import 'package:lingua_flutter/widgets/pronunciation.dart';
-import 'package:lingua_flutter/router.dart';
+import 'package:lingua_flutter/screens/search/router.dart';
 
-import './model/item.dart';
-import './model/list.dart';
-import './bloc/state.dart';
-import './bloc/events.dart';
-import './bloc/bloc.dart';
+import 'model/item.dart';
+import 'model/list.dart';
+import 'bloc/state.dart';
+import 'bloc/events.dart';
+import 'bloc/bloc.dart';
 
 class TranslationsList extends StatefulWidget {
   @override
@@ -220,7 +220,7 @@ class TranslationsListItemWidget extends StatelessWidget {
           onTap: () {
             Navigator.pushNamed(
               context,
-              TRANSLATION_VIEW,
+              SearchNavigatorRoutes.translation_view,
               arguments: translationItem.word,
             );
           },

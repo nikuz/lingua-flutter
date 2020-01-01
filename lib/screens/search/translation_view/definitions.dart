@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import './bloc/bloc.dart';
-import './bloc/state.dart';
-import './widgets/container.dart';
-import './widgets/category.dart';
+import 'bloc/bloc.dart';
+import 'bloc/state.dart';
+import 'widgets/container.dart';
+import 'widgets/category.dart';
 
 const SHOW_MIN_DEFINITIONS = 1;
 
