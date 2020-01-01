@@ -21,6 +21,7 @@ class Examples extends StatelessWidget {
             entity: 'examples',
             itemsLength: examples.length,
             maxItemsToShow: SHOW_MIN_EXAMPLES,
+            withBottomMargin: true,
             childBuilder: (bool expanded) => ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),

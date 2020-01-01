@@ -1,5 +1,5 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lingua_flutter/helpers/api.dart';
 import 'package:lingua_flutter/utils/images.dart';
 
@@ -16,50 +16,22 @@ class ResizableImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget image = Container();
+
+    if (imageSource.indexOf('data:image') == 0) {
+      image = Image.memory(getImageBytesFrom64String(imageSource));
+    } else {
+      image = CachedNetworkImage(
+        imageUrl: '${getApiUri()}$imageSource',
+        placeholder: (context, url) => CircularProgressIndicator(),
+        errorWidget: (context, url, error) => Icon(Icons.error),
+      );
+    }
+
     return Container(
       width: width,
       height: height,
-      child: FutureBuilder<Widget>(
-        future: _getBuilder(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return snapshot.data;
-          } else {
-            return Center(
-              child: CircularProgressIndicator(
-                backgroundColor: Colors.white,
-              ),
-            );
-          }
-        },
-      ),
+      child: image,
     );
-  }
-
-  Future<Widget> _getBuilder() async {
-      final Completer<Widget> completer = Completer();
-
-      NetworkImage networkImage = NetworkImage('${getApiUri()}$imageSource');
-      NetworkImage networkImageConfig = await networkImage.obtainKey(const ImageConfiguration());
-
-      ImageStreamCompleter load;
-
-      MemoryImage memoryImage;
-      MemoryImage memoryImageConfig;
-      if (imageSource.indexOf('data:image') == 0) {
-        memoryImage = MemoryImage(getImageBytesFrom64String(imageSource));
-        memoryImageConfig = await memoryImage.obtainKey(const ImageConfiguration());
-        load = memoryImage.load(memoryImageConfig);
-      } else {
-        load = networkImage.load(networkImageConfig);
-      }
-
-      final listener = new ImageStreamListener((ImageInfo info, isSync) {
-        completer.complete(Container(child: Image(image: memoryImage ?? networkImage)));
-      });
-
-      load.addListener(listener);
-
-      return completer.future;
   }
 }

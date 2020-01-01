@@ -8,6 +8,7 @@ class TranslationViewContainer extends StatefulWidget {
   final Function childBuilder;
   final int itemsLength;
   final int maxItemsToShow;
+  final bool withBottomMargin;
 
   TranslationViewContainer({
     this.title,
@@ -15,6 +16,7 @@ class TranslationViewContainer extends StatefulWidget {
     this.childBuilder,
     this.itemsLength,
     this.maxItemsToShow,
+    this.withBottomMargin,
   }) : assert(title != null && entity != null && childBuilder != null && itemsLength != null && maxItemsToShow != null);
 
   @override
@@ -43,6 +45,7 @@ class _TranslationViewContainerState extends State<TranslationViewContainer> {
         top: 10,
         left: 10,
         right: 10,
+        bottom: widget.withBottomMargin != null ? 10 : 0,
       ),
       child: Column(
         children: <Widget>[
