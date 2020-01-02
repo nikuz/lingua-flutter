@@ -59,7 +59,7 @@ class _SearchHomePageState extends State<SearchHomePage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: Text('Lingua'),
+        title: Text('Search'),
       ),
       body: SafeArea(
         bottom: false,
