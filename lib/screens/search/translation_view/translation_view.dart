@@ -26,12 +26,14 @@ class TranslationView extends StatefulWidget {
 
 class _TranslationViewState extends State<TranslationView> {
   TranslationBloc _translationBloc;
+  String appBarTitle;
 
   @override
   void initState() {
     super.initState();
     _translationBloc = BlocProvider.of<TranslationBloc>(context);
     _translationBloc.add(TranslationRequest(widget.word));
+    appBarTitle = widget.word;
   }
 
   @override
@@ -49,7 +51,7 @@ class _TranslationViewState extends State<TranslationView> {
           automaticallyImplyLeading: true,
           //`true` if you want Flutter to automatically add Back Button when needed,
           //or `false` if you want to force your own back button every where
-          title: Text('${widget.word[0].toUpperCase()}${widget.word.substring(1)}'),
+          title: Text(appBarTitle),
           leading: IconButton(icon:Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context, false);
@@ -69,6 +71,9 @@ class _TranslationViewState extends State<TranslationView> {
               && isCyrillicWord(state.word) == false
             ) {
               _translationBloc.add(TranslationRequestImage(state.word));
+              setState(() {
+                appBarTitle = state.word;
+              });
             }
 
             if (
