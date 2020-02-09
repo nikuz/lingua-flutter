@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/app_config.dart' as appConfig;
 
 import './login/bloc/bloc.dart';
-import './login/bloc/events.dart';
+//import './login/bloc/events.dart';
 import './login/bloc/state.dart';
 
 //import './login/login.dart';
@@ -78,9 +79,11 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   bool apiUrlDownloaded = false;
   TabItem _currentTab = TabItem.search;
+  Timer timer;
+
   Map<TabItem, GlobalKey<NavigatorState>> _navigatorKeys = {
     TabItem.search: GlobalKey<NavigatorState>(),
     TabItem.games: GlobalKey<NavigatorState>(),
@@ -92,10 +95,19 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     if (kReleaseMode) {
       _getApiUrl();
+      timer = new Timer.periodic(Duration(minutes: 1), (Timer t) => _getApiUrl());
     } else {
       _loadData(appConfig.getApiDebugUrl());
     }
-    BlocProvider.of<LoginBloc>(context).add(LoginCheck());
+    WidgetsBinding.instance.addObserver(this);
+//    BlocProvider.of<LoginBloc>(context).add(LoginCheck());
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (kReleaseMode && state == AppLifecycleState.resumed) {
+      _getApiUrl();
+    }
   }
 
   _getApiUrl() async {
@@ -112,6 +124,13 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       apiUrlDownloaded = true;
     });
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override

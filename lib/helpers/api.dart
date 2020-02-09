@@ -8,10 +8,10 @@ import 'package:http/http.dart' as http;
 import 'package:lingua_flutter/app_config.dart' as appConfig;
 import 'package:lingua_flutter/utils/api.dart';
 
-String apiUrl = '${appConfig.apiUrl}:${appConfig.apiPort}';
+String apiUrl() => '${appConfig.apiUrl}:${appConfig.apiPort}';
 
 String getApiUri() {
-  return Uri.http(apiUrl, '').toString();
+  return Uri.http(apiUrl(), '').toString();
 }
 
 Future<Map<String, dynamic>> apiRequest({
@@ -29,29 +29,27 @@ Future<Map<String, dynamic>> apiRequest({
   http.Response response;
 
   if (method == 'get') {
-    print(apiUrl);
-
-    final Uri uri = Uri.http(apiUrl, url, params);
+    final Uri uri = Uri.http(apiUrl(), url, params);
     response = await client.get(
       uri,
       headers: headersProps,
     );
   } else if (method == 'post') {
-    final Uri uri = Uri.http(apiUrl, url);
+    final Uri uri = Uri.http(apiUrl(), url);
     response = await client.post(
       uri,
       headers: headersProps,
       body: params,
     );
   } else if (method == 'put') {
-    final Uri uri = Uri.http(apiUrl, url);
+    final Uri uri = Uri.http(apiUrl(), url);
     response = await client.put(
       uri,
       headers: headersProps,
       body: params,
     );
   } else if (method == 'delete') {
-    final Uri uri = Uri.http(apiUrl, url, params);
+    final Uri uri = Uri.http(apiUrl(), url, params);
     response = await client.delete(
       uri,
       headers: headersProps,
