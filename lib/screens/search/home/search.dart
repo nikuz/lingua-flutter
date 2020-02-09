@@ -62,7 +62,10 @@ class _SearchState extends State<Search> {
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.search),
             suffixIcon: GestureDetector(
-              child: Icon(Icons.clear),
+              child: Container(
+                color: Color.fromRGBO(255, 255, 255, 0),
+                child: Icon(Icons.clear),
+              ),
               onTap: () {
                 if (_textController.text != '') {
                   _textController.text = '';
