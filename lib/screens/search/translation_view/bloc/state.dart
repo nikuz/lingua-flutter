@@ -8,6 +8,8 @@ abstract class TranslationState extends Equatable {
 
   @override
   List<Object> get props => [];
+
+  get images => null;
 }
 
 class TranslationUninitialized extends TranslationState {}
@@ -39,10 +41,12 @@ class TranslationLoaded extends TranslationState {
   final String autoSpellingFix;
   final bool strangeWord;
   final String image;
+  final bool imageUpdate;
   final List<dynamic> images;
   final String imageSearchWord;
   final bool imageLoading;
   final String createdAt;
+  final String updatedAt;
   final bool updateLoading;
   final bool updateSuccess;
   final bool saveLoading;
@@ -56,6 +60,7 @@ class TranslationLoaded extends TranslationState {
     @required this.pronunciation,
     @required this.image,
     @required this.images,
+    this.imageUpdate,
     @required this.imageSearchWord,
     @required this.imageLoading,
     @required this.highestRelevantTranslation,
@@ -66,6 +71,7 @@ class TranslationLoaded extends TranslationState {
     @required this.autoSpellingFix,
     @required this.strangeWord,
     @required this.createdAt,
+    @required this.updatedAt,
     @required this.raw,
     this.updateLoading,
     this.updateSuccess,
@@ -77,6 +83,7 @@ class TranslationLoaded extends TranslationState {
     List<dynamic> images,
     bool imageLoading,
     String image,
+    bool imageUpdate,
     String imageSearchWord,
     bool updateLoading,
     bool updateSuccess,
@@ -89,6 +96,7 @@ class TranslationLoaded extends TranslationState {
       translationWord: this.translationWord,
       pronunciation: this.pronunciation,
       image: image ?? (images != null ? images[0] : this.image),
+      imageUpdate: imageUpdate ?? this.imageUpdate,
       imageLoading: imageLoading ?? this.imageLoading,
       images: images ?? this.images,
       imageSearchWord: imageSearchWord ?? this.imageSearchWord,
@@ -100,6 +108,7 @@ class TranslationLoaded extends TranslationState {
       autoSpellingFix: this.autoSpellingFix,
       strangeWord: this.strangeWord,
       createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
       updateLoading: updateLoading ?? this.updateLoading,
       updateSuccess: updateSuccess ?? this.updateSuccess,
       saveLoading: saveLoading ?? this.saveLoading,
@@ -115,6 +124,7 @@ class TranslationLoaded extends TranslationState {
     translationWord,
     pronunciation,
     image,
+    imageUpdate,
     imageLoading,
     highestRelevantTranslation,
     otherTranslations,

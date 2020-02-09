@@ -28,8 +28,12 @@ class TranslationSelectImage extends TranslationEvent {
 
 class TranslationUpdate extends TranslationEvent {
   final String word;
+  final String image;
 
-  TranslationUpdate([this.word]) : assert(word != null);
+  TranslationUpdate({
+    @required this.word,
+    this.image,
+}) : assert(word != null);
 }
 
 class TranslationSave extends TranslationEvent {

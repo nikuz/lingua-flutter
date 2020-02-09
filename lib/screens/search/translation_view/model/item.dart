@@ -8,6 +8,7 @@ class Translation extends Equatable {
   final String image;
   final List<dynamic> raw;
   final String createdAt;
+  final String updatedAt;
 
   const Translation({
     this.id,
@@ -17,6 +18,7 @@ class Translation extends Equatable {
     this.image,
     this.raw,
     this.createdAt,
+    this.updatedAt,
   });
 
   @override
@@ -28,6 +30,7 @@ class Translation extends Equatable {
     image,
     raw,
     createdAt,
+    updatedAt,
   ];
 
   @override

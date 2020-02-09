@@ -26,11 +26,16 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
     super.initState();
     _textController = TextEditingController(text: widget.word);
     _translationBloc = BlocProvider.of<TranslationBloc>(context);
+    if (_translationBloc.state is TranslationLoaded && _translationBloc.state.images.length == 0) {
+      _translationBloc.add(
+          TranslationRequestImage(widget.word)
+      );
+    }
     new Future.delayed(Duration(milliseconds: 100), () {
       Scrollable.ensureVisible(
         itemKey.currentContext,
         duration: Duration(seconds: 1),
-        alignment: 0.5
+        alignment: 0.5,
       );
     });
   }

@@ -98,6 +98,7 @@ class _TranslationsListState extends State<TranslationsList> {
                     }
 
                     return TranslationsListItemWidget(
+                      key: ValueKey('$index-${state.translations[index - 1].updatedAt}'),
                       translationItem: state.translations[index - 1],
                       withBorder: index < state.translations.length,
                     );
@@ -181,7 +182,7 @@ class TranslationsListItemWidget extends StatelessWidget {
           leading: Container(
             width: 50,
             child: Image.network(
-              '${getApiUri()}${translationItem.image}',
+              '${getApiUri()}${translationItem.image}?${translationItem.updatedAt}',
               fit: BoxFit.fitHeight,
             ),
           ),

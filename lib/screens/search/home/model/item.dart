@@ -7,6 +7,7 @@ class TranslationsItem extends Equatable {
   final String pronunciation;
   final String image;
   final String createdAt;
+  final String updatedAt;
 
   const TranslationsItem({
     this.id,
@@ -15,6 +16,7 @@ class TranslationsItem extends Equatable {
     this.pronunciation,
     this.image,
     this.createdAt,
+    this.updatedAt,
   });
 
   @override

@@ -70,7 +70,9 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
           images: [],
           imageSearchWord: word,
           imageLoading: false,
+          imageUpdate: false,
           createdAt: translation.createdAt,
+          updatedAt: translation.updatedAt,
           highestRelevantTranslation: highestRelevantTranslation,
           otherTranslations: otherTranslations,
           definitions: definitions,
@@ -136,10 +138,15 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
           yield currentState.copyWith(
             updateLoading: true,
           );
-          await _fetchUpdate(currentState.word, event.word);
+          await _fetchUpdate(
+              word: currentState.word,
+              translation: event.word,
+              image: event.image,
+          );
           yield currentState.copyWith(
             updateLoading: false,
             updateSuccess: true,
+            imageUpdate: false,
           );
         }
       } on ApiException catch (e) {
@@ -152,6 +159,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
       if (currentState is TranslationLoaded) {
         yield currentState.copyWith(
           image: event.source,
+          imageUpdate: true,
         );
       }
     } else if (event is TranslationClear) {
@@ -176,6 +184,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
       image: response['image'],
       raw: response['raw'],
       createdAt: response['created_at'],
+      updatedAt: response['updated_at'],
     );
   }
 
@@ -213,12 +222,17 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     return true;
   }
 
-  Future<bool> _fetchUpdate(String word, String translation) async {
+  Future<bool> _fetchUpdate({
+    String word,
+    String translation,
+    String image,
+  }) async {
     await apiPut(
         client: httpClient,
         url: '/translate',
         params: {
           'word': '$word',
+          'image': '${image != null ? image : ''}',
           'translation': '$translation',
         }
     );

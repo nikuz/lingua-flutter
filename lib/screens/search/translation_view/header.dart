@@ -55,6 +55,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
               width: 150,
               height: 150,
               imageSource: imageSource,
+              updatedAt: state.updatedAt,
             );
           }
 
@@ -82,8 +83,8 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                       child: image,
                     ),
                     onPressed: () {
-                      if (state.id != null) {
-                        this._overlayEntry = this._createOverlayEntry(imageSource);
+                      if (state.id != null && !state.imageUpdate) {
+                        this._overlayEntry = this._createOverlayEntry(imageSource, state.updatedAt);
                         Overlay.of(context).insert(this._overlayEntry);
                       } else {
                         Navigator.pushNamed(
@@ -154,7 +155,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
     );
   }
 
-  OverlayEntry _createOverlayEntry(String imageSource) => OverlayEntry(
+  OverlayEntry _createOverlayEntry(String imageSource, String updatedAt) => OverlayEntry(
     builder: (context) => Positioned(
       left: 0,
       top: 0,
@@ -168,6 +169,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
             width: 300,
             height: 300,
             imageSource: imageSource,
+            updatedAt: updatedAt,
           ),
           onPressed: () {
             this._overlayEntry.remove();
@@ -181,6 +183,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
     final List<dynamic> highestRelevantTranslation = state.highestRelevantTranslation;
     final bool cyrillicWord = isCyrillicWord(state.word);
     final String pronunciation = state.pronunciation;
+    final bool imageUpdate = state.imageUpdate;
     String transcription;
 
     if (
@@ -198,10 +201,16 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
     }
 
     final bool newWord = state.id == null;
+    IconData iconName = Icons.check;
+    if (newWord) {
+      iconName = Icons.save_alt;
+    } else if (imageUpdate) {
+      iconName = Icons.update;
+    }
 
     Widget icon = Icon(
-      newWord ? Icons.save_alt : Icons.check,
-      color: newWord ? Colors.green : Colors.yellowAccent,
+      iconName,
+      color: (newWord || imageUpdate) ? Colors.green : Colors.yellowAccent,
       size: 35,
     );
 
@@ -242,7 +251,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
             minWidth: 65,
             height: 65,
             child: FlatButton(
-              color: newWord ? Colors.white : Colors.blue,
+              color: (newWord || imageUpdate) ? Colors.white : Colors.blue,
               shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.all(
                   Radius.circular(45),
@@ -250,7 +259,6 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
               ),
               child: icon,
               onPressed: () {
-                print(newWord);
                 if (newWord) {
                   BlocProvider.of<TranslationBloc>(context).add(TranslationSave(
                     word: state.word,
@@ -258,6 +266,11 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                     pronunciationURL: pronunciation,
                     image: state.image,
                     raw: state.raw,
+                  ));
+                } else if (imageUpdate) {
+                  BlocProvider.of<TranslationBloc>(context).add(TranslationUpdate(
+                    word: state.translationWord,
+                    image: state.image,
                   ));
                 }
               },

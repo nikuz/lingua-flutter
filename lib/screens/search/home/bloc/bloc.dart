@@ -125,6 +125,7 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
             pronunciation: rawTranslation['pronunciation'],
             image: rawTranslation['image'],
             createdAt: rawTranslation['created_at'],
+            updatedAt: rawTranslation['updated_at'],
           )
       )).toList(),
     );

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/widgets/word_remove_prompt.dart';
 
+import 'package:lingua_flutter/screens/search/router.dart';
 import 'package:lingua_flutter/screens/search/home/bloc/bloc.dart';
 import 'package:lingua_flutter/screens/search/home/bloc/events.dart';
 
@@ -30,6 +31,7 @@ class _TranslationViewState extends State<TranslationView> {
   String appBarTitle;
   bool appBarTitleUpdated = false;
   int wordId;
+  String imageSearchWord;
 
   @override
   void initState() {
@@ -65,6 +67,7 @@ class _TranslationViewState extends State<TranslationView> {
             //Add the dropdown widget to the `Action` part of our appBar. it can also be among the `leading` part
             PopupMenuButton<Menu>(
               icon: Icon(Icons.more_vert),
+              enabled: wordId != null,
               onSelected: (Menu item) async {
                 if (item.id == 'remove' && wordId != null) {
                   final bool removeAccepted = await wordRemovePrompt(context, appBarTitle, () {
@@ -77,7 +80,11 @@ class _TranslationViewState extends State<TranslationView> {
                   }
                 }
                 if (item.id == 'image') {
-
+                  Navigator.pushNamed(
+                    context,
+                    SearchNavigatorRoutes.translation_view_images_picker,
+                    arguments: imageSearchWord,
+                  );
                 }
               },
               itemBuilder: (BuildContext context) {
@@ -114,6 +121,12 @@ class _TranslationViewState extends State<TranslationView> {
                 appBarTitle = state.word;
                 wordId = state.id;
                 appBarTitleUpdated = true;
+              });
+            }
+
+            if (state is TranslationLoaded && state.imageSearchWord != imageSearchWord) {
+              setState(() {
+                imageSearchWord = state.imageSearchWord;
               });
             }
 

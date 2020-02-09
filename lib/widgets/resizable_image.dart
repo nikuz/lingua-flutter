@@ -7,11 +7,13 @@ class ResizableImage extends StatelessWidget {
   final double width;
   final double height;
   final String imageSource;
+  final String updatedAt;
 
   ResizableImage({
     @required this.width,
     @required this.height,
     @required this.imageSource,
+    @required this.updatedAt,
   });
 
   @override
@@ -22,7 +24,7 @@ class ResizableImage extends StatelessWidget {
       image = Image.memory(getImageBytesFrom64String(imageSource));
     } else {
       image = CachedNetworkImage(
-        imageUrl: '${getApiUri()}$imageSource',
+        imageUrl: '${getApiUri()}$imageSource?$updatedAt',
         placeholder: (context, url) => CircularProgressIndicator(),
         errorWidget: (context, url, error) => Icon(Icons.error),
       );

@@ -121,7 +121,9 @@ class OtherTranslationsItem extends StatelessWidget {
                     raw: state.raw,
                   ));
                 } else {
-                  BlocProvider.of<TranslationBloc>(context).add(TranslationUpdate(word));
+                  BlocProvider.of<TranslationBloc>(context).add(TranslationUpdate(
+                      word: word,
+                  ));
                 }
               },
             ),
