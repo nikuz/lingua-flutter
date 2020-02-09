@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -81,6 +82,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   bool apiUrlDownloaded = false;
   TabItem _currentTab = TabItem.search;
+  Timer timer;
 
   Map<TabItem, GlobalKey<NavigatorState>> _navigatorKeys = {
     TabItem.search: GlobalKey<NavigatorState>(),
@@ -93,6 +95,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     super.initState();
     if (kReleaseMode) {
       _getApiUrl();
+      timer = new Timer.periodic(Duration(minutes: 1), (Timer t) => _getApiUrl());
     } else {
       _loadData(appConfig.getApiDebugUrl());
     }
@@ -125,6 +128,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    timer.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
