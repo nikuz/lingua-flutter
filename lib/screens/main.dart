@@ -5,7 +5,7 @@ import './login/bloc/bloc.dart';
 import './login/bloc/events.dart';
 import './login/bloc/state.dart';
 
-import './login/login.dart';
+//import './login/login.dart';
 import './search/router.dart';
 import './games/router.dart';
 import './settings/router.dart';
@@ -97,24 +97,25 @@ class _MainScreenState extends State<MainScreen> {
           );
           Widget bottomNavigation;
 
-          if (!(state is LoginUninitialized)) {
-            if (state.token == null) {
-              page = LoginPage();
-            } else if (_currentTab == TabItem.search) {
+//          if (!(state is LoginUninitialized)) {
+//            if (state.token == null) {
+//              page = LoginPage();
+//            } else
+            if (_currentTab == TabItem.search) {
               page = SearchNavigator(navigatorKey: _navigatorKeys[TabItem.search]);
             } else if (_currentTab == TabItem.games) {
               page = GamesNavigator(navigatorKey: _navigatorKeys[TabItem.games]);
             } else if (_currentTab == TabItem.settings) {
               page = SettingsNavigator(navigatorKey: _navigatorKeys[TabItem.settings]);
             }
-          }
+//          }
 
-          if (state.token != null) {
+//          if (state.token != null) {
             bottomNavigation = BottomNavigation(
               currentTab: _currentTab,
               onSelectTab: _selectTab,
             );
-          }
+//          }
 
           return Scaffold(
             body: page,
