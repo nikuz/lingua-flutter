@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/utils/string.dart';
+import 'package:lingua_flutter/widgets/word_remove_prompt.dart';
 
 import 'package:lingua_flutter/screens/search/home/bloc/bloc.dart';
 import 'package:lingua_flutter/screens/search/home/bloc/events.dart';
@@ -27,6 +28,8 @@ class TranslationView extends StatefulWidget {
 class _TranslationViewState extends State<TranslationView> {
   TranslationBloc _translationBloc;
   String appBarTitle;
+  bool appBarTitleUpdated = false;
+  int wordId;
 
   @override
   void initState() {
@@ -58,6 +61,39 @@ class _TranslationViewState extends State<TranslationView> {
             },
           ),
           elevation: 0,
+          actions: <Widget>[
+            //Add the dropdown widget to the `Action` part of our appBar. it can also be among the `leading` part
+            PopupMenuButton<Menu>(
+              icon: Icon(Icons.more_vert),
+              onSelected: (Menu item) async {
+                if (item.id == 'remove' && wordId != null) {
+                  final bool removeAccepted = await wordRemovePrompt(context, appBarTitle, () {
+                    BlocProvider.of<TranslationsBloc>(context).add(
+                        TranslationsItemRemove(wordId)
+                    );
+                  });
+                  if (removeAccepted) {
+                    Navigator.pop(context, false);
+                  }
+                }
+                if (item.id == 'image') {
+
+                }
+              },
+              itemBuilder: (BuildContext context) {
+                if (wordId == null) {
+                  return null;
+                }
+
+                return menuList.map((Menu item) {
+                  return PopupMenuItem<Menu>(
+                    value: item,
+                    child: Text(item.title),
+                  );
+                }).toList();
+              },
+            ),
+          ],
       ),
       body: SafeArea(
         child: BlocListener<TranslationBloc, TranslationState>(
@@ -71,8 +107,13 @@ class _TranslationViewState extends State<TranslationView> {
               && isCyrillicWord(state.word) == false
             ) {
               _translationBloc.add(TranslationRequestImage(state.word));
+            }
+
+            if (state is TranslationLoaded && !appBarTitleUpdated) {
               setState(() {
                 appBarTitle = state.word;
+                wordId = state.id;
+                appBarTitleUpdated = true;
               });
             }
 
@@ -144,3 +185,15 @@ class _TranslationViewState extends State<TranslationView> {
     );
   }
 }
+
+class Menu {
+  final String id;
+  final String title;
+
+  const Menu({this.id, this.title});
+}
+
+const List<Menu> menuList = const <Menu>[
+  const Menu(id: 'image', title: 'Change Image'),
+  const Menu(id: 'remove', title: 'Remove'),
+];

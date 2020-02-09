@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/helpers/api.dart';
 import 'package:lingua_flutter/widgets/pronunciation.dart';
+import 'package:lingua_flutter/widgets/word_remove_prompt.dart';
 import 'package:lingua_flutter/screens/search/router.dart';
 
 import 'model/item.dart';
@@ -137,33 +138,6 @@ class TranslationsListItemWidget extends StatelessWidget {
     @required this.withBorder,
   }) : super(key: key);
 
-  Future<bool> confirmRowDelete(context) async {
-    return await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Confirm'),
-          content: Text('Are you sure you wish to delete "${translationItem.word}" word?'),
-          actions: <Widget>[
-            FlatButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-                BlocProvider.of<TranslationsBloc>(context).add(
-                  TranslationsItemRemove(translationItem.id)
-                );
-              },
-              child: const Text("DELETE")
-            ),
-            FlatButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text("CANCEL"),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Dismissible(
@@ -185,7 +159,11 @@ class TranslationsListItemWidget extends StatelessWidget {
         ),
       ),
       confirmDismiss: (DismissDirection direction) async {
-        return await confirmRowDelete(context);
+        return await wordRemovePrompt(context, translationItem.word, () {
+          BlocProvider.of<TranslationsBloc>(context).add(
+              TranslationsItemRemove(translationItem.id)
+          );
+        });
       },
       direction: DismissDirection.endToStart,
       onDismissed: (direction) {
