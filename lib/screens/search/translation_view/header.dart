@@ -183,7 +183,11 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
     final String pronunciation = state.pronunciation;
     String transcription;
 
-    if (highestRelevantTranslation[1] != null && highestRelevantTranslation[1].length >= 4) {
+    if (
+        highestRelevantTranslation.length > 1
+        && highestRelevantTranslation[1] != null
+        && highestRelevantTranslation[1].length >= 4
+    ) {
       transcription = highestRelevantTranslation[1][3];
     }
 
