@@ -13,7 +13,10 @@ class GamesHomePage extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Center(
-              child: Text('Games page'),
+              child: Container(
+                padding: EdgeInsets.all(10),
+                child: Text('Games page'),
+              ),
             )
           ],
         ),

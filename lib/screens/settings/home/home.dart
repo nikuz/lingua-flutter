@@ -13,7 +13,10 @@ class SettingsHomePage extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Center(
-              child: Text('Settings page'),
+              child: Container(
+                padding: EdgeInsets.all(10),
+                child: Text('Settings page'),
+              ),
             )
           ],
         ),
