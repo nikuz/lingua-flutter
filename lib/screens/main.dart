@@ -94,10 +94,9 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     if (kReleaseMode) {
-      _getApiUrl();
-      timer = new Timer.periodic(Duration(minutes: 1), (Timer t) => _getApiUrl());
+      _setApiUrlUpdateTimer();
     } else {
-      _loadData(appConfig.getApiDebugUrl());
+      _setApiUrl(appConfig.getApiDebugUrl());
     }
     WidgetsBinding.instance.addObserver(this);
 //    BlocProvider.of<LoginBloc>(context).add(LoginCheck());
@@ -105,25 +104,39 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (kReleaseMode && state == AppLifecycleState.resumed) {
-      _getApiUrl();
+    if (kReleaseMode) {
+      if (state == AppLifecycleState.resumed) {
+        _setApiUrlUpdateTimer();
+      } else {
+        timer.cancel();
+      }
     }
+  }
+
+  _setApiUrlUpdateTimer() {
+    _getApiUrl();
+    timer = new Timer.periodic(Duration(minutes: 1), (Timer t) => _getApiUrl());
   }
 
   _getApiUrl() async {
     final response = await http.get(appConfig.apiGetterUrl);
     if (response.statusCode == 200) {
-      _loadData(response.body);
+      _setApiUrl(response.body);
     } else {
       throw Exception('Can\'t get API url');
     }
   }
 
-  _loadData(String apiUrl) {
-    appConfig.apiUrl = apiUrl;
-    setState(() {
-      apiUrlDownloaded = true;
-    });
+  _setApiUrl(String apiUrl) {
+    final bool initialUpdate = appConfig.apiUrl == null;
+    if (apiUrl != appConfig.apiUrl) {
+      appConfig.apiUrl = apiUrl;
+    }
+    if (initialUpdate) {
+      setState(() {
+        apiUrlDownloaded = true;
+      });
+    }
   }
 
   @override
