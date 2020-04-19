@@ -136,7 +136,9 @@ class _TranslationViewState extends State<TranslationView> {
             ) {
               Navigator.pop(context, false);
               _translationBloc.add(TranslationClear());
-              BlocProvider.of<TranslationsBloc>(context).add(TranslationsRequest());
+              if (state.saveSuccess == true) {
+                BlocProvider.of<TranslationsBloc>(context).add(TranslationsRequest());
+              }
             }
           },
           child: BlocBuilder<TranslationBloc, TranslationState>(

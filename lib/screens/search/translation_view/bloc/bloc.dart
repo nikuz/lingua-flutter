@@ -53,12 +53,13 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
             translationWord = highestRelevantTranslation[0][0];
           }
 
-          if (word != highestRelevantTranslation[0][1]) {
+          if (word.toLowerCase() != highestRelevantTranslation[0][1].toLowerCase()) {
             autoSpellingFix = word;
             word = highestRelevantTranslation[0][1];
           }
 
-          strangeWord = word.toLowerCase() == translationWord.toLowerCase();
+          strangeWord = word.toLowerCase() == translationWord.toLowerCase()
+              && otherTranslations == null;
         }
 
         yield TranslationLoaded(

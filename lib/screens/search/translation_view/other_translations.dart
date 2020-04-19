@@ -78,7 +78,7 @@ class OtherTranslationsItem extends StatelessWidget {
       synonyms = item[1];
     }
     if (item.length >= 4) {
-      frequency = item[3];
+      frequency = item[3].toDouble();
     }
 
     final bool cyrillicWord = isCyrillicWord(word);
