@@ -63,7 +63,7 @@ class ExamplesItem extends StatelessWidget {
             color: Color.fromRGBO(119, 119, 119, 1),
           ),
           Container(
-            width: MediaQuery.of(context).size.width * 0.8,
+            width: MediaQuery.of(context).size.width * 0.78,
             margin: EdgeInsets.only(left: 20),
             child: Html(
               data: """$text""",

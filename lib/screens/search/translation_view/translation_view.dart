@@ -32,6 +32,7 @@ class _TranslationViewState extends State<TranslationView> {
   bool appBarTitleUpdated = false;
   int wordId;
   String imageSearchWord;
+  String translationWord;
 
   @override
   void initState() {
@@ -86,6 +87,13 @@ class _TranslationViewState extends State<TranslationView> {
                     arguments: imageSearchWord,
                   );
                 }
+                if (item.id == 'translation') {
+                  Navigator.pushNamed(
+                    context,
+                    SearchNavigatorRoutes.translation_view_own_translation,
+                    arguments: translationWord,
+                  );
+                }
               },
               itemBuilder: (BuildContext context) {
                 if (wordId == null) {
@@ -127,6 +135,7 @@ class _TranslationViewState extends State<TranslationView> {
             if (state is TranslationLoaded && state.imageSearchWord != imageSearchWord) {
               setState(() {
                 imageSearchWord = state.imageSearchWord;
+                translationWord = state.translationWord;
               });
             }
 
@@ -210,5 +219,6 @@ class Menu {
 
 const List<Menu> menuList = const <Menu>[
   const Menu(id: 'image', title: 'Change Image'),
+  const Menu(id: 'translation', title: 'Change Translation'),
   const Menu(id: 'remove', title: 'Remove'),
 ];

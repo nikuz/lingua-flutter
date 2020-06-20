@@ -23,12 +23,14 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
     return BlocBuilder<TranslationBloc, TranslationState>(
       builder: (context, state) {
         if (state is TranslationLoaded) {
-          final String translationWord = state.translationWord;
+          final String translationWord = (
+              state.translationOwn != null ? state.translationOwn : state.translationWord
+          );
           final List<dynamic> highestRelevantTranslation = state.highestRelevantTranslation;
           final bool verified = translationWord == highestRelevantTranslation[0][0]
             && highestRelevantTranslation[0][4] != 0;
           final bool cyrillicWord = isCyrillicWord(state.word);
-          String imageSource = state.image;
+          final String imageSource = state.image;
 
           Widget image = Container();
 
@@ -111,7 +113,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                           color: Colors.white,
                           textColor: Colors.blue,
                           child: Text(
-                            state.translationWord != null ? state.translationWord : '',
+                            translationWord != null ? translationWord : '',
                             overflow: TextOverflow.ellipsis,
                             maxLines: 5,
                             style: TextStyle(
@@ -125,7 +127,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                               Navigator.pushReplacementNamed(
                                 context,
                                 SearchNavigatorRoutes.translation_view,
-                                arguments: state.translationWord,
+                                arguments: translationWord,
                               );
                             }
                           },
@@ -184,6 +186,9 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
     final bool cyrillicWord = isCyrillicWord(state.word);
     final String pronunciation = state.pronunciation;
     final bool imageUpdate = state.imageUpdate;
+    final translationUpdate = (
+        state.translationOwn != null && state.translationOwn != state.translationWord
+    );
     String transcription;
 
     if (
@@ -204,13 +209,13 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
     IconData iconName = Icons.check;
     if (newWord) {
       iconName = Icons.save_alt;
-    } else if (imageUpdate) {
+    } else if (imageUpdate || translationUpdate) {
       iconName = Icons.update;
     }
 
     Widget icon = Icon(
       iconName,
-      color: (newWord || imageUpdate) ? Colors.green : Colors.yellowAccent,
+      color: (newWord || imageUpdate || translationUpdate) ? Colors.green : Colors.yellowAccent,
       size: 35,
     );
 
@@ -251,7 +256,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
             minWidth: 65,
             height: 65,
             child: FlatButton(
-              color: (newWord || imageUpdate) ? Colors.white : Colors.blue,
+              color: (newWord || imageUpdate || translationUpdate) ? Colors.white : Colors.blue,
               shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.all(
                   Radius.circular(45),
@@ -267,10 +272,10 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                     image: state.image,
                     raw: state.raw,
                   ));
-                } else if (imageUpdate) {
+                } else if (imageUpdate || translationUpdate) {
                   BlocProvider.of<TranslationBloc>(context).add(TranslationUpdate(
-                    word: state.translationWord,
-                    image: state.image,
+                    word: translationUpdate ? state.translationOwn : state.translationWord,
+                    image: imageUpdate ? state.image : null,
                   ));
                 }
               },

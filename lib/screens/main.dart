@@ -31,7 +31,7 @@ Map<TabItem, Map<String, dynamic>> tabs = {
     'icon': Icons.insert_emoticon,
   },
   TabItem.settings: {
-    'title': 'Games',
+    'title': 'Settings',
     'icon': Icons.settings,
   },
 };

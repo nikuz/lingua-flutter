@@ -26,6 +26,12 @@ class TranslationSelectImage extends TranslationEvent {
   TranslationSelectImage([this.source]) : assert(source != null);
 }
 
+class TranslationSetOwn extends TranslationEvent {
+  final String translation;
+
+  TranslationSetOwn([this.translation]) : assert(translation != null);
+}
+
 class TranslationUpdate extends TranslationEvent {
   final String word;
   final String image;

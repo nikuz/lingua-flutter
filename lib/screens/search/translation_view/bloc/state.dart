@@ -32,6 +32,7 @@ class TranslationLoaded extends TranslationState {
   final int id;
   final String word;
   final String translationWord;
+  final String translationOwn;
   final String pronunciation;
   final List<dynamic> highestRelevantTranslation;
   final List<dynamic> otherTranslations;
@@ -57,6 +58,7 @@ class TranslationLoaded extends TranslationState {
     @required this.id,
     @required this.word,
     @required this.translationWord,
+    @required this.translationOwn,
     @required this.pronunciation,
     @required this.image,
     @required this.images,
@@ -80,6 +82,7 @@ class TranslationLoaded extends TranslationState {
   }) : assert(word != null && translationWord != null);
 
   TranslationLoaded copyWith({
+    String translationOwn,
     List<dynamic> images,
     bool imageLoading,
     String image,
@@ -94,6 +97,7 @@ class TranslationLoaded extends TranslationState {
       id: this.id,
       word: this.word,
       translationWord: this.translationWord,
+      translationOwn: translationOwn ?? this.translationOwn,
       pronunciation: this.pronunciation,
       image: image ?? (images != null ? images[0] : this.image),
       imageUpdate: imageUpdate ?? this.imageUpdate,
@@ -122,6 +126,7 @@ class TranslationLoaded extends TranslationState {
     id,
     word,
     translationWord,
+    translationOwn,
     pronunciation,
     image,
     imageUpdate,

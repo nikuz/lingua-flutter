@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:lingua_flutter/utils//images.dart';
+import 'package:lingua_flutter/utils/images.dart';
 
 import 'bloc/bloc.dart';
 import 'bloc/events.dart';

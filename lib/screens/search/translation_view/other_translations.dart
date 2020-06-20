@@ -77,7 +77,7 @@ class OtherTranslationsItem extends StatelessWidget {
     if (item[1] != null) {
       synonyms = item[1];
     }
-    if (item.length >= 4) {
+    if (item.length >= 4 && item[3] != null) {
       frequency = item[3].toDouble();
     }
 
@@ -132,7 +132,7 @@ class OtherTranslationsItem extends StatelessWidget {
             padding: EdgeInsets.only(
               top: 4,
             ),
-            width: MediaQuery.of(context).size.width * 0.36,
+            width: MediaQuery.of(context).size.width * 0.33,
             child: _getSynonymsList(synonyms),
           ),
           Container(

@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import './home/home.dart';
 import './translation_view/translation_view.dart';
 import './translation_view/images_picker.dart';
+import './translation_view/own_translation.dart';
 
 class SearchNavigatorRoutes {
   static const String home = '/';
   static const String translation_view = '/translation-view';
   static const String translation_view_images_picker = '/translation-view/images';
+  static const String translation_view_own_translation = '/translation-view/own-translation';
 }
 
 class SearchNavigator extends StatelessWidget {
@@ -38,6 +40,10 @@ class SearchNavigator extends StatelessWidget {
       case SearchNavigatorRoutes.translation_view_images_picker:
         String word = settings.arguments;
         builder = (BuildContext _) => TranslationViewImagePicker(word);
+        break;
+      case SearchNavigatorRoutes.translation_view_own_translation:
+        String translation = settings.arguments;
+        builder = (BuildContext _) => TranslationViewOwnTranslation(translation);
         break;
       default:
         throw Exception('Invalid route: ${settings.name}');

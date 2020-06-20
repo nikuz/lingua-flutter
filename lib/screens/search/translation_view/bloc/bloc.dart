@@ -163,6 +163,12 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
           imageUpdate: true,
         );
       }
+    }  else if (event is TranslationSetOwn) {
+      if (currentState is TranslationLoaded) {
+        yield currentState.copyWith(
+          translationOwn: event.translation,
+        );
+      }
     } else if (event is TranslationClear) {
       yield TranslationUninitialized();
     }
