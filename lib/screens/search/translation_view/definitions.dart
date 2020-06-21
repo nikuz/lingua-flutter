@@ -15,16 +15,16 @@ class Definitions extends StatelessWidget {
       builder: (context, state) {
         if (state is TranslationLoaded && state.definitions != null) {
 
-          int itemsLength = 0;
+          int itemsAmount = 0;
           for (int i = 0, l = state.definitions.length; i < l; i++) {
             final List<dynamic> definitions = state.definitions[i][1];
-            itemsLength += definitions.length;
+            itemsAmount += definitions.length;
           }
 
           return TranslationViewContainer(
             title: state.word,
             entity: 'definitions',
-            itemsLength: itemsLength,
+            itemsAmount: itemsAmount,
             maxItemsToShow: SHOW_MIN_DEFINITIONS * state.definitions.length,
             childBuilder: (bool expanded) => ListView.builder(
               shrinkWrap: true,

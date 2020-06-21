@@ -18,18 +18,19 @@ class OtherTranslations extends StatelessWidget {
     return BlocBuilder<TranslationBloc, TranslationState>(
       builder: (context, state) {
         if (state is TranslationLoaded && state.otherTranslations != null) {
-          int itemsLength = 0;
+          int itemsAmount = 0;
+          int categoriesAmount = state.otherTranslations.length;
 
-          for (int i = 0, l = state.otherTranslations.length; i < l; i++) {
+          for (int i = 0, l = categoriesAmount; i < l; i++) {
             final List<dynamic> translations = state.otherTranslations[i][2];
-            itemsLength += translations.length;
+            itemsAmount += translations.length;
           }
 
           return TranslationViewContainer(
             title: state.word,
             entity: 'translations',
-            itemsLength: itemsLength,
-            maxItemsToShow: SHOW_MIN_TRANSLATIONS,
+            itemsAmount: itemsAmount,
+            maxItemsToShow: SHOW_MIN_TRANSLATIONS * categoriesAmount,
             childBuilder: (bool expanded) => ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),

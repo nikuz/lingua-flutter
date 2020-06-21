@@ -18,13 +18,13 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider<LoginBloc>(
-          builder: (context) => LoginBloc(httpClient: httpClient),
+          create: (context) => LoginBloc(httpClient: httpClient),
         ),
         BlocProvider<TranslationsBloc>(
-          builder: (context) => TranslationsBloc(httpClient: httpClient),
+          create: (context) => TranslationsBloc(httpClient: httpClient),
         ),
         BlocProvider<TranslationBloc>(
-          builder: (context) => TranslationBloc(httpClient: httpClient),
+          create: (context) => TranslationBloc(httpClient: httpClient),
         ),
       ],
       child: App(),

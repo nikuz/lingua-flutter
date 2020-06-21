@@ -6,7 +6,7 @@ class TranslationViewContainer extends StatefulWidget {
   final String title;
   final String entity;
   final Function childBuilder;
-  final int itemsLength;
+  final int itemsAmount;
   final int maxItemsToShow;
   final bool withBottomMargin;
 
@@ -14,10 +14,10 @@ class TranslationViewContainer extends StatefulWidget {
     this.title,
     this.entity,
     this.childBuilder,
-    this.itemsLength,
+    this.itemsAmount,
     this.maxItemsToShow,
     this.withBottomMargin,
-  }) : assert(title != null && entity != null && childBuilder != null && itemsLength != null && maxItemsToShow != null);
+  }) : assert(title != null && entity != null && childBuilder != null && itemsAmount != null && maxItemsToShow != null);
 
   @override
   _TranslationViewContainerState createState() => _TranslationViewContainerState();
@@ -30,12 +30,12 @@ class _TranslationViewContainerState extends State<TranslationViewContainer> {
   Widget build(BuildContext context) {
     int hiddenItemsAmount;
 
-    if (widget.itemsLength > widget.maxItemsToShow) {
+    if (widget.itemsAmount > widget.maxItemsToShow) {
       if (hiddenItemsAmount == null) {
         hiddenItemsAmount = 0;
       }
       if (!expanded) {
-        hiddenItemsAmount += widget.itemsLength - widget.maxItemsToShow;
+        hiddenItemsAmount += widget.itemsAmount - widget.maxItemsToShow;
       }
     }
 

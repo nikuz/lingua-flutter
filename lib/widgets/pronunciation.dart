@@ -25,13 +25,14 @@ class PronunciationWidget extends StatefulWidget {
 class _PronunciationWidgetState extends State<PronunciationWidget> {
   AudioPlayer _audioPlayer = AudioPlayer();
   StreamSubscription<AudioPlayerState> _audioPlayerStateSubscription;
+  StreamSubscription _playerCompleteSubscription;
+  StreamSubscription _playerErrorSubscription;
   AudioPlayerState _playerState = AudioPlayerState.STOPPED;
   bool _isPlayerStopped(state) => (
       state == AudioPlayerState.STOPPED || state == AudioPlayerState.COMPLETED
   );
 
   Future<void> _playPronunciation() async {
-    print(widget.pronunciationUrl);
     final pronunciationUrl = '${getApiUri()}${widget.pronunciationUrl}';
     await _audioPlayer.play(pronunciationUrl);
     setState(() => this._playerState = AudioPlayerState.PLAYING);
@@ -57,6 +58,12 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
         _onPlayerStateChange,
         onError: _onPlayerStateChangeError
     );
+    _playerCompleteSubscription = _audioPlayer.onPlayerCompletion.listen((event) {
+      setState(() => _playerState = AudioPlayerState.COMPLETED);
+    });
+    _playerErrorSubscription = _audioPlayer.onPlayerError.listen((msg) {
+      print('audioPlayer error : $msg');
+    });
     if (widget.autoPlay == true) {
       _playPronunciation();
     }
@@ -64,7 +71,9 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
 
   @override
   void dispose() {
-    _audioPlayerStateSubscription.cancel();
+    _audioPlayerStateSubscription?.cancel();
+    _playerCompleteSubscription?.cancel();
+    _playerErrorSubscription?.cancel();
     super.dispose();
   }
 

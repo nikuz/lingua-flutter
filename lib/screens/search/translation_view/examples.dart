@@ -19,7 +19,7 @@ class Examples extends StatelessWidget {
           return TranslationViewContainer(
             title: state.word,
             entity: 'examples',
-            itemsLength: examples.length,
+            itemsAmount: examples.length,
             maxItemsToShow: SHOW_MIN_EXAMPLES,
             withBottomMargin: true,
             childBuilder: (bool expanded) => ListView.builder(
