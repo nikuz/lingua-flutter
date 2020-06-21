@@ -31,13 +31,8 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
           TranslationRequestImage(widget.word)
       );
     }
-    new Future.delayed(Duration(milliseconds: 100), () {
-      Scrollable.ensureVisible(
-        itemKey.currentContext,
-        duration: Duration(seconds: 1),
-        alignment: 0.5,
-      );
-    });
+
+    new Future.delayed(Duration(milliseconds: 100), this._scrollToSelectedItem);
   }
 
   @override
@@ -165,5 +160,20 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
         ),
       ),
     );
+  }
+
+  void _scrollToSelectedItem() {
+    if (
+        _translationBloc.state is TranslationLoaded
+        && _translationBloc.state.imageLoading == false
+    ) {
+      Scrollable.ensureVisible(
+        itemKey.currentContext,
+        duration: Duration(seconds: 1),
+        alignment: 0.5,
+      );
+    } else {
+      new Future.delayed(Duration(milliseconds: 100), this._scrollToSelectedItem);
+    }
   }
 }

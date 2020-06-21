@@ -10,6 +10,7 @@ abstract class TranslationState extends Equatable {
   List<Object> get props => [];
 
   get images => null;
+  get imageLoading => null;
 }
 
 class TranslationUninitialized extends TranslationState {}
@@ -42,6 +43,7 @@ class TranslationLoaded extends TranslationState {
   final String autoSpellingFix;
   final bool strangeWord;
   final String image;
+  final String imageUrl;
   final bool imageUpdate;
   final List<dynamic> images;
   final String imageSearchWord;
@@ -61,6 +63,7 @@ class TranslationLoaded extends TranslationState {
     @required this.translationOwn,
     @required this.pronunciation,
     @required this.image,
+    this.imageUrl,
     @required this.images,
     this.imageUpdate,
     @required this.imageSearchWord,
@@ -99,6 +102,7 @@ class TranslationLoaded extends TranslationState {
       translationWord: this.translationWord,
       translationOwn: translationOwn ?? this.translationOwn,
       pronunciation: this.pronunciation,
+      imageUrl: this.imageUrl == null ? this.image : this.imageUrl,
       image: image ?? (images != null ? images[0] : this.image),
       imageUpdate: imageUpdate ?? this.imageUpdate,
       imageLoading: imageLoading ?? this.imageLoading,
@@ -129,6 +133,7 @@ class TranslationLoaded extends TranslationState {
     translationOwn,
     pronunciation,
     image,
+    imageUrl,
     imageUpdate,
     imageLoading,
     highestRelevantTranslation,

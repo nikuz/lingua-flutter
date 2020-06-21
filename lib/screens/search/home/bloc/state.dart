@@ -66,12 +66,23 @@ class TranslationsLoaded extends TranslationsState {
     int to,
     int totalAmount,
     List<TranslationsItem> translations,
+    TranslationsItem updatedItem,
   }) {
+    List<TranslationsItem> newTranslations = translations ?? this.translations;
+
+    if (updatedItem != null) {
+      int updatedItemIndex = newTranslations.indexWhere((item) => item.id == updatedItem.id);
+      if (updatedItemIndex != -1) {
+        newTranslations = new List<TranslationsItem>.from(newTranslations);
+        newTranslations[updatedItemIndex] = updatedItem;
+      }
+    }
+
     return TranslationsLoaded(
-      translations: translations ?? this.translations,
       from: from ?? this.from,
       to: from ?? this.to,
       totalAmount: from ?? this.totalAmount,
+      translations: newTranslations,
     );
   }
 

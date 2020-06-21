@@ -27,6 +27,7 @@ class TranslationsItem extends Equatable {
     pronunciation,
     image,
     createdAt,
+    updatedAt,
   ];
 
   @override

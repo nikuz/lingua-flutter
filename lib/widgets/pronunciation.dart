@@ -1,8 +1,14 @@
+import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
+import 'package:lingua_flutter/app_config.dart' as appConfig;
 import 'package:lingua_flutter/helpers/api.dart';
+
+void monitorNotificationStateChanges(AudioPlayerState value) {
+  print('state => $value');
+}
 
 class PronunciationWidget extends StatefulWidget {
   final String pronunciationUrl;
@@ -64,6 +70,9 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
     _playerErrorSubscription = _audioPlayer.onPlayerError.listen((msg) {
       print('audioPlayer error : $msg');
     });
+    if (!appConfig.kIsWeb && Platform.isIOS) {
+      _audioPlayer.monitorNotificationStateChanges(monitorNotificationStateChanges);
+    }
     if (widget.autoPlay == true) {
       _playPronunciation();
     }

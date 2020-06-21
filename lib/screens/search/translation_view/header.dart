@@ -11,6 +11,10 @@ import 'bloc/state.dart';
 import 'bloc/events.dart';
 
 class TranslationViewHeader extends StatefulWidget {
+  final String word;
+
+  TranslationViewHeader(this.word) : assert(word != null);
+
   @override
   _TranslationViewHeaderState createState() => _TranslationViewHeaderState();
 }
@@ -22,7 +26,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
   Widget build(BuildContext context) {
     return BlocBuilder<TranslationBloc, TranslationState>(
       builder: (context, state) {
-        if (state is TranslationLoaded) {
+        if (state is TranslationLoaded && state.word == widget.word) {
           final String translationWord = (
               state.translationOwn != null ? state.translationOwn : state.translationWord
           );
@@ -152,7 +156,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
           );
         }
 
-        return null;
+        return Container();
       }
     );
   }

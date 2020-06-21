@@ -98,6 +98,27 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
         print(e);
         print(s);
       }
+    } else if (event is TranslationsUpdateItem) {
+      try {
+        if (currentState is TranslationsLoaded) {
+          yield currentState.copyWith(
+            updatedItem: TranslationsItem(
+              id: event.id,
+              word: event.word,
+              translation: event.translation,
+              pronunciation: event.pronunciation,
+              image: event.image,
+              createdAt: event.createdAt,
+              updatedAt: event.updatedAt,
+            ),
+          );
+        }
+      } on ApiException catch (e) {
+        yield TranslationsError(e);
+      } catch (e, s) {
+        print(e);
+        print(s);
+      }
     }
   }
 

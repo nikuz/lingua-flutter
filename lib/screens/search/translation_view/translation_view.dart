@@ -43,14 +43,6 @@ class _TranslationViewState extends State<TranslationView> {
   }
 
   @override
-  void dispose() {
-    if (!(_translationBloc.state is TranslationRequestLoading)) {
-      _translationBloc.add(TranslationClear());
-    }
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -147,6 +139,22 @@ class _TranslationViewState extends State<TranslationView> {
               _translationBloc.add(TranslationClear());
               if (state.saveSuccess == true) {
                 BlocProvider.of<TranslationsBloc>(context).add(TranslationsRequest());
+              } else if (state.updateSuccess) {
+                BlocProvider.of<TranslationsBloc>(context).add(
+                    TranslationsUpdateItem(
+                      id: state.id,
+                      word: state.word,
+                      translation: (
+                          state.translationOwn != null
+                              ? state.translationOwn
+                              : state.translationWord
+                      ),
+                      pronunciation: state.pronunciation,
+                      image: state.imageUrl,
+                      createdAt: state.createdAt,
+                      updatedAt: '${new DateTime.now().millisecondsSinceEpoch}',
+                    )
+                );
               }
             }
           },
@@ -183,7 +191,7 @@ class _TranslationViewState extends State<TranslationView> {
                   physics: new ClampingScrollPhysics(),
                   child: Column(
                     children: <Widget>[
-                      TranslationViewHeader(),
+                      TranslationViewHeader(widget.word),
                       autoSpellingFix,
                       OtherTranslations(),
                       Definitions(),
