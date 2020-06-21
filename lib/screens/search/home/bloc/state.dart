@@ -67,7 +67,10 @@ class TranslationsLoaded extends TranslationsState {
     int totalAmount,
     List<TranslationsItem> translations,
     TranslationsItem updatedItem,
+    int removedItemId,
   }) {
+    int total = (from ?? this.totalAmount) ?? 0;
+    int to = (from ?? this.to) ?? 0;
     List<TranslationsItem> newTranslations = translations ?? this.translations;
 
     if (updatedItem != null) {
@@ -78,11 +81,22 @@ class TranslationsLoaded extends TranslationsState {
       }
     }
 
+    if (removedItemId != null) {
+      int removedItemIndex = newTranslations.indexWhere((item) => item.id == removedItemId);
+      if (removedItemIndex != -1) {
+        newTranslations = new List<TranslationsItem>.from(newTranslations);
+        newTranslations.removeAt(removedItemIndex);
+      }
+      to--;
+      total--;
+    }
+
     return TranslationsLoaded(
       from: from ?? this.from,
-      to: from ?? this.to,
-      totalAmount: from ?? this.totalAmount,
+      to: to,
+      totalAmount: total,
       translations: newTranslations,
+      search: this.search,
     );
   }
 

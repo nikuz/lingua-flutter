@@ -62,7 +62,7 @@ class _TranslationViewState extends State<TranslationView> {
               icon: Icon(Icons.more_vert),
               enabled: wordId != null,
               onSelected: (Menu item) async {
-                if (item.id == 'remove' && wordId != null) {
+                if (item.id == 'remove') {
                   final bool removeAccepted = await wordRemovePrompt(context, appBarTitle, () {
                     BlocProvider.of<TranslationsBloc>(context).add(
                         TranslationsItemRemove(wordId)

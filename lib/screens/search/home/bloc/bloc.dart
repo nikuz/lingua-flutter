@@ -78,16 +78,9 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
     } else if (event is TranslationsItemRemove) {
       try {
         final bool itemSuccessfullyRemoved = await _removeTranslationsItem(event.id);
-        if (itemSuccessfullyRemoved) {
-          final Translations translationsList = await _fetchTranslationsList(
-              currentState.from,
-              currentState.to
-          );
-          yield TranslationsLoaded(
-            from: translationsList.from,
-            to: translationsList.to,
-            totalAmount: translationsList.totalAmount,
-            translations: translationsList.translations,
+        if (currentState is TranslationsLoaded && itemSuccessfullyRemoved) {
+          yield currentState.copyWith(
+            removedItemId: event.id,
           );
         } else {
           yield TranslationsError();
