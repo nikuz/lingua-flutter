@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 
+import 'package:lingua_flutter/utils/sizes.dart';
+
 import 'bloc/bloc.dart';
 import 'bloc/state.dart';
 import 'widgets/container.dart';
@@ -53,22 +55,22 @@ class ExamplesItem extends StatelessWidget {
     final String text = item[0];
 
     return Container(
-      margin: EdgeInsets.only(top: 15),
+      margin: EdgeInsets.only(top: SizeUtil.vmax(15)),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Icon(
             Icons.format_quote,
-            size: 20,
+            size: SizeUtil.vmax(20),
             color: Color.fromRGBO(119, 119, 119, 1),
           ),
           Container(
             width: MediaQuery.of(context).size.width * 0.78,
-            margin: EdgeInsets.only(left: 20),
+            margin: EdgeInsets.only(left: SizeUtil.vmax(20)),
             child: Html(
               data: """$text""",
               defaultTextStyle: TextStyle(
-                fontSize: 16,
+                fontSize: SizeUtil.vmax(16),
                 color: Color.fromRGBO(0, 0, 0, 0.89),
               ),
             ),

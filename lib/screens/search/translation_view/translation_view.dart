@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/utils/string.dart';
+import 'package:lingua_flutter/utils/sizes.dart';
 import 'package:lingua_flutter/widgets/word_remove_prompt.dart';
 
 import 'package:lingua_flutter/screens/search/router.dart';
@@ -49,8 +50,16 @@ class _TranslationViewState extends State<TranslationView> {
           automaticallyImplyLeading: true,
           //`true` if you want Flutter to automatically add Back Button when needed,
           //or `false` if you want to force your own back button every where
-          title: Text(appBarTitle),
-          leading: IconButton(icon:Icon(Icons.arrow_back),
+          title: Text(
+            appBarTitle,
+            style: TextStyle(
+              fontSize: SizeUtil.vmax(20),
+            ),
+          ),
+          leading: IconButton(icon: Icon(
+              Icons.arrow_back,
+              size: SizeUtil.vmax(25),
+          ),
             onPressed: () {
               Navigator.pop(context, false);
             },
@@ -166,10 +175,10 @@ class _TranslationViewState extends State<TranslationView> {
                 autoSpellingFix = Container(
                   width: MediaQuery.of(context).size.width,
                   padding: EdgeInsets.only(
-                    left: 10,
-                    top: 4,
-                    right: 10,
-                    bottom: 6,
+                    left: SizeUtil.vmax(10),
+                    top: SizeUtil.vmax(4),
+                    right: SizeUtil.vmax(10),
+                    bottom: SizeUtil.vmax(6),
                   ),
                   color: Colors.red,
                   child: Wrap(

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/app_config.dart' as appConfig;
+import 'package:lingua_flutter/utils/sizes.dart';
 
 import './login/bloc/bloc.dart';
 //import './login/bloc/events.dart';
@@ -63,10 +64,14 @@ class BottomNavigation extends StatelessWidget {
       icon: Icon(
         tabs[tabItem]['icon'],
         color: _getColor(tabItem),
+        size: SizeUtil.vmax(25),
       ),
       title: Text(
         tabs[tabItem]['title'],
-        style: TextStyle(color: _getColor(tabItem)),
+        style: TextStyle(
+          color: _getColor(tabItem),
+          fontSize: SizeUtil.vmax(15),
+        ),
       ),
     );
   }
@@ -151,6 +156,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    SizeUtil().init(context);
     return BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state) {
           Widget page = Center(

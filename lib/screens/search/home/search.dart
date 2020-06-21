@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:lingua_flutter/utils/sizes.dart';
 import 'package:lingua_flutter/screens/search/router.dart';
 import 'package:lingua_flutter/screens/search/translation_view/bloc/bloc.dart';
 import 'package:lingua_flutter/screens/search/translation_view/bloc/state.dart';
@@ -62,11 +63,23 @@ class _SearchState extends State<Search> {
             }
           },
           decoration: InputDecoration(
-            prefixIcon: Icon(Icons.search),
+            prefixIcon: Container(
+              margin: EdgeInsets.only(
+                left: SizeUtil.vmax(5),
+                right: SizeUtil.vmax(5),
+              ),
+              child: Icon(
+                Icons.search,
+                size: SizeUtil.vmax(25),
+              )
+            ),
             suffixIcon: GestureDetector(
               child: Container(
                 color: Color.fromRGBO(255, 255, 255, 0),
-                child: Icon(Icons.clear),
+                child: Icon(
+                  Icons.clear,
+                  size: SizeUtil.vmax(25),
+                ),
               ),
               onTap: () {
                 if (_textController.text != '') {
@@ -76,7 +89,13 @@ class _SearchState extends State<Search> {
               },
             ),
             hintText: 'Search word',
-            contentPadding: EdgeInsets.only(top: 15),
+            hintStyle: TextStyle(
+              fontSize: SizeUtil.vmax(20),
+            ),
+          ),
+          style: TextStyle(
+            fontSize: SizeUtil.vmax(20),
+            color: Colors.black
           ),
         ),
       ),

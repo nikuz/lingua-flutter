@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:lingua_flutter/utils/sizes.dart';
 import 'package:lingua_flutter/helpers/api.dart';
 import 'package:lingua_flutter/widgets/pronunciation.dart';
 import 'package:lingua_flutter/widgets/word_remove_prompt.dart';
@@ -83,13 +84,25 @@ class _TranslationsListState extends State<TranslationsList> {
                     if (index == 0) {
                       return Container(
                         padding: EdgeInsets.only(
-                          left: 15,
-                          top: 10,
+                          left: SizeUtil.vmax(15),
+                          top: SizeUtil.vmax(10),
                         ),
                         child: Row(
                           children: <Widget>[
-                            Text('Total: '),
-                            Text('${state.totalAmount}', style: TextStyle(fontWeight: FontWeight.bold)),
+                            Text(
+                                'Total: ',
+                                style: TextStyle(
+                                  fontSize: SizeUtil.vmax(15),
+                                  fontWeight: FontWeight.bold,
+                                )
+                            ),
+                            Text(
+                              '${state.totalAmount}',
+                              style: TextStyle(
+                                fontSize: SizeUtil.vmax(15),
+                                fontWeight: FontWeight.bold,
+                              )
+                            ),
                           ],
                         ),
                       );
@@ -151,11 +164,11 @@ class TranslationsListItemWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             Container(
-              width: 80,
+              width: SizeUtil.vmax(80),
               child: Icon(
                 Icons.delete,
                 color: Colors.white,
-                size: 30,
+                size: SizeUtil.vmax(30),
               ),
             ),
           ],
@@ -173,6 +186,7 @@ class TranslationsListItemWidget extends StatelessWidget {
         print(direction);
       },
       child: Container(
+        margin: EdgeInsets.only(bottom: SizeUtil.vmax(2)),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
@@ -182,19 +196,25 @@ class TranslationsListItemWidget extends StatelessWidget {
         ),
         child: ListTile(
           leading: Container(
-            width: 50,
+            width: SizeUtil.vmax(50),
             child: Image.network(
               '${getApiUri()}${translationItem.image}?${translationItem.updatedAt}',
               fit: BoxFit.fitHeight,
             ),
           ),
-          title: Text(
-            translationItem.word,
-            style: TextStyle(fontSize: 17),
+          title: Container(
+            margin: EdgeInsets.only(bottom: SizeUtil.vmax(2)),
+            child: Text(
+              translationItem.word,
+              style: TextStyle(fontSize: SizeUtil.vmax(18)),
+            ),
           ),
-          subtitle: Text(
-            translationItem.translation,
-            style: TextStyle(fontSize: 15),
+          subtitle: Container(
+            margin: EdgeInsets.only(bottom: SizeUtil.vmax(2)),
+            child: Text(
+              translationItem.translation,
+              style: TextStyle(fontSize: SizeUtil.vmax(16)),
+            ),
           ),
           dense: true,
           trailing: PronunciationWidget(pronunciationUrl: translationItem.pronunciation),
@@ -221,15 +241,15 @@ class BottomLoader extends StatelessWidget {
         if (listLength >= LIST_PAGE_SIZE && listLength < state.totalAmount) {
           return Container(
             padding: EdgeInsets.only(
-              top: 10,
-              bottom: 10,
+              top: SizeUtil.vmax(10),
+              bottom: SizeUtil.vmax(10),
             ),
             child: Center(
               child: SizedBox(
-                width: 33,
-                height: 33,
+                width: SizeUtil.vmax(33),
+                height: SizeUtil.vmax(33),
                 child: CircularProgressIndicator(
-                  strokeWidth: 1.5,
+                  strokeWidth: SizeUtil.vmax(1.5),
                 ),
               ),
             ),

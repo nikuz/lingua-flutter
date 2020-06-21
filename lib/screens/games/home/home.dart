@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lingua_flutter/utils/sizes.dart';
 
 class GamesHomePage extends StatelessWidget {
   @override
@@ -14,7 +15,7 @@ class GamesHomePage extends StatelessWidget {
           children: <Widget>[
             Center(
               child: Container(
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.all(SizeUtil.vmax(10)),
                 child: Text('Games page'),
               ),
             )

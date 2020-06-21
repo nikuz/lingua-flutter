@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/screens/search/router.dart';
 import 'package:lingua_flutter/utils/string.dart';
+import 'package:lingua_flutter/utils/sizes.dart';
 
 import 'bloc/bloc.dart';
 import 'bloc/state.dart';
@@ -83,19 +84,20 @@ class OtherTranslationsItem extends StatelessWidget {
     }
 
     final bool cyrillicWord = isCyrillicWord(word);
+    final double screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
       margin: EdgeInsets.only(
-        top: 5,
-        bottom: 5,
+        top: SizeUtil.vmax(5),
+        bottom: SizeUtil.vmax(5),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            width: MediaQuery.of(context).size.width * 0.40,
-            margin: EdgeInsets.only(right: 10),
+            width: screenWidth * 0.40,
+            margin: EdgeInsets.only(right: screenWidth * 0.01),
             child: GestureDetector(
               child: Text(
                 word,
@@ -103,7 +105,7 @@ class OtherTranslationsItem extends StatelessWidget {
                 maxLines: 2,
                 style: TextStyle(
                   fontFamily: cyrillicWord ? 'Merriweather' : 'Montserrat',
-                  fontSize: 18,
+                  fontSize: screenWidth * 0.05,
                 ),
               ),
               onTap: () {
@@ -123,7 +125,7 @@ class OtherTranslationsItem extends StatelessWidget {
                   ));
                 } else {
                   BlocProvider.of<TranslationBloc>(context).add(TranslationUpdate(
-                      word: word,
+                    word: word,
                   ));
                 }
               },
@@ -131,21 +133,24 @@ class OtherTranslationsItem extends StatelessWidget {
           ),
           Container(
             padding: EdgeInsets.only(
-              top: 4,
+              top: SizeUtil.vmax(4),
             ),
-            width: MediaQuery.of(context).size.width * 0.33,
-            child: _getSynonymsList(synonyms),
+            width: screenWidth * 0.33,
+            child: _getSynonymsList(synonyms, screenWidth),
           ),
           Container(
+            width: screenWidth * 0.15,
             padding: EdgeInsets.only(
-              top: 8,
-              left: 10,
+              top: SizeUtil.vmax(8),
+              left: screenWidth * 0.01,
             ),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
-                _getFrequencyBarItem(true),
-                _getFrequencyBarItem(frequency != null && frequency > 0.001),
-                _getFrequencyBarItem(frequency != null && frequency > 0.1),
+                _getFrequencyBarItem(true, screenWidth),
+                _getFrequencyBarItem(frequency != null && frequency > 0.001, screenWidth),
+                _getFrequencyBarItem(frequency != null && frequency > 0.1, screenWidth),
               ],
             ),
           ),
@@ -154,10 +159,17 @@ class OtherTranslationsItem extends StatelessWidget {
     );
   }
 
-  Widget _getSynonymsList(List<dynamic> synonyms) {
+  Widget _getSynonymsList(List<dynamic> synonyms, double screenWidth) {
     List<Widget> list = List<Widget>();
     for (int i = 0, l = synonyms.length; i < l; i++) {
-      list.add(Text(i == l - 1 ? synonyms[i] : '${synonyms[i]}, '));
+      list.add(
+          Text(
+            i == l - 1 ? synonyms[i] : '${synonyms[i]}, ',
+            style: TextStyle(
+              fontSize: screenWidth * 0.035,
+            ),
+          )
+      );
     }
 
     return Wrap(
@@ -167,16 +179,16 @@ class OtherTranslationsItem extends StatelessWidget {
     );
   }
 
-  Widget _getFrequencyBarItem(bool active) {
+  Widget _getFrequencyBarItem(bool active, double screenWidth) {
     return Container(
-      width: 10,
-      height: 3,
-      margin: EdgeInsets.only(right: 2),
+      width: screenWidth * 0.02,
+      height: SizeUtil.vmax(3),
+      margin: EdgeInsets.only(right: screenWidth * 0.002),
       decoration: BoxDecoration(
         color: active
           ? Color.fromRGBO(66, 133, 224, 1)
           : Color.fromRGBO(218, 220, 224, 1),
-        borderRadius: BorderRadius.all(Radius.circular(1.0)),
+        borderRadius: BorderRadius.all(Radius.circular(SizeUtil.vmax(1))),
       ),
     );
   }

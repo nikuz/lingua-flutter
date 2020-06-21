@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:lingua_flutter/utils/sizes.dart';
+
 import 'translations_list.dart';
 import 'bloc/events.dart';
 import 'bloc/bloc.dart';
@@ -24,7 +26,12 @@ class _SearchHomePageState extends State<SearchHomePage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: Text('Search'),
+        title: Text(
+          'Search',
+          style: TextStyle(
+            fontSize: SizeUtil.vmax(20),
+          ),
+        ),
       ),
       body: SafeArea(
         bottom: false,

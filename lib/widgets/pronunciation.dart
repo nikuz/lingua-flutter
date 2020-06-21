@@ -5,6 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 
 import 'package:lingua_flutter/app_config.dart' as appConfig;
 import 'package:lingua_flutter/helpers/api.dart';
+import 'package:lingua_flutter/utils/sizes.dart';
 
 void monitorNotificationStateChanges(AudioPlayerState value) {
   print('state => $value');
@@ -88,10 +89,10 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final double size = widget.size ?? 36.0;
+    final double size = widget.size ?? SizeUtil.vmax(36);
     return ButtonTheme(
-      minWidth: size + 20,
-      height: size + 20,
+      minWidth: size + SizeUtil.vmax(20),
+      height: size + SizeUtil.vmax(20),
       padding: EdgeInsets.all(0),
       child: FlatButton(
         color: Colors.white,

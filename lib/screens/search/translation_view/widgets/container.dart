@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:lingua_flutter/utils/sizes.dart';
+
 import 'expand_button.dart';
 
 class TranslationViewContainer extends StatefulWidget {
@@ -42,24 +44,24 @@ class _TranslationViewContainerState extends State<TranslationViewContainer> {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(
-        top: 10,
-        left: 10,
-        right: 10,
-        bottom: widget.withBottomMargin != null ? 10 : 0,
+        top: SizeUtil.vmax(10),
+        left: SizeUtil.vmax(10),
+        right: SizeUtil.vmax(10),
+        bottom: widget.withBottomMargin != null ? SizeUtil.vmax(10) : 0,
       ),
       child: Column(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.all(SizeUtil.vmax(10)),
             decoration: BoxDecoration(
               border: Border.all(
                 color: Color.fromRGBO(218, 220, 224, 1),
-                width: 1.0,
+                width: SizeUtil.vmax(1),
                 style: BorderStyle.solid
               ),
               borderRadius: BorderRadius.vertical(
-                top: new Radius.circular(8.0),
-                bottom: new Radius.circular(hiddenItemsAmount != null ? 0 : 8.0),
+                top: new Radius.circular(SizeUtil.vmax(8)),
+                bottom: new Radius.circular(hiddenItemsAmount != null ? 0 : SizeUtil.vmax(8)),
               ),
             ),
             child: Column(
@@ -69,16 +71,16 @@ class _TranslationViewContainerState extends State<TranslationViewContainer> {
                     Text(
                       '${widget.entity[0].toUpperCase()}${widget.entity.substring(1)} of ',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: SizeUtil.vmax(16),
                         color: Color.fromRGBO(119, 119, 119, 1),
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(left: 5),
+                      margin: EdgeInsets.only(left: SizeUtil.vmax(5)),
                       child: Text(
                         widget.title,
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: SizeUtil.vmax(16),
                           color: Color.fromRGBO(34, 34, 34, 1),
                           fontWeight: FontWeight.bold,
                         ),

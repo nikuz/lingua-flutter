@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:lingua_flutter/utils/sizes.dart';
+
 import 'bloc/bloc.dart';
 import 'bloc/events.dart';
 
@@ -36,8 +38,6 @@ class _TranslationViewOwnTranslationState extends State<TranslationViewOwnTransl
       body: SafeArea(
         bottom: false,
         child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Container(
                 decoration: BoxDecoration(
@@ -51,10 +51,13 @@ class _TranslationViewOwnTranslationState extends State<TranslationViewOwnTransl
                 child: Row(
                   children: <Widget>[
                     Container(
-                      width: 50,
-                      margin: EdgeInsets.only(right: 10),
+                      width: SizeUtil.vmax(50),
+                      margin: EdgeInsets.only(right: SizeUtil.vmax(10)),
                       child: FlatButton(
-                        child: Icon(Icons.arrow_back),
+                        child: Icon(
+                          Icons.arrow_back,
+                          size: SizeUtil.vmax(25),
+                        ),
                         onPressed: () {
                           this.submit();
                         },
@@ -71,15 +74,25 @@ class _TranslationViewOwnTranslationState extends State<TranslationViewOwnTransl
                         },
                         decoration: InputDecoration(
                           hintText: 'Type your translation',
+                          hintStyle: TextStyle(
+                            fontSize: SizeUtil.vmax(20),
+                          ),
                           border: InputBorder.none,
+                        ),
+                        style: TextStyle(
+                          fontSize: SizeUtil.vmax(20),
+                          color: Colors.black
                         ),
                       ),
                     ),
                     Container(
-                      width: 50,
-                      margin: EdgeInsets.only(left: 10),
+                      width: SizeUtil.vmax(50),
+                      margin: EdgeInsets.only(left: SizeUtil.vmax(10)),
                       child: FlatButton(
-                        child: Icon(Icons.clear),
+                        child: Icon(
+                          Icons.clear,
+                          size: SizeUtil.vmax(25),
+                        ),
                         onPressed: () {
                           if (_textController.text != '') {
                             _textController.text = '';

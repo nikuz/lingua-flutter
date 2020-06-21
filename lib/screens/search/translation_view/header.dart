@@ -5,9 +5,10 @@ import 'package:lingua_flutter/screens/search/router.dart';
 import 'package:lingua_flutter/widgets/pronunciation.dart';
 import 'package:lingua_flutter/widgets/resizable_image.dart';
 import 'package:lingua_flutter/utils/string.dart';
+import 'package:lingua_flutter/utils/sizes.dart';
 
-import '../../settings/home/bloc/bloc.dart';
-import '../../settings/home/bloc/state.dart';
+import 'package:lingua_flutter/screens/settings/home/bloc/bloc.dart';
+import 'package:lingua_flutter/screens/settings/home/bloc/state.dart';
 
 import 'bloc/bloc.dart';
 import 'bloc/state.dart';
@@ -54,15 +55,15 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
               child: Icon(
                 Icons.broken_image,
                 color: Colors.white,
-                size: 100,
+                size: SizeUtil.vmax(100),
               ),
             );
           }
 
           if (imageSource != null) {
             image = ResizableImage(
-              width: 150,
-              height: 150,
+              width: SizeUtil.vmax(150),
+              height: SizeUtil.vmax(150),
               imageSource: imageSource,
               updatedAt: state.updatedAt,
             );
@@ -72,8 +73,8 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
             color: Colors.blue,
             width: double.infinity,
             padding: EdgeInsets.only(
-              left: 10,
-              right: 10,
+              left: SizeUtil.vmax(10),
+              right: SizeUtil.vmax(10),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -83,11 +84,11 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                 Center(
                   child: FlatButton(
                     child: Container(
-                      width: 150,
-                      height: 150,
+                      width: SizeUtil.vmax(150),
+                      height: SizeUtil.vmax(150),
                       margin: EdgeInsets.only(
-                        top: 10,
-                        bottom: 10,
+                        top: SizeUtil.vmax(10),
+                        bottom: SizeUtil.vmax(10),
                       ),
                       child: image,
                     ),
@@ -111,7 +112,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                     children: <Widget>[
                       Container(
                         padding: EdgeInsets.only(
-                          left: verified ? 30 : 0,
+                          left: verified ? SizeUtil.vmax(30) : 0,
                         ),
                         constraints: BoxConstraints(
                           maxWidth: MediaQuery.of(context).size.width * 0.85,
@@ -125,8 +126,8 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                             maxLines: 5,
                             style: TextStyle(
                               fontFamily: 'Merriweather',
-                              fontSize: 20,
-                              letterSpacing: 1,
+                              fontSize: SizeUtil.vmax(20),
+                              letterSpacing: SizeUtil.vmax(1),
                             ),
                           ),
                           onPressed: () {
@@ -142,12 +143,12 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                       ),
                       Container(
                         padding: EdgeInsets.only(
-                          left: verified ? 5 : 0,
+                          left: verified ? SizeUtil.vmax(5) : 0,
                         ),
                         child: Icon(
                           verified ? Icons.check_circle_outline : null,
                           color: Colors.white,
-                          size: verified ? 25 : 0,
+                          size: verified ? SizeUtil.vmax(25) : 0,
                         ),
                       ),
                     ],
@@ -175,8 +176,8 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
         elevation: 4.0,
         child: FlatButton(
           child: ResizableImage(
-            width: 300,
-            height: 300,
+            width: SizeUtil.vmax(300),
+            height: SizeUtil.vmax(300),
             imageSource: imageSource,
             updatedAt: updatedAt,
           ),
@@ -208,7 +209,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
 
     if (cyrillicWord == true || state.strangeWord) {
       return Container(
-        margin: EdgeInsets.only(bottom: 10),
+        margin: EdgeInsets.only(bottom: SizeUtil.vmax(10)),
       );
     }
 
@@ -223,7 +224,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
     Widget icon = Icon(
       iconName,
       color: (newWord || imageUpdate || translationUpdate) ? Colors.green : Colors.yellowAccent,
-      size: 35,
+      size: SizeUtil.vmax(35),
     );
 
     if (state.updateLoading == true || state.saveLoading == true) {
@@ -234,8 +235,8 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
 
     return Container(
       margin: EdgeInsets.only(
-        top: 10,
-        bottom: 10,
+        top: SizeUtil.vmax(10),
+        bottom: SizeUtil.vmax(10),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -248,7 +249,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                     return PronunciationWidget(
                       pronunciationUrl: pronunciation != null ? pronunciation : '',
                       color: Colors.blue,
-                      size: 45.0,
+                      size: SizeUtil.vmax(45),
                       autoPlay: state.settings['pronunciationAutoPlay'],
                     );
                   }
@@ -259,24 +260,25 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                 }
               ),
               Container(
-                margin: EdgeInsets.only(left: 10),
+                margin: EdgeInsets.only(left: SizeUtil.vmax(10)),
                 child: Text(
                   transcription != null ? transcription : '',
                   style: TextStyle(
                     color: Colors.white,
+                    fontSize: SizeUtil.vmax(15),
                   ),
                 ),
               ),
             ],
           ),
           ButtonTheme(
-            minWidth: 65,
-            height: 65,
+            minWidth: SizeUtil.vmax(65),
+            height: SizeUtil.vmax(65),
             child: FlatButton(
               color: (newWord || imageUpdate || translationUpdate) ? Colors.white : Colors.blue,
               shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.all(
-                  Radius.circular(45),
+                  Radius.circular(SizeUtil.vmax(45)),
                 ),
               ),
               child: icon,
