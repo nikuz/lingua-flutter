@@ -6,6 +6,8 @@ import 'package:lingua_flutter/helpers/api.dart';
 import 'package:lingua_flutter/widgets/pronunciation.dart';
 import 'package:lingua_flutter/widgets/word_remove_prompt.dart';
 import 'package:lingua_flutter/screens/search/router.dart';
+import 'package:lingua_flutter/screens/search/translation_view/bloc/bloc.dart';
+import 'package:lingua_flutter/screens/search/translation_view/bloc/events.dart';
 
 import 'model/item.dart';
 import 'model/list.dart';
@@ -197,6 +199,7 @@ class TranslationsListItemWidget extends StatelessWidget {
           dense: true,
           trailing: PronunciationWidget(pronunciationUrl: translationItem.pronunciation),
           onTap: () {
+            BlocProvider.of<TranslationBloc>(context).add(TranslationClear());
             Navigator.pushNamed(
               context,
               SearchNavigatorRoutes.translation_view,

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/screens/search/router.dart';
 import 'package:lingua_flutter/screens/search/translation_view/bloc/bloc.dart';
 import 'package:lingua_flutter/screens/search/translation_view/bloc/state.dart';
+import 'package:lingua_flutter/screens/search/translation_view/bloc/events.dart';
 
 import 'bloc/bloc.dart';
 import 'bloc/events.dart';
@@ -52,6 +53,7 @@ class _SearchState extends State<Search> {
           },
           onSubmitted: (String value) {
             if (value.length > 1) {
+              BlocProvider.of<TranslationBloc>(context).add(TranslationClear());
               Navigator.pushNamed(
                 context,
                 SearchNavigatorRoutes.translation_view,

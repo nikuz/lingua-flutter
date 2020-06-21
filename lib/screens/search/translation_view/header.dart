@@ -26,7 +26,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
   Widget build(BuildContext context) {
     return BlocBuilder<TranslationBloc, TranslationState>(
       builder: (context, state) {
-        if (state is TranslationLoaded && state.word == widget.word) {
+        if (state is TranslationLoaded) {
           final String translationWord = (
               state.translationOwn != null ? state.translationOwn : state.translationWord
           );
