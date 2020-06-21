@@ -6,6 +6,9 @@ import 'package:lingua_flutter/widgets/pronunciation.dart';
 import 'package:lingua_flutter/widgets/resizable_image.dart';
 import 'package:lingua_flutter/utils/string.dart';
 
+import '../../settings/home/bloc/bloc.dart';
+import '../../settings/home/bloc/state.dart';
+
 import 'bloc/bloc.dart';
 import 'bloc/state.dart';
 import 'bloc/events.dart';
@@ -239,11 +242,21 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
         children: <Widget>[
           Row(
             children: [
-              PronunciationWidget(
-                pronunciationUrl: pronunciation != null ? pronunciation : '',
-                color: Colors.blue,
-                size: 45.0,
-                autoPlay: true,
+              BlocBuilder<SettingsBloc, SettingsState>(
+                builder: (context, state) {
+                  if (state is SettingsLoaded) {
+                    return PronunciationWidget(
+                      pronunciationUrl: pronunciation != null ? pronunciation : '',
+                      color: Colors.blue,
+                      size: 45.0,
+                      autoPlay: state.settings['pronunciationAutoPlay'],
+                    );
+                  }
+
+                  return CircularProgressIndicator(
+                    backgroundColor: Colors.white,
+                  );
+                }
               ),
               Container(
                 margin: EdgeInsets.only(left: 10),

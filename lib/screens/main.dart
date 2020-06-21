@@ -8,6 +8,8 @@ import 'package:lingua_flutter/app_config.dart' as appConfig;
 
 import './login/bloc/bloc.dart';
 //import './login/bloc/events.dart';
+import './settings/home/bloc/bloc.dart';
+import './settings/home/bloc/events.dart';
 import './login/bloc/state.dart';
 
 //import './login/login.dart';
@@ -99,6 +101,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       _setApiUrl(appConfig.getApiDebugUrl());
     }
     WidgetsBinding.instance.addObserver(this);
+    BlocProvider.of<SettingsBloc>(context).add(SettingsGet());
 //    BlocProvider.of<LoginBloc>(context).add(LoginCheck());
   }
 

@@ -23,7 +23,10 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
     final currentState = state;
     if (event is TranslationsRequest) {
       try {
-        yield TranslationsRequestLoading(currentState.translations);
+        yield TranslationsRequestLoading(
+            currentState.translations,
+            currentState.totalAmount
+        );
         final Translations translationsList = await _fetchTranslationsList(0, LIST_PAGE_SIZE);
         yield TranslationsLoaded(
           from: translationsList.from,

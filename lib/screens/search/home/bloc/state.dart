@@ -32,8 +32,12 @@ class TranslationsError extends TranslationsState {
 
 class TranslationsRequestLoading extends TranslationsState {
   final List<TranslationsItem> translations;
+  final int totalAmount;
 
-  const TranslationsRequestLoading(this.translations) : assert(translations != null);
+  const TranslationsRequestLoading(
+    this.translations,
+    this.totalAmount,
+  ) : assert(translations != null && totalAmount != null);
 }
 
 class TranslationsRequestMoreLoading extends TranslationsState {

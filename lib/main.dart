@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import './blocs/delegate.dart';
 import './screens/login/bloc/bloc.dart';
 import './screens/search/home/bloc/bloc.dart';
 import './screens/search/translation_view/bloc/bloc.dart';
+import './screens/settings/home/bloc/bloc.dart';
 
 import './screens/main.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   BlocSupervisor.delegate = MyBlocDelegate();
   final http.Client httpClient = http.Client();
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
 
   runApp(
     MultiBlocProvider(
@@ -25,6 +29,9 @@ void main() async {
         ),
         BlocProvider<TranslationBloc>(
           create: (context) => TranslationBloc(httpClient: httpClient),
+        ),
+        BlocProvider<SettingsBloc>(
+          create: (context) => SettingsBloc(prefs: prefs),
         ),
       ],
       child: App(),
