@@ -16,18 +16,65 @@
 
   <title>lingua_flutter</title>
   <link rel="manifest" href="manifest.json">
+  <style type="text/css">
+    html, body, form, fieldset, ul, dl, dt, dd, table, td, th, img, menu {
+      margin: 0;
+      padding: 0;
+      border: none;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #phone-frame-picture {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-49.85%, -50%);
+      width: 928px;
+      height: 928px;
+    }
+
+    #app-frame {
+      position: relative;
+      width: 375px;
+      height: 667px;
+      border: none;
+      z-index: 2;
+    }
+
+    @keyframes loading-icon {
+      0% {
+        transform: rotate(0);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    #loading-icon {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      margin: -50px -50px;
+      width: 100px;
+      height: 100px;
+      animation: loading-icon 4s linear infinite;
+      background: url("loading.svg") 50% 50% no-repeat;
+    }
+  </style>
 </head>
 <body>
-  <!-- This script installs service_worker.js to provide PWA functionality to
-       application. For more information, see:
-       https://developers.google.com/web/fundamentals/primers/service-workers -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('flutter_service_worker.js');
-      });
-    }
-  </script>
-  <script src="main.dart.js" type="application/javascript"></script>
+  <img src="frame.png" id="phone-frame-picture" alt="" />
+  <div id="loading-icon"></div>
+  <iframe id="app-frame" src="app.html"></iframe>
 </body>
 </html>
