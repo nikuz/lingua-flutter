@@ -145,6 +145,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
               image: event.image,
           );
           yield currentState.copyWith(
+            translationWord: event.word,
             updateLoading: false,
             updateSuccess: true,
             imageUpdate: false,

@@ -85,6 +85,7 @@ class TranslationLoaded extends TranslationState {
   }) : assert(word != null && translationWord != null);
 
   TranslationLoaded copyWith({
+    String translationWord,
     String translationOwn,
     List<dynamic> images,
     bool imageLoading,
@@ -99,7 +100,7 @@ class TranslationLoaded extends TranslationState {
     return TranslationLoaded(
       id: this.id,
       word: this.word,
-      translationWord: this.translationWord,
+      translationWord: translationWord ?? this.translationWord,
       translationOwn: translationOwn ?? this.translationOwn,
       pronunciation: this.pronunciation,
       imageUrl: this.imageUrl == null ? this.image : this.imageUrl,

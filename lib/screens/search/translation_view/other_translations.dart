@@ -105,7 +105,7 @@ class OtherTranslationsItem extends StatelessWidget {
                 maxLines: 2,
                 style: TextStyle(
                   fontFamily: cyrillicWord ? 'Merriweather' : 'Montserrat',
-                  fontSize: screenWidth * 0.05,
+                  fontSize: SizeUtil.vmax(18),
                 ),
               ),
               onTap: () {
@@ -166,7 +166,7 @@ class OtherTranslationsItem extends StatelessWidget {
           Text(
             i == l - 1 ? synonyms[i] : '${synonyms[i]}, ',
             style: TextStyle(
-              fontSize: screenWidth * 0.035,
+              fontSize: SizeUtil.vmax(14),
             ),
           )
       );
