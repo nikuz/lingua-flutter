@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/app_config.dart';
+import 'package:lingua_flutter/widgets/prompts.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
 
 import 'bloc/bloc.dart';
@@ -36,22 +37,26 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
           listener: (context, state) async {
             if (state is SettingsLoaded) {
               if (state.settings['offlineDictionaryUpdateError']) {
-                await showDialog(
+                await prompt(
                   context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Error'),
-                      content: Text('Some error occurred during dictionary download. Please try again later.'),
-                      actions: <Widget>[
-                        FlatButton(
-                          onPressed: () {
-                            _settingsBloc.add(SettingsDownloadDictionaryHideError());
-                            Navigator.of(context).pop(false);
-                          },
-                          child: const Text('OK'),
-                        ),
-                      ],
-                    );
+                  title: 'Error',
+                  text: 'Some error occurred during dictionary download. Please try again later.',
+                  callback: () {
+                    _settingsBloc.add(SettingsDownloadDictionaryHideError());
+                  },
+                );
+              }
+              if (state.settings['offlineDictionaryPreUpdateSize'] != null) {
+                String size = _getParsedFileSize(
+                    int.parse(state.settings['offlineDictionaryPreUpdateSize'])
+                );
+                await prompt(
+                  context: context,
+                  title: 'Dictionary size',
+                  text: 'Offline dictionary file size is $size. Download?',
+                  withCancel: true,
+                  callback: () {
+                    _settingsBloc.add(SettingsDownloadDictionary());
                   },
                 );
               }
@@ -65,6 +70,7 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
 
                 if (!kIsWeb) {
                   final int offlineDictionaryUpdateTime = state.settings['offlineDictionaryUpdateTime'];
+                  final int offlineDictionaryUpdateSize = state.settings['offlineDictionaryUpdateSize'];
                   String dictionaryUpdateTime = '';
 
                   if (offlineDictionaryUpdateTime != null) {
@@ -74,13 +80,18 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
                     dictionaryUpdateTime = new DateFormat.yMMMd().add_jm().format(lastUpdateDate);
                   }
 
+                  if (offlineDictionaryUpdateSize != null) {
+                    String size = _getParsedFileSize(offlineDictionaryUpdateSize);
+                    dictionaryUpdateTime = '$dictionaryUpdateTime, $size';
+                  }
+
                   dictionaryUpdateRow = SettingsButton(
                     title: 'Update offline dictionary',
                     subtitle: dictionaryUpdateTime,
                     icon: Icons.file_download,
                     loading: state.settings['offlineDictionaryUpdateLoading'] == true,
                     action: () {
-                      _settingsBloc.add(SettingsDownloadDictionary());
+                      _settingsBloc.add(SettingsDownloadDictionaryInfo());
                     },
                   );
 
@@ -116,8 +127,18 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
       ),
     );
   }
-}
 
+  String _getParsedFileSize(int fileSize) {
+    String sizeSuffix = 'Mb';
+    double size = fileSize / 1e+6;
+    if (fileSize > 1e+9) {
+      sizeSuffix = 'Gb';
+      size = fileSize / 1e+9;
+    }
+
+    return '${size.toStringAsFixed(2)} $sizeSuffix';
+  }
+}
 
 class SettingsCheckbox extends StatelessWidget {
   final String id;

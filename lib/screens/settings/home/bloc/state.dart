@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class SettingsState extends Equatable {
@@ -15,6 +14,8 @@ class SettingsUninitialized extends SettingsState {
     'offlineDictionaryUpdateLoading': false,
     'offlineDictionaryUpdateError': false,
     'offlineDictionaryUpdateTime': null,
+    'offlineDictionaryUpdateSize': null,
+    'offlineDictionaryPreUpdateSize': null,
     'offlineDictionaryClearLoading': false,
   }];
 }

@@ -28,9 +28,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       print('SettingsGet');
       final bool pronunciationAutoPlay = prefs.getBool('pronunciationAutoPlay') ?? true;
       final int offlineDictionaryUpdateTime = prefs.getInt('offlineDictionaryUpdateTime');
+      final int offlineDictionaryUpdateSize = prefs.getInt('offlineDictionaryUpdateSize');
       yield SettingsLoaded({
         'pronunciationAutoPlay': pronunciationAutoPlay,
         'offlineDictionaryUpdateTime': offlineDictionaryUpdateTime,
+        'offlineDictionaryUpdateSize': offlineDictionaryUpdateSize,
+        'offlineDictionaryPreUpdateSize': null,
         'offlineDictionaryUpdateLoading': false,
         'offlineDictionaryUpdateError': false,
         'offlineDictionaryClearLoading': false,
@@ -54,11 +57,49 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           'value': event.value,
         }]);
       }
+    } else if (event is SettingsDownloadDictionaryInfo) {
+      if (currentState is SettingsLoaded) {
+        yield currentState.copyWith([{
+          'id': 'offlineDictionaryUpdateLoading',
+          'value': true,
+        }]);
+        final Map<String, dynamic> stopLoading = {
+          'id': 'offlineDictionaryUpdateLoading',
+          'value': false,
+        };
+
+        try {
+          String dir = (await getApplicationDocumentsDirectory()).path;
+          drive.File backupFile = await _getBackupInfo(dir);
+
+          if (backupFile != null) {
+            yield currentState.copyWith([{
+              'id': 'offlineDictionaryPreUpdateSize',
+              'value': backupFile.fileSize,
+            }, stopLoading]);
+          } else {
+            yield currentState.copyWith([{
+              'id': 'offlineDictionaryUpdateError',
+              'value': true,
+            }, stopLoading]);
+          }
+        } catch (e, s) {
+          print(e);
+          print(s);
+          yield currentState.copyWith([{
+            'id': 'offlineDictionaryUpdateError',
+            'value': true,
+          }, stopLoading]);
+        }
+      }
     } else if (event is SettingsDownloadDictionary) {
       if (currentState is SettingsLoaded) {
         yield currentState.copyWith([{
           'id': 'offlineDictionaryUpdateLoading',
           'value': true,
+        }, {
+          'id': 'offlineDictionaryPreUpdateSize',
+          'value': null,
         }]);
         final Map<String, dynamic> stopLoading = {
           'id': 'offlineDictionaryUpdateLoading',
@@ -81,15 +122,21 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
               }
             }
 
+            const String timeId = 'offlineDictionaryUpdateTime';
+            final int timeValue = new DateTime.now().millisecondsSinceEpoch;
+            const String sizeId = 'offlineDictionaryUpdateSize';
+            final int sizeValue = await backupFile.length();
+
             backupFile.delete();
 
-            const String id = 'offlineDictionaryUpdateTime';
-            final int value = new DateTime.now().millisecondsSinceEpoch;
-
-            await prefs.setInt(id, value);
+            await prefs.setInt(timeId, timeValue);
+            await prefs.setInt(sizeId, sizeValue);
             yield currentState.copyWith([{
-              'id': id,
-              'value': value,
+              'id': timeId,
+              'value': timeValue,
+            }, {
+              'id': sizeId,
+              'value': sizeValue,
             }, stopLoading]);
           } else {
             yield currentState.copyWith([{
@@ -135,6 +182,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         }
 
         await prefs.remove('offlineDictionaryUpdateTime');
+        await prefs.remove('offlineDictionaryUpdateSize');
 
         yield currentState.copyWith([{
           'id': 'offlineDictionaryClearLoading',
@@ -142,12 +190,15 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         }, {
           'id': 'offlineDictionaryUpdateTime',
           'value': null,
+        }, {
+          'id': 'offlineDictionaryUpdateSize',
+          'value': null,
         }]);
       }
     }
   }
 
-  Future<File> _downloadBackup(String dir) async {
+  Future<dynamic> _getBackupInfo(String dir) async {
     final _credentials = new ServiceAccountCredentials.fromJson(googleApiCredentials);
 
     final scopes = [drive.DriveApi.DriveScope];
@@ -155,17 +206,39 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     return clientViaServiceAccount(_credentials, scopes).then((client) {
       var api = new drive.DriveApi(client);
       return api.files.list().then((files) {
+        Completer completer = new Completer();
+        bool fileExists = false;
         for (var file in files.items) {
           if (file.originalFilename == offlineDictionaryFileName) {
-            return client.readBytes(file.downloadUrl).then((bytes) {
-              var file = new File('$dir/$offlineDictionaryFileName');
-              return file.writeAsBytes(bytes);
-            });
+            fileExists = true;
+            completer.complete(file);
           }
         }
 
-        return null;
+        if (!fileExists) {
+          completer.completeError('No file');
+        }
+
+        return completer.future;
       });
     });
+  }
+
+  Future<File> _downloadBackup(String dir) async {
+    final _credentials = new ServiceAccountCredentials.fromJson(googleApiCredentials);
+
+    final scopes = [drive.DriveApi.DriveScope];
+    drive.File backupFile = await _getBackupInfo(dir);
+
+    if (backupFile != null) {
+      return clientViaServiceAccount(_credentials, scopes).then((client) {
+        return client.readBytes(backupFile.downloadUrl).then((bytes) {
+          var file = new File('$dir/$offlineDictionaryFileName');
+          return file.writeAsBytes(bytes);
+        });
+      });
+    }
+
+    return null;
   }
 }

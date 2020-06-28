@@ -22,6 +22,8 @@ class SettingsChange extends SettingsEvent {
 
 class SettingsDownloadDictionary extends SettingsEvent {}
 
+class SettingsDownloadDictionaryInfo extends SettingsEvent {}
+
 class SettingsDownloadDictionaryHideError extends SettingsEvent {}
 
 class SettingsClearDictionary extends SettingsEvent {}

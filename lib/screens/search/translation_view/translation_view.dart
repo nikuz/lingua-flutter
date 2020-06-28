@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
-import 'package:lingua_flutter/widgets/word_remove_prompt.dart';
+import 'package:lingua_flutter/widgets/prompts.dart';
 
 import 'package:lingua_flutter/screens/search/router.dart';
 import 'package:lingua_flutter/screens/search/home/bloc/bloc.dart';
