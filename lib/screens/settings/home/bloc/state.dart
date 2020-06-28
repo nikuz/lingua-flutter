@@ -17,6 +17,7 @@ class SettingsUninitialized extends SettingsState {
     'offlineDictionaryUpdateSize': null,
     'offlineDictionaryPreUpdateSize': null,
     'offlineDictionaryClearLoading': false,
+    'offlineDictionaryClearConfirmation': false,
   }];
 }
 

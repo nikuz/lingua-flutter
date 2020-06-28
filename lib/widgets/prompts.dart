@@ -5,13 +5,15 @@ Future<bool> prompt({
   title,
   text,
   withCancel,
-  Function callback
+  Function acceptCallback,
+  Function cancelCallback,
+  Function closeCallback,
 }) async {
   List<Widget> actions = <Widget>[
     FlatButton(
       onPressed: () {
         Navigator.of(context, rootNavigator: true).pop(true);
-        callback();
+        acceptCallback();
       },
       child: Text("OK")
     ),
@@ -20,7 +22,12 @@ Future<bool> prompt({
   if (withCancel == true) {
     actions.add(
       FlatButton(
-        onPressed: () => Navigator.of(context, rootNavigator: true).pop(false),
+        onPressed: () {
+          Navigator.of(context, rootNavigator: true).pop(false);
+          if (cancelCallback is Function) {
+            cancelCallback();
+          }
+        },
         child: Text("CANCEL"),
       )
     );
@@ -35,7 +42,12 @@ Future<bool> prompt({
         actions: actions,
       )
     ),
-  );
+  ).then((val) {
+    if (closeCallback is Function) {
+      closeCallback();
+    }
+    return val;
+  });
 }
 
 Future<bool> wordRemovePrompt(context, String word, Function callback) async {
@@ -44,6 +56,6 @@ Future<bool> wordRemovePrompt(context, String word, Function callback) async {
     title: 'Confirm',
     text: 'Are you sure you wish to delete "$word" word?',
     withCancel: true,
-    callback: callback,
+    acceptCallback: callback,
   );
 }

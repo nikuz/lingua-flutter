@@ -25,7 +25,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   Stream<SettingsState> mapEventToState(SettingsEvent event) async* {
     final currentState = state;
     if (event is SettingsGet) {
-      print('SettingsGet');
       final bool pronunciationAutoPlay = prefs.getBool('pronunciationAutoPlay') ?? true;
       final int offlineDictionaryUpdateTime = prefs.getInt('offlineDictionaryUpdateTime');
       final int offlineDictionaryUpdateSize = prefs.getInt('offlineDictionaryUpdateSize');
@@ -37,6 +36,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         'offlineDictionaryUpdateLoading': false,
         'offlineDictionaryUpdateError': false,
         'offlineDictionaryClearLoading': false,
+        'offlineDictionaryClearConfirmation': false,
       });
     } else if (event is SettingsChange) {
       if (currentState is SettingsLoaded) {
@@ -91,6 +91,13 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
             'value': true,
           }, stopLoading]);
         }
+      }
+    } else if (event is SettingsDownloadDictionaryInfoClear) {
+      if (currentState is SettingsLoaded) {
+        yield currentState.copyWith([{
+          'id': 'offlineDictionaryPreUpdateSize',
+          'value': null,
+        }]);
       }
     } else if (event is SettingsDownloadDictionary) {
       if (currentState is SettingsLoaded) {
@@ -160,11 +167,28 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           'value': false,
         }]);
       }
+    } else if (event is SettingsClearDictionaryConfirmation) {
+      if (currentState is SettingsLoaded) {
+        yield currentState.copyWith([{
+          'id': 'offlineDictionaryClearConfirmation',
+          'value': true,
+        }]);
+      }
+    } else if (event is SettingsClearDictionaryConfirmationClear) {
+      if (currentState is SettingsLoaded) {
+        yield currentState.copyWith([{
+          'id': 'offlineDictionaryClearConfirmation',
+          'value': false,
+        }]);
+      }
     } else if (event is SettingsClearDictionary) {
       if (currentState is SettingsLoaded) {
         yield currentState.copyWith([{
           'id': 'offlineDictionaryClearLoading',
           'value': true,
+        }, {
+          'id': 'offlineDictionaryClearConfirmation',
+          'value': false,
         }]);
 
         String dir = (await getApplicationDocumentsDirectory()).path;

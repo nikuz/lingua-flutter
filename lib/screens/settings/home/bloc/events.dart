@@ -24,6 +24,12 @@ class SettingsDownloadDictionary extends SettingsEvent {}
 
 class SettingsDownloadDictionaryInfo extends SettingsEvent {}
 
+class SettingsDownloadDictionaryInfoClear extends SettingsEvent {}
+
 class SettingsDownloadDictionaryHideError extends SettingsEvent {}
 
 class SettingsClearDictionary extends SettingsEvent {}
+
+class SettingsClearDictionaryConfirmation extends SettingsEvent {}
+
+class SettingsClearDictionaryConfirmationClear extends SettingsEvent {}

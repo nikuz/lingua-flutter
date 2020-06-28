@@ -41,7 +41,7 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
                   context: context,
                   title: 'Error',
                   text: 'Some error occurred during dictionary download. Please try again later.',
-                  callback: () {
+                  acceptCallback: () {
                     _settingsBloc.add(SettingsDownloadDictionaryHideError());
                   },
                 );
@@ -55,8 +55,25 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
                   title: 'Dictionary size',
                   text: 'Offline dictionary file size is $size. Download?',
                   withCancel: true,
-                  callback: () {
+                  acceptCallback: () {
                     _settingsBloc.add(SettingsDownloadDictionary());
+                  },
+                  closeCallback: () {
+                    _settingsBloc.add(SettingsDownloadDictionaryInfoClear());
+                  },
+                );
+              }
+              if (state.settings['offlineDictionaryClearConfirmation']) {
+                await prompt(
+                  context: context,
+                  title: 'Clear confirmation',
+                  text: 'Are you sure you wish to clean the offline dictionary?',
+                  withCancel: true,
+                  acceptCallback: () {
+                    _settingsBloc.add(SettingsClearDictionary());
+                  },
+                  closeCallback: () {
+                    _settingsBloc.add(SettingsClearDictionaryConfirmationClear());
                   },
                 );
               }
@@ -86,24 +103,20 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
                   }
 
                   dictionaryUpdateRow = SettingsButton(
-                    title: 'Update offline dictionary',
+                    title: 'Offline dictionary',
                     subtitle: dictionaryUpdateTime,
                     icon: Icons.file_download,
                     loading: state.settings['offlineDictionaryUpdateLoading'] == true,
                     action: () {
                       _settingsBloc.add(SettingsDownloadDictionaryInfo());
                     },
-                  );
-
-                  dictionaryClearRow = SettingsButton(
-                    title: 'Clear offline dictionary',
-                    icon: Icons.delete_forever,
-                    iconColor: Colors.red,
-                    loading: state.settings['offlineDictionaryClearLoading'] == true,
-                    action: () {
-                      _settingsBloc.add(SettingsClearDictionary());
+                    secondButtonIcon: Icons.delete_forever,
+                    secondButtonIconColor: Colors.red,
+                    secondButtonAction: () {
+                      _settingsBloc.add(SettingsClearDictionaryConfirmation());
                     },
-                    disabled: state.settings['offlineDictionaryUpdateLoading'] == true,
+                    secondButtonLoading: state.settings['offlineDictionaryClearLoading'] == true,
+                    secondButtonDisabled: state.settings['offlineDictionaryUpdateLoading'] == true,
                   );
                 }
 
@@ -198,6 +211,11 @@ class SettingsButton extends StatelessWidget {
   final bool loading;
   final Color iconColor;
   final bool disabled;
+  final IconData secondButtonIcon;
+  final Color secondButtonIconColor;
+  final Function secondButtonAction;
+  final bool secondButtonLoading;
+  final bool secondButtonDisabled;
 
   SettingsButton({
     @required this.title,
@@ -207,11 +225,24 @@ class SettingsButton extends StatelessWidget {
     this.loading,
     this.iconColor,
     this.disabled,
+    this.secondButtonIcon,
+    this.secondButtonIconColor,
+    this.secondButtonAction,
+    this.secondButtonLoading,
+    this.secondButtonDisabled,
   });
 
   @override
   Widget build(BuildContext context) {
     Widget subtitleWidget = Container();
+    Widget secondButtonWidget = Container();
+    Widget loadingWidget = SizedBox(
+      width: SizeUtil.vmax(25),
+      height: SizeUtil.vmax(25),
+      child: CircularProgressIndicator(
+        strokeWidth: SizeUtil.vmax(1.5),
+      ),
+    );
 
     if (subtitle != null) {
       subtitleWidget = Text(
@@ -230,11 +261,25 @@ class SettingsButton extends StatelessWidget {
     );
 
     if (loading == true) {
-      iconWidget = SizedBox(
-        width: SizeUtil.vmax(25),
-        height: SizeUtil.vmax(25),
-        child: CircularProgressIndicator(
-          strokeWidth: SizeUtil.vmax(1.5),
+      iconWidget = loadingWidget;
+    }
+
+    if (secondButtonIcon != null) {
+      Widget secondIconWidget = Icon(
+        secondButtonIcon,
+        size: SizeUtil.vmax(30),
+        color: secondButtonDisabled == true ? Colors.grey : secondButtonIconColor ?? Colors.green,
+      );
+      if (secondButtonLoading) {
+        secondIconWidget = loadingWidget;
+      }
+      secondButtonWidget = ButtonTheme(
+        minWidth: 55,
+        child: FlatButton(
+          child: secondIconWidget,
+          onPressed: (secondButtonDisabled == true || secondButtonLoading == true)
+              ? () => {}
+              : secondButtonAction,
         ),
       );
     }
@@ -260,12 +305,17 @@ class SettingsButton extends StatelessWidget {
             ],
           ),
         ),
-        Container(
-          width: SizeUtil.vmax(75),
-          child: FlatButton(
-            child: iconWidget,
-            onPressed: (disabled == true || loading == true) ? () => {} : action,
-          ),
+        Row(
+          children: [
+            ButtonTheme(
+              minWidth: 55,
+              child: FlatButton(
+                child: iconWidget,
+                onPressed: (disabled == true || loading == true) ? () => {} : action,
+              ),
+            ),
+            secondButtonWidget,
+          ],
         ),
       ],
     );
