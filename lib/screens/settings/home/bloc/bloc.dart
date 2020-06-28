@@ -26,12 +26,14 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     final currentState = state;
     if (event is SettingsGet) {
       final bool pronunciationAutoPlay = prefs.getBool('pronunciationAutoPlay') ?? true;
+      final bool offlineMode = prefs.getBool('offlineMode') ?? false;
       final int offlineDictionaryUpdateTime = prefs.getInt('offlineDictionaryUpdateTime');
       final int offlineDictionaryUpdateSize = prefs.getInt('offlineDictionaryUpdateSize');
       yield SettingsLoaded({
         'pronunciationAutoPlay': pronunciationAutoPlay,
         'offlineDictionaryUpdateTime': offlineDictionaryUpdateTime,
         'offlineDictionaryUpdateSize': offlineDictionaryUpdateSize,
+        'offlineMode': offlineMode,
         'offlineDictionaryPreUpdateSize': null,
         'offlineDictionaryUpdateLoading': false,
         'offlineDictionaryUpdateError': false,
@@ -40,16 +42,18 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       });
     } else if (event is SettingsChange) {
       if (currentState is SettingsLoaded) {
-        switch (event.type) {
-          case 'bool':
-            await prefs.setBool(event.id, event.value);
-            break;
-          case 'String':
-            await prefs.setString(event.id, event.value);
-            break;
-          case 'int':
-            await prefs.setInt(event.id, event.value);
-            break;
+        if (event.savePrefs) {
+          switch (event.type) {
+            case 'bool':
+              await prefs.setBool(event.id, event.value);
+              break;
+            case 'String':
+              await prefs.setString(event.id, event.value);
+              break;
+            case 'int':
+              await prefs.setInt(event.id, event.value);
+              break;
+          }
         }
 
         yield currentState.copyWith([{
@@ -91,13 +95,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
             'value': true,
           }, stopLoading]);
         }
-      }
-    } else if (event is SettingsDownloadDictionaryInfoClear) {
-      if (currentState is SettingsLoaded) {
-        yield currentState.copyWith([{
-          'id': 'offlineDictionaryPreUpdateSize',
-          'value': null,
-        }]);
       }
     } else if (event is SettingsDownloadDictionary) {
       if (currentState is SettingsLoaded) {
@@ -160,27 +157,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           }, stopLoading]);
         }
       }
-    } else if (event is SettingsDownloadDictionaryHideError) {
-      if (currentState is SettingsLoaded) {
-        yield currentState.copyWith([{
-          'id': 'offlineDictionaryUpdateError',
-          'value': false,
-        }]);
-      }
-    } else if (event is SettingsClearDictionaryConfirmation) {
-      if (currentState is SettingsLoaded) {
-        yield currentState.copyWith([{
-          'id': 'offlineDictionaryClearConfirmation',
-          'value': true,
-        }]);
-      }
-    } else if (event is SettingsClearDictionaryConfirmationClear) {
-      if (currentState is SettingsLoaded) {
-        yield currentState.copyWith([{
-          'id': 'offlineDictionaryClearConfirmation',
-          'value': false,
-        }]);
-      }
     } else if (event is SettingsClearDictionary) {
       if (currentState is SettingsLoaded) {
         yield currentState.copyWith([{
@@ -188,6 +164,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           'value': true,
         }, {
           'id': 'offlineDictionaryClearConfirmation',
+          'value': false,
+        }, {
+          'id': 'offlineMode',
           'value': false,
         }]);
 
@@ -207,6 +186,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
         await prefs.remove('offlineDictionaryUpdateTime');
         await prefs.remove('offlineDictionaryUpdateSize');
+        await prefs.remove('offlineMode');
 
         yield currentState.copyWith([{
           'id': 'offlineDictionaryClearLoading',

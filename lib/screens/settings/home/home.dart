@@ -37,13 +37,20 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
           listener: (context, state) async {
             if (state is SettingsLoaded) {
               if (state.settings['offlineDictionaryUpdateError']) {
+                void clearDictionaryUpdateError() => (
+                  _settingsBloc.add(SettingsChange(
+                    type: 'bool',
+                    id: 'offlineDictionaryUpdateError',
+                    value: false,
+                    savePrefs: false,
+                  ))
+                );
                 await prompt(
                   context: context,
                   title: 'Error',
                   text: 'Some error occurred during dictionary download. Please try again later.',
-                  acceptCallback: () {
-                    _settingsBloc.add(SettingsDownloadDictionaryHideError());
-                  },
+                  acceptCallback: () => clearDictionaryUpdateError(),
+                  closeCallback: () => clearDictionaryUpdateError(),
                 );
               }
               if (state.settings['offlineDictionaryPreUpdateSize'] != null) {
@@ -59,7 +66,12 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
                     _settingsBloc.add(SettingsDownloadDictionary());
                   },
                   closeCallback: () {
-                    _settingsBloc.add(SettingsDownloadDictionaryInfoClear());
+                    _settingsBloc.add(SettingsChange(
+                      type: 'int',
+                      id: 'offlineDictionaryPreUpdateSize',
+                      value: null,
+                      savePrefs: false,
+                    ));
                   },
                 );
               }
@@ -73,7 +85,12 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
                     _settingsBloc.add(SettingsClearDictionary());
                   },
                   closeCallback: () {
-                    _settingsBloc.add(SettingsClearDictionaryConfirmationClear());
+                    _settingsBloc.add(SettingsChange(
+                      type: 'bool',
+                      id: 'offlineDictionaryClearConfirmation',
+                      value: false,
+                      savePrefs: false,
+                    ));
                   },
                 );
               }
@@ -83,9 +100,23 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
             builder: (context, state) {
               if (state is SettingsLoaded) {
                 Widget dictionaryUpdateRow = Container();
-                Widget dictionaryClearRow = Container();
+                Widget offlineMode = Container();
 
                 if (!kIsWeb) {
+                  offlineMode = SettingsCheckbox(
+                    id: 'offlineMode',
+                    title: 'Offline mode',
+                    value: state.settings['offlineMode'],
+                    onChange: (bool value) {
+                      if (
+                        value
+                        && state.settings['offlineDictionaryUpdateTime'] == null
+                      ) {
+                        _settingsBloc.add(SettingsDownloadDictionaryInfo());
+                      }
+                    }
+                  );
+
                   final int offlineDictionaryUpdateTime = state.settings['offlineDictionaryUpdateTime'];
                   final int offlineDictionaryUpdateSize = state.settings['offlineDictionaryUpdateSize'];
                   String dictionaryUpdateTime = '';
@@ -113,10 +144,18 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
                     secondButtonIcon: Icons.delete_forever,
                     secondButtonIconColor: Colors.red,
                     secondButtonAction: () {
-                      _settingsBloc.add(SettingsClearDictionaryConfirmation());
+                      _settingsBloc.add(SettingsChange(
+                        type: 'bool',
+                        id: 'offlineDictionaryClearConfirmation',
+                        value: true,
+                        savePrefs: false,
+                      ));
                     },
                     secondButtonLoading: state.settings['offlineDictionaryClearLoading'] == true,
-                    secondButtonDisabled: state.settings['offlineDictionaryUpdateLoading'] == true,
+                    secondButtonDisabled: (
+                      state.settings['offlineDictionaryUpdateLoading'] == true
+                      || offlineDictionaryUpdateSize == null
+                    ),
                   );
                 }
 
@@ -127,8 +166,8 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
                       title: 'Autoplay pronunciation',
                       value: state.settings['pronunciationAutoPlay'],
                     ),
+                    offlineMode,
                     dictionaryUpdateRow,
-                    dictionaryClearRow,
                   ],
                 );
               }
@@ -157,11 +196,13 @@ class SettingsCheckbox extends StatelessWidget {
   final String id;
   final String title;
   final bool value;
+  final Function onChange;
 
   SettingsCheckbox({
     @required this.id,
     @required this.title,
     @required this.value,
+    @required this.onChange,
   });
 
   @override
@@ -187,14 +228,18 @@ class SettingsCheckbox extends StatelessWidget {
           padding: EdgeInsets.only(right: SizeUtil.vmax(5)),
           child: Switch(
             value: value,
-            onChanged: (value) {
+            onChanged: (changeValue) {
               BlocProvider.of<SettingsBloc>(context).add(
                 SettingsChange(
                   type: 'bool',
                   id: id,
-                  value: value
+                  value: changeValue,
+                  savePrefs: true,
                 )
               );
+              if (onChange is Function) {
+                onChange(changeValue);
+              }
             },
           ),
         ),
