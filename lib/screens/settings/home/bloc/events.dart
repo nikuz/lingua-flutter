@@ -19,3 +19,9 @@ class SettingsChange extends SettingsEvent {
     @required this.value,
   });
 }
+
+class SettingsDownloadDictionary extends SettingsEvent {}
+
+class SettingsDownloadDictionaryHideError extends SettingsEvent {}
+
+class SettingsClearDictionary extends SettingsEvent {}

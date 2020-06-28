@@ -9,25 +9,29 @@ abstract class SettingsState extends Equatable {
 }
 
 class SettingsUninitialized extends SettingsState {
-  bool get pronunciationAutoPlay => true;
+  @override
+  List<Object> get props => [{
+    'pronunciationAutoPlay': true,
+    'offlineDictionaryUpdateLoading': false,
+    'offlineDictionaryUpdateError': false,
+    'offlineDictionaryUpdateTime': null,
+    'offlineDictionaryClearLoading': false,
+  }];
 }
 
 class SettingsLoaded extends SettingsState {
   final Map<String, dynamic> settings;
 
-  const SettingsLoaded({
-    @required this.settings,
-  }) : assert(settings != null);
+  const SettingsLoaded(this.settings) : assert(settings != null);
 
-  SettingsLoaded copyWith({
-    String id,
-    dynamic value,
-  }) {
-    return SettingsLoaded(
-      settings: {
-        '$id': value,
-      },
-    );
+  SettingsLoaded copyWith(List<Map<String, dynamic>> props) {
+    for (int i = 0, l = props.length; i < l; i++) {
+      this.settings..addAll({
+        '${props[i]['id']}': props[i]['value'],
+      });
+    }
+
+    return SettingsLoaded(this.settings);
   }
 
   @override
