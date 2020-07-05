@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/screens/search/router.dart';
 import 'package:lingua_flutter/widgets/pronunciation.dart';
 import 'package:lingua_flutter/widgets/resizable_image.dart';
+import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
 
@@ -66,6 +67,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
               height: SizeUtil.vmax(150),
               imageSource: imageSource,
               updatedAt: state.updatedAt,
+              isLocal: !state.remote
             );
           }
 
@@ -94,7 +96,11 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                     ),
                     onPressed: () {
                       if (state.id != null && !state.imageUpdate) {
-                        this._overlayEntry = this._createOverlayEntry(imageSource, state.updatedAt);
+                        this._overlayEntry = this._createOverlayEntry(
+                          imageSource,
+                          state.updatedAt,
+                          state.remote
+                        );
                         Overlay.of(context).insert(this._overlayEntry);
                       } else {
                         Navigator.pushNamed(
@@ -165,7 +171,11 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
     );
   }
 
-  OverlayEntry _createOverlayEntry(String imageSource, String updatedAt) => OverlayEntry(
+  OverlayEntry _createOverlayEntry(
+      String imageSource,
+      String updatedAt,
+      bool remote
+  ) => OverlayEntry(
     builder: (context) => Positioned(
       left: 0,
       top: 0,
@@ -180,6 +190,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
             height: SizeUtil.vmax(300),
             imageSource: imageSource,
             updatedAt: updatedAt,
+            isLocal: !remote
           ),
           onPressed: () {
             this._overlayEntry.remove();
@@ -214,8 +225,10 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
     }
 
     final bool newWord = state.id == null;
+    bool translationSavedOnlyRemotely = db != null && state.remote;
+    bool toSave = newWord || imageUpdate || translationUpdate || translationSavedOnlyRemotely;
     IconData iconName = Icons.check;
-    if (newWord) {
+    if (newWord || translationSavedOnlyRemotely) {
       iconName = Icons.save_alt;
     } else if (imageUpdate || translationUpdate) {
       iconName = Icons.update;
@@ -223,7 +236,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
 
     Widget icon = Icon(
       iconName,
-      color: (newWord || imageUpdate || translationUpdate) ? Colors.green : Colors.yellowAccent,
+      color: toSave ? Colors.green : Colors.white,
       size: SizeUtil.vmax(35),
     );
 
@@ -275,7 +288,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
             minWidth: SizeUtil.vmax(65),
             height: SizeUtil.vmax(65),
             child: FlatButton(
-              color: (newWord || imageUpdate || translationUpdate) ? Colors.white : Colors.blue,
+              color: toSave ? Colors.white : Colors.blue,
               shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.all(
                   Radius.circular(SizeUtil.vmax(45)),
@@ -283,7 +296,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
               ),
               child: icon,
               onPressed: () {
-                if (newWord) {
+                if (newWord || translationSavedOnlyRemotely) {
                   BlocProvider.of<TranslationBloc>(context).add(TranslationSave(
                     word: state.word,
                     translation: state.translationWord,

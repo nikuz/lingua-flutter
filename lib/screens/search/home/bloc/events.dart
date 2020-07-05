@@ -22,6 +22,7 @@ class TranslationsUpdateItem extends TranslationsEvent {
   final String translation;
   final String pronunciation;
   final String image;
+  final String imageUrl;
   final String createdAt;
   final String updatedAt;
 
@@ -31,6 +32,7 @@ class TranslationsUpdateItem extends TranslationsEvent {
     @required this.translation,
     @required this.pronunciation,
     @required this.image,
+    @required this.imageUrl,
     @required this.createdAt,
     @required this.updatedAt,
   });

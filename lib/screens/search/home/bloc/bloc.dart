@@ -4,7 +4,10 @@ import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:lingua_flutter/utils/api.dart';
+import 'package:lingua_flutter/utils/db.dart';
 import 'package:lingua_flutter/helpers/api.dart';
+import 'package:lingua_flutter/helpers/db.dart';
+import 'package:lingua_flutter/controllers/translate.dart';
 import '../model/list.dart';
 import '../model/item.dart';
 import 'events.dart';
@@ -80,15 +83,15 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
       }
     } else if (event is TranslationsItemRemove) {
       try {
-        final bool itemSuccessfullyRemoved = await _removeTranslationsItem(event.id);
-        if (currentState is TranslationsLoaded && itemSuccessfullyRemoved) {
+        if (currentState is TranslationsLoaded) {
+          await _removeTranslationsItem(event.id);
           yield currentState.copyWith(
             removedItemId: event.id,
           );
-        } else {
-          yield TranslationsError();
         }
       } on ApiException catch (e) {
+        yield TranslationsError(e);
+      } on DBException catch (e) {
         yield TranslationsError(e);
       } catch (e, s) {
         print(e);
@@ -97,13 +100,23 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
     } else if (event is TranslationsUpdateItem) {
       try {
         if (currentState is TranslationsLoaded) {
+          String oldImageUrl = event.imageUrl;
+          final String newImage = event.image;
+          final RegExp imageExtension = new RegExp(r'\.[^?]+');
+
+          if (newImage.indexOf('data:image/png') == 0 && oldImageUrl.indexOf('.png') == -1) {
+            oldImageUrl = oldImageUrl.replaceAll(imageExtension, '.png');
+          } else if (newImage.indexOf('data:image/jpeg') == 0 && oldImageUrl.indexOf('.jpeg') == -1) {
+            oldImageUrl = oldImageUrl.replaceAll(imageExtension, '.jpeg');
+          }
+
           yield currentState.copyWith(
             updatedItem: TranslationsItem(
               id: event.id,
               word: event.word,
               translation: event.translation,
               pronunciation: event.pronunciation,
-              image: event.image,
+              image: oldImageUrl,
               createdAt: event.createdAt,
               updatedAt: event.updatedAt,
             ),
@@ -119,16 +132,26 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
   }
 
   Future<Translations> _fetchTranslationsList(int from, int to, {String searchText}) async {
-    final String url = searchText == null ? '/translations' : '/translate/search';
-    final Map<String, dynamic> response = await apiGet(
-        client: httpClient,
-        url: url,
-        params: {
-          'q': searchText,
-          'from': '$from',
-          'to': '$to',
-        }
-    );
+    Map<String, dynamic> response;
+
+    if (db != null) {
+      if (searchText != null) {
+        response = await translateControllerSearch(searchText, from, to);
+      } else {
+        response = await translateControllerGetList(from, to);
+      }
+    } else {
+      final String url = searchText == null ? '/translations' : '/translate/search';
+      response = await apiGet(
+          client: httpClient,
+          url: url,
+          params: {
+            'q': searchText,
+            'from': '$from',
+            'to': '$to',
+          }
+      );
+    }
 
     return Translations(
       from: response['from'],
@@ -149,13 +172,19 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
   }
 
   Future<bool> _removeTranslationsItem(int id) async {
-    final Map<String, dynamic> response = await apiDelete(
-        client: httpClient,
-        url: '/translate',
-        params: {
-          'id': '$id',
-        }
-    );
+    Map<String, dynamic> response;
+
+    if (db != null) {
+      response = await translateControllerRemoveItem(id);
+    } else {
+      response = await apiDelete(
+          client: httpClient,
+          url: '/translate',
+          params: {
+            'id': '$id',
+          }
+      );
+    }
 
     if (response['success'] == true) {
       return true;

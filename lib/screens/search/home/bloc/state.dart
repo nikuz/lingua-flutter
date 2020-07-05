@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:lingua_flutter/utils/api.dart';
+import 'package:lingua_flutter/utils/db.dart';
 import '../model/item.dart';
 
 abstract class TranslationsState extends Equatable {
@@ -19,9 +20,9 @@ abstract class TranslationsState extends Equatable {
 class TranslationsUninitialized extends TranslationsState {}
 
 class TranslationsError extends TranslationsState {
-  final ApiException error;
+  final error;
 
-  TranslationsError([this.error]) : assert(error is ApiException);
+  TranslationsError([this.error]) : assert(error is ApiException || error is DBException);
 
   @override
   List<Object> get props => [error];

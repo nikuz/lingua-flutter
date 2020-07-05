@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:archive/archive.dart';
 import 'package:googleapis/drive/v2.dart' as drive;
 import 'package:googleapis_auth/auth_io.dart';
 
 import 'package:lingua_flutter/app_config.dart';
+import 'package:lingua_flutter/utils/files.dart';
 
 import 'events.dart';
 import 'state.dart';
@@ -73,7 +73,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         };
 
         try {
-          String dir = (await getApplicationDocumentsDirectory()).path;
+          String dir = await getDocumentsPath();
           drive.File backupFile = await _getBackupInfo(dir);
 
           if (backupFile != null) {
@@ -111,7 +111,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         };
 
         try {
-          String dir = (await getApplicationDocumentsDirectory()).path;
+          String dir = await getDocumentsPath();
           File backupFile = await _downloadBackup(dir);
 
           if (backupFile != null) {
@@ -170,7 +170,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           'value': false,
         }]);
 
-        String dir = (await getApplicationDocumentsDirectory()).path;
+        String dir = await getDocumentsPath();
         final database = Directory('$dir/database');
         if (database.existsSync()) {
           database.deleteSync(recursive: true);

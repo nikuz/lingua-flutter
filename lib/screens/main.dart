@@ -6,11 +6,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/app_config.dart' as appConfig;
 import 'package:lingua_flutter/utils/sizes.dart';
+import 'package:lingua_flutter/helpers/db.dart';
 
-import './login/bloc/bloc.dart';
-//import './login/bloc/events.dart';
 import './settings/home/bloc/bloc.dart';
 import './settings/home/bloc/events.dart';
+import './settings/home/bloc/state.dart';
+import './login/bloc/bloc.dart';
+//import './login/bloc/events.dart';
 import './login/bloc/state.dart';
 
 //import './login/login.dart';
@@ -100,11 +102,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    if (kReleaseMode) {
-      _setApiUrlUpdateTimer();
-    } else {
-      _setApiUrl(appConfig.getApiDebugUrl());
-    }
     WidgetsBinding.instance.addObserver(this);
     BlocProvider.of<SettingsBloc>(context).add(SettingsGet());
 //    BlocProvider.of<LoginBloc>(context).add(LoginCheck());
@@ -119,6 +116,81 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         timer.cancel();
       }
     }
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    SizeUtil().init(context);
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<SettingsBloc, SettingsState>(
+          listener: (context, state) async {
+            if (state is SettingsLoaded && !apiUrlDownloaded) {
+              if (state.settings['offlineMode']) {
+                await dbOpen();
+              }
+              if (kReleaseMode && timer == null) {
+                _setApiUrlUpdateTimer();
+              } else {
+                _setApiUrl(appConfig.getApiDebugUrl());
+              }
+            }
+          },
+        ),
+        BlocListener<LoginBloc, LoginState>(
+          listener: (context, state) {},
+        ),
+      ],
+      child: BlocBuilder<LoginBloc, LoginState>(
+          builder: (context, state) {
+            Widget page = Center(
+              child: CircularProgressIndicator(),
+            );
+            Widget bottomNavigation;
+
+//          if (!(state is LoginUninitialized)) {
+//            if (state.token == null) {
+//              page = LoginPage();
+//            } else
+            if (_currentTab == TabItem.search) {
+              page = SearchNavigator(navigatorKey: _navigatorKeys[TabItem.search]);
+            } else if (_currentTab == TabItem.games) {
+              page = GamesNavigator(navigatorKey: _navigatorKeys[TabItem.games]);
+            } else if (_currentTab == TabItem.settings) {
+              page = SettingsNavigator(navigatorKey: _navigatorKeys[TabItem.settings]);
+            }
+//          }
+
+//          if (state.token != null) {
+            bottomNavigation = BottomNavigation(
+              currentTab: _currentTab,
+              onSelectTab: _selectTab,
+            );
+//          }
+
+            if (apiUrlDownloaded) {
+              return Scaffold(
+                body: page,
+                bottomNavigationBar: bottomNavigation,
+              );
+            }
+
+            return Scaffold(
+              backgroundColor: Colors.white,
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+      ),
+    );
   }
 
   _setApiUrlUpdateTimer() {
@@ -145,60 +217,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         apiUrlDownloaded = true;
       });
     }
-  }
-
-  @override
-  void dispose() {
-    timer.cancel();
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    SizeUtil().init(context);
-    return BlocBuilder<LoginBloc, LoginState>(
-        builder: (context, state) {
-          Widget page = Center(
-            child: CircularProgressIndicator(),
-          );
-          Widget bottomNavigation;
-
-//          if (!(state is LoginUninitialized)) {
-//            if (state.token == null) {
-//              page = LoginPage();
-//            } else
-            if (_currentTab == TabItem.search) {
-              page = SearchNavigator(navigatorKey: _navigatorKeys[TabItem.search]);
-            } else if (_currentTab == TabItem.games) {
-              page = GamesNavigator(navigatorKey: _navigatorKeys[TabItem.games]);
-            } else if (_currentTab == TabItem.settings) {
-              page = SettingsNavigator(navigatorKey: _navigatorKeys[TabItem.settings]);
-            }
-//          }
-
-//          if (state.token != null) {
-            bottomNavigation = BottomNavigation(
-              currentTab: _currentTab,
-              onSelectTab: _selectTab,
-            );
-//          }
-
-          if (apiUrlDownloaded) {
-            return Scaffold(
-              body: page,
-              bottomNavigationBar: bottomNavigation,
-            );
-          }
-
-          return Scaffold(
-            backgroundColor: Colors.white,
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-    );
   }
 
   void _selectTab(TabItem tabItem) {

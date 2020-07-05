@@ -2,13 +2,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
-import 'package:lingua_flutter/helpers/api.dart';
 import 'package:lingua_flutter/widgets/pronunciation.dart';
 import 'package:lingua_flutter/widgets/prompts.dart';
 import 'package:lingua_flutter/screens/search/router.dart';
 import 'package:lingua_flutter/screens/search/translation_view/bloc/bloc.dart';
 import 'package:lingua_flutter/screens/search/translation_view/bloc/events.dart';
+import 'package:lingua_flutter/widgets/resizable_image.dart';
 
 import 'model/item.dart';
 import 'model/list.dart';
@@ -197,9 +198,12 @@ class TranslationsListItemWidget extends StatelessWidget {
         child: ListTile(
           leading: Container(
             width: SizeUtil.vmax(50),
-            child: Image.network(
-              '${getApiUri()}${translationItem.image}?${translationItem.updatedAt}',
-              fit: BoxFit.fitHeight,
+            child: ResizableImage(
+              width: SizeUtil.vmax(150),
+              height: SizeUtil.vmax(150),
+              imageSource: translationItem.image,
+              updatedAt: translationItem.updatedAt,
+              isLocal: db != null,
             ),
           ),
           title: Container(

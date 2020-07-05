@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
 import 'package:lingua_flutter/widgets/prompts.dart';
@@ -34,6 +35,7 @@ class _TranslationViewState extends State<TranslationView> {
   int wordId;
   String imageSearchWord;
   String translationWord;
+  bool menuDisabled = false;
 
   @override
   void initState() {
@@ -66,10 +68,9 @@ class _TranslationViewState extends State<TranslationView> {
           ),
           elevation: 0,
           actions: <Widget>[
-            //Add the dropdown widget to the `Action` part of our appBar. it can also be among the `leading` part
             PopupMenuButton<Menu>(
               icon: Icon(Icons.more_vert),
-              enabled: wordId != null,
+              enabled: !menuDisabled,
               onSelected: (Menu item) async {
                 if (item.id == 'remove') {
                   final bool removeAccepted = await wordRemovePrompt(context, appBarTitle, () {
@@ -97,7 +98,7 @@ class _TranslationViewState extends State<TranslationView> {
                 }
               },
               itemBuilder: (BuildContext context) {
-                if (wordId == null) {
+                if (menuDisabled) {
                   return null;
                 }
 
@@ -130,6 +131,7 @@ class _TranslationViewState extends State<TranslationView> {
                 appBarTitle = state.word;
                 wordId = state.id;
                 appBarTitleUpdated = true;
+                menuDisabled = wordId == null || (db != null && state.remote);
               });
             }
 
@@ -159,7 +161,8 @@ class _TranslationViewState extends State<TranslationView> {
                               : state.translationWord
                       ),
                       pronunciation: state.pronunciation,
-                      image: state.imageUrl,
+                      imageUrl: state.imageUrl,
+                      image: state.image,
                       createdAt: state.createdAt,
                       updatedAt: '${new DateTime.now().millisecondsSinceEpoch}',
                     )

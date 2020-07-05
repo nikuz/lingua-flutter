@@ -55,12 +55,13 @@ class TranslationLoaded extends TranslationState {
   final bool saveLoading;
   final bool saveSuccess;
   final List<dynamic> raw;
+  final bool remote;
 
   TranslationLoaded({
     @required this.id,
     @required this.word,
     @required this.translationWord,
-    @required this.translationOwn,
+    this.translationOwn,
     @required this.pronunciation,
     @required this.image,
     this.imageUrl,
@@ -78,6 +79,7 @@ class TranslationLoaded extends TranslationState {
     @required this.createdAt,
     @required this.updatedAt,
     @required this.raw,
+    @required this.remote,
     this.updateLoading,
     this.updateSuccess,
     this.saveLoading,
@@ -104,7 +106,7 @@ class TranslationLoaded extends TranslationState {
       translationOwn: translationOwn ?? this.translationOwn,
       pronunciation: this.pronunciation,
       imageUrl: this.imageUrl == null ? this.image : this.imageUrl,
-      image: image ?? (images != null ? images[0] : this.image),
+      image: image ?? (images != null && images.length != 0 ? images[0] : this.image),
       imageUpdate: imageUpdate ?? this.imageUpdate,
       imageLoading: imageLoading ?? this.imageLoading,
       images: images ?? this.images,
@@ -123,6 +125,7 @@ class TranslationLoaded extends TranslationState {
       saveLoading: saveLoading ?? this.saveLoading,
       saveSuccess: saveSuccess ?? this.saveSuccess,
       raw: this.raw,
+      remote: this.remote,
     );
   }
 
@@ -150,6 +153,7 @@ class TranslationLoaded extends TranslationState {
     saveLoading,
     saveSuccess,
     raw,
+    remote,
   ];
 
   @override

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/app_config.dart';
 import 'package:lingua_flutter/widgets/prompts.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
+import 'package:lingua_flutter/helpers/db.dart';
 
 import 'bloc/bloc.dart';
 import 'bloc/state.dart';
@@ -114,6 +115,11 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
                       ) {
                         _settingsBloc.add(SettingsDownloadDictionaryInfo());
                       }
+                      if (value && db == null) {
+                        dbOpen();
+                      } else if (!value && db != null) {
+                        dbClose();
+                      }
                     }
                   );
 
@@ -202,7 +208,7 @@ class SettingsCheckbox extends StatelessWidget {
     @required this.id,
     @required this.title,
     @required this.value,
-    @required this.onChange,
+    this.onChange,
   });
 
   @override

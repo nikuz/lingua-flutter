@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/utils/sizes.dart';
-import 'package:lingua_flutter/utils/images.dart';
+import 'package:lingua_flutter/utils/convert.dart';
 
 import 'bloc/bloc.dart';
 import 'bloc/events.dart';
@@ -74,7 +74,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                           ),
                           child: Center(
                             child: FlatButton(
-                              child: Image.memory(getImageBytesFrom64String(imageSource)),
+                              child: Image.memory(getBytesFrom64String(imageSource)),
                               onPressed: () {
                                 _translationBloc.add(
                                     TranslationSelectImage(imageSource)

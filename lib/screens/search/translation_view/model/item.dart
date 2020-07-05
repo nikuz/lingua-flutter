@@ -9,6 +9,7 @@ class Translation extends Equatable {
   final List<dynamic> raw;
   final String createdAt;
   final String updatedAt;
+  final bool remote;
 
   const Translation({
     this.id,
@@ -19,6 +20,7 @@ class Translation extends Equatable {
     this.raw,
     this.createdAt,
     this.updatedAt,
+    this.remote,
   });
 
   @override
@@ -31,6 +33,7 @@ class Translation extends Equatable {
     raw,
     createdAt,
     updatedAt,
+    remote,
   ];
 
   @override

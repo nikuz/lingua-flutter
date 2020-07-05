@@ -6,6 +6,9 @@ import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:lingua_flutter/helpers/api.dart';
+import 'package:lingua_flutter/helpers/db.dart';
+import 'package:lingua_flutter/controllers/translate.dart';
+
 import '../model/item.dart';
 import 'events.dart';
 import 'state.dart';
@@ -82,6 +85,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
           autoSpellingFix: autoSpellingFix,
           strangeWord: strangeWord,
           raw: translation.raw,
+          remote: translation.remote,
         );
       } on ApiException catch (e) {
         yield TranslationError(e);
@@ -176,13 +180,21 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
   }
 
   Future<Translation> _fetchTranslation(String word) async {
-    final Map<String, dynamic> response = await apiGet(
-        client: httpClient,
-        url: '/translate',
-        params: {
-          'q': '$word',
-        }
-    );
+    Map<String, dynamic> response;
+
+    if (db != null) {
+      response = await translateControllerGet(word);
+    }
+
+    if (response == null) {
+      response = await apiGet(
+          client: httpClient,
+          url: '/translate',
+          params: {
+            'q': '$word',
+          }
+      );
+    }
 
     return Translation(
       id: response['id'],
@@ -193,6 +205,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
       raw: response['raw'],
       createdAt: response['created_at'],
       updatedAt: response['updated_at'],
+      remote: response['remote'] == true,
     );
   }
 
@@ -215,17 +228,25 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     String image,
     List<dynamic> raw,
   }) async {
-    await apiPost(
-        client: httpClient,
-        url: '/translate',
-        params: {
-          'word': '$word',
-          'translation': '$translation',
-          'pronunciationURL': '$pronunciationURL',
-          'image': '$image',
-          'raw': jsonEncode(raw),
-        }
-    );
+    final Map<String, String> params = {
+      'word': '$word',
+      'translation': '$translation',
+      'pronunciationURL': '$pronunciationURL',
+      'image': '$image',
+      'raw': jsonEncode(raw),
+    };
+
+    if (image.indexOf('data:image') == 0) {
+      await apiPost(
+          client: httpClient,
+          url: '/translate',
+          params: params
+      );
+    }
+
+    if (db != null) {
+      await translateControllerSave(params);
+    }
 
     return true;
   }
@@ -235,15 +256,21 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     String translation,
     String image,
   }) async {
-    await apiPut(
-        client: httpClient,
-        url: '/translate',
-        params: {
-          'word': '$word',
-          'image': '${image != null ? image : ''}',
-          'translation': '$translation',
-        }
-    );
+    final Map<String, String> params = {
+      'word': '$word',
+      'image': '${image != null ? image : ''}',
+      'translation': '$translation',
+    };
+
+    if (db != null) {
+      await translateControllerUpdate(params);
+    } else {
+      await apiPut(
+          client: httpClient,
+          url: '/translate',
+          params: params
+      );
+    }
 
     return true;
   }
