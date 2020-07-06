@@ -224,8 +224,9 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
       );
     }
 
+    final bool remote = state.remote;
     final bool newWord = state.id == null;
-    bool translationSavedOnlyRemotely = db != null && state.remote;
+    bool translationSavedOnlyRemotely = db != null && remote;
     bool toSave = newWord || imageUpdate || translationUpdate || translationSavedOnlyRemotely;
     IconData iconName = Icons.check;
     if (newWord || translationSavedOnlyRemotely) {
@@ -264,6 +265,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                       color: Colors.blue,
                       size: SizeUtil.vmax(45),
                       autoPlay: state.settings['pronunciationAutoPlay'],
+                      isLocal: !remote,
                     );
                   }
 

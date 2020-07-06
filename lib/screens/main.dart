@@ -5,8 +5,9 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/app_config.dart' as appConfig;
-import 'package:lingua_flutter/utils/sizes.dart';
 import 'package:lingua_flutter/helpers/db.dart';
+import 'package:lingua_flutter/utils/sizes.dart';
+import 'package:lingua_flutter/utils/connectivity.dart';
 
 import './settings/home/bloc/bloc.dart';
 import './settings/home/bloc/events.dart';
@@ -92,6 +93,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   bool apiUrlDownloaded = false;
   TabItem _currentTab = TabItem.search;
   Timer timer;
+  var _networkChangeSubscription;
 
   Map<TabItem, GlobalKey<NavigatorState>> _navigatorKeys = {
     TabItem.search: GlobalKey<NavigatorState>(),
@@ -104,7 +106,14 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     BlocProvider.of<SettingsBloc>(context).add(SettingsGet());
-//    BlocProvider.of<LoginBloc>(context).add(LoginCheck());
+    _networkChangeSubscription = subscribeToNetworkChange((bool result) {
+      if (result) {
+        _setApiUrlUpdateTimer();
+      } else {
+        timer.cancel();
+      }
+    });
+    //    BlocProvider.of<LoginBloc>(context).add(LoginCheck());
   }
 
   @override
@@ -122,6 +131,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   void dispose() {
     timer.cancel();
     WidgetsBinding.instance.removeObserver(this);
+    _networkChangeSubscription.cancel();
     super.dispose();
   }
 

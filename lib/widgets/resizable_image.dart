@@ -27,7 +27,7 @@ class ResizableImage extends StatefulWidget {
 
 class _ResizableImageState extends State<ResizableImage> {
   String imageBaseUrl;
-  bool isBase64Image;
+  bool isBase64Image = false;
 
   @override
   void initState() {
@@ -52,7 +52,7 @@ class _ResizableImageState extends State<ResizableImage> {
       if (widget.isLocal && db != null && imageBaseUrl != null) {
         image = Image.file(
           File('$imageBaseUrl${widget.imageSource}'),
-          fit: BoxFit.fitHeight,
+          fit: BoxFit.contain,
         );
       } else if (!widget.isLocal) {
         image = CachedNetworkImage(
@@ -70,7 +70,9 @@ class _ResizableImageState extends State<ResizableImage> {
   }
 
   void _isBase64Image() {
-    isBase64Image = widget.imageSource.indexOf('data:image') == 0;
+    if (widget.imageSource != null) {
+      isBase64Image = widget.imageSource.indexOf('data:image') == 0;
+    }
   }
 
   void _getImageBaseUrl() async {

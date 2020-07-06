@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
+import 'package:lingua_flutter/utils/connectivity.dart';
 import 'package:lingua_flutter/widgets/prompts.dart';
 
 import 'package:lingua_flutter/screens/search/router.dart';
@@ -36,6 +37,7 @@ class _TranslationViewState extends State<TranslationView> {
   String imageSearchWord;
   String translationWord;
   bool menuDisabled = false;
+  bool _hasInternetConnection = false;
 
   @override
   void initState() {
@@ -43,6 +45,7 @@ class _TranslationViewState extends State<TranslationView> {
     _translationBloc = BlocProvider.of<TranslationBloc>(context);
     _translationBloc.add(TranslationRequest(widget.word));
     appBarTitle = widget.word;
+    _getInternetConnectionStatus();
   }
 
   @override
@@ -100,6 +103,16 @@ class _TranslationViewState extends State<TranslationView> {
               itemBuilder: (BuildContext context) {
                 if (menuDisabled) {
                   return null;
+                }
+
+                List<Menu> menuList = <Menu>[
+                  const Menu(id: 'image', title: 'Change Image'),
+                  const Menu(id: 'translation', title: 'Change Translation'),
+                  const Menu(id: 'remove', title: 'Remove'),
+                ];
+
+                if (!_hasInternetConnection) {
+                  menuList.removeAt(0);
                 }
 
                 return menuList.map((Menu item) {
@@ -228,6 +241,13 @@ class _TranslationViewState extends State<TranslationView> {
       ),
     );
   }
+
+  void _getInternetConnectionStatus() async {
+    bool connection = await isInternetConnected();
+    setState(() {
+      _hasInternetConnection = connection;
+    });
+  }
 }
 
 class Menu {
@@ -236,9 +256,3 @@ class Menu {
 
   const Menu({this.id, this.title});
 }
-
-const List<Menu> menuList = const <Menu>[
-  const Menu(id: 'image', title: 'Change Image'),
-  const Menu(id: 'translation', title: 'Change Translation'),
-  const Menu(id: 'remove', title: 'Remove'),
-];

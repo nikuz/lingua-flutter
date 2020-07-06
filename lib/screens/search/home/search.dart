@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/utils/sizes.dart';
+import 'package:lingua_flutter/utils/connectivity.dart';
 import 'package:lingua_flutter/screens/search/router.dart';
 import 'package:lingua_flutter/screens/search/translation_view/bloc/bloc.dart';
 import 'package:lingua_flutter/screens/search/translation_view/bloc/state.dart';
@@ -18,16 +19,24 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
   final _textController = TextEditingController();
   TranslationsBloc _translationsBloc;
+  bool _hasInternetConnection = false;
+  var _networkChangeSubscription;
 
   @override
   void initState() {
     super.initState();
     _translationsBloc = BlocProvider.of<TranslationsBloc>(context);
+    _getInternetConnectionStatus();
+    _networkChangeSubscription = subscribeToNetworkChange((bool result) {
+      _hasInternetConnection = result;
+    });
   }
 
   @override
   void dispose() {
     _textController.dispose();
+    _networkChangeSubscription.cancel();
+
     super.dispose();
   }
 
@@ -44,7 +53,7 @@ class _SearchState extends State<Search> {
         child: TextField(
           controller: _textController,
           autocorrect: false,
-          textInputAction: TextInputAction.search,
+          textInputAction: _hasInternetConnection ? TextInputAction.search : TextInputAction.done,
           onChanged: (text) {
             if (text.length > 1) {
               _translationsBloc.add(TranslationsSearch(text));
@@ -53,7 +62,7 @@ class _SearchState extends State<Search> {
             }
           },
           onSubmitted: (String value) {
-            if (value.length > 1) {
+            if (_hasInternetConnection && value.length > 1) {
               BlocProvider.of<TranslationBloc>(context).add(TranslationClear());
               Navigator.pushNamed(
                 context,
@@ -100,5 +109,12 @@ class _SearchState extends State<Search> {
         ),
       ),
     );
+  }
+
+  void _getInternetConnectionStatus() async {
+    bool connection = await isInternetConnected();
+    setState(() {
+      _hasInternetConnection = connection;
+    });
   }
 }

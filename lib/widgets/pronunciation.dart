@@ -6,6 +6,7 @@ import 'package:audioplayers/audioplayers.dart';
 
 import 'package:lingua_flutter/app_config.dart' as appConfig;
 import 'package:lingua_flutter/helpers/api.dart';
+import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
 import 'package:lingua_flutter/utils/convert.dart';
 import 'package:lingua_flutter/utils/files.dart';
@@ -19,6 +20,7 @@ class PronunciationWidget extends StatefulWidget {
   final double size;
   final Color color;
   final bool autoPlay;
+  final bool isLocal;
 
   const PronunciationWidget({
     Key key,
@@ -26,6 +28,7 @@ class PronunciationWidget extends StatefulWidget {
     this.size,
     this.color,
     this.autoPlay,
+    this.isLocal,
   }) : super(key: key);
 
   @override
@@ -51,7 +54,11 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
       final File file = File(filePath);
       await file.writeAsBytes(fileBytes);
       await _audioPlayer.play(filePath, isLocal:true);
-    } else if (!widget.pronunciationUrl.contains('http')) {
+    } else if (widget.isLocal && db != null) {
+      String dir = await getDocumentsPath();
+      pronunciationUrl = '$dir${widget.pronunciationUrl}';
+      await _audioPlayer.play(pronunciationUrl, isLocal:true);
+    } else if (!widget.isLocal && !widget.pronunciationUrl.contains('http')) {
       pronunciationUrl = '${getApiUri()}${widget.pronunciationUrl}';
       await _audioPlayer.play(pronunciationUrl);
     } else {

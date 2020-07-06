@@ -221,7 +221,10 @@ class TranslationsListItemWidget extends StatelessWidget {
             ),
           ),
           dense: true,
-          trailing: PronunciationWidget(pronunciationUrl: translationItem.pronunciation),
+          trailing: PronunciationWidget(
+            pronunciationUrl: translationItem.pronunciation,
+            isLocal: db != null,
+          ),
           onTap: () {
             BlocProvider.of<TranslationBloc>(context).add(TranslationClear());
             Navigator.pushNamed(

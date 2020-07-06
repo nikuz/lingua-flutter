@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:flutter/painting.dart' as painting;
 import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/helpers/files.dart';
 import 'package:lingua_flutter/utils/db.dart';
@@ -176,6 +177,7 @@ Future<void> translateControllerUpdate(Map<String, dynamic> params) async {
     if (image.existsSync()) {
       image.deleteSync();
     }
+    painting.imageCache.clear();
 
     String fileId = getFileId(translationData['id'], params['word']);
     final RegExp imageReg = new RegExp(r'^data:image/(jpeg|png|jpg);base64,(.+)$');
