@@ -106,7 +106,8 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     BlocProvider.of<SettingsBloc>(context).add(SettingsGet());
-    _networkChangeSubscription = subscribeToNetworkChange((bool result) {
+    _networkChangeSubscription = initiateNetworkChangeSubscription();
+    subscribeToNetworkChange('main', (bool result) {
       if (result) {
         _setApiUrlUpdateTimer();
       } else {
@@ -132,6 +133,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     timer.cancel();
     WidgetsBinding.instance.removeObserver(this);
     _networkChangeSubscription.cancel();
+    unsubscribeFromNetworkChange('main');
     super.dispose();
   }
 

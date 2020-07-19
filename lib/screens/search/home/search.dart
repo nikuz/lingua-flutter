@@ -20,14 +20,13 @@ class _SearchState extends State<Search> {
   final _textController = TextEditingController();
   TranslationsBloc _translationsBloc;
   bool _hasInternetConnection = false;
-  var _networkChangeSubscription;
 
   @override
   void initState() {
     super.initState();
     _translationsBloc = BlocProvider.of<TranslationsBloc>(context);
     _getInternetConnectionStatus();
-    _networkChangeSubscription = subscribeToNetworkChange((bool result) {
+    subscribeToNetworkChange('search', (bool result) {
       _hasInternetConnection = result;
     });
   }
@@ -35,7 +34,7 @@ class _SearchState extends State<Search> {
   @override
   void dispose() {
     _textController.dispose();
-    _networkChangeSubscription.cancel();
+    unsubscribeFromNetworkChange('search');
 
     super.dispose();
   }
