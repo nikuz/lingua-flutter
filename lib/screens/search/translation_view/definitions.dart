@@ -117,7 +117,7 @@ class DefinitionsItem extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               border: Border.all(
-                color: Color.fromRGBO(0, 0, 0, 0.38),
+                color: Theme.of(context).textTheme.headline2.color,
                 width: SizeUtil.vmax(1),
                 style: BorderStyle.solid
               ),
@@ -141,12 +141,11 @@ class DefinitionsItem extends StatelessWidget {
                 Text(
                   definition,
                   style: TextStyle(
-                    color: Color.fromRGBO(34, 34, 34, 1),
                     fontSize: SizeUtil.vmax(17),
                   ),
                 ),
-                _getExample(example),
-                _getSynonymsList(synonyms),
+                _getExample(context, example),
+                _getSynonymsList(context, synonyms),
               ],
             ),
           ),
@@ -155,14 +154,14 @@ class DefinitionsItem extends StatelessWidget {
     );
   }
 
-  Widget _getExample(final String example) {
+  Widget _getExample(BuildContext context, final String example) {
     if (example != null) {
       return Container(
         margin: EdgeInsets.only(top: SizeUtil.vmax(5)),
         child: Text(
           example,
           style: TextStyle(
-            color: Color.fromRGBO(0, 0, 0, 0.54),
+            color: Theme.of(context).textTheme.headline1.color,
             fontSize: SizeUtil.vmax(15),
           ),
         ),
@@ -172,7 +171,7 @@ class DefinitionsItem extends StatelessWidget {
     return Container(width: 0, height: 0);
   }
 
-  Widget _getSynonymsList(List<dynamic> synonyms) {
+  Widget _getSynonymsList(BuildContext context, List<dynamic> synonyms) {
     if (synonyms == null) {
       return Container(width: 0, height: 0);
     }
@@ -216,7 +215,7 @@ class DefinitionsItem extends StatelessWidget {
           child: Text(
             'Synonyms',
             style: TextStyle(
-              color: Color.fromRGBO(0, 0, 0, 0.54),
+              color: Theme.of(context).hintColor,
               fontSize: SizeUtil.vmax(15),
             ),
           ),

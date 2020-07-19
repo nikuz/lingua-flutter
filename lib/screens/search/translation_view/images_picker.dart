@@ -45,7 +45,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
+      backgroundColor: Theme.of(context).primaryColor,
       body: SafeArea(
         bottom: false,
         child: BlocBuilder<TranslationBloc, TranslationState>(
@@ -67,7 +67,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                         final bool isActive = state.image == imageSource;
                         return Container(
                           key: isActive ? itemKey : Key(index.toString()),
-                          color: isActive ? Colors.greenAccent : Colors.white,
+                          color: isActive ? Colors.greenAccent : Theme.of(context).scaffoldBackgroundColor,
                           padding: EdgeInsets.only(
                             top: SizeUtil.vmax(10),
                             bottom: SizeUtil.vmax(10),
@@ -94,7 +94,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                 children: <Widget>[
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).scaffoldBackgroundColor,
                       border: Border(
                         bottom: BorderSide(
                           color: Color.fromRGBO(0, 0, 0, 0.1),
@@ -137,7 +137,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                             ),
                             style: TextStyle(
                               fontSize: SizeUtil.vmax(20),
-                              color: Colors.black
+//                              color: Colors.black
                             ),
                           ),
                         ),
@@ -161,7 +161,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                   ),
                   Expanded(
                     child: Container(
-                      color: Colors.white,
+                      color: Theme.of(context).scaffoldBackgroundColor,
                       child: imagesList
                     ),
                   ),

@@ -39,7 +39,7 @@ class TranslationViewCategory extends StatelessWidget {
               '${categoryName[0].toUpperCase()}${categoryName.substring(1)}',
               style: TextStyle(
                 fontSize: SizeUtil.vmax(16),
-                color: Color.fromRGBO(66, 133, 224, 1),
+                color: Theme.of(context).buttonTheme.colorScheme.secondaryVariant,
               ),
             ),
           ),

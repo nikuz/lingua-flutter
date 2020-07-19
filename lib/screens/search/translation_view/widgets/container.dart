@@ -55,7 +55,7 @@ class _TranslationViewContainerState extends State<TranslationViewContainer> {
             padding: EdgeInsets.all(SizeUtil.vmax(10)),
             decoration: BoxDecoration(
               border: Border.all(
-                color: Color.fromRGBO(218, 220, 224, 1),
+                color: Theme.of(context).dividerColor,
                 width: SizeUtil.vmax(1),
                 style: BorderStyle.solid
               ),
@@ -72,7 +72,7 @@ class _TranslationViewContainerState extends State<TranslationViewContainer> {
                       '${widget.entity[0].toUpperCase()}${widget.entity.substring(1)} of ',
                       style: TextStyle(
                         fontSize: SizeUtil.vmax(16),
-                        color: Color.fromRGBO(119, 119, 119, 1),
+                        color: Theme.of(context).hintColor,
                       ),
                     ),
                     Container(
@@ -81,7 +81,7 @@ class _TranslationViewContainerState extends State<TranslationViewContainer> {
                         widget.title,
                         style: TextStyle(
                           fontSize: SizeUtil.vmax(16),
-                          color: Color.fromRGBO(34, 34, 34, 1),
+                          color: Theme.of(context).hintColor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

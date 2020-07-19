@@ -69,7 +69,6 @@ class _TranslationsListState extends State<TranslationsList> {
 
           if (state.translations.isNotEmpty) {
             return Container(
-              color: Colors.white,
               child: RefreshIndicator(
                 onRefresh: () {
                   if (state is TranslationsLoaded && state.search != null) {
@@ -191,7 +190,7 @@ class TranslationsListItemWidget extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: withBorder ? Color.fromRGBO(0, 0, 0, 0.1) : Color.fromRGBO(0, 0, 0, 0.0),
+              color: withBorder ? Theme.of(context).dividerColor : Color.fromRGBO(0, 0, 0, 0.0),
             ),
           ),
         ),

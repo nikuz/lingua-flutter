@@ -8,6 +8,7 @@ import 'package:lingua_flutter/app_config.dart' as appConfig;
 import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
 import 'package:lingua_flutter/utils/connectivity.dart';
+import 'package:lingua_flutter/widgets/api_key_screen.dart';
 
 import './settings/home/bloc/bloc.dart';
 import './settings/home/bloc/events.dart';
@@ -91,8 +92,9 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   bool apiUrlDownloaded = false;
+  bool apiKeySet = appConfig.kIsWeb ? false : true;
   TabItem _currentTab = TabItem.search;
-  Timer timer;
+  Timer _getApiUrlTimer;
   var _networkChangeSubscription;
 
   Map<TabItem, GlobalKey<NavigatorState>> _navigatorKeys = {
@@ -110,8 +112,8 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     subscribeToNetworkChange('main', (bool result) {
       if (result) {
         _setApiUrlUpdateTimer();
-      } else {
-        timer.cancel();
+      } else if (_getApiUrlTimer != null) {
+        _getApiUrlTimer.cancel();
       }
     });
     //    BlocProvider.of<LoginBloc>(context).add(LoginCheck());
@@ -119,18 +121,16 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (kReleaseMode) {
-      if (state == AppLifecycleState.resumed) {
-        _setApiUrlUpdateTimer();
-      } else {
-        timer.cancel();
-      }
+    if (state == AppLifecycleState.resumed) {
+      _setApiUrlUpdateTimer();
+    } else {
+      _getApiUrlTimer.cancel();
     }
   }
 
   @override
   void dispose() {
-    timer.cancel();
+    _getApiUrlTimer.cancel();
     WidgetsBinding.instance.removeObserver(this);
     _networkChangeSubscription.cancel();
     unsubscribeFromNetworkChange('main');
@@ -148,10 +148,8 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
               if (state.settings['offlineMode']) {
                 await dbOpen();
               }
-              if (kReleaseMode && timer == null) {
+              if (_getApiUrlTimer == null) {
                 _setApiUrlUpdateTimer();
-              } else {
-                _setApiUrl(appConfig.getApiDebugUrl());
               }
             }
           },
@@ -187,6 +185,14 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
             );
 //          }
 
+            if (apiUrlDownloaded && !apiKeySet) {
+              return ApiKeyScreen(() {
+                setState(() {
+                  apiKeySet = true;
+                });
+              });
+            }
+
             if (apiUrlDownloaded) {
               return Scaffold(
                 body: page,
@@ -195,7 +201,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
             }
 
             return Scaffold(
-              backgroundColor: Colors.white,
               body: Center(
                 child: CircularProgressIndicator(),
               ),
@@ -205,21 +210,32 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     );
   }
 
-  _setApiUrlUpdateTimer() {
+  void _setApiUrlUpdateTimer() {
     _getApiUrl();
-    timer = new Timer.periodic(Duration(minutes: 1), (Timer t) => _getApiUrl());
+    _getApiUrlTimer = new Timer.periodic(Duration(minutes: 1), (Timer t) => _getApiUrl());
   }
 
-  _getApiUrl() async {
-    final response = await http.get(appConfig.apiGetterUrl);
-    if (response.statusCode == 200) {
-      _setApiUrl(response.body);
+  void _getApiUrl() async {
+    if (kReleaseMode) {
+      final response = await http.get(appConfig.apiGetterUrl);
+      if (response.statusCode == 200) {
+        _setApiUrl(response.body);
+      } else {
+        throw Exception('Can\'t get API url');
+      }
     } else {
-      throw Exception('Can\'t get API url');
+      _setApiUrl(appConfig.getApiDebugUrl());
+    }
+
+    String apiKey = await appConfig.getApiKey();
+    if (apiKey != null && !apiKeySet) {
+      setState(() {
+        apiKeySet = true;
+      });
     }
   }
 
-  _setApiUrl(String apiUrl) {
+  void _setApiUrl(String apiUrl) {
     final bool initialUpdate = appConfig.apiUrl == null;
     if (apiUrl != appConfig.apiUrl) {
       appConfig.apiUrl = apiUrl;

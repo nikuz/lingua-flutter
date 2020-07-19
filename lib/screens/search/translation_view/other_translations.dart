@@ -148,9 +148,9 @@ class OtherTranslationsItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
-                _getFrequencyBarItem(true, screenWidth),
-                _getFrequencyBarItem(frequency != null && frequency > 0.001, screenWidth),
-                _getFrequencyBarItem(frequency != null && frequency > 0.1, screenWidth),
+                _getFrequencyBarItem(context, true, screenWidth),
+                _getFrequencyBarItem(context, frequency != null && frequency > 0.001, screenWidth),
+                _getFrequencyBarItem(context, frequency != null && frequency > 0.1, screenWidth),
               ],
             ),
           ),
@@ -179,14 +179,14 @@ class OtherTranslationsItem extends StatelessWidget {
     );
   }
 
-  Widget _getFrequencyBarItem(bool active, double screenWidth) {
+  Widget _getFrequencyBarItem(BuildContext context, bool active, double screenWidth) {
     return Container(
       width: screenWidth * 0.02,
       height: SizeUtil.vmax(3),
       margin: EdgeInsets.only(right: screenWidth * 0.002),
       decoration: BoxDecoration(
         color: active
-          ? Color.fromRGBO(66, 133, 224, 1)
+          ? Theme.of(context).buttonTheme.colorScheme.secondaryVariant
           : Color.fromRGBO(218, 220, 224, 1),
         borderRadius: BorderRadius.all(Radius.circular(SizeUtil.vmax(1))),
       ),

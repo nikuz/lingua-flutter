@@ -48,7 +48,6 @@ class _SearchState extends State<Search> {
         }
       },
       child: Container(
-        color: Colors.white,
         child: TextField(
           controller: _textController,
           autocorrect: false,
@@ -83,7 +82,6 @@ class _SearchState extends State<Search> {
             ),
             suffixIcon: GestureDetector(
               child: Container(
-                color: Color.fromRGBO(255, 255, 255, 0),
                 child: Icon(
                   Icons.clear,
                   size: SizeUtil.vmax(25),
@@ -103,7 +101,6 @@ class _SearchState extends State<Search> {
           ),
           style: TextStyle(
             fontSize: SizeUtil.vmax(20),
-            color: Colors.black
           ),
         ),
       ),

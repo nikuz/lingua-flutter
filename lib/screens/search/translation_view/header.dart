@@ -72,7 +72,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
           }
 
           return Container(
-            color: Colors.blue,
+            color: Theme.of(context).primaryColor,
             width: double.infinity,
             padding: EdgeInsets.only(
               left: SizeUtil.vmax(10),

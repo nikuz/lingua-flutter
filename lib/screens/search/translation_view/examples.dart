@@ -71,7 +71,6 @@ class ExamplesItem extends StatelessWidget {
               data: """$text""",
               defaultTextStyle: TextStyle(
                 fontSize: SizeUtil.vmax(16),
-                color: Color.fromRGBO(0, 0, 0, 0.89),
               ),
             ),
           ),

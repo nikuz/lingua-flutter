@@ -34,14 +34,14 @@ class _TranslationViewOwnTranslationState extends State<TranslationViewOwnTransl
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
+      backgroundColor: Theme.of(context).primaryColor,
       body: SafeArea(
         bottom: false,
         child: Column(
             children: <Widget>[
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).scaffoldBackgroundColor,
                   border: Border(
                     bottom: BorderSide(
                       color: Color.fromRGBO(0, 0, 0, 0.1),
@@ -81,7 +81,6 @@ class _TranslationViewOwnTranslationState extends State<TranslationViewOwnTransl
                         ),
                         style: TextStyle(
                           fontSize: SizeUtil.vmax(20),
-                          color: Colors.black
                         ),
                       ),
                     ),

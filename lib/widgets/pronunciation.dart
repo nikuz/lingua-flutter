@@ -117,7 +117,7 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
       height: size + SizeUtil.vmax(20),
       padding: EdgeInsets.all(0),
       child: FlatButton(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         shape: new RoundedRectangleBorder(
           borderRadius: new BorderRadius.all(
             Radius.circular(size),

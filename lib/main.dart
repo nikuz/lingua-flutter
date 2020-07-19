@@ -45,7 +45,9 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'Lingua',
       theme: ThemeData(fontFamily: 'Montserrat'),
+      darkTheme: ThemeData.dark(),
       home: MainScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

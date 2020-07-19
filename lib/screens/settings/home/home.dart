@@ -28,9 +28,7 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
         title: Text('Settings'),
       ),
       body: SafeArea(

@@ -24,7 +24,7 @@ class ExpandButton extends StatelessWidget {
         ),
       ),
       padding: EdgeInsets.all(SizeUtil.vmax(3)),
-      color: Color.fromRGBO(26, 88, 136, 1),
+      color: Theme.of(context).buttonTheme.colorScheme.secondaryVariant,
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       child: Row( // Replace with a Row for horizontal icon + text
         children: <Widget>[
@@ -32,7 +32,7 @@ class ExpandButton extends StatelessWidget {
             margin: EdgeInsets.only(right: SizeUtil.vmax(10)),
             child: Icon(
               expanded ? Icons.expand_less : Icons.expand_more,
-              color: Colors.white,
+              color: Theme.of(context).selectedRowColor,
               size: SizeUtil.vmax(25),
             ),
           ),
@@ -41,7 +41,7 @@ class ExpandButton extends StatelessWidget {
               ? 'Show less $entity'
               : 'Show more $amount $entity',
             style: TextStyle(
-              color: Colors.white,
+              color: Theme.of(context).selectedRowColor,
               fontSize: SizeUtil.vmax(15),
             ),
           )
