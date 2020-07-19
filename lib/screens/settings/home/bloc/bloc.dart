@@ -26,11 +26,15 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     final currentState = state;
     if (event is SettingsGet) {
       final bool pronunciationAutoPlay = prefs.getBool('pronunciationAutoPlay') ?? true;
+      final bool darkModeEnabled = prefs.getBool('darkModeEnabled') ?? false;
+      final bool autoDarkMode = prefs.getBool('autoDarkMode') ?? false;
       final bool offlineMode = prefs.getBool('offlineMode') ?? false;
       final int offlineDictionaryUpdateTime = prefs.getInt('offlineDictionaryUpdateTime');
       final int offlineDictionaryUpdateSize = prefs.getInt('offlineDictionaryUpdateSize');
       yield SettingsLoaded({
         'pronunciationAutoPlay': pronunciationAutoPlay,
+        'darkModeEnabled': darkModeEnabled,
+        'autoDarkMode': autoDarkMode,
         'offlineDictionaryUpdateTime': offlineDictionaryUpdateTime,
         'offlineDictionaryUpdateSize': offlineDictionaryUpdateSize,
         'offlineMode': offlineMode,

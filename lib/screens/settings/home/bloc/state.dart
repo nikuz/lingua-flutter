@@ -11,6 +11,8 @@ class SettingsUninitialized extends SettingsState {
   @override
   List<Object> get props => [{
     'pronunciationAutoPlay': true,
+    'darkModeEnabled': false,
+    'autoDarkMode': false,
     'offlineMode': false,
     'offlineDictionaryUpdateLoading': false,
     'offlineDictionaryUpdateError': false,

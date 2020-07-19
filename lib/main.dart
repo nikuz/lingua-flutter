@@ -9,6 +9,7 @@ import './screens/login/bloc/bloc.dart';
 import './screens/search/home/bloc/bloc.dart';
 import './screens/search/translation_view/bloc/bloc.dart';
 import './screens/settings/home/bloc/bloc.dart';
+import './screens/settings/home/bloc/state.dart';
 
 import './screens/main.dart';
 
@@ -42,12 +43,21 @@ void main() async {
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Lingua',
-      theme: ThemeData(fontFamily: 'Montserrat'),
-      darkTheme: ThemeData.dark(),
-      home: MainScreen(),
-      debugShowCheckedModeBanner: false,
+    return BlocBuilder<SettingsBloc, SettingsState>(
+      builder: (context, state) {
+        return MaterialApp(
+          title: 'Lingua',
+          theme: ThemeData(fontFamily: 'Montserrat'),
+          darkTheme: ThemeData.dark(),
+          themeMode: (
+            state is SettingsLoaded && (state.settings['darkModeEnabled'] || state.settings['autoDarkMode'])
+                ? ThemeMode.dark
+                : ThemeMode.light
+          ),
+          home: MainScreen(),
+          debugShowCheckedModeBanner: false,
+        );
+      },
     );
   }
 }

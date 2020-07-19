@@ -96,6 +96,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   TabItem _currentTab = TabItem.search;
   Timer _getApiUrlTimer;
   var _networkChangeSubscription;
+  SettingsBloc _settingsBloc;
 
   Map<TabItem, GlobalKey<NavigatorState>> _navigatorKeys = {
     TabItem.search: GlobalKey<NavigatorState>(),
@@ -107,7 +108,8 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    BlocProvider.of<SettingsBloc>(context).add(SettingsGet());
+    _settingsBloc = BlocProvider.of<SettingsBloc>(context);
+    _settingsBloc.add(SettingsGet());
     _networkChangeSubscription = initiateNetworkChangeSubscription();
     subscribeToNetworkChange('main', (bool result) {
       if (result) {
@@ -126,6 +128,18 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     } else {
       _getApiUrlTimer.cancel();
     }
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    final Brightness brightness = WidgetsBinding.instance.window.platformBrightness;
+    print(brightness);
+    _settingsBloc.add(SettingsChange(
+      type: 'bool',
+      id: 'autoDarkMode',
+      value: brightness == Brightness.dark,
+      savePrefs: true,
+    ));
   }
 
   @override

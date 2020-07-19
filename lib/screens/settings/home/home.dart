@@ -170,6 +170,11 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
                       title: 'Autoplay pronunciation',
                       value: state.settings['pronunciationAutoPlay'],
                     ),
+                    SettingsCheckbox(
+                      id: 'darkModeEnabled',
+                      title: 'Dark mode',
+                      value: state.settings['darkModeEnabled'],
+                    ),
                     offlineMode,
                     dictionaryUpdateRow,
                   ],
