@@ -60,28 +60,22 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
           }
 
           if (imageSource != null) {
-            image = Container(
-              margin: EdgeInsets.only(
-                top: SizeUtil.vmax(10),
-                bottom: SizeUtil.vmax(10),
-              ),
-              child: ResizableImage(
-                  width: 150,
-                  height: 150,
-                  imageSource: imageSource,
-                  updatedAt: state.updatedAt,
-                  isLocal: !state.remote,
-                  withPreviewOverlay: true,
-                  onTap: () {
-                    if (state.id == null || state.imageUpdate) {
-                      Navigator.pushNamed(
-                        context,
-                        SearchNavigatorRoutes.translation_view_images_picker,
-                        arguments: state.imageSearchWord,
-                      );
-                    }
-                  },
-              ),
+            image = ResizableImage(
+                width: 150,
+                height: 150,
+                imageSource: imageSource,
+                updatedAt: state.updatedAt,
+                isLocal: !state.remote,
+                withPreviewOverlay: state.id != null && !state.imageUpdate,
+                onTap: () {
+                  if (state.id == null || state.imageUpdate) {
+                    Navigator.pushNamed(
+                      context,
+                      SearchNavigatorRoutes.translation_view_images_picker,
+                      arguments: state.imageSearchWord,
+                    );
+                  }
+                },
             );
           }
 
@@ -97,7 +91,17 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Center(child: image),
+                Center(
+                  child: Container(
+                    width: SizeUtil.vmax(150),
+                    height: SizeUtil.vmax(150),
+                    margin: EdgeInsets.only(
+                      top: SizeUtil.vmax(10),
+                      bottom: SizeUtil.vmax(10),
+                    ),
+                    child: image,
+                  ),
+                ),
                 Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,

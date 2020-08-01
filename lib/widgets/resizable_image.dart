@@ -83,7 +83,7 @@ class _ResizableImageState extends State<ResizableImage> {
       child: FlatButton(
         child: image,
         onPressed: () {
-          if (widget.withPreviewOverlay != null) {
+          if (widget.withPreviewOverlay) {
             this._overlayEntry = this._createOverlayEntry();
             Overlay.of(context).insert(this._overlayEntry);
           }
