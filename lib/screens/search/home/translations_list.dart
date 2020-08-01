@@ -144,7 +144,7 @@ class _TranslationsListState extends State<TranslationsList> {
   }
 }
 
-class TranslationsListItemWidget extends StatelessWidget {
+class TranslationsListItemWidget extends StatefulWidget {
   final TranslationsItem translationItem;
   final bool withBorder;
 
@@ -155,9 +155,16 @@ class TranslationsListItemWidget extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _TranslationsListItemWidgetState createState() => _TranslationsListItemWidgetState();
+}
+
+class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget> {
+  bool isSelected = false;
+
+  @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: Key(translationItem.word),
+      key: Key(widget.translationItem.word),
       background: Container(
         color: Colors.red,
         child: Row(
@@ -175,9 +182,9 @@ class TranslationsListItemWidget extends StatelessWidget {
         ),
       ),
       confirmDismiss: (DismissDirection direction) async {
-        return await wordRemovePrompt(context, translationItem.word, () {
+        return await wordRemovePrompt(context, widget.translationItem.word, () {
           BlocProvider.of<TranslationsBloc>(context).add(
-              TranslationsItemRemove(translationItem.id)
+              TranslationsItemRemove(widget.translationItem.id)
           );
         });
       },
@@ -190,38 +197,57 @@ class TranslationsListItemWidget extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: withBorder ? Theme.of(context).dividerColor : Color.fromRGBO(0, 0, 0, 0.0),
+              color: widget.withBorder ? Theme.of(context).dividerColor : Color.fromRGBO(0, 0, 0, 0.0),
             ),
           ),
+          color: isSelected ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor,
         ),
         child: ListTile(
-          leading: Container(
-            width: SizeUtil.vmax(50),
-            child: ResizableImage(
-              width: SizeUtil.vmax(150),
-              height: SizeUtil.vmax(150),
-              imageSource: translationItem.image,
-              updatedAt: translationItem.updatedAt,
-              isLocal: db != null,
-            ),
+          leading: ResizableImage(
+            width: 50,
+            height: 50,
+            imageSource: widget.translationItem.image,
+            updatedAt: widget.translationItem.updatedAt,
+            isLocal: db != null,
+            withPreviewOverlay: true,
+            onTap: () {
+              setState(() {
+                isSelected = true;
+              });
+            },
+            onPreviewClose: () {
+              setState(() {
+                isSelected = false;
+              });
+            }
           ),
           title: Container(
             margin: EdgeInsets.only(bottom: SizeUtil.vmax(2)),
             child: Text(
-              translationItem.word,
-              style: TextStyle(fontSize: SizeUtil.vmax(18)),
+              widget.translationItem.word,
+              style: TextStyle(
+                  fontSize: SizeUtil.vmax(18),
+                  color: isSelected
+                      ? Theme.of(context).accentTextTheme.headline1.color
+                      : Theme.of(context).textTheme.headline1.decorationColor,
+              ),
             ),
           ),
           subtitle: Container(
             margin: EdgeInsets.only(bottom: SizeUtil.vmax(2)),
             child: Text(
-              translationItem.translation,
-              style: TextStyle(fontSize: SizeUtil.vmax(16)),
+              widget.translationItem.translation,
+              style: TextStyle(
+                  fontSize: SizeUtil.vmax(16),
+                  color: isSelected
+                      ? Theme.of(context).accentTextTheme.headline1.color
+                      : Theme.of(context).textTheme.headline1.color,
+              ),
             ),
           ),
           dense: true,
           trailing: PronunciationWidget(
-            pronunciationUrl: translationItem.pronunciation,
+            pronunciationUrl: widget.translationItem.pronunciation,
             isLocal: db != null,
           ),
           onTap: () {
@@ -229,7 +255,7 @@ class TranslationsListItemWidget extends StatelessWidget {
             Navigator.pushNamed(
               context,
               SearchNavigatorRoutes.translation_view,
-              arguments: translationItem.word,
+              arguments: widget.translationItem.word,
             );
           },
         ),

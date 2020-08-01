@@ -57,6 +57,6 @@ class _ApiKeyScreenState extends State<ApiKeyScreen> {
           ),
         ),
       ),
-    );;
+    );
   }
 }

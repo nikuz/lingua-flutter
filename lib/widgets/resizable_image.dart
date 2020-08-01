@@ -5,6 +5,7 @@ import 'package:lingua_flutter/helpers/api.dart';
 import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/utils/convert.dart';
 import 'package:lingua_flutter/utils/files.dart';
+import 'package:lingua_flutter/utils/sizes.dart';
 
 class ResizableImage extends StatefulWidget {
   final double width;
@@ -12,6 +13,9 @@ class ResizableImage extends StatefulWidget {
   final String imageSource;
   final String updatedAt;
   final bool isLocal;
+  final bool withPreviewOverlay;
+  final Function onTap;
+  final Function onPreviewClose;
 
   ResizableImage({
     @required this.width,
@@ -19,6 +23,9 @@ class ResizableImage extends StatefulWidget {
     @required this.imageSource,
     @required this.updatedAt,
     this.isLocal,
+    this.withPreviewOverlay,
+    this.onTap,
+    this.onPreviewClose,
   });
 
   @override
@@ -28,6 +35,7 @@ class ResizableImage extends StatefulWidget {
 class _ResizableImageState extends State<ResizableImage> {
   String imageBaseUrl;
   bool isBase64Image = false;
+  OverlayEntry _overlayEntry;
 
   @override
   void initState() {
@@ -62,10 +70,28 @@ class _ResizableImageState extends State<ResizableImage> {
       }
     }
 
-    return Container(
-      width: widget.width,
-      height: widget.height,
+    image = Container(
+      width: SizeUtil.vmax(widget.width),
+      height: SizeUtil.vmax(widget.height),
       child: image,
+    );
+
+    return ButtonTheme(
+      minWidth: SizeUtil.vmax(widget.width),
+      height: SizeUtil.vmax(widget.height),
+      padding: EdgeInsets.all(0),
+      child: FlatButton(
+        child: image,
+        onPressed: () {
+          if (widget.withPreviewOverlay != null) {
+            this._overlayEntry = this._createOverlayEntry();
+            Overlay.of(context).insert(this._overlayEntry);
+          }
+          if (widget.onTap is Function) {
+            widget.onTap();
+          }
+        },
+      ),
     );
   }
 
@@ -82,5 +108,51 @@ class _ResizableImageState extends State<ResizableImage> {
         imageBaseUrl = newImageBaseUrl;
       });
     }
+  }
+
+  OverlayEntry _createOverlayEntry() {
+    ResizableImage image = ResizableImage(
+      width: 300,
+      height: 300,
+      imageSource: widget.imageSource,
+      updatedAt: widget.updatedAt,
+      isLocal: widget.isLocal,
+    );
+
+    return OverlayEntry(
+        builder: (context) => Material(
+          color: Color.fromRGBO(255, 255, 255, 0.6),
+          elevation: 4.0,
+          child: FlatButton(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Draggable(
+                  maxSimultaneousDrags: 1,
+                  axis: Axis.vertical,
+                  child: image,
+                  feedback: image,
+                  childWhenDragging: Container(),
+                  onDragEnd: (drag) {
+                    if (drag.offset.dy > 300 || drag.offset.dy < -10) {
+                      this._overlayEntry.remove();
+                      if (widget.onPreviewClose is Function) {
+                        widget.onPreviewClose();
+                      }
+                    }
+                  },
+                )
+              ],
+            ),
+            onPressed: () {
+              this._overlayEntry.remove();
+              if (widget.onPreviewClose is Function) {
+                widget.onPreviewClose();
+              }
+            },
+          ),
+        ),
+    );
   }
 }

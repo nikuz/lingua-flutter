@@ -25,8 +25,6 @@ class TranslationViewHeader extends StatefulWidget {
 }
 
 class _TranslationViewHeaderState extends State<TranslationViewHeader> {
-  OverlayEntry _overlayEntry;
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TranslationBloc, TranslationState>(
@@ -62,12 +60,28 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
           }
 
           if (imageSource != null) {
-            image = ResizableImage(
-              width: SizeUtil.vmax(150),
-              height: SizeUtil.vmax(150),
-              imageSource: imageSource,
-              updatedAt: state.updatedAt,
-              isLocal: !state.remote
+            image = Container(
+              margin: EdgeInsets.only(
+                top: SizeUtil.vmax(10),
+                bottom: SizeUtil.vmax(10),
+              ),
+              child: ResizableImage(
+                  width: 150,
+                  height: 150,
+                  imageSource: imageSource,
+                  updatedAt: state.updatedAt,
+                  isLocal: !state.remote,
+                  withPreviewOverlay: true,
+                  onTap: () {
+                    if (state.id == null || state.imageUpdate) {
+                      Navigator.pushNamed(
+                        context,
+                        SearchNavigatorRoutes.translation_view_images_picker,
+                        arguments: state.imageSearchWord,
+                      );
+                    }
+                  },
+              ),
             );
           }
 
@@ -83,35 +97,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Center(
-                  child: FlatButton(
-                    child: Container(
-                      width: SizeUtil.vmax(150),
-                      height: SizeUtil.vmax(150),
-                      margin: EdgeInsets.only(
-                        top: SizeUtil.vmax(10),
-                        bottom: SizeUtil.vmax(10),
-                      ),
-                      child: image,
-                    ),
-                    onPressed: () {
-                      if (state.id != null && !state.imageUpdate) {
-                        this._overlayEntry = this._createOverlayEntry(
-                          imageSource,
-                          state.updatedAt,
-                          state.remote
-                        );
-                        Overlay.of(context).insert(this._overlayEntry);
-                      } else {
-                        Navigator.pushNamed(
-                          context,
-                          SearchNavigatorRoutes.translation_view_images_picker,
-                          arguments: state.imageSearchWord,
-                        );
-                      }
-                    },
-                  )
-                ),
+                Center(child: image),
                 Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -170,35 +156,6 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
       }
     );
   }
-
-  OverlayEntry _createOverlayEntry(
-      String imageSource,
-      String updatedAt,
-      bool remote
-  ) => OverlayEntry(
-    builder: (context) => Positioned(
-      left: 0,
-      top: 0,
-      bottom: 0,
-      width: MediaQuery.of(context).size.width,
-      child: Material(
-        color: Color.fromRGBO(255, 255, 255, 0.7),
-        elevation: 4.0,
-        child: FlatButton(
-          child: ResizableImage(
-            width: SizeUtil.vmax(300),
-            height: SizeUtil.vmax(300),
-            imageSource: imageSource,
-            updatedAt: updatedAt,
-            isLocal: !remote
-          ),
-          onPressed: () {
-            this._overlayEntry.remove();
-          },
-        ),
-      ),
-    )
-  );
 
   Widget _getFooter(TranslationLoaded state) {
     final List<dynamic> highestRelevantTranslation = state.highestRelevantTranslation;
