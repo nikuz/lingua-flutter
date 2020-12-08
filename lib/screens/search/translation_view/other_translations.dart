@@ -23,7 +23,12 @@ class OtherTranslations extends StatelessWidget {
           int categoriesAmount = state.otherTranslations.length;
 
           for (int i = 0, l = categoriesAmount; i < l; i++) {
-            final List<dynamic> translations = state.otherTranslations[i][2];
+            List<dynamic> translations;
+            if (state.version == 1) {
+              translations = state.otherTranslations[i][2];
+            } else if (state.version == 2) {
+              translations = state.otherTranslations[i][1];
+            }
             itemsAmount += translations.length;
           }
 
@@ -41,7 +46,13 @@ class OtherTranslations extends StatelessWidget {
                 expanded: expanded,
                 itemBuilder: (BuildContext context, int itemIndex) {
                   final category = state.otherTranslations[index];
-                  final List<dynamic> translations = category[2];
+                  List<dynamic> translations;
+
+                  if (state.version == 1) {
+                    translations = category[2];
+                  } else if (state.version == 2) {
+                    translations = category[1];
+                  }
 
                   return OtherTranslationsItem(
                     state: state,
@@ -75,12 +86,27 @@ class OtherTranslationsItem extends StatelessWidget {
     final String word = item[0];
     List<dynamic> synonyms;
     double frequency;
+    bool frequencySecondActive = false;
+    bool frequencyThirdActive = false;
 
-    if (item[1] != null) {
-      synonyms = item[1];
-    }
-    if (item.length >= 4 && item[3] != null) {
-      frequency = item[3].toDouble();
+    if (state.version == 1) {
+      if (item[1] != null) {
+        synonyms = item[1];
+      }
+      if (item.length >= 4 && item[3] != null) {
+        frequency = item[3].toDouble();
+        frequencySecondActive = frequency > 0.001;
+        frequencyThirdActive = frequency > 0.1;
+      }
+    } else if (state.version == 2) {
+      if (item[2] != null) {
+        synonyms = item[2];
+        if (item.length >= 4 && item[3] != null) {
+          frequency = item[3].toDouble();
+          frequencySecondActive = frequency == 1 || frequency == 2;
+          frequencyThirdActive = frequency == 1;
+        }
+      }
     }
 
     final bool cyrillicWord = isCyrillicWord(word);
@@ -122,6 +148,7 @@ class OtherTranslationsItem extends StatelessWidget {
                     pronunciationURL: state.pronunciation,
                     image: state.image,
                     raw: state.raw,
+                    version: state.version,
                   ));
                 } else {
                   BlocProvider.of<TranslationBloc>(context).add(TranslationUpdate(
@@ -149,8 +176,8 @@ class OtherTranslationsItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
                 _getFrequencyBarItem(context, true, screenWidth),
-                _getFrequencyBarItem(context, frequency != null && frequency > 0.001, screenWidth),
-                _getFrequencyBarItem(context, frequency != null && frequency > 0.1, screenWidth),
+                _getFrequencyBarItem(context, frequencySecondActive, screenWidth),
+                _getFrequencyBarItem(context, frequencyThirdActive, screenWidth),
               ],
             ),
           ),

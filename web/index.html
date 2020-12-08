@@ -9,6 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Lingua web">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
@@ -70,6 +71,17 @@
       height: 100px;
       animation: loading-icon 4s linear infinite;
       background: url("loading.svg") 50% 50% no-repeat;
+    }
+
+    @media (max-width: 800px) {
+      #phone-frame-picture {
+        display: none;
+      }
+
+      #app-frame {
+        width: 100%;
+        height: 100%;
+      }
     }
   </style>
 </head>

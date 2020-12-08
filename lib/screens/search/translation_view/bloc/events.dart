@@ -48,6 +48,7 @@ class TranslationSave extends TranslationEvent {
   final String pronunciationURL;
   final String image;
   final List<dynamic> raw;
+  final int version;
 
   TranslationSave({
     @required this.word,
@@ -55,5 +56,6 @@ class TranslationSave extends TranslationEvent {
     @required this.pronunciationURL,
     @required this.image,
     @required this.raw,
-  }) : assert(word != null && translation != null && pronunciationURL != null && image != null && raw != null);
+    @required this.version,
+  }) : assert(word != null && translation != null && pronunciationURL != null && image != null && raw != null && version != null);
 }

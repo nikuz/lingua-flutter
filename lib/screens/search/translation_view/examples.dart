@@ -16,7 +16,7 @@ class Examples extends StatelessWidget {
     return BlocBuilder<TranslationBloc, TranslationState>(
       builder: (context, state) {
         if (state is TranslationLoaded && state.examples != null) {
-          final List<dynamic> examples = state.examples[0];
+          final List<dynamic> examples = state.examples;
 
           return TranslationViewContainer(
             title: state.word,
@@ -28,6 +28,7 @@ class Examples extends StatelessWidget {
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemBuilder: (BuildContext context, int index) => ExamplesItem(
+                state: state,
                 item: examples[index],
               ),
               itemCount: expanded ? examples.length : SHOW_MIN_EXAMPLES,
@@ -43,16 +44,23 @@ class Examples extends StatelessWidget {
 
 
 class ExamplesItem extends StatelessWidget {
+  final TranslationLoaded state;
   final List<dynamic> item;
 
   ExamplesItem({
     Key key,
+    @required this.state,
     @required this.item,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final String text = item[0];
+    String text = '';
+    if (state.version == 1) {
+      text = item[0];
+    } else if (state.version == 2) {
+      text = item[1];
+    }
 
     return Container(
       margin: EdgeInsets.only(top: SizeUtil.vmax(15)),

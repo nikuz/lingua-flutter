@@ -162,22 +162,12 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
   }
 
   Widget _getFooter(TranslationLoaded state) {
-    final List<dynamic> highestRelevantTranslation = state.highestRelevantTranslation;
     final bool cyrillicWord = isCyrillicWord(state.word);
     final String pronunciation = state.pronunciation;
     final bool imageUpdate = state.imageUpdate;
     final translationUpdate = (
         state.translationOwn != null && state.translationOwn != state.translationWord
     );
-    String transcription;
-
-    if (
-        highestRelevantTranslation.length > 1
-        && highestRelevantTranslation[1] != null
-        && highestRelevantTranslation[1].length >= 4
-    ) {
-      transcription = highestRelevantTranslation[1][3];
-    }
 
     if (cyrillicWord == true || state.strangeWord) {
       return Container(
@@ -238,7 +228,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
               Container(
                 margin: EdgeInsets.only(left: SizeUtil.vmax(10)),
                 child: Text(
-                  transcription != null ? transcription : '',
+                  state.transcription != null ? state.transcription : '',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: SizeUtil.vmax(15),
@@ -266,6 +256,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                     pronunciationURL: pronunciation,
                     image: state.image,
                     raw: state.raw,
+                    version: state.version,
                   ));
                 } else if (imageUpdate || translationUpdate) {
                   BlocProvider.of<TranslationBloc>(context).add(TranslationUpdate(

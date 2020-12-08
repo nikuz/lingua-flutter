@@ -42,7 +42,7 @@ class Definitions extends StatelessWidget {
                   final List<dynamic> synonyms = state.definitionsSynonyms;
                   List<dynamic> synonymsCategory;
 
-                  if (synonyms != null && synonyms.isNotEmpty) {
+                  if (state.version == 1 && synonyms != null && synonyms.isNotEmpty) {
                     for (int i = 0, l = synonyms.length; i < l; i++) {
                       if (synonyms[i][0] == categoryName) {
                         synonymsCategory = synonyms[i][1];
@@ -51,6 +51,7 @@ class Definitions extends StatelessWidget {
                   }
 
                   return DefinitionsItem(
+                    state: state,
                     id: itemIndex + 1,
                     item: definitions[itemIndex],
                     synonymsCategory: synonymsCategory,
@@ -70,12 +71,14 @@ class Definitions extends StatelessWidget {
 
 
 class DefinitionsItem extends StatelessWidget {
+  final TranslationLoaded state;
   final int id;
   final List<dynamic> item;
   final List<dynamic> synonymsCategory;
 
   DefinitionsItem({
     Key key,
+    @required this.state,
     @required this.id,
     @required this.item,
     @required this.synonymsCategory,
@@ -88,8 +91,13 @@ class DefinitionsItem extends StatelessWidget {
     String example;
     List<dynamic> synonyms;
 
-    if (item.length >= 3) {
+    if (state.version == 1 && item.length >= 3) {
       example = item[2];
+    } else if (state.version == 2) {
+      example = item[1];
+      if (item.length >= 4) {
+        synonyms = item[3];
+      }
     }
 
     if (synonymsCategory != null && synonymsCategory.isNotEmpty) {

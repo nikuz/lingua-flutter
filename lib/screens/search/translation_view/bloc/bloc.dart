@@ -29,10 +29,12 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
         yield TranslationRequestLoading();
         final Translation translation = await _fetchTranslation(event.word);
         List<dynamic> highestRelevantTranslation;
+        String transcription;
         List<dynamic> otherTranslations;
         List<dynamic> definitions;
         List<dynamic> definitionsSynonyms;
         List<dynamic> examples;
+        int version = translation.version;
         String word = translation.word;
         String translationWord = translation.translation;
         String autoSpellingFix;
@@ -40,25 +42,57 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
 
         if (translation.raw != null) {
           final List<dynamic> raw = translation.raw;
-          highestRelevantTranslation = raw[0];
-          otherTranslations = raw[1];
-          if (raw.length >= 12) {
-            definitionsSynonyms = raw[11];
-          }
-          if (raw.length >= 13) {
-            definitions = raw[12];
-          }
-          if (raw.length >= 14) {
-            examples = raw[13];
-          }
+          if (version == 1) {
+            highestRelevantTranslation = raw[0];
+            otherTranslations = raw[1];
+            if (raw.length >= 12) {
+              definitionsSynonyms = raw[11];
+            }
+            if (raw.length >= 13) {
+              definitions = raw[12];
+            }
+            if (raw.length >= 14) {
+              examples = raw[13][0];
+            }
 
-          if (translationWord == null) {
-            translationWord = highestRelevantTranslation[0][0];
-          }
+            if (translationWord == null) {
+              translationWord = highestRelevantTranslation[0][0];
+            }
 
-          if (word.toLowerCase() != highestRelevantTranslation[0][1].toLowerCase()) {
-            autoSpellingFix = word;
-            word = highestRelevantTranslation[0][1];
+            if (word.toLowerCase() != highestRelevantTranslation[0][1].toLowerCase()) {
+              autoSpellingFix = word;
+              word = highestRelevantTranslation[0][1];
+            }
+
+            if (
+              highestRelevantTranslation.length > 1
+              && highestRelevantTranslation[1] != null
+              && highestRelevantTranslation[1].length >= 4
+            ) {
+              transcription = highestRelevantTranslation[1][3];
+            }
+          } else if (version == 2) {
+            highestRelevantTranslation = raw[1][0];
+            if (raw.length >= 3 && raw[3][5].isNotEmpty) {
+              otherTranslations = raw[3][5][0];
+            }
+            if (raw.length >= 3 && raw[3][1].isNotEmpty) {
+              definitions = raw[3][1][0];
+            }
+            if (raw.length >= 3 && raw[3][2].isNotEmpty) {
+              examples = raw[3][2][0];
+            }
+
+            if (translationWord == null) {
+              translationWord = highestRelevantTranslation[0][5][0][0];
+            }
+
+            if (raw.length >= 3 && word.toLowerCase() != raw[3][0].toLowerCase()) {
+              autoSpellingFix = word;
+              word = raw[3][0];
+            }
+
+            transcription = raw[0][0];
           }
 
           strangeWord = word.toLowerCase() == translationWord.toLowerCase()
@@ -78,6 +112,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
           createdAt: translation.createdAt,
           updatedAt: translation.updatedAt,
           highestRelevantTranslation: highestRelevantTranslation,
+          transcription: transcription,
           otherTranslations: otherTranslations,
           definitions: definitions,
           definitionsSynonyms: definitionsSynonyms,
@@ -86,6 +121,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
           strangeWord: strangeWord,
           raw: translation.raw,
           remote: translation.remote,
+          version: translation.version,
         );
       } on ApiException catch (e) {
         yield TranslationError(e);
@@ -125,6 +161,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
             pronunciationURL: event.pronunciationURL,
             image: event.image,
             raw: event.raw,
+            version: event.version,
           );
           yield currentState.copyWith(
             saveLoading: false,
@@ -206,6 +243,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
       createdAt: response['created_at'],
       updatedAt: response['updated_at'],
       remote: response['remote'] == true,
+      version: response['version'],
     );
   }
 
@@ -227,13 +265,16 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     String pronunciationURL,
     String image,
     List<dynamic> raw,
+    int version,
   }) async {
+    print(version);
     final Map<String, String> params = {
       'word': '$word',
       'translation': '$translation',
       'pronunciationURL': '$pronunciationURL',
       'image': '$image',
       'raw': jsonEncode(raw),
+      'version': '$version',
     };
 
     if (image.indexOf('data:image') == 0) {

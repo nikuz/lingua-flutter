@@ -10,6 +10,7 @@ class Translation extends Equatable {
   final String createdAt;
   final String updatedAt;
   final bool remote;
+  final int version;
 
   const Translation({
     this.id,
@@ -21,6 +22,7 @@ class Translation extends Equatable {
     this.createdAt,
     this.updatedAt,
     this.remote,
+    this.version,
   });
 
   @override
@@ -34,6 +36,7 @@ class Translation extends Equatable {
     createdAt,
     updatedAt,
     remote,
+    version,
   ];
 
   @override

@@ -36,6 +36,7 @@ class TranslationLoaded extends TranslationState {
   final String translationOwn;
   final String pronunciation;
   final List<dynamic> highestRelevantTranslation;
+  final String transcription;
   final List<dynamic> otherTranslations;
   final List<dynamic> definitions;
   final List<dynamic> definitionsSynonyms;
@@ -56,6 +57,7 @@ class TranslationLoaded extends TranslationState {
   final bool saveSuccess;
   final List<dynamic> raw;
   final bool remote;
+  final int version;
 
   TranslationLoaded({
     @required this.id,
@@ -70,6 +72,7 @@ class TranslationLoaded extends TranslationState {
     @required this.imageSearchWord,
     @required this.imageLoading,
     @required this.highestRelevantTranslation,
+    @required this.transcription,
     @required this.otherTranslations,
     @required this.definitions,
     @required this.definitionsSynonyms,
@@ -84,6 +87,7 @@ class TranslationLoaded extends TranslationState {
     this.updateSuccess,
     this.saveLoading,
     this.saveSuccess,
+    this.version,
   }) : assert(word != null && translationWord != null);
 
   TranslationLoaded copyWith({
@@ -112,6 +116,7 @@ class TranslationLoaded extends TranslationState {
       images: images ?? this.images,
       imageSearchWord: imageSearchWord ?? this.imageSearchWord,
       highestRelevantTranslation: this.highestRelevantTranslation,
+      transcription: this.transcription,
       otherTranslations: this.otherTranslations,
       definitions: this.definitions,
       definitionsSynonyms: this.definitionsSynonyms,
@@ -126,6 +131,7 @@ class TranslationLoaded extends TranslationState {
       saveSuccess: saveSuccess ?? this.saveSuccess,
       raw: this.raw,
       remote: this.remote,
+      version: this.version,
     );
   }
 
@@ -141,6 +147,7 @@ class TranslationLoaded extends TranslationState {
     imageUpdate,
     imageLoading,
     highestRelevantTranslation,
+    transcription,
     otherTranslations,
     definitions,
     definitionsSynonyms,
@@ -154,6 +161,7 @@ class TranslationLoaded extends TranslationState {
     saveSuccess,
     raw,
     remote,
+    version,
   ];
 
   @override
