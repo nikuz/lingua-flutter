@@ -51,7 +51,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
             if (raw.length >= 13) {
               definitions = raw[12];
             }
-            if (raw.length >= 14) {
+            if (raw.length >= 14 && raw[13] != null && raw[13][0] != null) {
               examples = raw[13][0];
             }
 
