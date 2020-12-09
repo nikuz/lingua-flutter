@@ -73,13 +73,13 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
             }
           } else if (version == 2) {
             highestRelevantTranslation = raw[1][0];
-            if (raw.length >= 3 && raw[3][5].isNotEmpty) {
+            if (raw.length >= 3 && raw[3].length >= 6 && raw[3][5] != null) {
               otherTranslations = raw[3][5][0];
             }
-            if (raw.length >= 3 && raw[3][1].isNotEmpty) {
+            if (raw.length >= 3 && raw[3].length >= 2 && raw[3][1] != null) {
               definitions = raw[3][1][0];
             }
-            if (raw.length >= 3 && raw[3][2].isNotEmpty) {
+            if (raw.length >= 3 && raw[3].length >= 3 && raw[3][2] != null) {
               examples = raw[3][2][0];
             }
 
