@@ -220,6 +220,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           if (file.originalFilename == offlineDictionaryFileName) {
             fileExists = true;
             completer.complete(file);
+            break;
           }
         }
 

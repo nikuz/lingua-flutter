@@ -100,12 +100,13 @@ Future<void> translateControllerSave(Map<String, dynamic> params) async {
 
   // populate db with initial data
   await dbRawQuery(
-      'INSERT INTO dictionary (word, translation, raw, updated_at) ' +
-      'VALUES(?, ?, ?, datetime("now"));',
+      'INSERT INTO dictionary (word, translation, raw, updated_at, version) ' +
+      'VALUES(?, ?, ?, datetime("now"), ?);',
       [
         params['word'],
         params['translation'],
         params['raw'],
+        params['version'],
       ]
   );
 

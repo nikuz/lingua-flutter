@@ -18,9 +18,26 @@ class TranslationViewCategory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String categoryName = category[0];
+    Widget categoryName;
     final List<dynamic> items = category[1];
     int itemsLength = items.length;
+
+    if (category[0] != null) {
+      categoryName = Container(
+        margin: EdgeInsets.only(
+          bottom: SizeUtil.vmax(5),
+        ),
+        child: Text(
+          '${category[0][0].toUpperCase()}${category[0].substring(1)}',
+          style: TextStyle(
+            fontSize: SizeUtil.vmax(16),
+            color: Theme.of(context).buttonTheme.colorScheme.secondaryVariant,
+          ),
+        ),
+      );
+    } else {
+      categoryName = Container();
+    }
 
     if (!expanded && itemsLength > maxItemsToShow) {
       itemsLength = maxItemsToShow;
@@ -31,18 +48,7 @@ class TranslationViewCategory extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(
-              bottom: SizeUtil.vmax(5),
-            ),
-            child: Text(
-              '${categoryName[0].toUpperCase()}${categoryName.substring(1)}',
-              style: TextStyle(
-                fontSize: SizeUtil.vmax(16),
-                color: Theme.of(context).buttonTheme.colorScheme.secondaryVariant,
-              ),
-            ),
-          ),
+          categoryName,
           ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
