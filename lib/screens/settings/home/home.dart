@@ -232,8 +232,6 @@ class SettingsCheckbox extends StatelessWidget {
           ),
         ),
         Container(
-          width: SizeUtil.vmax(70),
-          height: SizeUtil.vmax(30),
           padding: EdgeInsets.only(right: SizeUtil.vmax(5)),
           child: Switch(
             value: value,
