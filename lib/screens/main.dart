@@ -111,24 +111,24 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     _settingsBloc = BlocProvider.of<SettingsBloc>(context);
     _settingsBloc.add(SettingsGet());
     _networkChangeSubscription = initiateNetworkChangeSubscription();
-    // subscribeToNetworkChange('main', (bool result) {
-    //   if (result) {
-    //     _setApiUrlUpdateTimer();
-    //   } else if (_getApiUrlTimer != null) {
-    //     _getApiUrlTimer.cancel();
-    //   }
-    // });
+    subscribeToNetworkChange('main', (bool result) {
+      if (result) {
+        _setApiUrlUpdateTimer();
+      } else if (_getApiUrlTimer != null) {
+        _getApiUrlTimer.cancel();
+      }
+    });
     //    BlocProvider.of<LoginBloc>(context).add(LoginCheck());
   }
 
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) {
-  //   if (state == AppLifecycleState.resumed) {
-  //     _setApiUrlUpdateTimer();
-  //   } else {
-  //     _getApiUrlTimer.cancel();
-  //   }
-  // }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _setApiUrlUpdateTimer();
+    } else {
+      _getApiUrlTimer.cancel();
+    }
+  }
 
   @override
   void didChangePlatformBrightness() {
@@ -169,9 +169,9 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                   apiUrlDownloaded = true;
                 });
               }
-              // if (_getApiUrlTimer == null) {
-              //   _setApiUrlUpdateTimer();
-              // }
+              if (_getApiUrlTimer == null) {
+                _setApiUrlUpdateTimer();
+              }
             }
           },
         ),
@@ -231,30 +231,29 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     );
   }
 
-  // void _setApiUrlUpdateTimer() {
-  //   _getApiUrl();
-  //   _getApiUrlTimer = new Timer.periodic(Duration(minutes: 1), (Timer t) => _getApiUrl());
-  // }
+  void _setApiUrlUpdateTimer() {
+    _getApiUrl();
+    _getApiUrlTimer = new Timer.periodic(Duration(minutes: 1), (Timer t) => _getApiUrl());
+  }
 
-  // void _getApiUrl() async {
-  //   if (kReleaseMode) {
-  //     final response = await http.get(appConfig.apiGetterUrl);
-  //     if (response.statusCode == 200) {
-  //       _setApiUrl(response.body);
-  //     } else {
-  //       throw Exception('Can\'t get API url');
-  //     }
-  //   } else {
-  //     _setApiUrl(appConfig.getApiDebugUrl());
-  //   }
-  //
-  //   String apiKey = await appConfig.getApiKey();
-  //   if (apiKey != null && !apiKeySet) {
-  //     setState(() {
-  //       apiKeySet = true;
-  //     });
-  //   }
-  // }
+  void _getApiUrl() async {
+    // if (kReleaseMode) {
+    //   final response = await http.get(appConfig.apiGetterUrl);
+    //   if (response.statusCode == 200) {
+    //     _setApiUrl(response.body);
+    //   } else {
+    //     throw Exception('Can\'t get API url');
+    //   }
+    // } else {
+    //   _setApiUrl(appConfig.getApiDebugUrl());
+    // }
+    String apiKey = await appConfig.getApiKey();
+    if (apiKey != null && !apiKeySet) {
+      setState(() {
+        apiKeySet = true;
+      });
+    }
+  }
 
   // void _setApiUrl(String apiUrl) {
   //   final bool initialUpdate = appConfig.apiUrl == null;
