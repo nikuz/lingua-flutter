@@ -21,23 +21,27 @@ enum TabItem {
 
 Map<TabItem, Map<String, dynamic>> tabs = {
   TabItem.search: {
+    'index': 0,
     'title': 'Search',
     'icon': Icons.search,
   },
   TabItem.games: {
+    'index': 1,
     'title': 'Games',
     'icon': Icons.insert_emoticon,
   },
   TabItem.settings: {
+    'index': 2,
     'title': 'Settings',
     'icon': Icons.settings,
   },
 };
 
 class BottomNavigation extends StatelessWidget {
-  BottomNavigation({this.currentTab, this.onSelectTab});
   final TabItem currentTab;
   final ValueChanged<TabItem> onSelectTab;
+
+  BottomNavigation({this.currentTab, this.onSelectTab});
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +52,11 @@ class BottomNavigation extends StatelessWidget {
         _buildItem(tabItem: TabItem.games),
         _buildItem(tabItem: TabItem.settings),
       ],
+      currentIndex: currentTab.index,
+      iconSize: SizeUtil.vmax(25),
+      selectedItemColor: Colors.blue,
+      unselectedFontSize: SizeUtil.vmax(15),
+      selectedFontSize: SizeUtil.vmax(15),
       onTap: (index) => onSelectTab(
         TabItem.values[index],
       ),
@@ -56,23 +65,9 @@ class BottomNavigation extends StatelessWidget {
 
   BottomNavigationBarItem _buildItem({TabItem tabItem}) {
     return BottomNavigationBarItem(
-      icon: Icon(
-        tabs[tabItem]['icon'],
-        color: _getColor(tabItem),
-        size: SizeUtil.vmax(25),
-      ),
-      title: Text(
-        tabs[tabItem]['title'],
-        style: TextStyle(
-          color: _getColor(tabItem),
-          fontSize: SizeUtil.vmax(15),
-        ),
-      ),
+      icon: Icon(tabs[tabItem]['icon']),
+      label: tabs[tabItem]['title'],
     );
-  }
-
-  Color _getColor(TabItem item) {
-    return currentTab == item ? Colors.blue : Colors.grey;
   }
 }
 
