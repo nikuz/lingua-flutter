@@ -73,7 +73,10 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                             bottom: SizeUtil.vmax(10),
                           ),
                           child: Center(
-                            child: FlatButton(
+                            child: TextButton(
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                              ),
                               child: Image.memory(getBytesFrom64String(imageSource)),
                               onPressed: () {
                                 _translationBloc.add(
@@ -106,7 +109,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                         Container(
                           width: SizeUtil.vmax(50),
                           margin: EdgeInsets.only(right: SizeUtil.vmax(10)),
-                          child: FlatButton(
+                          child: TextButton(
                             child: Icon(
                               Icons.arrow_back,
                               size: SizeUtil.vmax(25),
@@ -144,7 +147,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                         Container(
                           width: SizeUtil.vmax(50),
                           margin: EdgeInsets.only(left: SizeUtil.vmax(10)),
-                          child: FlatButton(
+                          child: TextButton(
                             child: Icon(
                               Icons.clear,
                               size: SizeUtil.vmax(25),

@@ -321,7 +321,7 @@ class SettingsButton extends StatelessWidget {
       }
       secondButtonWidget = ButtonTheme(
         minWidth: 55,
-        child: FlatButton(
+        child: TextButton(
           child: secondIconWidget,
           onPressed: (secondButtonDisabled == true || secondButtonLoading == true)
               ? () => {}
@@ -355,7 +355,7 @@ class SettingsButton extends StatelessWidget {
           children: [
             ButtonTheme(
               minWidth: 55,
-              child: FlatButton(
+              child: TextButton(
                 child: iconWidget,
                 onPressed: (disabled == true || loading == true) ? () => {} : action,
               ),

@@ -113,9 +113,10 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                         constraints: BoxConstraints(
                           maxWidth: MediaQuery.of(context).size.width * 0.85,
                         ),
-                        child: FlatButton(
-                          color: Colors.white,
-                          textColor: Colors.blue,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.white,
+                          ),
                           child: Text(
                             translationWord != null ? translationWord : '',
                             overflow: TextOverflow.ellipsis,
@@ -124,6 +125,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                               fontFamily: 'Merriweather',
                               fontSize: SizeUtil.vmax(20),
                               letterSpacing: SizeUtil.vmax(1),
+                              color: Colors.blue,
                             ),
                           ),
                           onPressed: () {
@@ -237,35 +239,36 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
               ),
             ],
           ),
-          ButtonTheme(
-            minWidth: SizeUtil.vmax(65),
-            height: SizeUtil.vmax(65),
-            child: FlatButton(
-              color: toSave ? Colors.white : Colors.blue,
+          TextButton(
+            style: TextButton.styleFrom(
+              // padding: EdgeInsets.zero,
+              minimumSize: Size(SizeUtil.vmax(65), SizeUtil.vmax(65)),
+              padding: EdgeInsets.zero,
+              backgroundColor: toSave ? Colors.white : Colors.blue,
               shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.all(
                   Radius.circular(SizeUtil.vmax(45)),
                 ),
               ),
-              child: icon,
-              onPressed: () {
-                if (newWord || translationSavedOnlyRemotely) {
-                  BlocProvider.of<TranslationBloc>(context).add(TranslationSave(
-                    word: state.word,
-                    translation: state.translationWord,
-                    pronunciationURL: pronunciation,
-                    image: state.image,
-                    raw: state.raw,
-                    version: state.version,
-                  ));
-                } else if (imageUpdate || translationUpdate) {
-                  BlocProvider.of<TranslationBloc>(context).add(TranslationUpdate(
-                    word: translationUpdate ? state.translationOwn : state.translationWord,
-                    image: imageUpdate ? state.image : null,
-                  ));
-                }
-              },
             ),
+            child: icon,
+            onPressed: () {
+              if (newWord || translationSavedOnlyRemotely) {
+                BlocProvider.of<TranslationBloc>(context).add(TranslationSave(
+                  word: state.word,
+                  translation: state.translationWord,
+                  pronunciationURL: pronunciation,
+                  image: state.image,
+                  raw: state.raw,
+                  version: state.version,
+                ));
+              } else if (imageUpdate || translationUpdate) {
+                BlocProvider.of<TranslationBloc>(context).add(TranslationUpdate(
+                  word: translationUpdate ? state.translationOwn : state.translationWord,
+                  image: imageUpdate ? state.image : null,
+                ));
+              }
+            },
           )
         ],
       ),

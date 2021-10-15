@@ -73,10 +73,13 @@ class _ResizableImageState extends State<ResizableImage> {
       minWidth: SizeUtil.vmax(widget.width),
       height: SizeUtil.vmax(widget.height),
       padding: EdgeInsets.all(0),
-      child: FlatButton(
+      child: TextButton(
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.zero,
+        ),
         child: image,
         onPressed: () {
-          if (widget.withPreviewOverlay) {
+          if (widget.withPreviewOverlay == true) {
             this._overlayEntry = this._createOverlayEntry();
             Overlay.of(context).insert(this._overlayEntry);
           }
@@ -116,7 +119,7 @@ class _ResizableImageState extends State<ResizableImage> {
         builder: (context) => Material(
           color: Color.fromRGBO(255, 255, 255, 0.6),
           elevation: 4.0,
-          child: FlatButton(
+          child: TextButton(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,

@@ -16,16 +16,17 @@ class ExpandButton extends StatelessWidget {
       return Container();
     }
 
-    return FlatButton(
-      shape: new RoundedRectangleBorder(
-        borderRadius: new BorderRadius.only(
-          bottomLeft: Radius.circular(SizeUtil.vmax(8)),
-          bottomRight: Radius.circular(SizeUtil.vmax(8)),
+    return TextButton(
+      style: TextButton.styleFrom(
+        minimumSize: Size(0, SizeUtil.vmax(43)),
+        backgroundColor: Theme.of(context).buttonTheme.colorScheme.secondaryVariant,
+        shape: new RoundedRectangleBorder(
+          borderRadius: new BorderRadius.only(
+            bottomLeft: Radius.circular(SizeUtil.vmax(8)),
+            bottomRight: Radius.circular(SizeUtil.vmax(8)),
+          ),
         ),
       ),
-      padding: EdgeInsets.all(SizeUtil.vmax(3)),
-      color: Theme.of(context).buttonTheme.colorScheme.secondaryVariant,
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       child: Row( // Replace with a Row for horizontal icon + text
         children: <Widget>[
           Container(

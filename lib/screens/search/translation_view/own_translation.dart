@@ -53,7 +53,7 @@ class _TranslationViewOwnTranslationState extends State<TranslationViewOwnTransl
                     Container(
                       width: SizeUtil.vmax(50),
                       margin: EdgeInsets.only(right: SizeUtil.vmax(10)),
-                      child: FlatButton(
+                      child: TextButton(
                         child: Icon(
                           Icons.arrow_back,
                           size: SizeUtil.vmax(25),
@@ -87,7 +87,7 @@ class _TranslationViewOwnTranslationState extends State<TranslationViewOwnTransl
                     Container(
                       width: SizeUtil.vmax(50),
                       margin: EdgeInsets.only(left: SizeUtil.vmax(10)),
-                      child: FlatButton(
+                      child: TextButton(
                         child: Icon(
                           Icons.clear,
                           size: SizeUtil.vmax(25),

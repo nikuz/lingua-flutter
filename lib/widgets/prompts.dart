@@ -10,7 +10,7 @@ Future<bool> prompt({
   Function closeCallback,
 }) async {
   List<Widget> actions = <Widget>[
-    FlatButton(
+    TextButton(
       onPressed: () {
         Navigator.of(context, rootNavigator: true).pop(true);
         acceptCallback();
@@ -21,7 +21,7 @@ Future<bool> prompt({
 
   if (withCancel == true) {
     actions.add(
-      FlatButton(
+      TextButton(
         onPressed: () {
           Navigator.of(context, rootNavigator: true).pop(false);
           if (cancelCallback is Function) {
