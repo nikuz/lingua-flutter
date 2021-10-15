@@ -72,13 +72,14 @@ class ExamplesItem extends StatelessWidget {
             size: SizeUtil.vmax(20),
             color: Color.fromRGBO(119, 119, 119, 1),
           ),
-          Container(
-            width: MediaQuery.of(context).size.width * 0.78,
-            margin: EdgeInsets.only(left: SizeUtil.vmax(20)),
-            child: Html(
-              data: """$text""",
-              defaultTextStyle: TextStyle(
-                fontSize: SizeUtil.vmax(16),
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(left: SizeUtil.vmax(20)),
+              child: Html(
+                data: """$text""",
+                defaultTextStyle: TextStyle(
+                  fontSize: SizeUtil.vmax(16),
+                ),
               ),
             ),
           ),

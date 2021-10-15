@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:lingua_flutter/utils/api.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:lingua_flutter/app_config.dart' as appConfig;
+import 'package:lingua_flutter/utils/api.dart';
+import 'package:lingua_flutter/utils/db.dart';
+import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/helpers/api.dart';
-import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/controllers/translate.dart';
 
 import '../model/item.dart';
@@ -125,6 +127,8 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
         );
       } on ApiException catch (e) {
         yield TranslationError(e);
+      } on DBException catch (e) {
+        yield TranslationError(e);
       } catch (e, s) {
         print(e);
         print(s);
@@ -168,7 +172,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
             saveSuccess: true,
           );
         }
-      } on ApiException catch (e) {
+      } on DBException catch (e) {
         yield TranslationError(e);
       } catch (e, s) {
         print(e);
@@ -192,7 +196,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
             imageUpdate: false,
           );
         }
-      } on ApiException catch (e) {
+      } on DBException catch (e) {
         yield TranslationError(e);
       } catch (e, s) {
         print(e);
@@ -217,20 +221,65 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
   }
 
   Future<Translation> _fetchTranslation(String word) async {
-    Map<String, dynamic> response;
-
-    if (db != null) {
-      response = await translateControllerGet(word);
-    }
+    Map<String, dynamic> response = await translateControllerGet(word);
 
     if (response == null) {
-      response = await apiGet(
+      String sourceLanguage = 'en';
+      String targetLanguage = 'ru';
+      final bool wordIsCyrillic = isCyrillicWord(word);
+
+      if (wordIsCyrillic) {
+        sourceLanguage = 'ru';
+        targetLanguage = 'en';
+      }
+
+      List<dynamic> translationResult;
+      String pronunciationResult = '';
+
+      String translationRaw = await apiPost(
           client: httpClient,
-          url: '/translate',
+          url: appConfig.translationURL,
           params: {
-            'q': '$word',
+            'f.req': '[[["${appConfig.translationMarker}","[[\\"$word\\",\\"$sourceLanguage\\",\\"$targetLanguage\\",true],[null]]",null,"generic"]]]'
           }
       );
+
+      final List<String> translationRawStrings = translationRaw.split('\n');
+
+      for (int i = 0, l = translationRawStrings.length; i < l; i++) {
+        if (translationRawStrings[i].contains(appConfig.translationMarker)) {
+          translationResult = jsonDecode(jsonDecode(translationRawStrings[i])[0][2]);
+          break;
+        }
+      }
+
+      if (!wordIsCyrillic) {
+        String pronunciationRaw = await apiPost(
+            client: httpClient,
+            url: appConfig.translationURL,
+            params: {
+              'f.req': '[[["${appConfig.pronunciationMarker}","[\\"$word\\",\\"$sourceLanguage\\",null,\\"null\\"]",null,"generic"]]]'
+            }
+        );
+
+        final List<String> pronunciationRawStrings = pronunciationRaw.split('\n');
+
+        for (int i = 0, l = pronunciationRawStrings.length; i < l; i++) {
+          if (pronunciationRawStrings[i].contains(appConfig.pronunciationMarker)) {
+            final decodedPronunciationData = jsonDecode(pronunciationRawStrings[i]);
+            pronunciationResult = 'data:audio/mpeg;base64,' + jsonDecode(decodedPronunciationData[0][2])[0];
+            break;
+          }
+        }
+      }
+
+      response = {
+        'word': word,
+        'raw': translationResult,
+        'pronunciation': pronunciationResult,
+        'remote': true,
+        'version': 2,
+      };
     }
 
     return Translation(
@@ -247,16 +296,38 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     );
   }
 
-  Future<List<dynamic>> _fetchImage(String word) async {
-    final Map<String, dynamic> response = await apiGet(
+  Future<List<String>> _fetchImage(String word) async {
+    final String imagesRaw = await apiGet(
         client: httpClient,
-        url: '/image',
-        params: {
-          'q': '$word',
-        }
+        url: appConfig.imagesURL.replaceFirst('{word}', word),
+        headers: {
+          'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36',
+        },
     );
 
-    return response['images'];
+    final imageReg = RegExp(r"'(data:image[^']{8000,})'");
+    final base64EndReg = RegExp(r'\\x3d');
+    final slashReg = RegExp(r'\\/');
+    final List<String> imagesRawStrings = imagesRaw.split('\n');
+    List<String> resultImages = [];
+
+    for (int i = 0, l = imagesRawStrings.length; i < l; i++) {
+      if (imagesRawStrings[i].contains(appConfig.imageMarker)) {
+        Iterable<RegExpMatch> imageParts = imageReg.allMatches(imagesRawStrings[i]);
+        for (var item in imageParts) {
+          final String match = item.group(1);
+          if (match != null) {
+            final String decodedImageString = match
+                .replaceAll(slashReg, '/')
+                .replaceAll(base64EndReg, '=');
+
+            resultImages.add(decodedImageString);
+          }
+        }
+      }
+    }
+
+    return resultImages;
   }
 
   Future<bool> _fetchSave({
@@ -267,27 +338,14 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     List<dynamic> raw,
     int version,
   }) async {
-    print(version);
-    final Map<String, String> params = {
+    await translateControllerSave({
       'word': '$word',
       'translation': '$translation',
       'pronunciationURL': '$pronunciationURL',
       'image': '$image',
       'raw': jsonEncode(raw),
       'version': '$version',
-    };
-
-    if (image.indexOf('data:image') == 0) {
-      await apiPost(
-          client: httpClient,
-          url: '/translate',
-          params: params
-      );
-    }
-
-    if (db != null) {
-      await translateControllerSave(params);
-    }
+    });
 
     return true;
   }
@@ -297,21 +355,11 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     String translation,
     String image,
   }) async {
-    final Map<String, String> params = {
+    await translateControllerUpdate({
       'word': '$word',
       'image': '${image != null ? image : ''}',
       'translation': '$translation',
-    };
-
-    if (db != null) {
-      await translateControllerUpdate(params);
-    } else {
-      await apiPut(
-          client: httpClient,
-          url: '/translate',
-          params: params
-      );
-    }
+    });
 
     return true;
   }

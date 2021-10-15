@@ -132,8 +132,11 @@ class _TranslationsListState extends State<TranslationsList> {
           }
 
           if (!(state is TranslationsLoaded)) {
+            // return Center(
+            //   child: CircularProgressIndicator(),
+            // );
             return Center(
-              child: CircularProgressIndicator(),
+              child: Text('Loading'),
             );
           }
 

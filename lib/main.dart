@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import './blocs/delegate.dart';
-import './screens/login/bloc/bloc.dart';
 import './screens/search/home/bloc/bloc.dart';
 import './screens/search/translation_view/bloc/bloc.dart';
 import './screens/settings/home/bloc/bloc.dart';
@@ -22,9 +21,6 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider<LoginBloc>(
-          create: (context) => LoginBloc(httpClient: httpClient),
-        ),
         BlocProvider<TranslationsBloc>(
           create: (context) => TranslationsBloc(httpClient: httpClient),
         ),

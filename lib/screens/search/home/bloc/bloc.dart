@@ -3,10 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:lingua_flutter/utils/api.dart';
 import 'package:lingua_flutter/utils/db.dart';
-import 'package:lingua_flutter/helpers/api.dart';
-import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/controllers/translate.dart';
 import '../model/list.dart';
 import '../model/item.dart';
@@ -37,7 +34,7 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
           totalAmount: translationsList.totalAmount,
           translations: translationsList.translations,
         );
-      } on ApiException catch (e) {
+      } on DBException catch (e) {
         yield TranslationsError(e);
       } catch (e, s) {
         print(e);
@@ -54,7 +51,7 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
           totalAmount: translationsList.totalAmount,
           translations: currentState.translations + translationsList.translations,
         );
-      } on ApiException catch (e) {
+      } on DBException catch (e) {
         yield TranslationsError(e);
       } catch (e, s) {
         print(e);
@@ -75,7 +72,7 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
           translations: translationsList.translations,
           search: event.text,
         );
-      } on ApiException catch (e) {
+      } on DBException catch (e) {
         yield TranslationsError(e);
       } catch (e, s) {
         print(e);
@@ -89,8 +86,6 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
             removedItemId: event.id,
           );
         }
-      } on ApiException catch (e) {
-        yield TranslationsError(e);
       } on DBException catch (e) {
         yield TranslationsError(e);
       } catch (e, s) {
@@ -122,7 +117,7 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
             ),
           );
         }
-      } on ApiException catch (e) {
+      } on DBException catch (e) {
         yield TranslationsError(e);
       } catch (e, s) {
         print(e);
@@ -134,23 +129,10 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
   Future<Translations> _fetchTranslationsList(int from, int to, {String searchText}) async {
     Map<String, dynamic> response;
 
-    if (db != null) {
-      if (searchText != null) {
-        response = await translateControllerSearch(searchText, from, to);
-      } else {
-        response = await translateControllerGetList(from, to);
-      }
+    if (searchText != null) {
+      response = await translateControllerSearch(searchText, from, to);
     } else {
-      final String url = searchText == null ? '/translations' : '/translate/search';
-      response = await apiGet(
-          client: httpClient,
-          url: url,
-          params: {
-            'q': searchText,
-            'from': '$from',
-            'to': '$to',
-          }
-      );
+      response = await translateControllerGetList(from, to);
     }
 
     return Translations(
@@ -174,17 +156,7 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
   Future<bool> _removeTranslationsItem(int id) async {
     Map<String, dynamic> response;
 
-    if (db != null) {
-      response = await translateControllerRemoveItem(id);
-    } else {
-      response = await apiDelete(
-          client: httpClient,
-          url: '/translate',
-          params: {
-            'id': '$id',
-          }
-      );
-    }
+    response = await translateControllerRemoveItem(id);
 
     if (response['success'] == true) {
       return true;

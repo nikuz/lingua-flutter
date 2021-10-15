@@ -1,132 +1,116 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:core';
-import 'dart:io';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:lingua_flutter/app_config.dart' as appConfig;
 import 'package:lingua_flutter/utils/api.dart';
 
-String apiUrl() => '${appConfig.apiUrl}:${appConfig.apiPort}';
-
-String getApiUri() {
-  return Uri.http(apiUrl(), '').toString();
-}
-
-Future<Map<String, dynamic>> apiRequest({
+Future<String> apiRequest({
   @required String method,
   @required http.Client client,
   @required String url,
   Map<String, String> params,
   Map<String, String> headers,
 }) async {
-  final headersProps = {
-    HttpHeaders.authorizationHeader: appConfig.apiKey,
-    ...?headers
-  };
-
   http.Response response;
 
   if (method == 'get') {
-    final Uri uri = Uri.http(apiUrl(), url, params);
     response = await client.get(
-      uri,
-      headers: headersProps,
+      Uri.parse(url),
+      headers: headers,
     );
   } else if (method == 'post') {
-    final Uri uri = Uri.http(apiUrl(), url);
     response = await client.post(
-      uri,
-      headers: headersProps,
+      Uri.parse(url),
+      headers: headers,
       body: params,
     );
   } else if (method == 'put') {
-    final Uri uri = Uri.http(apiUrl(), url);
     response = await client.put(
-      uri,
-      headers: headersProps,
+      Uri.parse(url),
+      headers: headers,
       body: params,
     );
   } else if (method == 'delete') {
-    final Uri uri = Uri.http(apiUrl(), url, params);
     response = await client.delete(
-      uri,
-      headers: headersProps,
+      Uri.parse(url),
+      headers: headers,
     );
   }
 
-  final body = jsonDecode(response.body);
-
   if (response.statusCode == 200) {
-    return body;
+    return response.body;
   } else {
-    throw ApiException(body);
+    throw ApiException({
+      'code': response.statusCode,
+      'message': response.body,
+    });
   }
 }
 
-Future<Map<String, dynamic>> apiGet({
+Future<String> apiGet({
   @required http.Client client,
   @required String url,
   Map<String, String> params,
   Map<String, String> headers,
-  String method,
 }) async {
-  Future<Map<String, dynamic>> response = apiRequest(
+  Future<String> response = apiRequest(
     method: 'get',
     client: client,
     url: url,
     params: params,
+    headers: headers,
   );
 
   return response;
 }
 
-Future<Map<String, dynamic>> apiPost({
+Future<String> apiPost({
   @required http.Client client,
   @required String url,
   Map<String, String> params,
   Map<String, String> headers,
-  String method,
 }) async {
-  Future<Map<String, dynamic>> response = apiRequest(
+  Future<String> response = apiRequest(
     method: 'post',
     client: client,
     url: url,
     params: params,
+    headers: headers,
   );
 
   return response;
 }
 
-Future<Map<String, dynamic>> apiPut({
+Future<String> apiPut({
   @required http.Client client,
   @required String url,
   Map<String, String> params,
   Map<String, String> headers,
-  String method,
 }) async {
-  Future<Map<String, dynamic>> response = apiRequest(
+  Future<String> response = apiRequest(
     method: 'put',
     client: client,
     url: url,
     params: params,
+    headers: headers,
   );
 
   return response;
 }
 
-Future<Map<String, dynamic>> apiDelete({
+Future<String> apiDelete({
   @required http.Client client,
   @required String url,
   Map<String, String> params,
   Map<String, String> headers,
 }) async {
-  Future<Map<String, dynamic>> response = apiRequest(
-      method: 'delete',
-      client: client,
-      url: url,
-      params: params,
+  Future<String> response = apiRequest(
+    method: 'delete',
+    client: client,
+    url: url,
+    params: params,
+    headers: headers,
   );
 
   return response;

@@ -2,7 +2,6 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:lingua_flutter/app_config.dart';
 import 'package:lingua_flutter/widgets/prompts.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
 import 'package:lingua_flutter/helpers/db.dart';
@@ -98,18 +97,14 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
           child: BlocBuilder<SettingsBloc, SettingsState>(
             builder: (context, state) {
               if (state is SettingsLoaded) {
-                Widget dictionaryUpdateRow = Container();
-                Widget offlineMode = Container();
-
-                if (!kIsWeb) {
-                  offlineMode = SettingsCheckbox(
+                Widget offlineMode = SettingsCheckbox(
                     id: 'offlineMode',
                     title: 'Offline mode',
                     value: state.settings['offlineMode'],
                     onChange: (bool value) {
                       if (
-                        value
-                        && state.settings['offlineDictionaryUpdateTime'] == null
+                      value
+                          && state.settings['offlineDictionaryUpdateTime'] == null
                       ) {
                         _settingsBloc.add(SettingsDownloadDictionaryInfo());
                       }
@@ -119,49 +114,48 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
                         dbClose();
                       }
                     }
-                  );
+                );
 
-                  final int offlineDictionaryUpdateTime = state.settings['offlineDictionaryUpdateTime'];
-                  final int offlineDictionaryUpdateSize = state.settings['offlineDictionaryUpdateSize'];
-                  String dictionaryUpdateTime = '';
+                final int offlineDictionaryUpdateTime = state.settings['offlineDictionaryUpdateTime'];
+                final int offlineDictionaryUpdateSize = state.settings['offlineDictionaryUpdateSize'];
+                String dictionaryUpdateTime = '';
 
-                  if (offlineDictionaryUpdateTime != null) {
-                    final DateTime lastUpdateDate = new DateTime.fromMillisecondsSinceEpoch(
+                if (offlineDictionaryUpdateTime != null) {
+                  final DateTime lastUpdateDate = new DateTime.fromMillisecondsSinceEpoch(
                       offlineDictionaryUpdateTime
-                    );
-                    dictionaryUpdateTime = new DateFormat.yMMMd().add_jm().format(lastUpdateDate);
-                  }
-
-                  if (offlineDictionaryUpdateSize != null) {
-                    String size = _getParsedFileSize(offlineDictionaryUpdateSize);
-                    dictionaryUpdateTime = '$dictionaryUpdateTime, $size';
-                  }
-
-                  dictionaryUpdateRow = SettingsButton(
-                    title: 'Offline dictionary',
-                    subtitle: dictionaryUpdateTime,
-                    icon: Icons.file_download,
-                    loading: state.settings['offlineDictionaryUpdateLoading'] == true,
-                    action: () {
-                      _settingsBloc.add(SettingsDownloadDictionaryInfo());
-                    },
-                    secondButtonIcon: Icons.delete_forever,
-                    secondButtonIconColor: Colors.red,
-                    secondButtonAction: () {
-                      _settingsBloc.add(SettingsChange(
-                        type: 'bool',
-                        id: 'offlineDictionaryClearConfirmation',
-                        value: true,
-                        savePrefs: false,
-                      ));
-                    },
-                    secondButtonLoading: state.settings['offlineDictionaryClearLoading'] == true,
-                    secondButtonDisabled: (
-                      state.settings['offlineDictionaryUpdateLoading'] == true
-                      || offlineDictionaryUpdateSize == null
-                    ),
                   );
+                  dictionaryUpdateTime = new DateFormat.yMMMd().add_jm().format(lastUpdateDate);
                 }
+
+                if (offlineDictionaryUpdateSize != null) {
+                  String size = _getParsedFileSize(offlineDictionaryUpdateSize);
+                  dictionaryUpdateTime = '$dictionaryUpdateTime, $size';
+                }
+
+                Widget dictionaryUpdateRow = SettingsButton(
+                  title: 'Offline dictionary',
+                  subtitle: dictionaryUpdateTime,
+                  icon: Icons.file_download,
+                  loading: state.settings['offlineDictionaryUpdateLoading'] == true,
+                  action: () {
+                    _settingsBloc.add(SettingsDownloadDictionaryInfo());
+                  },
+                  secondButtonIcon: Icons.delete_forever,
+                  secondButtonIconColor: Colors.red,
+                  secondButtonAction: () {
+                    _settingsBloc.add(SettingsChange(
+                      type: 'bool',
+                      id: 'offlineDictionaryClearConfirmation',
+                      value: true,
+                      savePrefs: false,
+                    ));
+                  },
+                  secondButtonLoading: state.settings['offlineDictionaryClearLoading'] == true,
+                  secondButtonDisabled: (
+                      state.settings['offlineDictionaryUpdateLoading'] == true
+                          || offlineDictionaryUpdateSize == null
+                  ),
+                );
 
                 return Column(
                   children: <Widget>[

@@ -1,14 +1,10 @@
 import 'dart:io';
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-import 'package:lingua_flutter/app_config.dart' as appConfig;
-import 'package:lingua_flutter/helpers/api.dart';
 import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
-import 'package:lingua_flutter/utils/convert.dart';
 import 'package:lingua_flutter/utils/files.dart';
 
 void monitorNotificationStateChanges(AudioPlayerState value) {
@@ -48,19 +44,12 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
   Future<void> _playPronunciation() async {
     String pronunciationUrl = widget.pronunciationUrl;
     if (pronunciationUrl.indexOf('data:audio') != -1) {
-      final String dir = await getTempPath();
-      Uint8List fileBytes = getBytesFrom64String(pronunciationUrl);
-      final String filePath = '$dir/pronunciation.mp3';
-      final File file = File(filePath);
-      await file.writeAsBytes(fileBytes);
-      await _audioPlayer.play(filePath, isLocal:true);
+      await _audioPlayer.play(pronunciationUrl);
     } else if (widget.isLocal && db != null) {
       String dir = await getDocumentsPath();
       pronunciationUrl = '$dir${widget.pronunciationUrl}';
+      print(pronunciationUrl);
       await _audioPlayer.play(pronunciationUrl, isLocal:true);
-    } else if (!widget.isLocal && !widget.pronunciationUrl.contains('http')) {
-      pronunciationUrl = '${getApiUri()}${widget.pronunciationUrl}';
-      await _audioPlayer.play(pronunciationUrl);
     } else {
       await _audioPlayer.play(pronunciationUrl);
     }
@@ -93,7 +82,7 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
     _playerErrorSubscription = _audioPlayer.onPlayerError.listen((msg) {
       print('audioPlayer error : $msg');
     });
-    if (!appConfig.kIsWeb && Platform.isIOS) {
+    if (Platform.isIOS) {
       _audioPlayer.monitorNotificationStateChanges(monitorNotificationStateChanges);
     }
     if (widget.autoPlay == true) {

@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/painting.dart' as painting;
 import 'package:lingua_flutter/helpers/db.dart';
-import 'package:lingua_flutter/helpers/files.dart';
 import 'package:lingua_flutter/utils/db.dart';
 import 'package:lingua_flutter/utils/files.dart';
 
@@ -127,8 +126,6 @@ Future<void> translateControllerSave(Map<String, dynamic> params) async {
 
       final File image = File('$dir/$imageUrl');
       await image.writeAsBytes(imageBytes);
-    } else {
-      await downloadFile(imageUrl, imageUrl);
     }
 
     // save pronunciation
@@ -137,12 +134,10 @@ Future<void> translateControllerSave(Map<String, dynamic> params) async {
     if (pronunciationUrl.indexOf(pronunciationReg) != -1) {
       RegExpMatch pronunciationParts = pronunciationReg.firstMatch(params['pronunciationURL']);
       Uint8List pronunciationBytes = Base64Decoder().convert(pronunciationParts.group(1));
-      pronunciationUrl = '/pronunciations/$fileId.mp3}';
+      pronunciationUrl = '/pronunciations/$fileId.mp3';
 
       final File pronunciation = File('$dir/$pronunciationUrl');
       await pronunciation.writeAsBytes(pronunciationBytes);
-    } else {
-      await downloadFile(pronunciationUrl, pronunciationUrl);
     }
 
     // update db

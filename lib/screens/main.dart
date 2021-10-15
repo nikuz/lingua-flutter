@@ -1,23 +1,14 @@
 import 'package:flutter/foundation.dart';
-import 'dart:async';
 import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:lingua_flutter/app_config.dart' as appConfig;
 import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
-import 'package:lingua_flutter/utils/connectivity.dart';
-import 'package:lingua_flutter/widgets/api_key_screen.dart';
 
 import './settings/home/bloc/bloc.dart';
 import './settings/home/bloc/events.dart';
 import './settings/home/bloc/state.dart';
-import './login/bloc/bloc.dart';
-//import './login/bloc/events.dart';
-import './login/bloc/state.dart';
 
-//import './login/login.dart';
 import './search/router.dart';
 import './games/router.dart';
 import './settings/router.dart';
@@ -91,11 +82,8 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
-  bool apiUrlDownloaded = false;
-  bool apiKeySet = appConfig.kIsWeb ? false : true;
+  bool dbIsReady = false;
   TabItem _currentTab = TabItem.search;
-  Timer _getApiUrlTimer;
-  var _networkChangeSubscription;
   SettingsBloc _settingsBloc;
 
   Map<TabItem, GlobalKey<NavigatorState>> _navigatorKeys = {
@@ -110,24 +98,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _settingsBloc = BlocProvider.of<SettingsBloc>(context);
     _settingsBloc.add(SettingsGet());
-    _networkChangeSubscription = initiateNetworkChangeSubscription();
-    subscribeToNetworkChange('main', (bool result) {
-      if (result) {
-        _setApiUrlUpdateTimer();
-      } else if (_getApiUrlTimer != null) {
-        _getApiUrlTimer.cancel();
-      }
-    });
-    //    BlocProvider.of<LoginBloc>(context).add(LoginCheck());
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _setApiUrlUpdateTimer();
-    } else {
-      _getApiUrlTimer.cancel();
-    }
   }
 
   @override
@@ -144,52 +114,29 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    _getApiUrlTimer.cancel();
     WidgetsBinding.instance.removeObserver(this);
-    _networkChangeSubscription.cancel();
-    unsubscribeFromNetworkChange('main');
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     SizeUtil().init(context);
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<SettingsBloc, SettingsState>(
-          listener: (context, state) async {
-            if (state is SettingsLoaded) {
-              if (state.settings['offlineMode']) {
-                await dbOpen();
-                setState(() {
-                  apiUrlDownloaded = true;
-                });
-              } else {
-                setState(() {
-                  apiUrlDownloaded = true;
-                });
-              }
-              if (_getApiUrlTimer == null) {
-                _setApiUrlUpdateTimer();
-              }
-            }
-          },
-        ),
-        BlocListener<LoginBloc, LoginState>(
-          listener: (context, state) {},
-        ),
-      ],
-      child: BlocBuilder<LoginBloc, LoginState>(
+    return BlocListener<SettingsBloc, SettingsState>(
+      listener: (context, state) async {
+        if (state is SettingsLoaded) {
+          await dbOpen();
+          setState(() {
+            dbIsReady = true;
+          });
+        }
+      },
+      child: BlocBuilder<SettingsBloc, SettingsState>(
           builder: (context, state) {
             Widget page = Center(
               child: CircularProgressIndicator(),
             );
             Widget bottomNavigation;
 
-//          if (!(state is LoginUninitialized)) {
-//            if (state.token == null) {
-//              page = LoginPage();
-//            } else
             if (_currentTab == TabItem.search) {
               page = SearchNavigator(navigatorKey: _navigatorKeys[TabItem.search]);
             } else if (_currentTab == TabItem.games) {
@@ -197,24 +144,13 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
             } else if (_currentTab == TabItem.settings) {
               page = SettingsNavigator(navigatorKey: _navigatorKeys[TabItem.settings]);
             }
-//          }
 
-//          if (state.token != null) {
             bottomNavigation = BottomNavigation(
               currentTab: _currentTab,
               onSelectTab: _selectTab,
             );
-//          }
 
-            if (apiUrlDownloaded && !apiKeySet) {
-              return ApiKeyScreen(() {
-                setState(() {
-                  apiKeySet = true;
-                });
-              });
-            }
-
-            if (apiUrlDownloaded) {
+            if (dbIsReady) {
               return Scaffold(
                 body: page,
                 bottomNavigationBar: bottomNavigation,
@@ -230,42 +166,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       ),
     );
   }
-
-  void _setApiUrlUpdateTimer() {
-    _getApiUrl();
-    _getApiUrlTimer = new Timer.periodic(Duration(minutes: 1), (Timer t) => _getApiUrl());
-  }
-
-  void _getApiUrl() async {
-    // if (kReleaseMode) {
-    //   final response = await http.get(appConfig.apiGetterUrl);
-    //   if (response.statusCode == 200) {
-    //     _setApiUrl(response.body);
-    //   } else {
-    //     throw Exception('Can\'t get API url');
-    //   }
-    // } else {
-    //   _setApiUrl(appConfig.getApiDebugUrl());
-    // }
-    String apiKey = await appConfig.getApiKey();
-    if (apiKey != null && !apiKeySet) {
-      setState(() {
-        apiKeySet = true;
-      });
-    }
-  }
-
-  // void _setApiUrl(String apiUrl) {
-  //   final bool initialUpdate = appConfig.apiUrl == null;
-  //   if (apiUrl != appConfig.apiUrl) {
-  //     appConfig.apiUrl = apiUrl;
-  //   }
-  //   if (initialUpdate) {
-  //     setState(() {
-  //       apiUrlDownloaded = true;
-  //     });
-  //   }
-  // }
 
   void _selectTab(TabItem tabItem) {
     if (tabItem == _currentTab) {

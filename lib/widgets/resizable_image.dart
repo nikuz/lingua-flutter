@@ -1,7 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:lingua_flutter/helpers/api.dart';
 import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/utils/convert.dart';
 import 'package:lingua_flutter/utils/files.dart';
@@ -61,11 +59,6 @@ class _ResizableImageState extends State<ResizableImage> {
         image = Image.file(
           File('$imageBaseUrl${widget.imageSource}'),
           fit: BoxFit.contain,
-        );
-      } else if (!widget.isLocal) {
-        image = CachedNetworkImage(
-          imageUrl: '${getApiUri()}${widget.imageSource}?${widget.updatedAt}',
-          errorWidget: (context, url, error) => Icon(Icons.error),
         );
       }
     }

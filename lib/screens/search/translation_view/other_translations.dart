@@ -158,12 +158,13 @@ class OtherTranslationsItem extends StatelessWidget {
               },
             ),
           ),
-          Container(
-            padding: EdgeInsets.only(
-              top: SizeUtil.vmax(4),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.only(
+                top: SizeUtil.vmax(4),
+              ),
+              child: _getSynonymsList(synonyms, screenWidth),
             ),
-            width: screenWidth * 0.33,
-            child: _getSynonymsList(synonyms, screenWidth),
           ),
           Container(
             width: screenWidth * 0.15,
