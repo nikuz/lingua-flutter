@@ -254,6 +254,17 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
       }
 
       if (!wordIsCyrillic) {
+        String correctedWord = word;
+
+        final List<dynamic> correctionData = translationResult[0][1];
+        if (correctionData != null && correctionData[0] != null && correctionData[0][0] != null && correctionData[0][0][1] != null) {
+          correctedWord = correctionData[0][0][1].replaceAll(new RegExp(r'</?[i|b]>'), '');
+        }
+
+        if (word != correctedWord) {
+          return _fetchTranslation(correctedWord);
+        }
+
         String pronunciationRaw = await apiPost(
             client: httpClient,
             url: appConfig.translationURL,
