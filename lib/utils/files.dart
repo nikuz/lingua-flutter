@@ -9,7 +9,7 @@ Future<String> getTempPath() async => (
 );
 
 String getFileId(int id, String word) {
-  word.trim().replaceAll(new RegExp(r'[\s|/|.|,]'), '-');
+  word.trim().replaceAll(new RegExp(r'[\s|/.,]'), '-');
   final String cleanedWord = word
       .split(' ')
       .map((part) => (part.trim().replaceAll(new RegExp(r'[^A-Za-z0-9]'), '')))

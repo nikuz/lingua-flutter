@@ -200,7 +200,7 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
               color: widget.withBorder ? Theme.of(context).dividerColor : Color.fromRGBO(0, 0, 0, 0.0),
             ),
           ),
-          color: isSelected ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor,
+          color: isSelected ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
         ),
         child: ListTile(
           leading: ResizableImage(
@@ -228,7 +228,7 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
               style: TextStyle(
                   fontSize: SizeUtil.vmax(18),
                   color: isSelected
-                      ? Theme.of(context).accentTextTheme.headline1.color
+                      ? Colors.white
                       : Theme.of(context).textTheme.headline1.decorationColor,
               ),
             ),
@@ -240,7 +240,7 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
               style: TextStyle(
                   fontSize: SizeUtil.vmax(16),
                   color: isSelected
-                      ? Theme.of(context).accentTextTheme.headline1.color
+                      ? Colors.white
                       : Theme.of(context).textTheme.headline1.color,
               ),
             ),

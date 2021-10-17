@@ -188,7 +188,7 @@ class OtherTranslationsItem extends StatelessWidget {
   }
 
   Widget _getSynonymsList(List<dynamic> synonyms, double screenWidth) {
-    List<Widget> list = List<Widget>();
+    List<Widget> list = [];
     for (int i = 0, l = synonyms.length; i < l; i++) {
       list.add(
           Text(

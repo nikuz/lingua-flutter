@@ -183,7 +183,7 @@ class DefinitionsItem extends StatelessWidget {
       return Container(width: 0, height: 0);
     }
 
-    List<Widget> list = List<Widget>();
+    List<Widget> list = [];
     for (int i = 0, l = synonyms.length; i < l; i++) {
       list.add(
         Container(
