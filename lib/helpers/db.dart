@@ -6,6 +6,20 @@ Database db;
 Future<void> dbOpen() async {
   String dir = await getDocumentsPath();
   db = await openDatabase('$dir/database/dictionary.SQLITE3');
+  await dbRawQuery(
+    'CREATE TABLE IF NOT EXISTS dictionary (' +
+      'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,' +
+      'word VARCHAR NOT NULL COLLATE NOCASE,' +
+      'pronunciation VARCHAR,' +
+      'translation VARCHAR COLLATE NOCASE,' +
+      'raw TEXT NOT NULL,' +
+      'image VARCHAR,' +
+      'version INTEGER DEFAULT 1,' +
+      'created_at TEXT DEFAULT CURRENT_TIMESTAMP,' +
+      'updated_at TEXT DEFAULT CURRENT_TIMESTAMP' +
+    ')',
+    []
+  );
 }
 
 void dbClose() async {
