@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/utils/convert.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
@@ -55,7 +54,7 @@ class _ResizableImageState extends State<ResizableImage> {
     if (isBase64Image) {
       image = Image.memory(getBytesFrom64String(widget.imageSource));
     } else {
-      if (widget.isLocal && db != null && imageBaseUrl != null) {
+      if (widget.isLocal && imageBaseUrl != null) {
         image = Image.file(
           File('$imageBaseUrl${widget.imageSource}'),
           fit: BoxFit.contain,
@@ -98,7 +97,7 @@ class _ResizableImageState extends State<ResizableImage> {
   }
 
   void _getImageBaseUrl() async {
-    if (!isBase64Image && widget.isLocal && db != null) {
+    if (!isBase64Image && widget.isLocal) {
       String newImageBaseUrl = await getDocumentsPath();
       setState(() {
         imageBaseUrl = newImageBaseUrl;

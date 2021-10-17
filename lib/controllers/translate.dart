@@ -9,12 +9,14 @@ import 'package:lingua_flutter/utils/files.dart';
 
 Future<Map<String, dynamic>> translateControllerGetList(int from, int to) async {
   const String countColumnName = 'COUNT(id)';
-  final List<dynamic> results = await dbBatchQuery([{
+  final List<dynamic> results = await DBHelper().batchQuery([{
     'type': 'rawQuery',
-    'query': 'SELECT id, word, pronunciation, translation, image, created_at, updated_at ' +
-        'FROM dictionary ' +
-        'ORDER BY created_at DESC ' +
-        'LIMIT ? OFFSET ?;',
+    'query': '''
+      SELECT id, word, pronunciation, translation, image, created_at, updated_at
+      FROM dictionary
+      ORDER BY created_at DESC
+      LIMIT ? OFFSET ?;
+    ''',
     'arguments': [to - from, from],
   }, {
     'type': 'rawQuery',
@@ -36,26 +38,28 @@ Future<Map<String, dynamic>> translateControllerSearch(String searchText, int fr
   final String searchPatternEnd = '$searchText%';
   const String countColumnName = 'COUNT(id)';
 
-  final List<dynamic> results = await dbBatchQuery([{
+  final List<dynamic> results = await DBHelper().batchQuery([{
     'type': 'rawQuery',
-    'query': 'SELECT id, word, pronunciation, translation, image, created_at, updated_at ' +
-        'FROM dictionary ' +
-        'WHERE ' +
-          'word LIKE \'$searchPattern\' ' +
-          'OR translation LIKE \'$searchPattern\' ' +
-        'ORDER BY ' +
-          'CASE ' +
-          'WHEN word LIKE \'$searchText\' THEN 1 ' +
-          'WHEN translation LIKE \'$searchText\' THEN 1 ' +
-          'WHEN word LIKE \'$searchPatternEnd\' THEN 2 ' +
-          'WHEN translation LIKE \'$searchPatternEnd\' THEN 2 ' +
-          'WHEN word LIKE \'$searchPatternStart\' THEN 3 ' +
-          'WHEN translation LIKE \'$searchPatternStart\' THEN 3 ' +
-          'ELSE 4 ' +
-        'END, ' +
-        'word ASC, ' +
-        'created_at DESC ' +
-      'LIMIT ? OFFSET ?;',
+    'query': '''
+      SELECT id, word, pronunciation, translation, image, created_at, updated_at
+      FROM dictionary
+      WHERE
+        word LIKE '$searchPattern'
+        OR translation LIKE '$searchPattern'
+      ORDER BY
+        CASE 
+        WHEN word LIKE '$searchText' THEN 1
+        WHEN translation LIKE '$searchText' THEN 1
+        WHEN word LIKE '$searchPatternEnd' THEN 2
+        WHEN translation LIKE '$searchPatternEnd' THEN 2
+        WHEN word LIKE '$searchPatternStart' THEN 3
+        WHEN translation LIKE '$searchPatternStart' THEN 3
+        ELSE 4
+      END,
+      word ASC,
+      created_at DESC
+      LIMIT ? OFFSET ?;
+    ''',
     'arguments': [to - from, from],
   }, {
     'type': 'rawQuery',
@@ -72,7 +76,7 @@ Future<Map<String, dynamic>> translateControllerSearch(String searchText, int fr
 }
 
 Future<Map<String, dynamic>> translateControllerGet(String word) async {
-  final List<Map> dbResponse = await dbRawQuery(
+  final List<Map> dbResponse = await DBHelper().rawQuery(
     'SELECT * FROM dictionary WHERE word=?;',
     [word]
   );
@@ -99,9 +103,10 @@ Future<void> translateControllerSave(Map<String, dynamic> params) async {
   }
 
   // populate db with initial data
-  await dbRawQuery(
-      'INSERT INTO dictionary (word, translation, raw, updated_at, version) ' +
-      'VALUES(?, ?, ?, datetime("now"), ?);',
+  await DBHelper().rawQuery('''
+      INSERT INTO dictionary (word, translation, raw, updated_at, version)
+      VALUES(?, ?, ?, datetime("now"), ?);
+      ''',
       [
         params['word'],
         params['translation'],
@@ -144,10 +149,11 @@ Future<void> translateControllerSave(Map<String, dynamic> params) async {
     }
 
     // update db
-    await dbRawQuery(
-        'UPDATE dictionary ' +
-        'SET image=?, pronunciation=?, updated_at=datetime("now") ' +
-        'WHERE id=${newTranslationData['id']};',
+    await DBHelper().rawQuery('''
+        UPDATE dictionary 
+        SET image=?, pronunciation=?, updated_at=datetime("now") 
+        WHERE id=${newTranslationData['id']};
+        ''',
         [
           imageUrl,
           pronunciationUrl,
@@ -155,7 +161,7 @@ Future<void> translateControllerSave(Map<String, dynamic> params) async {
     );
   } catch (e) {
     developer.log(e);
-    await dbRawDelete('DELETE FROM dictionary WHERE id=?;', [newTranslationData['id']]);
+    await DBHelper().rawDelete('DELETE FROM dictionary WHERE id=?;', [newTranslationData['id']]);
   }
 }
 
@@ -195,16 +201,17 @@ Future<void> translateControllerUpdate(Map<String, dynamic> params) async {
   }
 
   // update db
-  await dbRawQuery(
-      'UPDATE dictionary ' +
-      'SET translation=?, updated_at=datetime("now") $imageTransaction' +
-      'WHERE id=${translationData['id']};',
+  await DBHelper().rawQuery('''
+      UPDATE dictionary 
+      SET translation=?, updated_at=datetime("now") $imageTransaction
+      WHERE id=${translationData['id']};
+      ''',
       [params['translation']]
   );
 }
 
 Future<Map<String, dynamic>> translateControllerRemoveItem(int id) async {
-  final List<dynamic> dbResponse = await dbRawQuery(
+  final List<dynamic> dbResponse = await DBHelper().rawQuery(
       'SELECT * FROM dictionary WHERE id=?;',
       [id]
   );
@@ -221,7 +228,7 @@ Future<Map<String, dynamic>> translateControllerRemoveItem(int id) async {
       pronunciation.deleteSync();
     }
 
-    final int count = await dbRawDelete('DELETE FROM dictionary WHERE id=?;', [id]);
+    final int count = await DBHelper().rawDelete('DELETE FROM dictionary WHERE id=?;', [id]);
 
     return { 'success': count == 1 };
   } else {

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
 import 'package:lingua_flutter/widgets/pronunciation.dart';
 import 'package:lingua_flutter/widgets/prompts.dart';
@@ -133,7 +132,8 @@ class _TranslationsListState extends State<TranslationsList> {
 
           if (!(state is TranslationsLoaded)) {
             return Center(
-              child: CircularProgressIndicator(),
+              // child: CircularProgressIndicator(),
+              child: Text('loading'),
             );
           }
 
@@ -189,9 +189,6 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
         });
       },
       direction: DismissDirection.endToStart,
-      onDismissed: (direction) {
-        print(direction);
-      },
       child: Container(
         margin: EdgeInsets.only(bottom: SizeUtil.vmax(2)),
         decoration: BoxDecoration(
@@ -208,7 +205,7 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
             height: 50,
             imageSource: widget.translationItem.image,
             updatedAt: widget.translationItem.updatedAt,
-            isLocal: db != null,
+            isLocal: true,
             withPreviewOverlay: true,
             onTap: () {
               setState(() {
@@ -248,7 +245,7 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
           dense: true,
           trailing: PronunciationWidget(
             pronunciationUrl: widget.translationItem.pronunciation,
-            isLocal: db != null,
+            isLocal: true,
           ),
           onTap: () {
             BlocProvider.of<TranslationBloc>(context).add(TranslationClear());

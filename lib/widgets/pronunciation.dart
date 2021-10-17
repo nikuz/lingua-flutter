@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
 import 'package:lingua_flutter/utils/files.dart';
 
@@ -45,10 +44,9 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
     String pronunciationUrl = widget.pronunciationUrl;
     if (pronunciationUrl.indexOf('data:audio') != -1) {
       await _audioPlayer.play(pronunciationUrl);
-    } else if (widget.isLocal && db != null) {
+    } else if (widget.isLocal) {
       String dir = await getDocumentsPath();
       pronunciationUrl = '$dir${widget.pronunciationUrl}';
-      print(pronunciationUrl);
       await _audioPlayer.play(pronunciationUrl, isLocal:true);
     } else {
       await _audioPlayer.play(pronunciationUrl);

@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/screens/search/router.dart';
 import 'package:lingua_flutter/widgets/pronunciation.dart';
 import 'package:lingua_flutter/widgets/resizable_image.dart';
-import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
 
@@ -179,10 +178,9 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
 
     final bool remote = state.remote;
     final bool newWord = state.id == null;
-    bool translationSavedOnlyRemotely = db != null && remote;
-    bool toSave = newWord || imageUpdate || translationUpdate || translationSavedOnlyRemotely;
+    bool toSave = newWord || imageUpdate || translationUpdate;
     IconData iconName = Icons.check;
-    if (newWord || translationSavedOnlyRemotely) {
+    if (newWord) {
       iconName = Icons.save_alt;
     } else if (imageUpdate || translationUpdate) {
       iconName = Icons.update;
@@ -253,7 +251,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
             ),
             child: icon,
             onPressed: () {
-              if (newWord || translationSavedOnlyRemotely) {
+              if (newWord) {
                 BlocProvider.of<TranslationBloc>(context).add(TranslationSave(
                   word: state.word,
                   translation: state.translationWord,

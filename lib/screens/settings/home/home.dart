@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/widgets/prompts.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
-import 'package:lingua_flutter/helpers/db.dart';
 
 import 'bloc/bloc.dart';
 import 'bloc/state.dart';
@@ -97,25 +96,6 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
           child: BlocBuilder<SettingsBloc, SettingsState>(
             builder: (context, state) {
               if (state is SettingsLoaded) {
-                Widget offlineMode = SettingsCheckbox(
-                    id: 'offlineMode',
-                    title: 'Offline mode',
-                    value: state.settings['offlineMode'],
-                    onChange: (bool value) {
-                      if (
-                      value
-                          && state.settings['offlineDictionaryUpdateTime'] == null
-                      ) {
-                        _settingsBloc.add(SettingsDownloadDictionaryInfo());
-                      }
-                      if (value && db == null) {
-                        dbOpen();
-                      } else if (!value && db != null) {
-                        dbClose();
-                      }
-                    }
-                );
-
                 final int offlineDictionaryUpdateTime = state.settings['offlineDictionaryUpdateTime'];
                 final int offlineDictionaryUpdateSize = state.settings['offlineDictionaryUpdateSize'];
                 String dictionaryUpdateTime = '';
@@ -169,7 +149,6 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
                       title: 'Dark mode',
                       value: state.settings['darkModeEnabled'],
                     ),
-                    offlineMode,
                     dictionaryUpdateRow,
                   ],
                 );

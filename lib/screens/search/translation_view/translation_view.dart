@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
 import 'package:lingua_flutter/utils/connectivity.dart';
@@ -144,7 +143,7 @@ class _TranslationViewState extends State<TranslationView> {
                 appBarTitle = state.word;
                 wordId = state.id;
                 appBarTitleUpdated = true;
-                menuDisabled = wordId == null || (db != null && state.remote);
+                menuDisabled = wordId == null || state.remote;
               });
             }
 

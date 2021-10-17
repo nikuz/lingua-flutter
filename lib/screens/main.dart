@@ -2,12 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
 
 import './settings/home/bloc/bloc.dart';
 import './settings/home/bloc/events.dart';
-import './settings/home/bloc/state.dart';
 
 import './search/router.dart';
 import './games/router.dart';
@@ -77,7 +75,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
-  bool dbIsReady = false;
   TabItem _currentTab = TabItem.search;
   SettingsBloc _settingsBloc;
 
@@ -98,7 +95,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   void didChangePlatformBrightness() {
     final Brightness brightness = WidgetsBinding.instance.window.platformBrightness;
-    print(brightness);
     _settingsBloc.add(SettingsChange(
       type: 'bool',
       id: 'autoDarkMode',
@@ -116,49 +112,27 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     SizeUtil().init(context);
-    return BlocListener<SettingsBloc, SettingsState>(
-      listener: (context, state) async {
-        if (state is SettingsLoaded) {
-          await dbOpen();
-          setState(() {
-            dbIsReady = true;
-          });
-        }
-      },
-      child: BlocBuilder<SettingsBloc, SettingsState>(
-          builder: (context, state) {
-            Widget page = Center(
-              child: CircularProgressIndicator(),
-            );
-            Widget bottomNavigation;
+    Widget page = Center(
+      child: CircularProgressIndicator(),
+    );
+    Widget bottomNavigation;
 
-            if (_currentTab == TabItem.search) {
-              page = SearchNavigator(navigatorKey: _navigatorKeys[TabItem.search]);
-            } else if (_currentTab == TabItem.games) {
-              page = GamesNavigator(navigatorKey: _navigatorKeys[TabItem.games]);
-            } else if (_currentTab == TabItem.settings) {
-              page = SettingsNavigator(navigatorKey: _navigatorKeys[TabItem.settings]);
-            }
+    if (_currentTab == TabItem.search) {
+      page = SearchNavigator(navigatorKey: _navigatorKeys[TabItem.search]);
+    } else if (_currentTab == TabItem.games) {
+      page = GamesNavigator(navigatorKey: _navigatorKeys[TabItem.games]);
+    } else if (_currentTab == TabItem.settings) {
+      page = SettingsNavigator(navigatorKey: _navigatorKeys[TabItem.settings]);
+    }
 
-            bottomNavigation = BottomNavigation(
-              currentTab: _currentTab,
-              onSelectTab: _selectTab,
-            );
+    bottomNavigation = BottomNavigation(
+      currentTab: _currentTab,
+      onSelectTab: _selectTab,
+    );
 
-            if (dbIsReady) {
-              return Scaffold(
-                body: page,
-                bottomNavigationBar: bottomNavigation,
-              );
-            }
-
-            return Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-      ),
+    return Scaffold(
+      body: page,
+      bottomNavigationBar: bottomNavigation,
     );
   }
 
@@ -167,7 +141,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       // pop to first route
       _navigatorKeys[tabItem].currentState.popUntil((route) => route.isFirst);
     } else {
-      print(tabItem);
       setState(() => _currentTab = tabItem);
     }
   }
