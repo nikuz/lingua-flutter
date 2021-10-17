@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:developer' as developer;
 import 'package:flutter/painting.dart' as painting;
 import 'package:lingua_flutter/helpers/db.dart';
 import 'package:lingua_flutter/utils/db.dart';
@@ -124,7 +125,8 @@ Future<void> translateControllerSave(Map<String, dynamic> params) async {
       Uint8List imageBytes = Base64Decoder().convert(imageParts.group(2));
       imageUrl = '/images/$fileId.${imageParts.group(1)}';
 
-      final File image = File('$dir/$imageUrl');
+      File image = File('$dir/$imageUrl');
+      image = await image.create(recursive: true);
       await image.writeAsBytes(imageBytes);
     }
 
@@ -136,7 +138,8 @@ Future<void> translateControllerSave(Map<String, dynamic> params) async {
       Uint8List pronunciationBytes = Base64Decoder().convert(pronunciationParts.group(1));
       pronunciationUrl = '/pronunciations/$fileId.mp3';
 
-      final File pronunciation = File('$dir/$pronunciationUrl');
+      File pronunciation = File('$dir/$pronunciationUrl');
+      pronunciation = await pronunciation.create(recursive: true);
       await pronunciation.writeAsBytes(pronunciationBytes);
     }
 
@@ -151,6 +154,7 @@ Future<void> translateControllerSave(Map<String, dynamic> params) async {
         ]
     );
   } catch (e) {
+    developer.log(e);
     await dbRawDelete('DELETE FROM dictionary WHERE id=?;', [newTranslationData['id']]);
   }
 }

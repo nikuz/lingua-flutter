@@ -63,7 +63,7 @@ class _TranslationsListState extends State<TranslationsList> {
         builder: (context, state) {
           if (state is TranslationsLoaded && state.translations.isEmpty) {
             return Center(
-              child: Text('no translations'),
+              child: Text('Dictionary is yet empty'),
             );
           }
 
@@ -132,11 +132,8 @@ class _TranslationsListState extends State<TranslationsList> {
           }
 
           if (!(state is TranslationsLoaded)) {
-            // return Center(
-            //   child: CircularProgressIndicator(),
-            // );
             return Center(
-              child: Text('Loading'),
+              child: CircularProgressIndicator(),
             );
           }
 
