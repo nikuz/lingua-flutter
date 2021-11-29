@@ -316,7 +316,8 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
         },
     );
 
-    final imageReg = RegExp(r"'(data:image[^']{8000,})'");
+    final minImageSize = 8000; // in base64 characters
+    final imageReg = RegExp(r"'(data:image[^']+)'");
     final base64EndReg = RegExp(r'\\x3d');
     final slashReg = RegExp(r'\\/');
     final List<String> imagesRawStrings = imagesRaw.split('\n');
@@ -327,7 +328,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
         Iterable<RegExpMatch> imageParts = imageReg.allMatches(imagesRawStrings[i]);
         for (var item in imageParts) {
           final String match = item.group(1);
-          if (match != null) {
+          if (match != null && match.length > minImageSize) {
             final String decodedImageString = match
                 .replaceAll(slashReg, '/')
                 .replaceAll(base64EndReg, '=');
