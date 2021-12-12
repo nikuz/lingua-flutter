@@ -14,25 +14,27 @@ import './screens/main.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  BlocSupervisor.delegate = MyBlocDelegate();
   final http.Client httpClient = http.Client();
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider<TranslationsBloc>(
-          create: (context) => TranslationsBloc(httpClient: httpClient),
-        ),
-        BlocProvider<TranslationBloc>(
-          create: (context) => TranslationBloc(httpClient: httpClient),
-        ),
-        BlocProvider<SettingsBloc>(
-          create: (context) => SettingsBloc(prefs: prefs),
-        ),
-      ],
-      child: App(),
+  BlocOverrides.runZoned(
+    () => runApp(
+      MultiBlocProvider(
+        providers: [
+          BlocProvider<TranslationsBloc>(
+            create: (context) => TranslationsBloc(httpClient: httpClient),
+          ),
+          BlocProvider<TranslationBloc>(
+            create: (context) => TranslationBloc(httpClient: httpClient),
+          ),
+          BlocProvider<SettingsBloc>(
+            create: (context) => SettingsBloc(prefs: prefs),
+          ),
+        ],
+        child: App(),
+      ),
     ),
+    blocObserver: MyBlocObserver(),
   );
 }
 

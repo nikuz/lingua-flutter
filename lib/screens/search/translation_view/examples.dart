@@ -77,9 +77,11 @@ class ExamplesItem extends StatelessWidget {
               margin: EdgeInsets.only(left: SizeUtil.vmax(20)),
               child: Html(
                 data: """$text""",
-                defaultTextStyle: TextStyle(
-                  fontSize: SizeUtil.vmax(16),
-                ),
+                style: {
+                  "*": Style(
+                    fontSize: FontSize(SizeUtil.vmax(16)),
+                  ),
+                },
               ),
             ),
           ),

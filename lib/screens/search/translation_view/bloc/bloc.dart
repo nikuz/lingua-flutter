@@ -18,17 +18,12 @@ import 'state.dart';
 class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
   final http.Client httpClient;
 
-  TranslationBloc({@required this.httpClient}) : assert(httpClient is http.Client);
-
-  @override
-  TranslationState get initialState => TranslationUninitialized();
-
-  @override
-  Stream<TranslationState> mapEventToState(TranslationEvent event) async* {
+  TranslationBloc({ @required this.httpClient }) : super(TranslationUninitialized()) {
     final currentState = state;
-    if (event is TranslationRequest) {
+
+    on<TranslationRequest>((event, emit) async {
       try {
-        yield TranslationRequestLoading();
+        emit(TranslationRequestLoading());
         final Translation translation = await _fetchTranslation(event.word);
         List<dynamic> highestRelevantTranslation;
         String transcription;
@@ -67,9 +62,9 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
             }
 
             if (
-              highestRelevantTranslation.length > 1
-              && highestRelevantTranslation[1] != null
-              && highestRelevantTranslation[1].length >= 4
+            highestRelevantTranslation.length > 1
+                && highestRelevantTranslation[1] != null
+                && highestRelevantTranslation[1].length >= 4
             ) {
               transcription = highestRelevantTranslation[1][3];
             }
@@ -101,7 +96,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
               && otherTranslations == null;
         }
 
-        yield TranslationLoaded(
+        emit(TranslationLoaded(
           id: translation.id,
           word: word,
           translationWord: translationWord,
@@ -124,41 +119,45 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
           raw: translation.raw,
           remote: translation.remote,
           version: translation.version,
-        );
+        ));
       } on ApiException catch (e) {
-        yield TranslationError(e);
+        emit(TranslationError(e));
       } on DBException catch (e) {
-        yield TranslationError(e);
+        emit(TranslationError(e));
       } catch (e, s) {
         print(e);
         print(s);
       }
-    } else if (event is TranslationRequestImage) {
+    });
+
+    on<TranslationRequestImage>((event, emit) async {
       try {
         if (currentState is TranslationLoaded) {
-          yield currentState.copyWith(
+          emit(currentState.copyWith(
             imageLoading: true,
             imageSearchWord: event.word,
-          );
+          ));
           final List<dynamic> imagesData = await _fetchImage(event.word);
-          yield currentState.copyWith(
+          emit(currentState.copyWith(
             images: imagesData,
             imageLoading: false,
             imageSearchWord: event.word,
-          );
+          ));
         }
       } on ApiException catch (e) {
-        yield TranslationError(e);
+        emit(TranslationError(e));
       } catch (e, s) {
         print(e);
         print(s);
       }
-    } else if (event is TranslationSave) {
+    });
+
+    on<TranslationSave>((event, emit) async {
       try {
         if (currentState is TranslationLoaded) {
-          yield currentState.copyWith(
+          emit(currentState.copyWith(
             saveLoading: true,
-          );
+          ));
           await _fetchSave(
             word: event.word,
             translation: event.translation,
@@ -167,57 +166,67 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
             raw: event.raw,
             version: event.version,
           );
-          yield currentState.copyWith(
+          emit(currentState.copyWith(
             saveLoading: false,
             saveSuccess: true,
-          );
+          ));
         }
       } on DBException catch (e) {
-        yield TranslationError(e);
+        emit(TranslationError(e));
       } catch (e, s) {
         print(e);
         print(s);
       }
-    } else if (event is TranslationUpdate) {
+    });
+
+    on<TranslationUpdate>((event, emit) async {
       try {
         if (currentState is TranslationLoaded) {
-          yield currentState.copyWith(
+          emit(currentState.copyWith(
             updateLoading: true,
-          );
+          ));
           await _fetchUpdate(
-              word: currentState.word,
-              translation: event.word,
-              image: event.image,
+            word: currentState.word,
+            translation: event.word,
+            image: event.image,
           );
-          yield currentState.copyWith(
+          emit(currentState.copyWith(
             translationWord: event.word,
             updateLoading: false,
             updateSuccess: true,
             imageUpdate: false,
-          );
+          ));
         }
       } on DBException catch (e) {
-        yield TranslationError(e);
+        emit(TranslationError(e));
       } catch (e, s) {
         print(e);
         print(s);
       }
-    } else if (event is TranslationSelectImage) {
+    });
+
+    on<TranslationSelectImage>((event, emit) {
       if (currentState is TranslationLoaded) {
-        yield currentState.copyWith(
+        emit(currentState.copyWith(
           image: event.source,
           imageUpdate: true,
-        );
+        ));
       }
-    }  else if (event is TranslationSetOwn) {
+    });
+
+    on<TranslationSetOwn>((event, emit) {
       if (currentState is TranslationLoaded) {
-        yield currentState.copyWith(
+        emit(currentState.copyWith(
           translationOwn: event.translation,
-        );
+        ));
       }
-    } else if (event is TranslationClear) {
-      yield TranslationUninitialized();
-    }
+    });
+
+    on<TranslationClear>((event, emit) {
+      if (currentState is TranslationLoaded) {
+        emit(TranslationUninitialized());
+      }
+    });
   }
 
   Future<Translation> _fetchTranslation(String word) async {

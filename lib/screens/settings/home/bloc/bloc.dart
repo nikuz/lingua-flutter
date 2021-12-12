@@ -16,22 +16,17 @@ import 'state.dart';
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   SharedPreferences prefs;
 
-  SettingsBloc({@required this.prefs}) : assert(prefs is SharedPreferences);
-
-  @override
-  SettingsState get initialState => SettingsUninitialized();
-
-  @override
-  Stream<SettingsState> mapEventToState(SettingsEvent event) async* {
+  SettingsBloc({ @required this.prefs }) : super(SettingsUninitialized()) {
     final currentState = state;
-    if (event is SettingsGet) {
+
+    on<SettingsGet>((event, emit) {
       final bool pronunciationAutoPlay = prefs.getBool('pronunciationAutoPlay') ?? true;
       final bool darkModeEnabled = prefs.getBool('darkModeEnabled') ?? false;
       final bool autoDarkMode = prefs.getBool('autoDarkMode') ?? false;
       final bool offlineMode = prefs.getBool('offlineMode') ?? false;
       final int offlineDictionaryUpdateTime = prefs.getInt('offlineDictionaryUpdateTime');
       final int offlineDictionaryUpdateSize = prefs.getInt('offlineDictionaryUpdateSize');
-      yield SettingsLoaded({
+      emit(SettingsLoaded({
         'pronunciationAutoPlay': pronunciationAutoPlay,
         'darkModeEnabled': darkModeEnabled,
         'autoDarkMode': autoDarkMode,
@@ -43,8 +38,10 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         'offlineDictionaryUpdateError': false,
         'offlineDictionaryClearLoading': false,
         'offlineDictionaryClearConfirmation': false,
-      });
-    } else if (event is SettingsChange) {
+      }));
+    });
+
+    on<SettingsChange>((event, emit) async {
       if (currentState is SettingsLoaded) {
         if (event.savePrefs) {
           switch (event.type) {
@@ -60,17 +57,21 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           }
         }
 
-        yield currentState.copyWith([{
-          'id': event.id,
-          'value': event.value,
-        }]);
+        emit(
+            currentState.copyWith([{
+              'id': event.id,
+              'value': event.value,
+            }])
+        );
       }
-    } else if (event is SettingsDownloadDictionaryInfo) {
+    });
+
+    on<SettingsDownloadDictionaryInfo>((event, emit) async {
       if (currentState is SettingsLoaded) {
-        yield currentState.copyWith([{
+        emit(currentState.copyWith([{
           'id': 'offlineDictionaryUpdateLoading',
           'value': true,
-        }]);
+        }]));
         final Map<String, dynamic> stopLoading = {
           'id': 'offlineDictionaryUpdateLoading',
           'value': false,
@@ -81,34 +82,36 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           drive.File backupFile = await _getBackupInfo(dir);
 
           if (backupFile != null) {
-            yield currentState.copyWith([{
+            emit(currentState.copyWith([{
               'id': 'offlineDictionaryPreUpdateSize',
               'value': backupFile.fileSize,
-            }, stopLoading]);
+            }, stopLoading]));
           } else {
-            yield currentState.copyWith([{
+            emit(currentState.copyWith([{
               'id': 'offlineDictionaryUpdateError',
               'value': true,
-            }, stopLoading]);
+            }, stopLoading]));
           }
         } catch (e, s) {
           print(e);
           print(s);
-          yield currentState.copyWith([{
+          emit(currentState.copyWith([{
             'id': 'offlineDictionaryUpdateError',
             'value': true,
-          }, stopLoading]);
+          }, stopLoading]));
         }
       }
-    } else if (event is SettingsDownloadDictionary) {
+    });
+
+    on<SettingsDownloadDictionary>((event, emit) async {
       if (currentState is SettingsLoaded) {
-        yield currentState.copyWith([{
+        emit(currentState.copyWith([{
           'id': 'offlineDictionaryUpdateLoading',
           'value': true,
         }, {
           'id': 'offlineDictionaryPreUpdateSize',
           'value': null,
-        }]);
+        }]));
         final Map<String, dynamic> stopLoading = {
           'id': 'offlineDictionaryUpdateLoading',
           'value': false,
@@ -139,31 +142,33 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
             await prefs.setInt(timeId, timeValue);
             await prefs.setInt(sizeId, sizeValue);
-            yield currentState.copyWith([{
+            emit(currentState.copyWith([{
               'id': timeId,
               'value': timeValue,
             }, {
               'id': sizeId,
               'value': sizeValue,
-            }, stopLoading]);
+            }, stopLoading]));
           } else {
-            yield currentState.copyWith([{
+            emit(currentState.copyWith([{
               'id': 'offlineDictionaryUpdateError',
               'value': true,
-            }, stopLoading]);
+            }, stopLoading]));
           }
         } catch (e, s) {
           print(e);
           print(s);
-          yield currentState.copyWith([{
+          emit(currentState.copyWith([{
             'id': 'offlineDictionaryUpdateError',
             'value': true,
-          }, stopLoading]);
+          }, stopLoading]));
         }
       }
-    } else if (event is SettingsClearDictionary) {
+    });
+
+    on<SettingsClearDictionary>((event, emit) async {
       if (currentState is SettingsLoaded) {
-        yield currentState.copyWith([{
+        emit(currentState.copyWith([{
           'id': 'offlineDictionaryClearLoading',
           'value': true,
         }, {
@@ -172,7 +177,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         }, {
           'id': 'offlineMode',
           'value': false,
-        }]);
+        }]));
 
         String dir = await getDocumentsPath();
         final database = Directory('$dir/database');
@@ -192,7 +197,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         await prefs.remove('offlineDictionaryUpdateSize');
         await prefs.remove('offlineMode');
 
-        yield currentState.copyWith([{
+        emit(currentState.copyWith([{
           'id': 'offlineDictionaryClearLoading',
           'value': false,
         }, {
@@ -201,15 +206,15 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         }, {
           'id': 'offlineDictionaryUpdateSize',
           'value': null,
-        }]);
+        }]));
       }
-    }
+    });
   }
 
   Future<dynamic> _getBackupInfo(String dir) async {
     final _credentials = new ServiceAccountCredentials.fromJson(googleApiCredentials);
 
-    final scopes = [drive.DriveApi.DriveScope];
+    final scopes = [drive.DriveApi.driveScope];
 
     return clientViaServiceAccount(_credentials, scopes).then((client) {
       var api = new drive.DriveApi(client);
@@ -236,12 +241,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   Future<File> _downloadBackup(String dir) async {
     final _credentials = new ServiceAccountCredentials.fromJson(googleApiCredentials);
 
-    final scopes = [drive.DriveApi.DriveScope];
+    final scopes = [drive.DriveApi.driveScope];
     drive.File backupFile = await _getBackupInfo(dir);
 
     if (backupFile != null) {
       return clientViaServiceAccount(_credentials, scopes).then((client) {
-        return client.readBytes(backupFile.downloadUrl).then((bytes) {
+        return client.readBytes(Uri.parse(backupFile.downloadUrl)).then((bytes) {
           var file = new File('$dir/$offlineDictionaryFileName');
           return file.writeAsBytes(bytes);
         });

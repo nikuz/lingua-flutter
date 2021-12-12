@@ -1,14 +1,9 @@
-import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import 'package:lingua_flutter/utils/sizes.dart';
 import 'package:lingua_flutter/utils/files.dart';
-
-void monitorNotificationStateChanges(AudioPlayerState value) {
-  print('state => $value');
-}
 
 class PronunciationWidget extends StatefulWidget {
   final String pronunciationUrl;
@@ -32,12 +27,12 @@ class PronunciationWidget extends StatefulWidget {
 
 class _PronunciationWidgetState extends State<PronunciationWidget> {
   AudioPlayer _audioPlayer = AudioPlayer();
-  StreamSubscription<AudioPlayerState> _audioPlayerStateSubscription;
+  StreamSubscription<PlayerState> _audioPlayerStateSubscription;
   StreamSubscription _playerCompleteSubscription;
   StreamSubscription _playerErrorSubscription;
-  AudioPlayerState _playerState = AudioPlayerState.STOPPED;
+  PlayerState _playerState = PlayerState.STOPPED;
   bool _isPlayerStopped(state) => (
-      state == AudioPlayerState.STOPPED || state == AudioPlayerState.COMPLETED
+      state == PlayerState.STOPPED || state == PlayerState.COMPLETED
   );
 
   Future<void> _playPronunciation() async {
@@ -51,20 +46,20 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
     } else {
       await _audioPlayer.play(pronunciationUrl);
     }
-    setState(() => this._playerState = AudioPlayerState.PLAYING);
+    setState(() => this._playerState = PlayerState.PLAYING);
   }
 
   Future<void> _stopPronunciation() async {
     await _audioPlayer.stop();
-    setState(() => this._playerState = AudioPlayerState.STOPPED);
+    setState(() => this._playerState = PlayerState.STOPPED);
   }
 
-  void _onPlayerStateChange(AudioPlayerState state) {
+  void _onPlayerStateChange(PlayerState state) {
     setState(() => _playerState = state);
   }
 
   void _onPlayerStateChangeError(msg) {
-    setState(() => _playerState = AudioPlayerState.STOPPED);
+    setState(() => _playerState = PlayerState.STOPPED);
   }
 
   @override
@@ -75,14 +70,11 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
         onError: _onPlayerStateChangeError
     );
     _playerCompleteSubscription = _audioPlayer.onPlayerCompletion.listen((event) {
-      setState(() => _playerState = AudioPlayerState.COMPLETED);
+      setState(() => _playerState = PlayerState.COMPLETED);
     });
     _playerErrorSubscription = _audioPlayer.onPlayerError.listen((msg) {
       print('audioPlayer error : $msg');
     });
-    if (Platform.isIOS) {
-      _audioPlayer.monitorNotificationStateChanges(monitorNotificationStateChanges);
-    }
     if (widget.autoPlay == true) {
       _playPronunciation();
     }

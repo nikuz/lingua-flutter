@@ -13,86 +13,90 @@ import 'state.dart';
 class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
   final http.Client httpClient;
 
-  TranslationsBloc({@required this.httpClient}) : assert(httpClient is http.Client);
-
-  @override
-  TranslationsState get initialState => TranslationsUninitialized();
-
-  @override
-  Stream<TranslationsState> mapEventToState(TranslationsEvent event) async* {
+  TranslationsBloc({ @required this.httpClient }) : super(TranslationsUninitialized()) {
     final currentState = state;
-    if (event is TranslationsRequest) {
+    print(currentState);
+
+    on<TranslationsRequest>((event, emit) async {
       try {
-        yield TranslationsRequestLoading(
+        emit(TranslationsRequestLoading(
             currentState.translations,
             currentState.totalAmount
-        );
+        ));
         final Translations translationsList = await _fetchTranslationsList(0, LIST_PAGE_SIZE);
-        yield TranslationsLoaded(
-          from: translationsList.from,
-          to: translationsList.to,
-          totalAmount: translationsList.totalAmount,
-          translations: translationsList.translations,
-        );
+        emit(TranslationsLoaded(
+            from: translationsList.from,
+            to: translationsList.to,
+            totalAmount: translationsList.totalAmount,
+            translations: translationsList.translations,
+        ));
       } on DBException catch (e) {
-        yield TranslationsError(e);
+        emit(TranslationsError(e));
       } catch (e, s) {
         print(e);
         print(s);
       }
-    } else if (event is TranslationsRequestMore) {
-      yield TranslationsRequestMoreLoading(currentState.totalAmount, currentState.translations);
+    });
+
+    on<TranslationsRequestMore>((event, emit) async {
+      emit(TranslationsRequestMoreLoading(currentState.totalAmount, currentState.translations));
       try {
         int from = currentState.to;
         final Translations translationsList = await _fetchTranslationsList(from, from + LIST_PAGE_SIZE);
-        yield TranslationsLoaded(
+        emit(TranslationsLoaded(
           from: translationsList.from,
           to: translationsList.to,
           totalAmount: translationsList.totalAmount,
           translations: currentState.translations + translationsList.translations,
-        );
+        ));
       } on DBException catch (e) {
-        yield TranslationsError(e);
+        emit(TranslationsError(e));
       } catch (e, s) {
         print(e);
         print(s);
       }
-    } else if (event is TranslationsSearch) {
-      yield TranslationsSearchLoading();
+    });
+
+    on<TranslationsSearch>((event, emit) async {
+      emit(TranslationsSearchLoading());
       try {
         final Translations translationsList = await _fetchTranslationsList(
             0,
             LIST_PAGE_SIZE,
             searchText: event.text
         );
-        yield TranslationsLoaded(
+        emit(TranslationsLoaded(
           from: translationsList.from,
           to: translationsList.to,
           totalAmount: translationsList.totalAmount,
           translations: translationsList.translations,
           search: event.text,
-        );
+        ));
       } on DBException catch (e) {
-        yield TranslationsError(e);
+        emit(TranslationsError(e));
       } catch (e, s) {
         print(e);
         print(s);
       }
-    } else if (event is TranslationsItemRemove) {
+    });
+
+    on<TranslationsItemRemove>((event, emit) async {
       try {
         if (currentState is TranslationsLoaded) {
           await _removeTranslationsItem(event.id);
-          yield currentState.copyWith(
+          emit(currentState.copyWith(
             removedItemId: event.id,
-          );
+          ));
         }
       } on DBException catch (e) {
-        yield TranslationsError(e);
+        emit(TranslationsError(e));
       } catch (e, s) {
         print(e);
         print(s);
       }
-    } else if (event is TranslationsUpdateItem) {
+    });
+
+    on<TranslationsUpdateItem>((event, emit) {
       try {
         if (currentState is TranslationsLoaded) {
           String oldImageUrl = event.imageUrl;
@@ -105,7 +109,7 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
             oldImageUrl = oldImageUrl.replaceAll(imageExtension, '.jpeg');
           }
 
-          yield currentState.copyWith(
+          emit(currentState.copyWith(
             updatedItem: TranslationsItem(
               id: event.id,
               word: event.word,
@@ -115,15 +119,15 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
               createdAt: event.createdAt,
               updatedAt: event.updatedAt,
             ),
-          );
+          ));
         }
       } on DBException catch (e) {
-        yield TranslationsError(e);
+        emit(TranslationsError(e));
       } catch (e, s) {
         print(e);
         print(s);
       }
-    }
+    });
   }
 
   Future<Translations> _fetchTranslationsList(int from, int to, {String searchText}) async {
