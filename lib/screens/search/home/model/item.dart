@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
 
 class TranslationsItem extends Equatable {
-  final int id;
-  final String word;
-  final String translation;
-  final String pronunciation;
-  final String image;
-  final String createdAt;
-  final String updatedAt;
+  final int? id;
+  final String? word;
+  final String? translation;
+  final String? pronunciation;
+  final String? image;
+  final String? createdAt;
+  final String? updatedAt;
 
   const TranslationsItem({
     this.id,
@@ -20,7 +20,7 @@ class TranslationsItem extends Equatable {
   });
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
     id,
     word,
     translation,

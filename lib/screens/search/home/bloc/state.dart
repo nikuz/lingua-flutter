@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:lingua_flutter/utils/api.dart';
@@ -12,9 +11,9 @@ abstract class TranslationsState extends Equatable {
   List<Object> get props => [];
 
   List<TranslationsItem> get translations => [];
-  int get from => 0;
-  int get to => 20;
-  int get totalAmount => 0;
+  int? get from => 0;
+  int? get to => 20;
+  int? get totalAmount => 0;
 }
 
 class TranslationsUninitialized extends TranslationsState {}
@@ -33,20 +32,19 @@ class TranslationsError extends TranslationsState {
 
 class TranslationsRequestLoading extends TranslationsState {
   final List<TranslationsItem> translations;
-  final int totalAmount;
+  final int? totalAmount;
 
   const TranslationsRequestLoading(
     this.translations,
     this.totalAmount,
-  ) : assert(translations != null && totalAmount != null);
+  );
 }
 
 class TranslationsRequestMoreLoading extends TranslationsState {
   final int totalAmount;
   final List<TranslationsItem> translations;
 
-  const TranslationsRequestMoreLoading(this.totalAmount, this.translations)
-      : assert(totalAmount != null, translations != null);
+  const TranslationsRequestMoreLoading(this.totalAmount, this.translations);
 }
 
 class TranslationsSearchLoading extends TranslationsState {}
@@ -56,26 +54,26 @@ class TranslationsLoaded extends TranslationsState {
   final int to;
   final int totalAmount;
   final List<TranslationsItem> translations;
-  final String search;
+  final String? search;
 
   const TranslationsLoaded({
-    @required this.from,
-    @required this.to,
-    @required this.totalAmount,
-    @required this.translations,
+    required this.from,
+    required this.to,
+    required this.totalAmount,
+    required this.translations,
     this.search,
-  }) : assert(from != null && to != null && totalAmount != null && translations != null);
+  });
 
   TranslationsLoaded copyWith({
-    int from,
-    int to,
-    int totalAmount,
-    List<TranslationsItem> translations,
-    TranslationsItem updatedItem,
-    int removedItemId,
+    int? from,
+    int? to,
+    int? totalAmount,
+    List<TranslationsItem>? translations,
+    TranslationsItem? updatedItem,
+    int? removedItemId,
   }) {
-    int total = (from ?? this.totalAmount) ?? 0;
-    int to = (from ?? this.to) ?? 0;
+    int total = from ?? this.totalAmount;
+    int to = from ?? this.to;
     List<TranslationsItem> newTranslations = translations ?? this.translations;
 
     if (updatedItem != null) {
@@ -106,7 +104,7 @@ class TranslationsLoaded extends TranslationsState {
   }
 
   @override
-  List<Object> get props => [from, to, totalAmount, translations, search];
+  List<Object> get props => [from, to, totalAmount, translations, search ?? ''];
 
   @override
   String toString() => 'Translations list length: ${translations.length}';

@@ -11,15 +11,15 @@ import 'bloc/state.dart';
 class TranslationViewImagePicker extends StatefulWidget {
   final String word;
 
-  TranslationViewImagePicker(this.word) : assert(word != null);
+  TranslationViewImagePicker(this.word);
 
   @override
   _TranslationViewImagePickerState createState() => _TranslationViewImagePickerState();
 }
 
 class _TranslationViewImagePickerState extends State<TranslationViewImagePicker> {
-  TextEditingController _textController;
-  TranslationBloc _translationBloc;
+  TextEditingController? _textController;
+  late TranslationBloc _translationBloc;
   final itemKey = new GlobalKey();
 
   @override
@@ -38,7 +38,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
 
   @override
   void dispose() {
-    _textController.dispose();
+    _textController!.dispose();
     super.dispose();
   }
 
@@ -153,8 +153,8 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                               size: SizeUtil.vmax(25),
                             ),
                             onPressed: () {
-                              if (_textController.text != '') {
-                                _textController.text = '';
+                              if (_textController!.text != '') {
+                                _textController!.text = '';
                               }
                             },
                           ),
@@ -185,7 +185,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
         && _translationBloc.state.imageLoading == false
     ) {
       Scrollable.ensureVisible(
-        itemKey.currentContext,
+        itemKey.currentContext!,
         duration: Duration(seconds: 1),
         alignment: 0.5,
       );

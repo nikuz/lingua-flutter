@@ -16,7 +16,7 @@ class TranslationViewOwnTranslation extends StatefulWidget {
 }
 
 class _TranslationViewOwnTranslationState extends State<TranslationViewOwnTranslation> {
-  TextEditingController _textController;
+  TextEditingController? _textController;
   final itemKey = new GlobalKey();
 
   @override
@@ -27,7 +27,7 @@ class _TranslationViewOwnTranslationState extends State<TranslationViewOwnTransl
 
   @override
   void dispose() {
-    _textController.dispose();
+    _textController!.dispose();
     super.dispose();
   }
 
@@ -93,8 +93,8 @@ class _TranslationViewOwnTranslationState extends State<TranslationViewOwnTransl
                           size: SizeUtil.vmax(25),
                         ),
                         onPressed: () {
-                          if (_textController.text != '') {
-                            _textController.text = '';
+                          if (_textController!.text != '') {
+                            _textController!.text = '';
                           }
                         },
                       ),
@@ -109,9 +109,9 @@ class _TranslationViewOwnTranslationState extends State<TranslationViewOwnTransl
   }
 
   void submit() {
-    if (_textController.text != widget.word) {
+    if (_textController!.text != widget.word) {
       BlocProvider.of<TranslationBloc>(context).add(
-          TranslationSetOwn(_textController.text)
+          TranslationSetOwn(_textController!.text)
       );
     }
     Navigator.pop(context, false);

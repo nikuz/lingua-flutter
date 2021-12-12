@@ -1,7 +1,8 @@
+import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 
 class DBHelper {
-  static Database _db;
+  static Database? _db;
   static final DBHelper instance = DBHelper._privateConstructor();
 
   DBHelper._privateConstructor();
@@ -11,9 +12,9 @@ class DBHelper {
   }
 
   Future<Database> get database async {
-    if (_db != null) return _db;
+    if (_db != null) return _db!;
     _db = await _initDatabase();
-    return _db;
+    return _db!;
   }
 
   _initDatabase() async {
@@ -57,28 +58,28 @@ class DBHelper {
     return await db.rawDelete(query, arguments);
   }
 
-  Future<List<dynamic>> batchQuery(List<Map<String, dynamic>> props, {bool noResult}) async {
+  Future<List<dynamic>> batchQuery(List<Map<String, dynamic>> props, {bool? noResult}) async {
     Database db = await instance.database;
     Batch batch = db.batch();
 
     for (int i = 0, l = props.length; i < l; i++) {
       final Map<String, dynamic> item = props[i];
-      String type = item['type'];
-      String query = item['query'];
-      List<dynamic> arguments = item['arguments'];
+      String? type = item['type'];
+      String? query = item['query'];
+      List<dynamic>? arguments = item['arguments'];
 
       switch (type) {
         case 'rawQuery':
-          batch.rawQuery(query, arguments);
+          batch.rawQuery(query!, arguments);
           break;
         case 'rawInsert':
-          batch.rawInsert(query, arguments);
+          batch.rawInsert(query!, arguments);
           break;
         case 'rawUpdate':
-          batch.rawUpdate(query, arguments);
+          batch.rawUpdate(query!, arguments);
           break;
         case 'rawDelete':
-          batch.rawDelete(query, arguments);
+          batch.rawDelete(query!, arguments);
           break;
         default:
       }

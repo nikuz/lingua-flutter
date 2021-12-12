@@ -15,7 +15,7 @@ class SearchNavigatorRoutes {
 class SearchNavigator extends StatelessWidget {
   final GlobalKey<NavigatorState> navigatorKey;
 
-  SearchNavigator({ this.navigatorKey }) : assert(navigatorKey != null);
+  SearchNavigator({ required this.navigatorKey }) : assert(navigatorKey != null);
 
   @override
   Widget build(BuildContext context) {
@@ -34,16 +34,19 @@ class SearchNavigator extends StatelessWidget {
         builder = (BuildContext _) => SearchHomePage();
         break;
       case SearchNavigatorRoutes.translation_view:
-        String word = settings.arguments;
-        builder = (BuildContext _) => TranslationView(word);
+        final arguments = settings.arguments as Map<String, String?>;
+        String? word = arguments['word'];
+        builder = (BuildContext _) => TranslationView(word ?? '');
         break;
       case SearchNavigatorRoutes.translation_view_images_picker:
-        String word = settings.arguments;
-        builder = (BuildContext _) => TranslationViewImagePicker(word);
+        final arguments = settings.arguments as Map<String, String?>;
+        String? word = arguments['word'];
+        builder = (BuildContext _) => TranslationViewImagePicker(word ?? '');
         break;
       case SearchNavigatorRoutes.translation_view_own_translation:
-        String translation = settings.arguments;
-        builder = (BuildContext _) => TranslationViewOwnTranslation(translation);
+        final arguments = settings.arguments as Map<String, String?>;
+        String? word = arguments['word'];
+        builder = (BuildContext _) => TranslationViewOwnTranslation(word ?? '');
         break;
       default:
         throw Exception('Invalid route: ${settings.name}');

@@ -7,18 +7,18 @@ import 'package:lingua_flutter/utils/sizes.dart';
 class ResizableImage extends StatefulWidget {
   final double width;
   final double height;
-  final String imageSource;
-  final String updatedAt;
-  final bool isLocal;
-  final bool withPreviewOverlay;
-  final Function onTap;
-  final Function onPreviewClose;
+  final String? imageSource;
+  final String? updatedAt;
+  final bool? isLocal;
+  final bool? withPreviewOverlay;
+  final Function? onTap;
+  final Function? onPreviewClose;
 
   ResizableImage({
-    @required this.width,
-    @required this.height,
-    @required this.imageSource,
-    @required this.updatedAt,
+    required this.width,
+    required this.height,
+    required this.imageSource,
+    required this.updatedAt,
     this.isLocal,
     this.withPreviewOverlay,
     this.onTap,
@@ -30,9 +30,9 @@ class ResizableImage extends StatefulWidget {
 }
 
 class _ResizableImageState extends State<ResizableImage> {
-  String imageBaseUrl;
+  String? imageBaseUrl;
   bool isBase64Image = false;
-  OverlayEntry _overlayEntry;
+  late OverlayEntry _overlayEntry;
 
   @override
   void initState() {
@@ -52,9 +52,9 @@ class _ResizableImageState extends State<ResizableImage> {
     Widget image = Container();
 
     if (isBase64Image) {
-      image = Image.memory(getBytesFrom64String(widget.imageSource));
+      image = Image.memory(getBytesFrom64String(widget.imageSource!));
     } else {
-      if (widget.isLocal && imageBaseUrl != null) {
+      if (widget.isLocal! && imageBaseUrl != null) {
         image = Image.file(
           File('$imageBaseUrl${widget.imageSource}'),
           fit: BoxFit.contain,
@@ -80,10 +80,10 @@ class _ResizableImageState extends State<ResizableImage> {
         onPressed: () {
           if (widget.withPreviewOverlay == true) {
             this._overlayEntry = this._createOverlayEntry();
-            Overlay.of(context).insert(this._overlayEntry);
+            Overlay.of(context)!.insert(this._overlayEntry);
           }
           if (widget.onTap is Function) {
-            widget.onTap();
+            widget.onTap!();
           }
         },
       ),
@@ -92,12 +92,12 @@ class _ResizableImageState extends State<ResizableImage> {
 
   void _isBase64Image() {
     if (widget.imageSource != null) {
-      isBase64Image = widget.imageSource.indexOf('data:image') == 0;
+      isBase64Image = widget.imageSource!.indexOf('data:image') == 0;
     }
   }
 
   void _getImageBaseUrl() async {
-    if (!isBase64Image && widget.isLocal) {
+    if (!isBase64Image && widget.isLocal!) {
       String newImageBaseUrl = await getDocumentsPath();
       setState(() {
         imageBaseUrl = newImageBaseUrl;
@@ -133,7 +133,7 @@ class _ResizableImageState extends State<ResizableImage> {
                     if (drag.offset.dy > 300 || drag.offset.dy < -10) {
                       this._overlayEntry.remove();
                       if (widget.onPreviewClose is Function) {
-                        widget.onPreviewClose();
+                        widget.onPreviewClose!();
                       }
                     }
                   },
@@ -143,7 +143,7 @@ class _ResizableImageState extends State<ResizableImage> {
             onPressed: () {
               this._overlayEntry.remove();
               if (widget.onPreviewClose is Function) {
-                widget.onPreviewClose();
+                widget.onPreviewClose!();
               }
             },
           ),

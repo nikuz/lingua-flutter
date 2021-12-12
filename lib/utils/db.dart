@@ -1,7 +1,7 @@
 
 class DBException implements Exception {
-  int code;
-  String message;
+  int? code;
+  String? message;
 
   DBException(Map<String, dynamic> errorBody) {
     final errorCode = errorBody['error'];
@@ -18,7 +18,7 @@ class DBException implements Exception {
     }
   }
 
-  List<Object> get props => [code, message];
+  List<Object?> get props => [code, message];
 
   @override
   String toString() {

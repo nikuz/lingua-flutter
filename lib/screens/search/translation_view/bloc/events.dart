@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class TranslationEvent extends Equatable {
@@ -9,7 +8,7 @@ abstract class TranslationEvent extends Equatable {
 class TranslationRequest extends TranslationEvent {
   final String word;
 
-  TranslationRequest([this.word]) : assert(word != null);
+  TranslationRequest(this.word);
 }
 
 class TranslationClear extends TranslationEvent {}
@@ -17,29 +16,29 @@ class TranslationClear extends TranslationEvent {}
 class TranslationRequestImage extends TranslationEvent {
   final String word;
 
-  TranslationRequestImage([this.word]) : assert(word != null);
+  TranslationRequestImage(this.word);
 }
 
 class TranslationSelectImage extends TranslationEvent {
   final String source;
 
-  TranslationSelectImage([this.source]) : assert(source != null);
+  TranslationSelectImage(this.source);
 }
 
 class TranslationSetOwn extends TranslationEvent {
   final String translation;
 
-  TranslationSetOwn([this.translation]) : assert(translation != null);
+  TranslationSetOwn(this.translation);
 }
 
 class TranslationUpdate extends TranslationEvent {
   final String word;
-  final String image;
+  final String? image;
 
   TranslationUpdate({
-    @required this.word,
+    required this.word,
     this.image,
-}) : assert(word != null);
+  });
 }
 
 class TranslationSave extends TranslationEvent {
@@ -51,11 +50,11 @@ class TranslationSave extends TranslationEvent {
   final int version;
 
   TranslationSave({
-    @required this.word,
-    @required this.translation,
-    @required this.pronunciationURL,
-    @required this.image,
-    @required this.raw,
-    @required this.version,
-  }) : assert(word != null && translation != null && pronunciationURL != null && image != null && raw != null && version != null);
+    required this.word,
+    required this.translation,
+    required this.pronunciationURL,
+    required this.image,
+    required this.raw,
+    required this.version,
+  });
 }

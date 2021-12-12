@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:lingua_flutter/utils/api.dart';
@@ -8,7 +7,7 @@ abstract class TranslationState extends Equatable {
   const TranslationState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 
   get images => null;
   get imageLoading => null;
@@ -22,7 +21,7 @@ class TranslationError extends TranslationState {
   TranslationError([this.error]) : assert(error is ApiException || error is DBException);
 
   @override
-  List<Object> get props => [error];
+  List<Object?> get props => [error];
 
   @override
   String toString() => error.toString();
@@ -31,78 +30,78 @@ class TranslationError extends TranslationState {
 class TranslationRequestLoading extends TranslationState {}
 
 class TranslationLoaded extends TranslationState {
-  final int id;
-  final String word;
-  final String translationWord;
-  final String translationOwn;
-  final String pronunciation;
-  final List<dynamic> highestRelevantTranslation;
-  final String transcription;
-  final List<dynamic> otherTranslations;
-  final List<dynamic> definitions;
-  final List<dynamic> definitionsSynonyms;
-  final List<dynamic> examples;
-  final String autoSpellingFix;
+  final int? id;
+  final String? word;
+  final String? translationWord;
+  final String? translationOwn;
+  final String? pronunciation;
+  final List<dynamic>? highestRelevantTranslation;
+  final String? transcription;
+  final List<dynamic>? otherTranslations;
+  final List<dynamic>? definitions;
+  final List<dynamic>? definitionsSynonyms;
+  final List<dynamic>? examples;
+  final String? autoSpellingFix;
   final bool strangeWord;
-  final String image;
-  final String imageUrl;
-  final bool imageUpdate;
+  final String? image;
+  final String? imageUrl;
+  final bool? imageUpdate;
   final List<dynamic> images;
-  final String imageSearchWord;
+  final String? imageSearchWord;
   final bool imageLoading;
-  final String createdAt;
-  final String updatedAt;
-  final bool updateLoading;
-  final bool updateSuccess;
-  final bool saveLoading;
-  final bool saveSuccess;
-  final List<dynamic> raw;
-  final bool remote;
-  final int version;
+  final String? createdAt;
+  final String? updatedAt;
+  final bool? updateLoading;
+  final bool? updateSuccess;
+  final bool? saveLoading;
+  final bool? saveSuccess;
+  final List<dynamic>? raw;
+  final bool? remote;
+  final int? version;
 
   TranslationLoaded({
-    @required this.id,
-    @required this.word,
-    @required this.translationWord,
+    required this.id,
+    required this.word,
+    required this.translationWord,
     this.translationOwn,
-    @required this.pronunciation,
-    @required this.image,
+    required this.pronunciation,
+    required this.image,
     this.imageUrl,
-    @required this.images,
+    required this.images,
     this.imageUpdate,
-    @required this.imageSearchWord,
-    @required this.imageLoading,
-    @required this.highestRelevantTranslation,
-    @required this.transcription,
-    @required this.otherTranslations,
-    @required this.definitions,
-    @required this.definitionsSynonyms,
-    @required this.examples,
-    @required this.autoSpellingFix,
-    @required this.strangeWord,
-    @required this.createdAt,
-    @required this.updatedAt,
-    @required this.raw,
-    @required this.remote,
+    required this.imageSearchWord,
+    required this.imageLoading,
+    required this.highestRelevantTranslation,
+    required this.transcription,
+    required this.otherTranslations,
+    required this.definitions,
+    required this.definitionsSynonyms,
+    required this.examples,
+    required this.autoSpellingFix,
+    required this.strangeWord,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.raw,
+    required this.remote,
     this.updateLoading,
     this.updateSuccess,
     this.saveLoading,
     this.saveSuccess,
     this.version,
-  }) : assert(word != null && translationWord != null);
+  });
 
   TranslationLoaded copyWith({
-    String translationWord,
-    String translationOwn,
-    List<dynamic> images,
-    bool imageLoading,
-    String image,
-    bool imageUpdate,
-    String imageSearchWord,
-    bool updateLoading,
-    bool updateSuccess,
-    bool saveLoading,
-    bool saveSuccess,
+    String? translationWord,
+    String? translationOwn,
+    List<dynamic>? images,
+    bool? imageLoading,
+    String? image,
+    bool? imageUpdate,
+    String? imageSearchWord,
+    bool? updateLoading,
+    bool? updateSuccess,
+    bool? saveLoading,
+    bool? saveSuccess,
   }) {
     return TranslationLoaded(
       id: this.id,
@@ -137,7 +136,7 @@ class TranslationLoaded extends TranslationState {
   }
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
     id,
     word,
     translationWord,

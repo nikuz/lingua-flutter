@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:lingua_flutter/utils/sizes.dart';
 
 class ExpandButton extends StatelessWidget {
-  final bool expanded;
-  final int amount;
-  final String entity;
-  final Function onPressed;
+  final bool? expanded;
+  final int? amount;
+  final String? entity;
+  final Function? onPressed;
 
   ExpandButton({ this.expanded, this.amount, this.entity, this.onPressed });
 
@@ -19,7 +19,7 @@ class ExpandButton extends StatelessWidget {
     return TextButton(
       style: TextButton.styleFrom(
         minimumSize: Size(0, SizeUtil.vmax(43)),
-        backgroundColor: Theme.of(context).buttonTheme.colorScheme.secondaryVariant,
+        backgroundColor: Theme.of(context).buttonTheme.colorScheme!.secondaryVariant,
         shape: new RoundedRectangleBorder(
           borderRadius: new BorderRadius.only(
             bottomLeft: Radius.circular(SizeUtil.vmax(8)),
@@ -32,13 +32,13 @@ class ExpandButton extends StatelessWidget {
           Container(
             margin: EdgeInsets.only(right: SizeUtil.vmax(10)),
             child: Icon(
-              expanded ? Icons.expand_less : Icons.expand_more,
+              expanded! ? Icons.expand_less : Icons.expand_more,
               color: Theme.of(context).selectedRowColor,
               size: SizeUtil.vmax(25),
             ),
           ),
           Text(
-            expanded
+            expanded!
               ? 'Show less $entity'
               : 'Show more $amount $entity',
             style: TextStyle(
@@ -48,7 +48,7 @@ class ExpandButton extends StatelessWidget {
           )
         ],
       ),
-      onPressed: onPressed,
+      onPressed: onPressed as void Function()?,
     );
   }
 }

@@ -9,7 +9,7 @@ class GamesNavigatorRoutes {
 class GamesNavigator extends StatelessWidget {
   final GlobalKey<NavigatorState> navigatorKey;
 
-  GamesNavigator({ this.navigatorKey }) : assert(navigatorKey != null);
+  GamesNavigator({ required this.navigatorKey }) : assert(navigatorKey != null);
 
   @override
   Widget build(BuildContext context) {

@@ -29,14 +29,18 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
     return BlocBuilder<TranslationBloc, TranslationState>(
       builder: (context, state) {
         if (state is TranslationLoaded) {
-          final String translationWord = (
+          final String? translationWord = (
               state.translationOwn != null ? state.translationOwn : state.translationWord
           );
-          final List<dynamic> highestRelevantTranslation = state.highestRelevantTranslation;
-          final bool verified = translationWord == highestRelevantTranslation[0][0]
-            && highestRelevantTranslation[0][4] != 0;
-          final bool cyrillicWord = isCyrillicWord(state.word);
-          final String imageSource = state.image;
+          bool verified = false;
+          final List<dynamic>? highestRelevantTranslation = state.highestRelevantTranslation;
+          if (highestRelevantTranslation != null) {
+            verified = translationWord == highestRelevantTranslation[0][0] && highestRelevantTranslation[0][4] != 0;
+          }
+          final bool cyrillicWord = state.word is String
+              ? isCyrillicWord(state.word!)
+              : false;
+          final String? imageSource = state.image;
 
           Widget image = Container();
 
@@ -64,14 +68,16 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                 height: 150,
                 imageSource: imageSource,
                 updatedAt: state.updatedAt,
-                isLocal: !state.remote,
-                withPreviewOverlay: state.id != null && !state.imageUpdate,
+                isLocal: !state.remote!,
+                withPreviewOverlay: state.id != null && !state.imageUpdate!,
                 onTap: () {
-                  if (state.id == null || state.imageUpdate) {
+                  if (state.id == null || state.imageUpdate!) {
                     Navigator.pushNamed(
                       context,
                       SearchNavigatorRoutes.translation_view_images_picker,
-                      arguments: state.imageSearchWord,
+                      arguments: {
+                        'word': state.imageSearchWord,
+                      },
                     );
                   }
                 },
@@ -132,7 +138,9 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                               Navigator.pushReplacementNamed(
                                 context,
                                 SearchNavigatorRoutes.translation_view,
-                                arguments: translationWord,
+                                arguments: {
+                                  'word': translationWord,
+                                },
                               );
                             }
                           },
@@ -163,9 +171,11 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
   }
 
   Widget _getFooter(TranslationLoaded state) {
-    final bool cyrillicWord = isCyrillicWord(state.word);
-    final String pronunciation = state.pronunciation;
-    final bool imageUpdate = state.imageUpdate;
+    final bool cyrillicWord = state.word is String
+        ? isCyrillicWord(state.word!)
+        : false;
+    final String? pronunciation = state.pronunciation;
+    final bool? imageUpdate = state.imageUpdate;
     final translationUpdate = (
         state.translationOwn != null && state.translationOwn != state.translationWord
     );
@@ -176,13 +186,13 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
       );
     }
 
-    final bool remote = state.remote;
+    final bool? remote = state.remote;
     final bool newWord = state.id == null;
-    bool toSave = newWord || imageUpdate || translationUpdate;
+    bool toSave = newWord || imageUpdate! || translationUpdate;
     IconData iconName = Icons.check;
     if (newWord) {
       iconName = Icons.save_alt;
-    } else if (imageUpdate || translationUpdate) {
+    } else if (imageUpdate! || translationUpdate) {
       iconName = Icons.update;
     }
 
@@ -212,11 +222,11 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                 builder: (context, state) {
                   if (state is SettingsLoaded) {
                     return PronunciationWidget(
-                      pronunciationUrl: pronunciation != null ? pronunciation : '',
+                      pronunciationUrl: pronunciation ?? '',
                       color: Colors.blue,
                       size: SizeUtil.vmax(45),
                       autoPlay: state.settings['pronunciationAutoPlay'],
-                      isLocal: !remote,
+                      isLocal: !remote!,
                     );
                   }
 
@@ -228,7 +238,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
               Container(
                 margin: EdgeInsets.only(left: SizeUtil.vmax(10)),
                 child: Text(
-                  state.transcription != null ? state.transcription : '',
+                  state.transcription != null ? state.transcription! : '',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: SizeUtil.vmax(15),
@@ -253,16 +263,16 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
             onPressed: () {
               if (newWord) {
                 BlocProvider.of<TranslationBloc>(context).add(TranslationSave(
-                  word: state.word,
-                  translation: state.translationWord,
-                  pronunciationURL: pronunciation,
-                  image: state.image,
-                  raw: state.raw,
-                  version: state.version,
+                  word: state.word!,
+                  translation: state.translationWord!,
+                  pronunciationURL: pronunciation ?? '',
+                  image: state.image ?? '',
+                  raw: state.raw ?? [],
+                  version: state.version ?? 2,
                 ));
-              } else if (imageUpdate || translationUpdate) {
+              } else if (imageUpdate! || translationUpdate) {
                 BlocProvider.of<TranslationBloc>(context).add(TranslationUpdate(
-                  word: translationUpdate ? state.translationOwn : state.translationWord,
+                  word: translationUpdate ? state.translationOwn! : state.translationWord!,
                   image: imageUpdate ? state.image : null,
                 ));
               }

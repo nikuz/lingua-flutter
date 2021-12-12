@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:async';
-import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:archive/archive.dart';
@@ -16,14 +15,14 @@ import 'state.dart';
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   SharedPreferences prefs;
 
-  SettingsBloc({ @required this.prefs }) : super(SettingsUninitialized()) {
+  SettingsBloc({ required this.prefs }) : super(SettingsUninitialized()) {
     on<SettingsGet>((event, emit) {
       final bool pronunciationAutoPlay = prefs.getBool('pronunciationAutoPlay') ?? true;
       final bool darkModeEnabled = prefs.getBool('darkModeEnabled') ?? false;
       final bool autoDarkMode = prefs.getBool('autoDarkMode') ?? false;
       final bool offlineMode = prefs.getBool('offlineMode') ?? false;
-      final int offlineDictionaryUpdateTime = prefs.getInt('offlineDictionaryUpdateTime');
-      final int offlineDictionaryUpdateSize = prefs.getInt('offlineDictionaryUpdateSize');
+      final int? offlineDictionaryUpdateTime = prefs.getInt('offlineDictionaryUpdateTime');
+      final int? offlineDictionaryUpdateSize = prefs.getInt('offlineDictionaryUpdateSize');
       emit(SettingsLoaded({
         'pronunciationAutoPlay': pronunciationAutoPlay,
         'darkModeEnabled': darkModeEnabled,
@@ -40,7 +39,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     });
 
     on<SettingsChange>((event, emit) async {
-      final currentState = state;
+      final SettingsState currentState = state;
       if (currentState is SettingsLoaded) {
         if (event.savePrefs) {
           switch (event.type) {
@@ -66,7 +65,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     });
 
     on<SettingsDownloadDictionaryInfo>((event, emit) async {
-      final currentState = state;
+      final SettingsState currentState = state;
       if (currentState is SettingsLoaded) {
         emit(currentState.copyWith([{
           'id': 'offlineDictionaryUpdateLoading',
@@ -104,7 +103,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     });
 
     on<SettingsDownloadDictionary>((event, emit) async {
-      final currentState = state;
+      final SettingsState currentState = state;
       if (currentState is SettingsLoaded) {
         emit(currentState.copyWith([{
           'id': 'offlineDictionaryUpdateLoading',
@@ -120,7 +119,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
         try {
           String dir = await getDocumentsPath();
-          File backupFile = await _downloadBackup(dir);
+          File? backupFile = await _downloadBackup(dir);
 
           if (backupFile != null) {
             var bytes = backupFile.readAsBytesSync();
@@ -168,7 +167,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     });
 
     on<SettingsClearDictionary>((event, emit) async {
-      final currentState = state;
+      final SettingsState currentState = state;
       if (currentState is SettingsLoaded) {
         emit(currentState.copyWith([{
           'id': 'offlineDictionaryClearLoading',
@@ -223,7 +222,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       return api.files.list().then((files) {
         Completer completer = new Completer();
         bool fileExists = false;
-        for (var file in files.items) {
+        for (var file in files.items!) {
           if (file.originalFilename == offlineDictionaryFileName) {
             fileExists = true;
             completer.complete(file);
@@ -240,7 +239,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     });
   }
 
-  Future<File> _downloadBackup(String dir) async {
+  Future<File?> _downloadBackup(String dir) async {
     final _credentials = new ServiceAccountCredentials.fromJson(googleApiCredentials);
 
     final scopes = [drive.DriveApi.driveScope];
@@ -248,7 +247,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
     if (backupFile != null) {
       return clientViaServiceAccount(_credentials, scopes).then((client) {
-        return client.readBytes(Uri.parse(backupFile.downloadUrl)).then((bytes) {
+        return client.readBytes(Uri.parse(backupFile.downloadUrl!)).then((bytes) {
           var file = new File('$dir/$offlineDictionaryFileName');
           return file.writeAsBytes(bytes);
         });

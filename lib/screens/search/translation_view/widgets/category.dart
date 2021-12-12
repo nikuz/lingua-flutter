@@ -9,11 +9,11 @@ class TranslationViewCategory extends StatelessWidget {
   final bool expanded;
 
   TranslationViewCategory({
-    Key key,
-    @required this.category,
-    @required this.itemBuilder,
-    @required this.maxItemsToShow,
-    @required this.expanded
+    Key? key,
+    required this.category,
+    required this.itemBuilder,
+    required this.maxItemsToShow,
+    required this.expanded
   }) : super(key: key);
 
   @override
@@ -31,7 +31,7 @@ class TranslationViewCategory extends StatelessWidget {
           '${category[0][0].toUpperCase()}${category[0].substring(1)}',
           style: TextStyle(
             fontSize: SizeUtil.vmax(16),
-            color: Theme.of(context).buttonTheme.colorScheme.secondaryVariant,
+            color: Theme.of(context).buttonTheme.colorScheme!.secondaryVariant,
           ),
         ),
       );
@@ -52,7 +52,7 @@ class TranslationViewCategory extends StatelessWidget {
           ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemBuilder: itemBuilder,
+            itemBuilder: itemBuilder as Widget Function(BuildContext, int),
             itemCount: itemsLength,
           ),
         ],

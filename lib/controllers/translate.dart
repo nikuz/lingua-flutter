@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
@@ -75,14 +76,14 @@ Future<Map<String, dynamic>> translateControllerSearch(String searchText, int fr
   };
 }
 
-Future<Map<String, dynamic>> translateControllerGet(String word) async {
+Future<Map<String, dynamic>?> translateControllerGet(String? word) async {
   final List<Map> dbResponse = await DBHelper().rawQuery(
     'SELECT * FROM dictionary WHERE word=?;',
     [word]
   );
 
-  if (dbResponse != null && dbResponse.length > 0) {
-    final Map<String, dynamic> item = dbResponse[0];
+  if (dbResponse.length > 0) {
+    final Map<String, dynamic> item = dbResponse[0] as Map<String, dynamic>;
     return {
       ...item,
       'raw': jsonDecode(item['raw']),
@@ -93,7 +94,7 @@ Future<Map<String, dynamic>> translateControllerGet(String word) async {
 }
 
 Future<void> translateControllerSave(Map<String, dynamic> params) async {
-  final Map<String, dynamic> alreadyExists = await translateControllerGet(params['word']);
+  final Map<String, dynamic>? alreadyExists = await translateControllerGet(params['word']);
 
   if (alreadyExists != null) {
     throw DBException({
@@ -116,18 +117,18 @@ Future<void> translateControllerSave(Map<String, dynamic> params) async {
   );
 
   // get db entry with row ID
-  final Map<String, dynamic> newTranslationData = await translateControllerGet(params['word']);
+  final Map<String, dynamic>? newTranslationData = await translateControllerGet(params['word']);
 
   try {
     String dir = await getDocumentsPath();
-    String fileId = getFileId(newTranslationData['id'], params['word']);
+    String fileId = getFileId(newTranslationData?['id'], params['word']);
 
     // save image
     final RegExp imageReg = new RegExp(r'^data:image/(jpeg|png|jpg);base64,(.+)$');
     String imageUrl = params['image'];
     if (imageUrl.indexOf(imageReg) != -1) {
-      RegExpMatch imageParts = imageReg.firstMatch(params['image']);
-      Uint8List imageBytes = Base64Decoder().convert(imageParts.group(2));
+      RegExpMatch imageParts = imageReg.firstMatch(params['image'])!;
+      Uint8List imageBytes = Base64Decoder().convert(imageParts.group(2)!);
       imageUrl = '/images/$fileId.${imageParts.group(1)}';
 
       File image = File('$dir/$imageUrl');
@@ -139,8 +140,8 @@ Future<void> translateControllerSave(Map<String, dynamic> params) async {
     final RegExp pronunciationReg = new RegExp(r'^data:audio/mpeg;base64,(.+)$');
     String pronunciationUrl = params['pronunciationURL'];
     if (pronunciationUrl.indexOf(pronunciationReg) != -1) {
-      RegExpMatch pronunciationParts = pronunciationReg.firstMatch(params['pronunciationURL']);
-      Uint8List pronunciationBytes = Base64Decoder().convert(pronunciationParts.group(1));
+      RegExpMatch pronunciationParts = pronunciationReg.firstMatch(params['pronunciationURL'])!;
+      Uint8List pronunciationBytes = Base64Decoder().convert(pronunciationParts.group(1)!);
       pronunciationUrl = '/pronunciations/$fileId.mp3';
 
       File pronunciation = File('$dir/$pronunciationUrl');
@@ -152,7 +153,7 @@ Future<void> translateControllerSave(Map<String, dynamic> params) async {
     await DBHelper().rawQuery('''
         UPDATE dictionary 
         SET image=?, pronunciation=?, updated_at=datetime("now") 
-        WHERE id=${newTranslationData['id']};
+        WHERE id=${newTranslationData?['id']};
         ''',
         [
           imageUrl,
@@ -160,13 +161,13 @@ Future<void> translateControllerSave(Map<String, dynamic> params) async {
         ]
     );
   } catch (e) {
-    developer.log(e);
-    await DBHelper().rawDelete('DELETE FROM dictionary WHERE id=?;', [newTranslationData['id']]);
+    developer.log(e.toString());
+    await DBHelper().rawDelete('DELETE FROM dictionary WHERE id=?;', [newTranslationData?['id']]);
   }
 }
 
 Future<void> translateControllerUpdate(Map<String, dynamic> params) async {
-  final Map<String, dynamic> translationData = await translateControllerGet(params['word']);
+  final Map<String, dynamic>? translationData = await translateControllerGet(params['word']);
 
   if (translationData == null) {
     throw DBException({
@@ -175,7 +176,7 @@ Future<void> translateControllerUpdate(Map<String, dynamic> params) async {
     });
   }
 
-  String imageUrl;
+  String? imageUrl;
 
   if (params['image'] != null && params['image'] != '') {
     String dir = await getDocumentsPath();
@@ -183,12 +184,12 @@ Future<void> translateControllerUpdate(Map<String, dynamic> params) async {
     if (image.existsSync()) {
       image.deleteSync();
     }
-    painting.imageCache.clear();
+    painting.imageCache!.clear();
 
     String fileId = getFileId(translationData['id'], params['word']);
     final RegExp imageReg = new RegExp(r'^data:image/(jpeg|png|jpg);base64,(.+)$');
-    RegExpMatch imageParts = imageReg.firstMatch(params['image']);
-    Uint8List imageBytes = Base64Decoder().convert(imageParts.group(2));
+    RegExpMatch imageParts = imageReg.firstMatch(params['image'])!;
+    Uint8List imageBytes = Base64Decoder().convert(imageParts.group(2)!);
     imageUrl = '/images/$fileId.${imageParts.group(1)}';
 
     image = File('$dir/$imageUrl');

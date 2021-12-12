@@ -8,7 +8,7 @@ Future<String> getTempPath() async => (
     (await getTemporaryDirectory()).path
 );
 
-String getFileId(int id, String word) {
+String getFileId(int? id, String word) {
   word.trim().replaceAll(new RegExp(r'[\s|/.,]'), '-');
   final String cleanedWord = word
       .split(' ')

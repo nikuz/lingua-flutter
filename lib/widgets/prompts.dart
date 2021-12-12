@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
 Future<bool> prompt({
-  context,
+  required context,
   title,
   text,
   withCancel,
-  Function acceptCallback,
-  Function cancelCallback,
-  Function closeCallback,
+  Function? acceptCallback,
+  Function? cancelCallback,
+  Function? closeCallback,
 }) async {
   List<Widget> actions = <Widget>[
     TextButton(
       onPressed: () {
         Navigator.of(context, rootNavigator: true).pop(true);
-        acceptCallback();
+        acceptCallback!();
       },
       child: Text("OK")
     ),
@@ -50,7 +50,7 @@ Future<bool> prompt({
   });
 }
 
-Future<bool> wordRemovePrompt(context, String word, Function callback) async {
+Future<bool> wordRemovePrompt(context, String? word, Function callback) async {
   return prompt(
     context: context,
     title: 'Confirm',

@@ -6,15 +6,15 @@ import 'package:lingua_flutter/utils/sizes.dart';
 import 'package:lingua_flutter/utils/files.dart';
 
 class PronunciationWidget extends StatefulWidget {
-  final String pronunciationUrl;
-  final double size;
-  final Color color;
-  final bool autoPlay;
-  final bool isLocal;
+  final String? pronunciationUrl;
+  final double? size;
+  final Color? color;
+  final bool? autoPlay;
+  final bool? isLocal;
 
   const PronunciationWidget({
-    Key key,
-    @required this.pronunciationUrl,
+    Key? key,
+    required this.pronunciationUrl,
     this.size,
     this.color,
     this.autoPlay,
@@ -27,19 +27,19 @@ class PronunciationWidget extends StatefulWidget {
 
 class _PronunciationWidgetState extends State<PronunciationWidget> {
   AudioPlayer _audioPlayer = AudioPlayer();
-  StreamSubscription<PlayerState> _audioPlayerStateSubscription;
-  StreamSubscription _playerCompleteSubscription;
-  StreamSubscription _playerErrorSubscription;
+  StreamSubscription<PlayerState>? _audioPlayerStateSubscription;
+  StreamSubscription? _playerCompleteSubscription;
+  StreamSubscription? _playerErrorSubscription;
   PlayerState _playerState = PlayerState.STOPPED;
   bool _isPlayerStopped(state) => (
       state == PlayerState.STOPPED || state == PlayerState.COMPLETED
   );
 
   Future<void> _playPronunciation() async {
-    String pronunciationUrl = widget.pronunciationUrl;
+    String pronunciationUrl = widget.pronunciationUrl!;
     if (pronunciationUrl.indexOf('data:audio') != -1) {
       await _audioPlayer.play(pronunciationUrl);
-    } else if (widget.isLocal) {
+    } else if (widget.isLocal!) {
       String dir = await getDocumentsPath();
       pronunciationUrl = '$dir${widget.pronunciationUrl}';
       await _audioPlayer.play(pronunciationUrl, isLocal:true);

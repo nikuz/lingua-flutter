@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class TranslationsEvent extends Equatable {
@@ -17,24 +16,24 @@ class TranslationsSearch extends TranslationsEvent {
 }
 
 class TranslationsUpdateItem extends TranslationsEvent {
-  final int id;
-  final String word;
-  final String translation;
-  final String pronunciation;
-  final String image;
-  final String imageUrl;
-  final String createdAt;
+  final int? id;
+  final String? word;
+  final String? translation;
+  final String? pronunciation;
+  final String? image;
+  final String? imageUrl;
+  final String? createdAt;
   final String updatedAt;
 
   TranslationsUpdateItem({
-    @required this.id,
-    @required this.word,
-    @required this.translation,
-    @required this.pronunciation,
-    @required this.image,
-    @required this.imageUrl,
-    @required this.createdAt,
-    @required this.updatedAt,
+    required this.id,
+    required this.word,
+    required this.translation,
+    required this.pronunciation,
+    required this.image,
+    required this.imageUrl,
+    required this.createdAt,
+    required this.updatedAt,
   });
 }
 

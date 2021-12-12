@@ -22,19 +22,19 @@ import 'examples.dart';
 class TranslationView extends StatefulWidget {
   final String word;
 
-  TranslationView(this.word) : assert(word != null);
+  TranslationView(this.word);
 
   @override
   _TranslationViewState createState() => _TranslationViewState();
 }
 
 class _TranslationViewState extends State<TranslationView> {
-  TranslationBloc _translationBloc;
-  String appBarTitle;
+  late TranslationBloc _translationBloc;
+  String? appBarTitle;
   bool appBarTitleUpdated = false;
-  int wordId;
-  String imageSearchWord;
-  String translationWord;
+  int? wordId;
+  String? imageSearchWord;
+  String? translationWord;
   bool menuDisabled = false;
   bool _hasInternetConnection = false;
 
@@ -55,7 +55,7 @@ class _TranslationViewState extends State<TranslationView> {
           //`true` if you want Flutter to automatically add Back Button when needed,
           //or `false` if you want to force your own back button every where
           title: Text(
-            appBarTitle,
+            appBarTitle ?? '',
             style: TextStyle(
               fontSize: SizeUtil.vmax(20),
             ),
@@ -77,7 +77,7 @@ class _TranslationViewState extends State<TranslationView> {
                 if (item.id == 'remove') {
                   final bool removeAccepted = await wordRemovePrompt(context, appBarTitle, () {
                     BlocProvider.of<TranslationsBloc>(context).add(
-                        TranslationsItemRemove(wordId)
+                        TranslationsItemRemove(wordId!)
                     );
                   });
                   if (removeAccepted) {
@@ -88,20 +88,24 @@ class _TranslationViewState extends State<TranslationView> {
                   Navigator.pushNamed(
                     context,
                     SearchNavigatorRoutes.translation_view_images_picker,
-                    arguments: imageSearchWord,
+                    arguments: {
+                      'word': imageSearchWord,
+                    },
                   );
                 }
                 if (item.id == 'translation') {
                   Navigator.pushNamed(
                     context,
                     SearchNavigatorRoutes.translation_view_own_translation,
-                    arguments: translationWord,
+                    arguments: {
+                      'word': translationWord,
+                    },
                   );
                 }
               },
               itemBuilder: (BuildContext context) {
                 if (menuDisabled) {
-                  return null;
+                  return [];
                 }
 
                 List<Menu> menuList = <Menu>[
@@ -117,7 +121,7 @@ class _TranslationViewState extends State<TranslationView> {
                 return menuList.map((Menu item) {
                   return PopupMenuItem<Menu>(
                     value: item,
-                    child: Text(item.title),
+                    child: Text(item.title!),
                   );
                 }).toList();
               },
@@ -133,9 +137,10 @@ class _TranslationViewState extends State<TranslationView> {
               && state.images.isEmpty
               && state.strangeWord == false
               && state.imageLoading == false
-              && isCyrillicWord(state.word) == false
+              && state.word is String
+              && isCyrillicWord(state.word!) == false
             ) {
-              _translationBloc.add(TranslationRequestImage(state.word));
+              _translationBloc.add(TranslationRequestImage(state.word!));
             }
 
             if (state is TranslationLoaded && !appBarTitleUpdated) {
@@ -143,7 +148,7 @@ class _TranslationViewState extends State<TranslationView> {
                 appBarTitle = state.word;
                 wordId = state.id;
                 appBarTitleUpdated = true;
-                menuDisabled = wordId == null || state.remote;
+                menuDisabled = wordId == null || state.remote!;
               });
             }
 
@@ -162,7 +167,7 @@ class _TranslationViewState extends State<TranslationView> {
               _translationBloc.add(TranslationClear());
               if (state.saveSuccess == true) {
                 BlocProvider.of<TranslationsBloc>(context).add(TranslationsRequest());
-              } else if (state.updateSuccess) {
+              } else if (state.updateSuccess!) {
                 BlocProvider.of<TranslationsBloc>(context).add(
                     TranslationsUpdateItem(
                       id: state.id,
@@ -250,8 +255,8 @@ class _TranslationViewState extends State<TranslationView> {
 }
 
 class Menu {
-  final String id;
-  final String title;
+  final String? id;
+  final String? title;
 
   const Menu({this.id, this.title});
 }

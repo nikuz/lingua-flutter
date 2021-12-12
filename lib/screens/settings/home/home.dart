@@ -15,7 +15,7 @@ class SettingsHomePage extends StatefulWidget {
 }
 
 class _SettingsHomePageState extends State<SettingsHomePage> {
-  SettingsBloc _settingsBloc;
+  late SettingsBloc _settingsBloc;
 
   @override
   void initState() {
@@ -96,8 +96,8 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
           child: BlocBuilder<SettingsBloc, SettingsState>(
             builder: (context, state) {
               if (state is SettingsLoaded) {
-                final int offlineDictionaryUpdateTime = state.settings['offlineDictionaryUpdateTime'];
-                final int offlineDictionaryUpdateSize = state.settings['offlineDictionaryUpdateSize'];
+                final int? offlineDictionaryUpdateTime = state.settings['offlineDictionaryUpdateTime'];
+                final int? offlineDictionaryUpdateSize = state.settings['offlineDictionaryUpdateSize'];
                 String dictionaryUpdateTime = '';
 
                 if (offlineDictionaryUpdateTime != null) {
@@ -177,13 +177,13 @@ class _SettingsHomePageState extends State<SettingsHomePage> {
 class SettingsCheckbox extends StatelessWidget {
   final String id;
   final String title;
-  final bool value;
-  final Function onChange;
+  final bool? value;
+  final Function? onChange;
 
   SettingsCheckbox({
-    @required this.id,
-    @required this.title,
-    @required this.value,
+    required this.id,
+    required this.title,
+    required this.value,
     this.onChange,
   });
 
@@ -207,7 +207,7 @@ class SettingsCheckbox extends StatelessWidget {
         Container(
           padding: EdgeInsets.only(right: SizeUtil.vmax(5)),
           child: Switch(
-            value: value,
+            value: value!,
             onChanged: (changeValue) {
               BlocProvider.of<SettingsBloc>(context).add(
                 SettingsChange(
@@ -218,7 +218,7 @@ class SettingsCheckbox extends StatelessWidget {
                 )
               );
               if (onChange is Function) {
-                onChange(changeValue);
+                onChange!(changeValue);
               }
             },
           ),
@@ -232,20 +232,20 @@ class SettingsButton extends StatelessWidget {
   final String title;
   final IconData icon;
   final Function action;
-  final String subtitle;
-  final bool loading;
-  final Color iconColor;
-  final bool disabled;
-  final IconData secondButtonIcon;
-  final Color secondButtonIconColor;
-  final Function secondButtonAction;
-  final bool secondButtonLoading;
-  final bool secondButtonDisabled;
+  final String? subtitle;
+  final bool? loading;
+  final Color? iconColor;
+  final bool? disabled;
+  final IconData? secondButtonIcon;
+  final Color? secondButtonIconColor;
+  final Function? secondButtonAction;
+  final bool? secondButtonLoading;
+  final bool? secondButtonDisabled;
 
   SettingsButton({
-    @required this.title,
-    @required this.icon,
-    @required this.action,
+    required this.title,
+    required this.icon,
+    required this.action,
     this.subtitle,
     this.loading,
     this.iconColor,
@@ -271,7 +271,7 @@ class SettingsButton extends StatelessWidget {
 
     if (subtitle != null) {
       subtitleWidget = Text(
-        subtitle,
+        subtitle!,
         style: TextStyle(
           fontSize: SizeUtil.vmax(12),
           color: Colors.grey,
@@ -295,7 +295,7 @@ class SettingsButton extends StatelessWidget {
         size: SizeUtil.vmax(30),
         color: secondButtonDisabled == true ? Colors.grey : secondButtonIconColor ?? Colors.green,
       );
-      if (secondButtonLoading) {
+      if (secondButtonLoading!) {
         secondIconWidget = loadingWidget;
       }
       secondButtonWidget = ButtonTheme(
@@ -304,7 +304,7 @@ class SettingsButton extends StatelessWidget {
           child: secondIconWidget,
           onPressed: (secondButtonDisabled == true || secondButtonLoading == true)
               ? () => {}
-              : secondButtonAction,
+              : secondButtonAction as void Function()?,
         ),
       );
     }
@@ -336,7 +336,7 @@ class SettingsButton extends StatelessWidget {
               minWidth: 55,
               child: TextButton(
                 child: iconWidget,
-                onPressed: (disabled == true || loading == true) ? () => {} : action,
+                onPressed: (disabled == true || loading == true) ? () => {} : action as void Function()?,
               ),
             ),
             secondButtonWidget,

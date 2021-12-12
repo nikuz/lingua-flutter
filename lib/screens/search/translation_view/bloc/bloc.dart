@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,27 +17,27 @@ import 'state.dart';
 class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
   final http.Client httpClient;
 
-  TranslationBloc({ @required this.httpClient }) : super(TranslationUninitialized()) {
+  TranslationBloc({ required this.httpClient }) : super(TranslationUninitialized()) {
     on<TranslationRequest>((event, emit) async {
       try {
         emit(TranslationRequestLoading());
         final Translation translation = await _fetchTranslation(event.word);
-        List<dynamic> highestRelevantTranslation;
-        String transcription;
-        List<dynamic> otherTranslations;
-        List<dynamic> definitions;
-        List<dynamic> definitionsSynonyms;
-        List<dynamic> examples;
-        int version = translation.version;
-        String word = translation.word;
-        String translationWord = translation.translation;
-        String autoSpellingFix;
+        List<dynamic>? highestRelevantTranslation;
+        String? transcription;
+        List<dynamic>? otherTranslations;
+        List<dynamic>? definitions;
+        List<dynamic>? definitionsSynonyms;
+        List<dynamic>? examples;
+        int? version = translation.version;
+        String? word = translation.word;
+        String? translationWord = translation.translation;
+        String? autoSpellingFix;
         bool strangeWord = false;
 
         if (translation.raw != null) {
-          final List<dynamic> raw = translation.raw;
+          final List<dynamic>? raw = translation.raw;
           if (version == 1) {
-            highestRelevantTranslation = raw[0];
+            highestRelevantTranslation = raw![0];
             otherTranslations = raw[1];
             if (raw.length >= 12) {
               definitionsSynonyms = raw[11];
@@ -51,10 +50,10 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
             }
 
             if (translationWord == null) {
-              translationWord = highestRelevantTranslation[0][0];
+              translationWord = highestRelevantTranslation![0][0];
             }
 
-            if (word.toLowerCase() != highestRelevantTranslation[0][1].toLowerCase()) {
+            if (word!.toLowerCase() != highestRelevantTranslation![0][1].toLowerCase()) {
               autoSpellingFix = word;
               word = highestRelevantTranslation[0][1];
             }
@@ -67,7 +66,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
               transcription = highestRelevantTranslation[1][3];
             }
           } else if (version == 2) {
-            highestRelevantTranslation = raw[1][0];
+            highestRelevantTranslation = raw![1][0];
             if (raw.length > 3 && raw[3].length >= 6 && raw[3][5] != null) {
               otherTranslations = raw[3][5][0];
             }
@@ -79,10 +78,10 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
             }
 
             if (translationWord == null) {
-              translationWord = highestRelevantTranslation[0][5][0][0];
+              translationWord = highestRelevantTranslation![0][5][0][0];
             }
 
-            if (raw.length > 3 && word.toLowerCase() != raw[3][0].toLowerCase()) {
+            if (raw.length > 3 && word!.toLowerCase() != raw[3][0].toLowerCase()) {
               autoSpellingFix = word;
               word = raw[3][0];
             }
@@ -90,10 +89,13 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
             transcription = raw[0][0];
           }
 
-          strangeWord = word.toLowerCase() == translationWord.toLowerCase()
+          strangeWord = word!.toLowerCase() == translationWord!.toLowerCase()
               && otherTranslations == null;
         }
 
+        print('loaded');
+        print(word);
+        print(translationWord);
         emit(TranslationLoaded(
           id: translation.id,
           word: word,
@@ -129,7 +131,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     });
 
     on<TranslationRequestImage>((event, emit) async {
-      final currentState = state;
+      final TranslationState currentState = state;
       try {
         if (currentState is TranslationLoaded) {
           emit(currentState.copyWith(
@@ -152,7 +154,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     });
 
     on<TranslationSave>((event, emit) async {
-      final currentState = state;
+      final TranslationState currentState = state;
       try {
         if (currentState is TranslationLoaded) {
           emit(currentState.copyWith(
@@ -180,7 +182,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     });
 
     on<TranslationUpdate>((event, emit) async {
-      final currentState = state;
+      final TranslationState currentState = state;
       try {
         if (currentState is TranslationLoaded) {
           emit(currentState.copyWith(
@@ -207,7 +209,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     });
 
     on<TranslationSelectImage>((event, emit) {
-      final currentState = state;
+      final TranslationState currentState = state;
       if (currentState is TranslationLoaded) {
         emit(currentState.copyWith(
           image: event.source,
@@ -217,7 +219,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     });
 
     on<TranslationSetOwn>((event, emit) {
-      final currentState = state;
+      final TranslationState currentState = state;
       if (currentState is TranslationLoaded) {
         emit(currentState.copyWith(
           translationOwn: event.translation,
@@ -226,27 +228,27 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     });
 
     on<TranslationClear>((event, emit) {
-      final currentState = state;
+      final TranslationState currentState = state;
       if (currentState is TranslationLoaded) {
         emit(TranslationUninitialized());
       }
     });
   }
 
-  Future<Translation> _fetchTranslation(String word) async {
-    Map<String, dynamic> response = await translateControllerGet(word);
+  Future<Translation> _fetchTranslation(String? word) async {
+    Map<String, dynamic>? response = await translateControllerGet(word);
 
     if (response == null) {
       String sourceLanguage = 'en';
       String targetLanguage = 'ru';
-      final bool wordIsCyrillic = isCyrillicWord(word);
+      final bool wordIsCyrillic = isCyrillicWord(word!);
 
       if (wordIsCyrillic) {
         sourceLanguage = 'ru';
         targetLanguage = 'en';
       }
 
-      List<dynamic> translationResult;
+      List<dynamic>? translationResult;
       String pronunciationResult = '';
 
       String translationRaw = await apiPost(
@@ -267,9 +269,9 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
       }
 
       if (!wordIsCyrillic) {
-        String correctedWord = word;
+        String? correctedWord = word;
 
-        final List<dynamic> correctionData = translationResult[0][1];
+        final List<dynamic>? correctionData = translationResult![0][1];
         if (correctionData != null && correctionData[0] != null && correctionData[0][0] != null && correctionData[0][0][1] != null) {
           correctedWord = correctionData[0][0][1].replaceAll(new RegExp(r'</?[i|b]>'), '');
         }
@@ -340,7 +342,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
       if (imagesRawStrings[i].contains(appConfig.imageMarker)) {
         Iterable<RegExpMatch> imageParts = imageReg.allMatches(imagesRawStrings[i]);
         for (var item in imageParts) {
-          final String match = item.group(1);
+          final String? match = item.group(1);
           if (match != null && match.length > minImageSize) {
             final String decodedImageString = match
                 .replaceAll(slashReg, '/')
@@ -356,12 +358,12 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
   }
 
   Future<bool> _fetchSave({
-    String word,
-    String translation,
-    String pronunciationURL,
-    String image,
-    List<dynamic> raw,
-    int version,
+    String? word,
+    String? translation,
+    String? pronunciationURL,
+    String? image,
+    List<dynamic>? raw,
+    int? version,
   }) async {
     await translateControllerSave({
       'word': '$word',
@@ -376,9 +378,9 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
   }
 
   Future<bool> _fetchUpdate({
-    String word,
-    String translation,
-    String image,
+    String? word,
+    String? translation,
+    String? image,
   }) async {
     await translateControllerUpdate({
       'word': '$word',

@@ -18,7 +18,7 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   final _textController = TextEditingController();
-  TranslationsBloc _translationsBloc;
+  late TranslationsBloc _translationsBloc;
   bool _hasInternetConnection = false;
 
   @override
@@ -65,7 +65,9 @@ class _SearchState extends State<Search> {
               Navigator.pushNamed(
                 context,
                 SearchNavigatorRoutes.translation_view,
-                arguments: value,
+                arguments: {
+                  'word': value,
+                },
               );
             }
           },

@@ -20,16 +20,16 @@ class OtherTranslations extends StatelessWidget {
       builder: (context, state) {
         if (state is TranslationLoaded && state.otherTranslations != null) {
           int itemsAmount = 0;
-          int categoriesAmount = state.otherTranslations.length;
+          int categoriesAmount = state.otherTranslations!.length;
 
           for (int i = 0, l = categoriesAmount; i < l; i++) {
-            List<dynamic> translations;
+            List<dynamic>? translations;
             if (state.version == 1) {
-              translations = state.otherTranslations[i][2];
+              translations = state.otherTranslations![i][2];
             } else if (state.version == 2) {
-              translations = state.otherTranslations[i][1];
+              translations = state.otherTranslations![i][1];
             }
-            itemsAmount += translations.length;
+            itemsAmount += translations!.length;
           }
 
           return TranslationViewContainer(
@@ -41,12 +41,12 @@ class OtherTranslations extends StatelessWidget {
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemBuilder: (BuildContext context, int index) => TranslationViewCategory(
-                category: state.otherTranslations[index],
+                category: state.otherTranslations![index],
                 maxItemsToShow: SHOW_MIN_TRANSLATIONS,
                 expanded: expanded,
                 itemBuilder: (BuildContext context, int itemIndex) {
-                  final category = state.otherTranslations[index];
-                  List<dynamic> translations;
+                  final category = state.otherTranslations![index];
+                  List<dynamic>? translations;
 
                   if (state.version == 1) {
                     translations = category[2];
@@ -56,11 +56,11 @@ class OtherTranslations extends StatelessWidget {
 
                   return OtherTranslationsItem(
                     state: state,
-                    item: translations[itemIndex],
+                    item: translations![itemIndex],
                   );
                 }
               ),
-              itemCount: state.otherTranslations.length,
+              itemCount: state.otherTranslations!.length,
             ),
           );
         }
@@ -76,16 +76,16 @@ class OtherTranslationsItem extends StatelessWidget {
   final List<dynamic> item;
 
   OtherTranslationsItem({
-    Key key,
-    @required this.state,
-    @required this.item,
+    Key? key,
+    required this.state,
+    required this.item,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final String word = item[0];
-    List<dynamic> synonyms;
-    double frequency;
+    late List<dynamic> synonyms;
+    double? frequency;
     bool frequencySecondActive = false;
     bool frequencyThirdActive = false;
 
@@ -95,7 +95,7 @@ class OtherTranslationsItem extends StatelessWidget {
       }
       if (item.length >= 4 && item[3] != null) {
         frequency = item[3].toDouble();
-        frequencySecondActive = frequency > 0.001;
+        frequencySecondActive = frequency! > 0.001;
         frequencyThirdActive = frequency > 0.1;
       }
     } else if (state.version == 2) {
@@ -135,20 +135,20 @@ class OtherTranslationsItem extends StatelessWidget {
                 ),
               ),
               onTap: () {
-                if (isCyrillicWord(state.word)) {
+                if (isCyrillicWord(state.word!)) {
                   Navigator.pushReplacementNamed(
                     context,
                     SearchNavigatorRoutes.translation_view,
-                    arguments: word,
+                    arguments: { word },
                   );
                 } else if (state.id == null) {
                   BlocProvider.of<TranslationBloc>(context).add(TranslationSave(
-                    word: state.word,
+                    word: state.word!,
                     translation: word,
-                    pronunciationURL: state.pronunciation,
-                    image: state.image,
-                    raw: state.raw,
-                    version: state.version,
+                    pronunciationURL: state.pronunciation ?? '',
+                    image: state.image ?? '',
+                    raw: state.raw ?? [],
+                    version: state.version ?? 2,
                   ));
                 } else {
                   BlocProvider.of<TranslationBloc>(context).add(TranslationUpdate(
@@ -214,7 +214,7 @@ class OtherTranslationsItem extends StatelessWidget {
       margin: EdgeInsets.only(right: screenWidth * 0.002),
       decoration: BoxDecoration(
         color: active
-          ? Theme.of(context).buttonTheme.colorScheme.secondaryVariant
+          ? Theme.of(context).buttonTheme.colorScheme!.secondaryVariant
           : Color.fromRGBO(218, 220, 224, 1),
         borderRadius: BorderRadius.all(Radius.circular(SizeUtil.vmax(1))),
       ),

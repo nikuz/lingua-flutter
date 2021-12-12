@@ -36,8 +36,8 @@ Map<TabItem, Map<String, dynamic>> tabs = {
 };
 
 class BottomNavigation extends StatelessWidget {
-  final TabItem currentTab;
-  final ValueChanged<TabItem> onSelectTab;
+  final TabItem? currentTab;
+  final ValueChanged<TabItem>? onSelectTab;
 
   BottomNavigation({this.currentTab, this.onSelectTab});
 
@@ -50,21 +50,21 @@ class BottomNavigation extends StatelessWidget {
         _buildItem(tabItem: TabItem.games),
         _buildItem(tabItem: TabItem.settings),
       ],
-      currentIndex: currentTab.index,
+      currentIndex: currentTab!.index,
       iconSize: SizeUtil.vmax(25),
       selectedItemColor: Colors.blue,
       unselectedFontSize: SizeUtil.vmax(15),
       selectedFontSize: SizeUtil.vmax(15),
-      onTap: (index) => onSelectTab(
+      onTap: (index) => onSelectTab!(
         TabItem.values[index],
       ),
     );
   }
 
-  BottomNavigationBarItem _buildItem({TabItem tabItem}) {
+  BottomNavigationBarItem _buildItem({TabItem? tabItem}) {
     return BottomNavigationBarItem(
-      icon: Icon(tabs[tabItem]['icon']),
-      label: tabs[tabItem]['title'],
+      icon: Icon(tabs[tabItem!]!['icon']),
+      label: tabs[tabItem]!['title'],
     );
   }
 }
@@ -76,7 +76,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   TabItem _currentTab = TabItem.search;
-  SettingsBloc _settingsBloc;
+  late SettingsBloc _settingsBloc;
 
   Map<TabItem, GlobalKey<NavigatorState>> _navigatorKeys = {
     TabItem.search: GlobalKey<NavigatorState>(),
@@ -87,14 +87,14 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     _settingsBloc = BlocProvider.of<SettingsBloc>(context);
     _settingsBloc.add(SettingsGet());
   }
 
   @override
   void didChangePlatformBrightness() {
-    final Brightness brightness = WidgetsBinding.instance.window.platformBrightness;
+    final Brightness brightness = WidgetsBinding.instance!.window.platformBrightness;
     _settingsBloc.add(SettingsChange(
       type: 'bool',
       id: 'autoDarkMode',
@@ -105,7 +105,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
@@ -118,11 +118,11 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     Widget bottomNavigation;
 
     if (_currentTab == TabItem.search) {
-      page = SearchNavigator(navigatorKey: _navigatorKeys[TabItem.search]);
+      page = SearchNavigator(navigatorKey: _navigatorKeys[TabItem.search]!);
     } else if (_currentTab == TabItem.games) {
-      page = GamesNavigator(navigatorKey: _navigatorKeys[TabItem.games]);
+      page = GamesNavigator(navigatorKey: _navigatorKeys[TabItem.games]!);
     } else if (_currentTab == TabItem.settings) {
-      page = SettingsNavigator(navigatorKey: _navigatorKeys[TabItem.settings]);
+      page = SettingsNavigator(navigatorKey: _navigatorKeys[TabItem.settings]!);
     }
 
     bottomNavigation = BottomNavigation(
@@ -139,7 +139,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   void _selectTab(TabItem tabItem) {
     if (tabItem == _currentTab) {
       // pop to first route
-      _navigatorKeys[tabItem].currentState.popUntil((route) => route.isFirst);
+      _navigatorKeys[tabItem]!.currentState!.popUntil((route) => route.isFirst);
     } else {
       setState(() => _currentTab = tabItem);
     }

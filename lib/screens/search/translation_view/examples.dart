@@ -16,7 +16,7 @@ class Examples extends StatelessWidget {
     return BlocBuilder<TranslationBloc, TranslationState>(
       builder: (context, state) {
         if (state is TranslationLoaded && state.examples != null) {
-          final List<dynamic> examples = state.examples;
+          final List<dynamic> examples = state.examples!;
 
           return TranslationViewContainer(
             title: state.word,
@@ -48,9 +48,9 @@ class ExamplesItem extends StatelessWidget {
   final List<dynamic> item;
 
   ExamplesItem({
-    Key key,
-    @required this.state,
-    @required this.item,
+    Key? key,
+    required this.state,
+    required this.item,
   }) : super(key: key);
 
   @override

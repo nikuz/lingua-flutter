@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class SettingsEvent extends Equatable {
@@ -15,10 +14,10 @@ class SettingsChange extends SettingsEvent {
   final bool savePrefs;
 
   SettingsChange({
-    @required this.type,
-    @required this.id,
-    @required this.value,
-    @required this.savePrefs,
+    required this.type,
+    required this.id,
+    required this.value,
+    required this.savePrefs,
   });
 }
 

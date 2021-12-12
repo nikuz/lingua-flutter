@@ -23,8 +23,8 @@ class TranslationsList extends StatefulWidget {
 
 class _TranslationsListState extends State<TranslationsList> {
   final _scrollController = ScrollController();
-  TranslationsBloc _translationsBloc;
-  Completer<void> _refreshCompleter;
+  late TranslationsBloc _translationsBloc;
+  Completer<void>? _refreshCompleter;
 
   @override
   void initState() {
@@ -62,7 +62,7 @@ class _TranslationsListState extends State<TranslationsList> {
         builder: (context, state) {
           if (state is TranslationsLoaded && state.translations.isEmpty) {
             return Center(
-              child: Text('Dictionary is yet empty'),
+              child: Text('No translations found in your dictionary'),
             );
           }
 
@@ -71,11 +71,11 @@ class _TranslationsListState extends State<TranslationsList> {
               child: RefreshIndicator(
                 onRefresh: () {
                   if (state is TranslationsLoaded && state.search != null) {
-                    _translationsBloc.add(TranslationsSearch(state.search));
+                    _translationsBloc.add(TranslationsSearch(state.search!));
                   } else {
                     _translationsBloc.add(TranslationsRequest());
                   }
-                  return _refreshCompleter.future;
+                  return _refreshCompleter!.future;
                 },
                 child: ListView.builder(
                   physics: const AlwaysScrollableScrollPhysics(),
@@ -132,12 +132,11 @@ class _TranslationsListState extends State<TranslationsList> {
 
           if (!(state is TranslationsLoaded)) {
             return Center(
-              // child: CircularProgressIndicator(),
-              child: Text('loading'),
+              child: CircularProgressIndicator(),
             );
           }
 
-          return null;
+          return Container();
         },
       ),
     );
@@ -149,9 +148,9 @@ class TranslationsListItemWidget extends StatefulWidget {
   final bool withBorder;
 
   TranslationsListItemWidget({
-    Key key,
-    @required this.translationItem,
-    @required this.withBorder,
+    Key? key,
+    required this.translationItem,
+    required this.withBorder,
   }) : super(key: key);
 
   @override
@@ -164,7 +163,7 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: Key(widget.translationItem.word),
+      key: Key(widget.translationItem.word!),
       background: Container(
         color: Colors.red,
         child: Row(
@@ -184,7 +183,7 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
       confirmDismiss: (DismissDirection direction) async {
         return await wordRemovePrompt(context, widget.translationItem.word, () {
           BlocProvider.of<TranslationsBloc>(context).add(
-              TranslationsItemRemove(widget.translationItem.id)
+              TranslationsItemRemove(widget.translationItem.id!)
           );
         });
       },
@@ -221,24 +220,24 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
           title: Container(
             margin: EdgeInsets.only(bottom: SizeUtil.vmax(2)),
             child: Text(
-              widget.translationItem.word,
+              widget.translationItem.word!,
               style: TextStyle(
                   fontSize: SizeUtil.vmax(18),
                   color: isSelected
                       ? Colors.white
-                      : Theme.of(context).textTheme.headline1.decorationColor,
+                      : Theme.of(context).textTheme.headline1!.decorationColor,
               ),
             ),
           ),
           subtitle: Container(
             margin: EdgeInsets.only(bottom: SizeUtil.vmax(2)),
             child: Text(
-              widget.translationItem.translation,
+              widget.translationItem.translation!,
               style: TextStyle(
                   fontSize: SizeUtil.vmax(16),
                   color: isSelected
                       ? Colors.white
-                      : Theme.of(context).textTheme.headline1.color,
+                      : Theme.of(context).textTheme.headline1!.color,
               ),
             ),
           ),
@@ -252,7 +251,9 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
             Navigator.pushNamed(
               context,
               SearchNavigatorRoutes.translation_view,
-              arguments: widget.translationItem.word,
+              arguments: {
+                'word': widget.translationItem.word,
+              },
             );
           },
         ),
@@ -267,7 +268,7 @@ class BottomLoader extends StatelessWidget {
     return BlocBuilder<TranslationsBloc, TranslationsState>(
       builder: (context, state) {
         final int listLength = state.translations.length;
-        if (listLength >= LIST_PAGE_SIZE && listLength < state.totalAmount) {
+        if (listLength >= LIST_PAGE_SIZE && listLength < state.totalAmount!) {
           return Container(
             padding: EdgeInsets.only(
               top: SizeUtil.vmax(10),

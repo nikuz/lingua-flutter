@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,9 +12,9 @@ import 'state.dart';
 class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
   final http.Client httpClient;
 
-  TranslationsBloc({ @required this.httpClient }) : super(TranslationsUninitialized()) {
+  TranslationsBloc({ required this.httpClient }) : super(TranslationsUninitialized()) {
     on<TranslationsRequest>((event, emit) async {
-      final currentState = state;
+      final TranslationsState currentState = state;
       try {
         emit(TranslationsRequestLoading(
             currentState.translations,
@@ -37,10 +36,10 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
     });
 
     on<TranslationsRequestMore>((event, emit) async {
-      final currentState = state;
-      emit(TranslationsRequestMoreLoading(currentState.totalAmount, currentState.translations));
+      final TranslationsState currentState = state;
+      emit(TranslationsRequestMoreLoading(currentState.totalAmount!, currentState.translations));
       try {
-        int from = currentState.to;
+        int from = currentState.to!;
         final Translations translationsList = await _fetchTranslationsList(from, from + LIST_PAGE_SIZE);
         emit(TranslationsLoaded(
           from: translationsList.from,
@@ -80,7 +79,7 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
     });
 
     on<TranslationsItemRemove>((event, emit) async {
-      final currentState = state;
+      final TranslationsState currentState = state;
       try {
         print(currentState);
         print(state);
@@ -100,16 +99,16 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
     });
 
     on<TranslationsUpdateItem>((event, emit) {
-      final currentState = state;
+      final TranslationsState currentState = state;
       try {
         if (currentState is TranslationsLoaded) {
-          String oldImageUrl = event.imageUrl;
-          final String newImage = event.image;
+          String? oldImageUrl = event.imageUrl;
+          final String newImage = event.image!;
           final RegExp imageExtension = new RegExp(r'\.[^?]+');
 
-          if (newImage.indexOf('data:image/png') == 0 && oldImageUrl.indexOf('.png') == -1) {
+          if (newImage.indexOf('data:image/png') == 0 && oldImageUrl!.indexOf('.png') == -1) {
             oldImageUrl = oldImageUrl.replaceAll(imageExtension, '.png');
-          } else if (newImage.indexOf('data:image/jpeg') == 0 && oldImageUrl.indexOf('.jpeg') == -1) {
+          } else if (newImage.indexOf('data:image/jpeg') == 0 && oldImageUrl!.indexOf('.jpeg') == -1) {
             oldImageUrl = oldImageUrl.replaceAll(imageExtension, '.jpeg');
           }
 
@@ -134,7 +133,7 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
     });
   }
 
-  Future<Translations> _fetchTranslationsList(int from, int to, {String searchText}) async {
+  Future<Translations> _fetchTranslationsList(int from, int to, {String? searchText}) async {
     Map<String, dynamic> response;
 
     if (searchText != null) {
@@ -148,15 +147,15 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
       to: response['to'],
       totalAmount: response['totalAmount'],
       translations: response['translations'].map<TranslationsItem>((rawTranslation) => (
-          TranslationsItem(
-            id: rawTranslation['id'],
-            word: rawTranslation['word'],
-            translation: rawTranslation['translation'],
-            pronunciation: rawTranslation['pronunciation'],
-            image: rawTranslation['image'],
-            createdAt: rawTranslation['created_at'],
-            updatedAt: rawTranslation['updated_at'],
-          )
+        TranslationsItem(
+          id: rawTranslation['id'],
+          word: rawTranslation['word'],
+          translation: rawTranslation['translation'],
+          pronunciation: rawTranslation['pronunciation'],
+          image: rawTranslation['image'],
+          createdAt: rawTranslation['created_at'],
+          updatedAt: rawTranslation['updated_at'],
+        )
       )).toList(),
     );
   }

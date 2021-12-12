@@ -1,18 +1,17 @@
 import 'dart:async';
 import 'dart:core';
-import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:lingua_flutter/utils/api.dart';
 
 Future<String> apiRequest({
-  @required String method,
-  @required http.Client client,
-  @required String url,
-  Map<String, String> params,
-  Map<String, String> headers,
+  required String method,
+  required http.Client client,
+  required String url,
+  Map<String, String>? params,
+  Map<String, String>? headers,
 }) async {
-  http.Response response;
+  late http.Response response;
 
   if (method == 'get') {
     response = await client.get(
@@ -49,10 +48,10 @@ Future<String> apiRequest({
 }
 
 Future<String> apiGet({
-  @required http.Client client,
-  @required String url,
-  Map<String, String> params,
-  Map<String, String> headers,
+  required http.Client client,
+  required String url,
+  Map<String, String>? params,
+  Map<String, String>? headers,
 }) async {
   Future<String> response = apiRequest(
     method: 'get',
@@ -66,10 +65,10 @@ Future<String> apiGet({
 }
 
 Future<String> apiPost({
-  @required http.Client client,
-  @required String url,
-  Map<String, String> params,
-  Map<String, String> headers,
+  required http.Client client,
+  required String url,
+  Map<String, String>? params,
+  Map<String, String>? headers,
 }) async {
   Future<String> response = apiRequest(
     method: 'post',
@@ -83,10 +82,10 @@ Future<String> apiPost({
 }
 
 Future<String> apiPut({
-  @required http.Client client,
-  @required String url,
-  Map<String, String> params,
-  Map<String, String> headers,
+  required http.Client client,
+  required String url,
+  Map<String, String>? params,
+  Map<String, String>? headers,
 }) async {
   Future<String> response = apiRequest(
     method: 'put',
@@ -100,10 +99,10 @@ Future<String> apiPut({
 }
 
 Future<String> apiDelete({
-  @required http.Client client,
-  @required String url,
-  Map<String, String> params,
-  Map<String, String> headers,
+  required http.Client client,
+  required String url,
+  Map<String, String>? params,
+  Map<String, String>? headers,
 }) async {
   Future<String> response = apiRequest(
     method: 'delete',

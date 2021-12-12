@@ -5,12 +5,12 @@ import 'package:lingua_flutter/utils/sizes.dart';
 import 'expand_button.dart';
 
 class TranslationViewContainer extends StatefulWidget {
-  final String title;
-  final String entity;
-  final Function childBuilder;
-  final int itemsAmount;
-  final int maxItemsToShow;
-  final bool withBottomMargin;
+  final String? title;
+  final String? entity;
+  final Function? childBuilder;
+  final int? itemsAmount;
+  final int? maxItemsToShow;
+  final bool? withBottomMargin;
 
   TranslationViewContainer({
     this.title,
@@ -30,14 +30,14 @@ class _TranslationViewContainerState extends State<TranslationViewContainer> {
 
   @override
   Widget build(BuildContext context) {
-    int hiddenItemsAmount;
+    int? hiddenItemsAmount;
 
-    if (widget.itemsAmount > widget.maxItemsToShow) {
+    if (widget.itemsAmount! > widget.maxItemsToShow!) {
       if (hiddenItemsAmount == null) {
         hiddenItemsAmount = 0;
       }
       if (!expanded) {
-        hiddenItemsAmount += widget.itemsAmount - widget.maxItemsToShow;
+        hiddenItemsAmount += widget.itemsAmount! - widget.maxItemsToShow!;
       }
     }
 
@@ -69,7 +69,7 @@ class _TranslationViewContainerState extends State<TranslationViewContainer> {
                 Row(
                   children: <Widget>[
                     Text(
-                      '${widget.entity[0].toUpperCase()}${widget.entity.substring(1)} of ',
+                      '${widget.entity![0].toUpperCase()}${widget.entity!.substring(1)} of ',
                       style: TextStyle(
                         fontSize: SizeUtil.vmax(16),
                         color: Theme.of(context).hintColor,
@@ -78,7 +78,7 @@ class _TranslationViewContainerState extends State<TranslationViewContainer> {
                     Container(
                       margin: EdgeInsets.only(left: SizeUtil.vmax(5)),
                       child: Text(
-                        widget.title,
+                        widget.title!,
                         style: TextStyle(
                           fontSize: SizeUtil.vmax(16),
                           color: Theme.of(context).hintColor,
@@ -88,7 +88,7 @@ class _TranslationViewContainerState extends State<TranslationViewContainer> {
                     ),
                   ],
                 ),
-                widget.childBuilder(expanded),
+                widget.childBuilder!(expanded),
               ],
             ),
           ),

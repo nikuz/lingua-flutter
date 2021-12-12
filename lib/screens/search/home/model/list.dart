@@ -11,10 +11,10 @@ class Translations extends Equatable {
   final List<TranslationsItem> translations;
 
   Translations({
-    this.from,
-    this.to,
-    this.totalAmount,
-    this.translations,
+    required this.from,
+    required this.to,
+    required this.totalAmount,
+    required this.translations,
   });
 
   @override

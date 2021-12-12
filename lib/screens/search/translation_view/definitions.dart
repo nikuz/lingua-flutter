@@ -18,8 +18,8 @@ class Definitions extends StatelessWidget {
         if (state is TranslationLoaded && state.definitions != null) {
 
           int itemsAmount = 0;
-          for (int i = 0, l = state.definitions.length; i < l; i++) {
-            final List<dynamic> definitions = state.definitions[i][1];
+          for (int i = 0, l = state.definitions!.length; i < l; i++) {
+            final List<dynamic> definitions = state.definitions![i][1];
             itemsAmount += definitions.length;
           }
 
@@ -27,20 +27,20 @@ class Definitions extends StatelessWidget {
             title: state.word,
             entity: 'definitions',
             itemsAmount: itemsAmount,
-            maxItemsToShow: SHOW_MIN_DEFINITIONS * state.definitions.length,
+            maxItemsToShow: SHOW_MIN_DEFINITIONS * state.definitions!.length,
             childBuilder: (bool expanded) => ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemBuilder: (BuildContext context, int index) => TranslationViewCategory(
-                category: state.definitions[index],
+                category: state.definitions![index],
                 maxItemsToShow: SHOW_MIN_DEFINITIONS,
                 expanded: expanded,
                 itemBuilder: (BuildContext context, int itemIndex) {
-                  final category = state.definitions[index];
-                  final String categoryName = category[0];
+                  final category = state.definitions![index];
+                  final String? categoryName = category[0];
                   final List<dynamic> definitions = category[1];
-                  final List<dynamic> synonyms = state.definitionsSynonyms;
-                  List<dynamic> synonymsCategory;
+                  final List<dynamic>? synonyms = state.definitionsSynonyms;
+                  List<dynamic>? synonymsCategory;
 
                   if (state.version == 1 && synonyms != null && synonyms.isNotEmpty) {
                     for (int i = 0, l = synonyms.length; i < l; i++) {
@@ -58,7 +58,7 @@ class Definitions extends StatelessWidget {
                   );
                 }
               ),
-              itemCount: state.definitions.length,
+              itemCount: state.definitions!.length,
             ),
           );
         }
@@ -74,24 +74,24 @@ class DefinitionsItem extends StatelessWidget {
   final TranslationLoaded state;
   final int id;
   final List<dynamic> item;
-  final List<dynamic> synonymsCategory;
+  final List<dynamic>? synonymsCategory;
 
   DefinitionsItem({
-    Key key,
-    @required this.state,
-    @required this.id,
-    @required this.item,
-    @required this.synonymsCategory,
+    Key? key,
+    required this.state,
+    required this.id,
+    required this.item,
+    required this.synonymsCategory,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final String definition = item[0];
     String synonymsId = '';
-    String example;
-    List<dynamic> synonyms;
+    String? example;
+    List<dynamic>? synonyms;
 
-    if (item.length > 1) {
+    if (item.length > 1 && item[1] is String) {
       synonymsId = item[1];
     }
 
@@ -104,10 +104,10 @@ class DefinitionsItem extends StatelessWidget {
       }
     }
 
-    if (synonymsCategory != null && synonymsCategory.isNotEmpty) {
-      for (int i = 0, l = synonymsCategory.length; i < l; i++) {
-        if (synonymsCategory[i][1] == synonymsId) {
-          synonyms = synonymsCategory[i][0];
+    if (synonymsCategory != null && synonymsCategory!.isNotEmpty) {
+      for (int i = 0, l = synonymsCategory!.length; i < l; i++) {
+        if (synonymsCategory![i][1] == synonymsId) {
+          synonyms = synonymsCategory![i][0];
         }
       }
     }
@@ -129,7 +129,7 @@ class DefinitionsItem extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               border: Border.all(
-                color: Theme.of(context).textTheme.headline2.color,
+                color: Theme.of(context).textTheme.headline2!.color!,
                 width: SizeUtil.vmax(1),
                 style: BorderStyle.solid
               ),
@@ -165,14 +165,14 @@ class DefinitionsItem extends StatelessWidget {
     );
   }
 
-  Widget _getExample(BuildContext context, final String example) {
+  Widget _getExample(BuildContext context, final String? example) {
     if (example != null) {
       return Container(
         margin: EdgeInsets.only(top: SizeUtil.vmax(5)),
         child: Text(
           example,
           style: TextStyle(
-            color: Theme.of(context).textTheme.headline1.color,
+            color: Theme.of(context).textTheme.headline1!.color,
             fontSize: SizeUtil.vmax(15),
           ),
         ),
@@ -182,7 +182,7 @@ class DefinitionsItem extends StatelessWidget {
     return Container(width: 0, height: 0);
   }
 
-  Widget _getSynonymsList(BuildContext context, List<dynamic> synonyms) {
+  Widget _getSynonymsList(BuildContext context, List<dynamic>? synonyms) {
     if (synonyms == null) {
       return Container(width: 0, height: 0);
     }
