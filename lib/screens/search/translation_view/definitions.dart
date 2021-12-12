@@ -87,13 +87,17 @@ class DefinitionsItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String definition = item[0];
-    final String synonymsId = item[1];
+    String synonymsId = '';
     String example;
     List<dynamic> synonyms;
 
+    if (item.length > 1) {
+      synonymsId = item[1];
+    }
+
     if (state.version == 1 && item.length >= 3) {
       example = item[2];
-    } else if (state.version == 2) {
+    } else if (state.version == 2 && item.length > 1) {
       example = item[1];
       if (item.length >= 4) {
         synonyms = item[3];
