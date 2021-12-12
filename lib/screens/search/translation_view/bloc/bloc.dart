@@ -19,8 +19,6 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
   final http.Client httpClient;
 
   TranslationBloc({ @required this.httpClient }) : super(TranslationUninitialized()) {
-    final currentState = state;
-
     on<TranslationRequest>((event, emit) async {
       try {
         emit(TranslationRequestLoading());
@@ -131,6 +129,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     });
 
     on<TranslationRequestImage>((event, emit) async {
+      final currentState = state;
       try {
         if (currentState is TranslationLoaded) {
           emit(currentState.copyWith(
@@ -153,6 +152,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     });
 
     on<TranslationSave>((event, emit) async {
+      final currentState = state;
       try {
         if (currentState is TranslationLoaded) {
           emit(currentState.copyWith(
@@ -180,6 +180,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     });
 
     on<TranslationUpdate>((event, emit) async {
+      final currentState = state;
       try {
         if (currentState is TranslationLoaded) {
           emit(currentState.copyWith(
@@ -206,6 +207,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     });
 
     on<TranslationSelectImage>((event, emit) {
+      final currentState = state;
       if (currentState is TranslationLoaded) {
         emit(currentState.copyWith(
           image: event.source,
@@ -215,6 +217,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     });
 
     on<TranslationSetOwn>((event, emit) {
+      final currentState = state;
       if (currentState is TranslationLoaded) {
         emit(currentState.copyWith(
           translationOwn: event.translation,
@@ -223,6 +226,7 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     });
 
     on<TranslationClear>((event, emit) {
+      final currentState = state;
       if (currentState is TranslationLoaded) {
         emit(TranslationUninitialized());
       }

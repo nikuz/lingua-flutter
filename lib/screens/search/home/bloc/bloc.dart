@@ -14,10 +14,8 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
   final http.Client httpClient;
 
   TranslationsBloc({ @required this.httpClient }) : super(TranslationsUninitialized()) {
-    final currentState = state;
-    print(currentState);
-
     on<TranslationsRequest>((event, emit) async {
+      final currentState = state;
       try {
         emit(TranslationsRequestLoading(
             currentState.translations,
@@ -39,6 +37,7 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
     });
 
     on<TranslationsRequestMore>((event, emit) async {
+      final currentState = state;
       emit(TranslationsRequestMoreLoading(currentState.totalAmount, currentState.translations));
       try {
         int from = currentState.to;
@@ -81,8 +80,12 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
     });
 
     on<TranslationsItemRemove>((event, emit) async {
+      final currentState = state;
       try {
+        print(currentState);
+        print(state);
         if (currentState is TranslationsLoaded) {
+          print(event.id);
           await _removeTranslationsItem(event.id);
           emit(currentState.copyWith(
             removedItemId: event.id,
@@ -97,6 +100,7 @@ class TranslationsBloc extends Bloc<TranslationsEvent, TranslationsState> {
     });
 
     on<TranslationsUpdateItem>((event, emit) {
+      final currentState = state;
       try {
         if (currentState is TranslationsLoaded) {
           String oldImageUrl = event.imageUrl;

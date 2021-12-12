@@ -17,8 +17,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   SharedPreferences prefs;
 
   SettingsBloc({ @required this.prefs }) : super(SettingsUninitialized()) {
-    final currentState = state;
-
     on<SettingsGet>((event, emit) {
       final bool pronunciationAutoPlay = prefs.getBool('pronunciationAutoPlay') ?? true;
       final bool darkModeEnabled = prefs.getBool('darkModeEnabled') ?? false;
@@ -42,6 +40,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     });
 
     on<SettingsChange>((event, emit) async {
+      final currentState = state;
       if (currentState is SettingsLoaded) {
         if (event.savePrefs) {
           switch (event.type) {
@@ -67,6 +66,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     });
 
     on<SettingsDownloadDictionaryInfo>((event, emit) async {
+      final currentState = state;
       if (currentState is SettingsLoaded) {
         emit(currentState.copyWith([{
           'id': 'offlineDictionaryUpdateLoading',
@@ -104,6 +104,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     });
 
     on<SettingsDownloadDictionary>((event, emit) async {
+      final currentState = state;
       if (currentState is SettingsLoaded) {
         emit(currentState.copyWith([{
           'id': 'offlineDictionaryUpdateLoading',
@@ -167,6 +168,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     });
 
     on<SettingsClearDictionary>((event, emit) async {
+      final currentState = state;
       if (currentState is SettingsLoaded) {
         emit(currentState.copyWith([{
           'id': 'offlineDictionaryClearLoading',
