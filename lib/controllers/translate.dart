@@ -184,7 +184,7 @@ Future<void> translateControllerUpdate(Map<String, dynamic> params) async {
     if (image.existsSync()) {
       image.deleteSync();
     }
-    painting.imageCache!.clear();
+    painting.imageCache.clear();
 
     String fileId = getFileId(translationData['id'], params['word']);
     final RegExp imageReg = new RegExp(r'^data:image/(jpeg|png|jpg);base64,(.+)$');
@@ -217,7 +217,7 @@ Future<Map<String, dynamic>> translateControllerRemoveItem(int id) async {
       [id]
   );
 
-  if (dbResponse != null && dbResponse.length > 0) {
+  if (dbResponse.length > 0) {
     final Map<String, dynamic> item = dbResponse[0];
     String dir = await getDocumentsPath();
     final image = File('$dir/${item['image']}');

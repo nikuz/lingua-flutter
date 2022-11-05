@@ -17,7 +17,7 @@ import 'bloc/events.dart';
 class TranslationViewHeader extends StatefulWidget {
   final String word;
 
-  TranslationViewHeader(this.word) : assert(word != null);
+  TranslationViewHeader(this.word);
 
   @override
   _TranslationViewHeaderState createState() => _TranslationViewHeaderState();

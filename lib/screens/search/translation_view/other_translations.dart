@@ -214,7 +214,7 @@ class OtherTranslationsItem extends StatelessWidget {
       margin: EdgeInsets.only(right: screenWidth * 0.002),
       decoration: BoxDecoration(
         color: active
-          ? Theme.of(context).buttonTheme.colorScheme!.secondaryVariant
+          ? Theme.of(context).buttonTheme.colorScheme?.secondaryContainer
           : Color.fromRGBO(218, 220, 224, 1),
         borderRadius: BorderRadius.all(Radius.circular(SizeUtil.vmax(1))),
       ),

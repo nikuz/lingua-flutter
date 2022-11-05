@@ -19,7 +19,7 @@ class ExpandButton extends StatelessWidget {
     return TextButton(
       style: TextButton.styleFrom(
         minimumSize: Size(0, SizeUtil.vmax(43)),
-        backgroundColor: Theme.of(context).buttonTheme.colorScheme!.secondaryVariant,
+        backgroundColor: Theme.of(context).buttonTheme.colorScheme?.secondaryContainer,
         shape: new RoundedRectangleBorder(
           borderRadius: new BorderRadius.only(
             bottomLeft: Radius.circular(SizeUtil.vmax(8)),

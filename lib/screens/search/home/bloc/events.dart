@@ -12,7 +12,7 @@ class TranslationsRequestMore extends TranslationsEvent {}
 class TranslationsSearch extends TranslationsEvent {
   final String text;
 
-  TranslationsSearch(this.text) : assert(text != null);
+  TranslationsSearch(this.text);
 }
 
 class TranslationsUpdateItem extends TranslationsEvent {

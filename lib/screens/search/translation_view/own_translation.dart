@@ -9,7 +9,7 @@ import 'bloc/events.dart';
 class TranslationViewOwnTranslation extends StatefulWidget {
   final String word;
 
-  TranslationViewOwnTranslation(this.word) : assert(word != null);
+  TranslationViewOwnTranslation(this.word);
 
   @override
   _TranslationViewOwnTranslationState createState() => _TranslationViewOwnTranslationState();

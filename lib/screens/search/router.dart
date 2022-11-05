@@ -15,7 +15,7 @@ class SearchNavigatorRoutes {
 class SearchNavigator extends StatelessWidget {
   final GlobalKey<NavigatorState> navigatorKey;
 
-  SearchNavigator({ required this.navigatorKey }) : assert(navigatorKey != null);
+  SearchNavigator({ required this.navigatorKey });
 
   @override
   Widget build(BuildContext context) {

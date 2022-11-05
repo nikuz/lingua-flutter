@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -87,14 +86,14 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     _settingsBloc = BlocProvider.of<SettingsBloc>(context);
     _settingsBloc.add(SettingsGet());
   }
 
   @override
   void didChangePlatformBrightness() {
-    final Brightness brightness = WidgetsBinding.instance!.window.platformBrightness;
+    final Brightness brightness = WidgetsBinding.instance.window.platformBrightness;
     _settingsBloc.add(SettingsChange(
       type: 'bool',
       id: 'autoDarkMode',
@@ -105,7 +104,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 

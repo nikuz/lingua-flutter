@@ -9,7 +9,7 @@ class SettingsNavigatorRoutes {
 class SettingsNavigator extends StatelessWidget {
   final GlobalKey<NavigatorState> navigatorKey;
 
-  SettingsNavigator({ required this.navigatorKey }) : assert(navigatorKey != null);
+  SettingsNavigator({ required this.navigatorKey });
 
   @override
   Widget build(BuildContext context) {
