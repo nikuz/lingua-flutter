@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:lingua_flutter/utils/db.dart';
+import 'package:lingua_flutter/providers/db.dart';
 import 'package:lingua_flutter/controllers/translate.dart';
 import '../model/list.dart';
 import '../model/item.dart';

@@ -1,0 +1,1 @@
+final RegExp base64ImageReg = new RegExp(r'^data:image/(jpeg|png|jpg);base64,(.+)$');

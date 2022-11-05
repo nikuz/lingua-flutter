@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/screens/search/router.dart';
 import 'package:lingua_flutter/utils/string.dart';
-import 'package:lingua_flutter/utils/sizes.dart';
 
 import 'bloc/bloc.dart';
 import 'bloc/state.dart';
@@ -114,8 +113,8 @@ class OtherTranslationsItem extends StatelessWidget {
 
     return Container(
       margin: EdgeInsets.only(
-        top: SizeUtil.vmax(5),
-        bottom: SizeUtil.vmax(5),
+        top: 5,
+        bottom: 5,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -131,7 +130,7 @@ class OtherTranslationsItem extends StatelessWidget {
                 maxLines: 2,
                 style: TextStyle(
                   fontFamily: cyrillicWord ? 'Merriweather' : 'Montserrat',
-                  fontSize: SizeUtil.vmax(18),
+                  fontSize: 18,
                 ),
               ),
               onTap: () {
@@ -161,7 +160,7 @@ class OtherTranslationsItem extends StatelessWidget {
           Expanded(
             child: Container(
               padding: EdgeInsets.only(
-                top: SizeUtil.vmax(4),
+                top: 4,
               ),
               child: _getSynonymsList(synonyms, screenWidth),
             ),
@@ -169,7 +168,7 @@ class OtherTranslationsItem extends StatelessWidget {
           Container(
             width: screenWidth * 0.15,
             padding: EdgeInsets.only(
-              top: SizeUtil.vmax(8),
+              top: 8,
               left: screenWidth * 0.01,
             ),
             child: Row(
@@ -194,7 +193,7 @@ class OtherTranslationsItem extends StatelessWidget {
           Text(
             i == l - 1 ? synonyms[i] : '${synonyms[i]}, ',
             style: TextStyle(
-              fontSize: SizeUtil.vmax(14),
+              fontSize: 14,
             ),
           )
       );
@@ -210,13 +209,13 @@ class OtherTranslationsItem extends StatelessWidget {
   Widget _getFrequencyBarItem(BuildContext context, bool active, double screenWidth) {
     return Container(
       width: screenWidth * 0.02,
-      height: SizeUtil.vmax(3),
+      height: 3,
       margin: EdgeInsets.only(right: screenWidth * 0.002),
       decoration: BoxDecoration(
         color: active
           ? Theme.of(context).buttonTheme.colorScheme?.secondaryContainer
           : Color.fromRGBO(218, 220, 224, 1),
-        borderRadius: BorderRadius.all(Radius.circular(SizeUtil.vmax(1))),
+        borderRadius: BorderRadius.all(Radius.circular(1)),
       ),
     );
   }

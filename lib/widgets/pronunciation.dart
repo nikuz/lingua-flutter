@@ -3,11 +3,8 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
-
-import 'package:lingua_flutter/utils/sizes.dart';
 import 'package:lingua_flutter/utils/files.dart';
-
-import '../utils/convert.dart';
+import 'package:lingua_flutter/utils/convert.dart';
 
 final AudioContext audioContext = AudioContext(
   iOS: AudioContextIOS(
@@ -31,7 +28,7 @@ final AudioContext audioContext = AudioContext(
 );
 
 class PronunciationWidget extends StatefulWidget {
-  final String? pronunciationUrl;
+  final String pronunciationUrl;
   final double? size;
   final Color? color;
   final bool? autoPlay;
@@ -61,7 +58,7 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
   );
 
   Future<void> _playPronunciation() async {
-    String pronunciationUrl = widget.pronunciationUrl!;
+    String pronunciationUrl = widget.pronunciationUrl;
     if (pronunciationUrl.indexOf('data:audio') != -1) {
       final String dir = await getTempPath();
       Uint8List fileBytes = getBytesFrom64String(pronunciationUrl);
@@ -118,10 +115,10 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final double size = widget.size ?? SizeUtil.vmax(36);
+    final double size = widget.size ?? 36;
     return TextButton(
       style: TextButton.styleFrom(
-        minimumSize: Size(size + SizeUtil.vmax(20), size + SizeUtil.vmax(20)),
+        minimumSize: Size(size + 20, size + 20),
         padding: EdgeInsets.zero,
         backgroundColor: Theme.of(context).cardColor,
         shape: new RoundedRectangleBorder(

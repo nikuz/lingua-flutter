@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/widgets/prompts.dart';
-import 'package:lingua_flutter/utils/sizes.dart';
 
 import 'bloc/bloc.dart';
 import 'bloc/state.dart';
@@ -194,18 +193,18 @@ class SettingsCheckbox extends StatelessWidget {
       children: [
         Container(
           padding: EdgeInsets.only(
-            top: SizeUtil.vmax(20),
-            right: SizeUtil.vmax(15),
-            bottom: SizeUtil.vmax(20),
-            left: SizeUtil.vmax(15),
+            top: 20,
+            right: 15,
+            bottom: 20,
+            left: 15,
           ),
           child: Text(
             title,
-            style: TextStyle(fontSize: SizeUtil.vmax(17))
+            style: TextStyle(fontSize: 17)
           ),
         ),
         Container(
-          padding: EdgeInsets.only(right: SizeUtil.vmax(5)),
+          padding: EdgeInsets.only(right: 5),
           child: Switch(
             value: value!,
             onChanged: (changeValue) {
@@ -262,18 +261,16 @@ class SettingsButton extends StatelessWidget {
     Widget subtitleWidget = Container();
     Widget secondButtonWidget = Container();
     Widget loadingWidget = SizedBox(
-      width: SizeUtil.vmax(25),
-      height: SizeUtil.vmax(25),
-      child: CircularProgressIndicator(
-        strokeWidth: SizeUtil.vmax(1.5),
-      ),
+      width: 25,
+      height: 25,
+      child: CircularProgressIndicator(strokeWidth: 1.5),
     );
 
     if (subtitle != null) {
       subtitleWidget = Text(
         subtitle!,
         style: TextStyle(
-          fontSize: SizeUtil.vmax(12),
+          fontSize: 12,
           color: Colors.grey,
         )
       );
@@ -281,7 +278,7 @@ class SettingsButton extends StatelessWidget {
 
     Widget iconWidget = Icon(
       icon,
-      size: SizeUtil.vmax(30),
+      size: 30,
       color: disabled == true ? Colors.grey : iconColor ?? Colors.green,
     );
 
@@ -292,7 +289,7 @@ class SettingsButton extends StatelessWidget {
     if (secondButtonIcon != null) {
       Widget secondIconWidget = Icon(
         secondButtonIcon,
-        size: SizeUtil.vmax(30),
+        size: 30,
         color: secondButtonDisabled == true ? Colors.grey : secondButtonIconColor ?? Colors.green,
       );
       if (secondButtonLoading!) {
@@ -314,17 +311,17 @@ class SettingsButton extends StatelessWidget {
       children: [
         Container(
           padding: EdgeInsets.only(
-            top: SizeUtil.vmax(20),
-            right: SizeUtil.vmax(15),
-            bottom: SizeUtil.vmax(20),
-            left: SizeUtil.vmax(15),
+            top: 20,
+            right: 15,
+            bottom: 20,
+            left: 15,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
                 title,
-                style: TextStyle(fontSize: SizeUtil.vmax(17))
+                style: TextStyle(fontSize: 17)
               ),
               subtitleWidget,
             ],

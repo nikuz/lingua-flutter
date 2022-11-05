@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:lingua_flutter/utils/api.dart';
-import 'package:lingua_flutter/utils/db.dart';
+import 'package:lingua_flutter/providers/api.dart';
+import 'package:lingua_flutter/providers/db.dart';
 import '../model/item.dart';
 
 abstract class TranslationsState extends Equatable {

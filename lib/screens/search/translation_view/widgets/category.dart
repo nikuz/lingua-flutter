@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:lingua_flutter/utils/sizes.dart';
-
 class TranslationViewCategory extends StatelessWidget {
   final List<dynamic> category;
   final Function itemBuilder;
@@ -25,12 +23,12 @@ class TranslationViewCategory extends StatelessWidget {
     if (category[0] != null) {
       categoryName = Container(
         margin: EdgeInsets.only(
-          bottom: SizeUtil.vmax(5),
+          bottom: 5,
         ),
         child: Text(
           '${category[0][0].toUpperCase()}${category[0].substring(1)}',
           style: TextStyle(
-            fontSize: SizeUtil.vmax(16),
+            fontSize: 16,
             color: Theme.of(context).buttonTheme.colorScheme?.secondaryContainer,
           ),
         ),
@@ -44,7 +42,7 @@ class TranslationViewCategory extends StatelessWidget {
     }
 
     return Container(
-      margin: EdgeInsets.only(top: SizeUtil.vmax(15)),
+      margin: EdgeInsets.only(top: 15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

@@ -13,7 +13,9 @@ Future<bool> prompt({
     TextButton(
       onPressed: () {
         Navigator.of(context, rootNavigator: true).pop(true);
-        acceptCallback!();
+        if (acceptCallback is Function) {
+          acceptCallback();
+        }
       },
       child: Text("OK")
     ),

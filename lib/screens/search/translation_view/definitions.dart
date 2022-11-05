@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:lingua_flutter/utils/sizes.dart';
-
 import 'bloc/bloc.dart';
 import 'bloc/state.dart';
 import 'widgets/container.dart';
@@ -114,33 +112,31 @@ class DefinitionsItem extends StatelessWidget {
 
     return Container(
       margin: EdgeInsets.only(
-        top: SizeUtil.vmax(5),
-        bottom: SizeUtil.vmax(5),
+        top: 5,
+        bottom: 5,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            width: SizeUtil.vmax(20),
-            height: SizeUtil.vmax(20),
+            width: 20,
+            height: 20,
             margin: EdgeInsets.only(
-              top: SizeUtil.vmax(3),
-              right: SizeUtil.vmax(20),
+              top: 3,
+              right: 20,
             ),
             decoration: BoxDecoration(
               border: Border.all(
                 color: Theme.of(context).textTheme.headline2!.color!,
-                width: SizeUtil.vmax(1),
+                width: 1,
                 style: BorderStyle.solid
               ),
-              borderRadius: BorderRadius.all(Radius.circular(SizeUtil.vmax(20))),
+              borderRadius: BorderRadius.all(Radius.circular(20)),
             ),
             child: Center(
               child: Text(
                 id.toString(),
-                style: TextStyle(
-                  fontSize: SizeUtil.vmax(12),
-                ),
+                style: TextStyle(fontSize: 12),
               ),
             ),
           ),
@@ -151,9 +147,7 @@ class DefinitionsItem extends StatelessWidget {
               children: <Widget>[
                 Text(
                   definition,
-                  style: TextStyle(
-                    fontSize: SizeUtil.vmax(17),
-                  ),
+                  style: TextStyle(fontSize: 17),
                 ),
                 _getExample(context, example),
                 _getSynonymsList(context, synonyms),
@@ -168,12 +162,12 @@ class DefinitionsItem extends StatelessWidget {
   Widget _getExample(BuildContext context, final String? example) {
     if (example != null) {
       return Container(
-        margin: EdgeInsets.only(top: SizeUtil.vmax(5)),
+        margin: EdgeInsets.only(top: 5),
         child: Text(
           example,
           style: TextStyle(
             color: Theme.of(context).textTheme.headline1!.color,
-            fontSize: SizeUtil.vmax(15),
+            fontSize: 15,
           ),
         ),
       );
@@ -192,24 +186,22 @@ class DefinitionsItem extends StatelessWidget {
       list.add(
         Container(
           padding: EdgeInsets.only(
-            top: SizeUtil.vmax(3),
-            right: SizeUtil.vmax(8),
-            bottom: SizeUtil.vmax(5),
-            left: SizeUtil.vmax(8),
+            top: 3,
+            right: 8,
+            bottom: 5,
+            left: 8,
           ),
           decoration: BoxDecoration(
             border: Border.all(
+              width: 1,
+              style: BorderStyle.solid,
               color: Color.fromRGBO(218, 220, 224, 1),
-              width: SizeUtil.vmax(1),
-              style: BorderStyle.solid
             ),
-            borderRadius: BorderRadius.all(Radius.circular(SizeUtil.vmax(7))),
+            borderRadius: BorderRadius.all(Radius.circular(7)),
           ),
           child: Text(
             synonyms[i],
-            style: TextStyle(
-              fontSize: SizeUtil.vmax(15),
-            ),
+            style: TextStyle(fontSize: 15),
           ),
         )
       );
@@ -220,21 +212,21 @@ class DefinitionsItem extends StatelessWidget {
       children: <Widget>[
         Container(
           margin: EdgeInsets.only(
-            top: SizeUtil.vmax(15),
-            bottom: SizeUtil.vmax(10),
+            top: 15,
+            bottom: 10,
           ),
           child: Text(
             'Synonyms',
             style: TextStyle(
               color: Theme.of(context).hintColor,
-              fontSize: SizeUtil.vmax(15),
+              fontSize: 15,
             ),
           ),
         ),
         Wrap(
           direction: Axis.horizontal,
-          spacing: SizeUtil.vmax(7),
-          runSpacing: SizeUtil.vmax(7),
+          spacing: 7,
+          runSpacing: 7,
           children: list,
         )
       ],

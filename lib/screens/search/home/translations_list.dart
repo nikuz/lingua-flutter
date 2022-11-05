@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:lingua_flutter/utils/sizes.dart';
 import 'package:lingua_flutter/widgets/pronunciation.dart';
 import 'package:lingua_flutter/widgets/prompts.dart';
 import 'package:lingua_flutter/screens/search/router.dart';
@@ -83,22 +82,22 @@ class _TranslationsListState extends State<TranslationsList> {
                     if (index == 0) {
                       return Container(
                         padding: EdgeInsets.only(
-                          left: SizeUtil.vmax(15),
-                          top: SizeUtil.vmax(10),
+                          left: 15,
+                          top: 10,
                         ),
                         child: Row(
                           children: <Widget>[
                             Text(
-                                'Total: ',
-                                style: TextStyle(
-                                  fontSize: SizeUtil.vmax(15),
-                                  fontWeight: FontWeight.bold,
-                                )
+                              'Total: ',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             Text(
                               '${state.totalAmount}',
                               style: TextStyle(
-                                fontSize: SizeUtil.vmax(15),
+                                fontSize: 15,
                                 fontWeight: FontWeight.bold,
                               )
                             ),
@@ -170,11 +169,11 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             Container(
-              width: SizeUtil.vmax(80),
+              width: 80,
               child: Icon(
                 Icons.delete,
                 color: Colors.white,
-                size: SizeUtil.vmax(30),
+                size: 30,
               ),
             ),
           ],
@@ -189,7 +188,7 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
       },
       direction: DismissDirection.endToStart,
       child: Container(
-        margin: EdgeInsets.only(bottom: SizeUtil.vmax(2)),
+        margin: EdgeInsets.only(bottom: 2),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
@@ -203,7 +202,6 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
             width: 50,
             height: 50,
             imageSource: widget.translationItem.image,
-            updatedAt: widget.translationItem.updatedAt,
             isLocal: true,
             withPreviewOverlay: true,
             onTap: () {
@@ -218,11 +216,11 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
             }
           ),
           title: Container(
-            margin: EdgeInsets.only(bottom: SizeUtil.vmax(2)),
+            margin: EdgeInsets.only(bottom: 2),
             child: Text(
               widget.translationItem.word!,
               style: TextStyle(
-                  fontSize: SizeUtil.vmax(18),
+                  fontSize: 18,
                   color: isSelected
                       ? Colors.white
                       : Theme.of(context).textTheme.headline1!.decorationColor,
@@ -230,11 +228,11 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
             ),
           ),
           subtitle: Container(
-            margin: EdgeInsets.only(bottom: SizeUtil.vmax(2)),
+            margin: EdgeInsets.only(bottom: 2),
             child: Text(
               widget.translationItem.translation!,
               style: TextStyle(
-                  fontSize: SizeUtil.vmax(16),
+                  fontSize: 16,
                   color: isSelected
                       ? Colors.white
                       : Theme.of(context).textTheme.headline1!.color,
@@ -242,10 +240,12 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
             ),
           ),
           dense: true,
-          trailing: PronunciationWidget(
-            pronunciationUrl: widget.translationItem.pronunciation,
-            isLocal: true,
-          ),
+          trailing: widget.translationItem.pronunciation != null ?
+            PronunciationWidget(
+              pronunciationUrl: widget.translationItem.pronunciation!,
+              isLocal: true,
+            )
+            : null,
           onTap: () {
             BlocProvider.of<TranslationBloc>(context).add(TranslationClear());
             Navigator.pushNamed(
@@ -271,15 +271,15 @@ class BottomLoader extends StatelessWidget {
         if (listLength >= LIST_PAGE_SIZE && listLength < state.totalAmount!) {
           return Container(
             padding: EdgeInsets.only(
-              top: SizeUtil.vmax(10),
-              bottom: SizeUtil.vmax(10),
+              top: 10,
+              bottom: 10,
             ),
             child: Center(
               child: SizedBox(
-                width: SizeUtil.vmax(33),
-                height: SizeUtil.vmax(33),
+                width: 33,
+                height: 33,
                 child: CircularProgressIndicator(
-                  strokeWidth: SizeUtil.vmax(1.5),
+                  strokeWidth: 1.5,
                 ),
               ),
             ),

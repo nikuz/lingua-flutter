@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:lingua_flutter/utils/sizes.dart';
 import 'package:lingua_flutter/utils/convert.dart';
 
 import 'bloc/bloc.dart';
@@ -69,8 +68,8 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                           key: isActive ? itemKey : Key(index.toString()),
                           color: isActive ? Colors.greenAccent : Theme.of(context).scaffoldBackgroundColor,
                           padding: EdgeInsets.only(
-                            top: SizeUtil.vmax(10),
-                            bottom: SizeUtil.vmax(10),
+                            top: 10,
+                            bottom: 10,
                           ),
                           child: Center(
                             child: TextButton(
@@ -107,12 +106,12 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                     child: Row(
                       children: <Widget>[
                         Container(
-                          width: SizeUtil.vmax(50),
-                          margin: EdgeInsets.only(right: SizeUtil.vmax(10)),
+                          width: 50,
+                          margin: EdgeInsets.only(right: 10),
                           child: TextButton(
                             child: Icon(
                               Icons.arrow_back,
-                              size: SizeUtil.vmax(25),
+                              size: 25,
                             ),
                             onPressed: () {
                               Navigator.pop(context, false);
@@ -134,23 +133,23 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                             decoration: InputDecoration(
                               hintText: 'Search image',
                               hintStyle: TextStyle(
-                                fontSize: SizeUtil.vmax(20),
+                                fontSize: 20,
                               ),
                               border: InputBorder.none,
                             ),
                             style: TextStyle(
-                              fontSize: SizeUtil.vmax(20),
+                              fontSize: 20,
 //                              color: Colors.black
                             ),
                           ),
                         ),
                         Container(
-                          width: SizeUtil.vmax(50),
-                          margin: EdgeInsets.only(left: SizeUtil.vmax(10)),
+                          width: 50,
+                          margin: EdgeInsets.only(left: 10),
                           child: TextButton(
                             child: Icon(
                               Icons.clear,
-                              size: SizeUtil.vmax(25),
+                              size: 25,
                             ),
                             onPressed: () {
                               if (_textController!.text != '') {

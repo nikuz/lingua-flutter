@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lingua_flutter/utils/string.dart';
-import 'package:lingua_flutter/utils/sizes.dart';
 import 'package:lingua_flutter/utils/connectivity.dart';
 import 'package:lingua_flutter/widgets/prompts.dart';
 
@@ -57,12 +56,12 @@ class _TranslationViewState extends State<TranslationView> {
           title: Text(
             appBarTitle ?? '',
             style: TextStyle(
-              fontSize: SizeUtil.vmax(20),
+              fontSize: 20,
             ),
           ),
           leading: IconButton(icon: Icon(
               Icons.arrow_back,
-              size: SizeUtil.vmax(25),
+              size: 25,
           ),
             onPressed: () {
               Navigator.pop(context, false);
@@ -195,10 +194,10 @@ class _TranslationViewState extends State<TranslationView> {
                 autoSpellingFix = Container(
                   width: MediaQuery.of(context).size.width,
                   padding: EdgeInsets.only(
-                    left: SizeUtil.vmax(10),
-                    top: SizeUtil.vmax(4),
-                    right: SizeUtil.vmax(10),
-                    bottom: SizeUtil.vmax(6),
+                    left: 10,
+                    top: 4,
+                    right: 10,
+                    bottom: 6,
                   ),
                   color: Colors.red,
                   child: Wrap(

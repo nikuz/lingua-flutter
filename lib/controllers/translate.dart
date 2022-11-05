@@ -4,13 +4,13 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:developer' as developer;
 import 'package:flutter/painting.dart' as painting;
-import 'package:lingua_flutter/helpers/db.dart';
-import 'package:lingua_flutter/utils/db.dart';
+import 'package:lingua_flutter/providers/db.dart';
 import 'package:lingua_flutter/utils/files.dart';
+import 'package:lingua_flutter/utils/regexp.dart';
 
 Future<Map<String, dynamic>> translateControllerGetList(int from, int to) async {
   const String countColumnName = 'COUNT(id)';
-  final List<dynamic> results = await DBHelper().batchQuery([{
+  final List<dynamic> results = await DBProvider().batchQuery([{
     'type': 'rawQuery',
     'query': '''
       SELECT id, word, pronunciation, translation, image, created_at, updated_at
@@ -39,7 +39,7 @@ Future<Map<String, dynamic>> translateControllerSearch(String searchText, int fr
   final String searchPatternEnd = '$searchText%';
   const String countColumnName = 'COUNT(id)';
 
-  final List<dynamic> results = await DBHelper().batchQuery([{
+  final List<dynamic> results = await DBProvider().batchQuery([{
     'type': 'rawQuery',
     'query': '''
       SELECT id, word, pronunciation, translation, image, created_at, updated_at
@@ -77,7 +77,7 @@ Future<Map<String, dynamic>> translateControllerSearch(String searchText, int fr
 }
 
 Future<Map<String, dynamic>?> translateControllerGet(String? word) async {
-  final List<Map> dbResponse = await DBHelper().rawQuery(
+  final List<Map> dbResponse = await DBProvider().rawQuery(
     'SELECT * FROM dictionary WHERE word=?;',
     [word]
   );
@@ -104,7 +104,7 @@ Future<void> translateControllerSave(Map<String, dynamic> params) async {
   }
 
   // populate db with initial data
-  await DBHelper().rawQuery('''
+  await DBProvider().rawQuery('''
       INSERT INTO dictionary (word, translation, raw, updated_at, version)
       VALUES(?, ?, ?, datetime("now"), ?);
       ''',
@@ -124,12 +124,14 @@ Future<void> translateControllerSave(Map<String, dynamic> params) async {
     String fileId = getFileId(newTranslationData?['id'], params['word']);
 
     // save image
-    final RegExp imageReg = new RegExp(r'^data:image/(jpeg|png|jpg);base64,(.+)$');
     String imageUrl = params['image'];
-    if (imageUrl.indexOf(imageReg) != -1) {
-      RegExpMatch imageParts = imageReg.firstMatch(params['image'])!;
-      Uint8List imageBytes = Base64Decoder().convert(imageParts.group(2)!);
-      imageUrl = '/images/$fileId.${imageParts.group(1)}';
+    RegExpMatch? imageParts = base64ImageReg.firstMatch(params['image']);
+    String? extension = imageParts?.group(1);
+    String? imageValue = imageParts?.group(2);
+
+    if (imageParts != null && extension is String && imageValue is String) {
+      Uint8List imageBytes = Base64Decoder().convert(imageValue);
+      imageUrl = '/images/$fileId.$extension';
 
       File image = File('$dir/$imageUrl');
       image = await image.create(recursive: true);
@@ -139,9 +141,11 @@ Future<void> translateControllerSave(Map<String, dynamic> params) async {
     // save pronunciation
     final RegExp pronunciationReg = new RegExp(r'^data:audio/mpeg;base64,(.+)$');
     String pronunciationUrl = params['pronunciationURL'];
-    if (pronunciationUrl.indexOf(pronunciationReg) != -1) {
-      RegExpMatch pronunciationParts = pronunciationReg.firstMatch(params['pronunciationURL'])!;
-      Uint8List pronunciationBytes = Base64Decoder().convert(pronunciationParts.group(1)!);
+    RegExpMatch? pronunciationParts = pronunciationReg.firstMatch(params['pronunciationURL']);
+    String? pronunciationValue = pronunciationParts?.group(1);
+
+    if (pronunciationParts != null && pronunciationValue is String) {
+      Uint8List pronunciationBytes = Base64Decoder().convert(pronunciationValue);
       pronunciationUrl = '/pronunciations/$fileId.mp3';
 
       File pronunciation = File('$dir/$pronunciationUrl');
@@ -150,7 +154,7 @@ Future<void> translateControllerSave(Map<String, dynamic> params) async {
     }
 
     // update db
-    await DBHelper().rawQuery('''
+    await DBProvider().rawQuery('''
         UPDATE dictionary 
         SET image=?, pronunciation=?, updated_at=datetime("now") 
         WHERE id=${newTranslationData?['id']};
@@ -162,7 +166,7 @@ Future<void> translateControllerSave(Map<String, dynamic> params) async {
     );
   } catch (e) {
     developer.log(e.toString());
-    await DBHelper().rawDelete('DELETE FROM dictionary WHERE id=?;', [newTranslationData?['id']]);
+    await DBProvider().rawDelete('DELETE FROM dictionary WHERE id=?;', [newTranslationData?['id']]);
   }
 }
 
@@ -187,22 +191,26 @@ Future<void> translateControllerUpdate(Map<String, dynamic> params) async {
     painting.imageCache.clear();
 
     String fileId = getFileId(translationData['id'], params['word']);
-    final RegExp imageReg = new RegExp(r'^data:image/(jpeg|png|jpg);base64,(.+)$');
-    RegExpMatch imageParts = imageReg.firstMatch(params['image'])!;
-    Uint8List imageBytes = Base64Decoder().convert(imageParts.group(2)!);
-    imageUrl = '/images/$fileId.${imageParts.group(1)}';
+    RegExpMatch? imageParts = base64ImageReg.firstMatch(params['image']);
+    String? extension = imageParts?.group(1);
+    String? value = imageParts?.group(2);
 
-    image = File('$dir/$imageUrl');
-    await image.writeAsBytes(imageBytes);
+    if (imageParts != null && extension is String && value is String) {
+      Uint8List imageBytes = Base64Decoder().convert(value);
+      imageUrl = '/images/$fileId.$extension';
+
+      image = File('$dir/$imageUrl');
+      await image.writeAsBytes(imageBytes);
+    }
   }
 
   String imageTransaction = '';
-  if (imageUrl != null) {
+  if (imageUrl is String) {
     imageTransaction = ', image=\'$imageUrl\'';
   }
 
   // update db
-  await DBHelper().rawQuery('''
+  await DBProvider().rawQuery('''
       UPDATE dictionary 
       SET translation=?, updated_at=datetime("now") $imageTransaction
       WHERE id=${translationData['id']};
@@ -212,7 +220,7 @@ Future<void> translateControllerUpdate(Map<String, dynamic> params) async {
 }
 
 Future<Map<String, dynamic>> translateControllerRemoveItem(int id) async {
-  final List<dynamic> dbResponse = await DBHelper().rawQuery(
+  final List<dynamic> dbResponse = await DBProvider().rawQuery(
       'SELECT * FROM dictionary WHERE id=?;',
       [id]
   );
@@ -229,7 +237,7 @@ Future<Map<String, dynamic>> translateControllerRemoveItem(int id) async {
       pronunciation.deleteSync();
     }
 
-    final int count = await DBHelper().rawDelete('DELETE FROM dictionary WHERE id=?;', [id]);
+    final int count = await DBProvider().rawDelete('DELETE FROM dictionary WHERE id=?;', [id]);
 
     return { 'success': count == 1 };
   } else {

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:lingua_flutter/utils/sizes.dart';
-
 class ExpandButton extends StatelessWidget {
   final bool? expanded;
   final int? amount;
@@ -18,23 +16,23 @@ class ExpandButton extends StatelessWidget {
 
     return TextButton(
       style: TextButton.styleFrom(
-        minimumSize: Size(0, SizeUtil.vmax(43)),
+        minimumSize: Size(0, 43),
         backgroundColor: Theme.of(context).buttonTheme.colorScheme?.secondaryContainer,
         shape: new RoundedRectangleBorder(
           borderRadius: new BorderRadius.only(
-            bottomLeft: Radius.circular(SizeUtil.vmax(8)),
-            bottomRight: Radius.circular(SizeUtil.vmax(8)),
+            bottomLeft: Radius.circular(8),
+            bottomRight: Radius.circular(8),
           ),
         ),
       ),
       child: Row( // Replace with a Row for horizontal icon + text
         children: <Widget>[
           Container(
-            margin: EdgeInsets.only(right: SizeUtil.vmax(10)),
+            margin: EdgeInsets.only(right: 10),
             child: Icon(
               expanded! ? Icons.expand_less : Icons.expand_more,
               color: Theme.of(context).selectedRowColor,
-              size: SizeUtil.vmax(25),
+              size: 25,
             ),
           ),
           Text(
@@ -43,7 +41,7 @@ class ExpandButton extends StatelessWidget {
               : 'Show more $amount $entity',
             style: TextStyle(
               color: Theme.of(context).selectedRowColor,
-              fontSize: SizeUtil.vmax(15),
+              fontSize: 15,
             ),
           )
         ],

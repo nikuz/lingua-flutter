@@ -2,13 +2,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:lingua_flutter/utils/convert.dart';
 import 'package:lingua_flutter/utils/files.dart';
-import 'package:lingua_flutter/utils/sizes.dart';
 
 class ResizableImage extends StatefulWidget {
   final double width;
   final double height;
   final String? imageSource;
-  final String? updatedAt;
   final bool? isLocal;
   final bool? withPreviewOverlay;
   final Function? onTap;
@@ -18,7 +16,6 @@ class ResizableImage extends StatefulWidget {
     required this.width,
     required this.height,
     required this.imageSource,
-    required this.updatedAt,
     this.isLocal,
     this.withPreviewOverlay,
     this.onTap,
@@ -54,7 +51,7 @@ class _ResizableImageState extends State<ResizableImage> {
     if (isBase64Image) {
       image = Image.memory(getBytesFrom64String(widget.imageSource!));
     } else {
-      if (widget.isLocal! && imageBaseUrl != null) {
+      if (widget.isLocal != null && imageBaseUrl != null) {
         image = Image.file(
           File('$imageBaseUrl${widget.imageSource}'),
           fit: BoxFit.contain,
@@ -63,14 +60,14 @@ class _ResizableImageState extends State<ResizableImage> {
     }
 
     image = Container(
-      width: SizeUtil.vmax(widget.width),
-      height: SizeUtil.vmax(widget.height),
+      width: widget.width,
+      height: widget.height,
       child: image,
     );
 
     return ButtonTheme(
-      minWidth: SizeUtil.vmax(widget.width),
-      height: SizeUtil.vmax(widget.height),
+      minWidth: widget.width,
+      height: widget.height,
       padding: EdgeInsets.all(0),
       child: TextButton(
         style: TextButton.styleFrom(
@@ -97,7 +94,7 @@ class _ResizableImageState extends State<ResizableImage> {
   }
 
   void _getImageBaseUrl() async {
-    if (!isBase64Image && widget.isLocal!) {
+    if (!isBase64Image && widget.isLocal != null) {
       String newImageBaseUrl = await getDocumentsPath();
       setState(() {
         imageBaseUrl = newImageBaseUrl;
@@ -110,44 +107,43 @@ class _ResizableImageState extends State<ResizableImage> {
       width: 300,
       height: 300,
       imageSource: widget.imageSource,
-      updatedAt: widget.updatedAt,
       isLocal: widget.isLocal,
     );
 
     return OverlayEntry(
-        builder: (context) => Material(
-          color: Color.fromRGBO(255, 255, 255, 0.6),
-          elevation: 4.0,
-          child: TextButton(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Draggable(
-                  maxSimultaneousDrags: 1,
-                  axis: Axis.vertical,
-                  child: image,
-                  feedback: image,
-                  childWhenDragging: Container(),
-                  onDragEnd: (drag) {
-                    if (drag.offset.dy > 300 || drag.offset.dy < -10) {
-                      this._overlayEntry.remove();
-                      if (widget.onPreviewClose is Function) {
-                        widget.onPreviewClose!();
-                      }
+      builder: (context) => Material(
+        color: Color.fromRGBO(255, 255, 255, 0.6),
+        elevation: 4.0,
+        child: TextButton(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Draggable(
+                maxSimultaneousDrags: 1,
+                axis: Axis.vertical,
+                child: image,
+                feedback: image,
+                childWhenDragging: Container(),
+                onDragEnd: (drag) {
+                  if (drag.offset.dy > 300 || drag.offset.dy < -10) {
+                    this._overlayEntry.remove();
+                    if (widget.onPreviewClose is Function) {
+                      widget.onPreviewClose!();
                     }
-                  },
-                )
-              ],
-            ),
-            onPressed: () {
-              this._overlayEntry.remove();
-              if (widget.onPreviewClose is Function) {
-                widget.onPreviewClose!();
-              }
-            },
+                  }
+                },
+              )
+            ],
           ),
+          onPressed: () {
+            this._overlayEntry.remove();
+            if (widget.onPreviewClose is Function) {
+              widget.onPreviewClose!();
+            }
+          },
         ),
+      ),
     );
   }
 }

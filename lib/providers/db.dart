@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 
-class DBHelper {
+class DBProvider {
   static Database? _db;
-  static final DBHelper instance = DBHelper._privateConstructor();
+  static final DBProvider instance = DBProvider._privateConstructor();
 
-  DBHelper._privateConstructor();
+  DBProvider._privateConstructor();
 
-  factory DBHelper() {
+  factory DBProvider() {
     return instance;
   }
 
@@ -17,7 +17,7 @@ class DBHelper {
     return _db!;
   }
 
-  _initDatabase() async {
+  Future<Database> _initDatabase() async {
     return await openDatabase('dictionary.SQLITE3', version: 1, onCreate: this.createTable);
   }
 
@@ -68,20 +68,22 @@ class DBHelper {
       String? query = item['query'];
       List<dynamic>? arguments = item['arguments'];
 
-      switch (type) {
-        case 'rawQuery':
-          batch.rawQuery(query!, arguments);
-          break;
-        case 'rawInsert':
-          batch.rawInsert(query!, arguments);
-          break;
-        case 'rawUpdate':
-          batch.rawUpdate(query!, arguments);
-          break;
-        case 'rawDelete':
-          batch.rawDelete(query!, arguments);
-          break;
-        default:
+      if (query is String) {
+        switch (type) {
+          case 'rawQuery':
+            batch.rawQuery(query, arguments);
+            break;
+          case 'rawInsert':
+            batch.rawInsert(query, arguments);
+            break;
+          case 'rawUpdate':
+            batch.rawUpdate(query, arguments);
+            break;
+          case 'rawDelete':
+            batch.rawDelete(query, arguments);
+            break;
+          default:
+        }
       }
     }
 
@@ -95,3 +97,29 @@ class DBHelper {
   }
 }
 
+class DBException implements Exception {
+  int? code;
+  String? message;
+
+  DBException(Map<String, dynamic> errorBody) {
+    final errorCode = errorBody['error'];
+    final errorMessage = errorBody['message'];
+
+    this.code = errorCode is int ? errorCode : 0;
+
+    if (errorMessage is List) {
+      this.message = errorMessage[0];
+    } else if (errorMessage is String) {
+      this.message = errorMessage;
+    } else {
+      this.message = 'DatabaseExceptionError';
+    }
+  }
+
+  List<Object?> get props => [code, message];
+
+  @override
+  String toString() {
+    return '$code: $message';
+  }
+}
