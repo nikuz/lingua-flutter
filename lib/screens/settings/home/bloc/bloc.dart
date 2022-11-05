@@ -7,6 +7,7 @@ import 'package:googleapis/drive/v2.dart' as drive;
 import 'package:googleapis_auth/auth_io.dart';
 
 import 'package:lingua_flutter/app_config.dart';
+import 'package:lingua_flutter/google-api-credentials.dart';
 import 'package:lingua_flutter/utils/files.dart';
 
 import 'events.dart';

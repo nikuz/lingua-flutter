@@ -74,6 +74,6 @@
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
-lib/app_config.dart
+lib/google-api-credentials.dart
 key.properties
 android/key.jks

@@ -1,9 +1,34 @@
+import 'dart:io';
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import 'package:lingua_flutter/utils/sizes.dart';
 import 'package:lingua_flutter/utils/files.dart';
+
+import '../utils/convert.dart';
+
+final AudioContext audioContext = AudioContext(
+  iOS: AudioContextIOS(
+    defaultToSpeaker: false,
+    category: AVAudioSessionCategory.playback,
+    options: [
+      AVAudioSessionOptions.defaultToSpeaker,
+      AVAudioSessionOptions.mixWithOthers,
+      AVAudioSessionOptions.allowAirPlay,
+      AVAudioSessionOptions.allowBluetooth,
+      AVAudioSessionOptions.allowBluetoothA2DP,
+    ],
+  ),
+  android: AudioContextAndroid(
+    isSpeakerphoneOn: true,
+    stayAwake: true,
+    contentType: AndroidContentType.sonification,
+    usageType: AndroidUsageType.assistanceSonification,
+    audioFocus: AndroidAudioFocus.none,
+  ),
+);
 
 class PronunciationWidget extends StatefulWidget {
   final String? pronunciationUrl;
@@ -30,28 +55,33 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
   StreamSubscription<PlayerState>? _audioPlayerStateSubscription;
   StreamSubscription? _playerCompleteSubscription;
   StreamSubscription? _playerErrorSubscription;
-  PlayerState _playerState = PlayerState.STOPPED;
+  PlayerState _playerState = PlayerState.stopped;
   bool _isPlayerStopped(state) => (
-      state == PlayerState.STOPPED || state == PlayerState.COMPLETED
+      state == PlayerState.stopped || state == PlayerState.completed
   );
 
   Future<void> _playPronunciation() async {
     String pronunciationUrl = widget.pronunciationUrl!;
     if (pronunciationUrl.indexOf('data:audio') != -1) {
-      await _audioPlayer.play(pronunciationUrl);
+      final String dir = await getTempPath();
+      Uint8List fileBytes = getBytesFrom64String(pronunciationUrl);
+      final String filePath = '$dir/pronunciation.mp3';
+      final File file = File(filePath);
+      await file.writeAsBytes(fileBytes);
+      await _audioPlayer.play(DeviceFileSource(filePath));
     } else if (widget.isLocal!) {
       String dir = await getDocumentsPath();
       pronunciationUrl = '$dir${widget.pronunciationUrl}';
-      await _audioPlayer.play(pronunciationUrl, isLocal:true);
+      await _audioPlayer.play(DeviceFileSource(pronunciationUrl));
     } else {
-      await _audioPlayer.play(pronunciationUrl);
+      await _audioPlayer.play(UrlSource(pronunciationUrl));
     }
-    setState(() => this._playerState = PlayerState.PLAYING);
+    setState(() => this._playerState = PlayerState.playing);
   }
 
   Future<void> _stopPronunciation() async {
     await _audioPlayer.stop();
-    setState(() => this._playerState = PlayerState.STOPPED);
+    setState(() => this._playerState = PlayerState.stopped);
   }
 
   void _onPlayerStateChange(PlayerState state) {
@@ -59,21 +89,19 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
   }
 
   void _onPlayerStateChangeError(msg) {
-    setState(() => _playerState = PlayerState.STOPPED);
+    setState(() => _playerState = PlayerState.stopped);
   }
 
   @override
   void initState() {
     super.initState();
+    AudioPlayer.global.setGlobalAudioContext(audioContext);
     _audioPlayerStateSubscription = _audioPlayer.onPlayerStateChanged.listen(
         _onPlayerStateChange,
         onError: _onPlayerStateChangeError
     );
-    _playerCompleteSubscription = _audioPlayer.onPlayerCompletion.listen((event) {
-      setState(() => _playerState = PlayerState.COMPLETED);
-    });
-    _playerErrorSubscription = _audioPlayer.onPlayerError.listen((msg) {
-      print('audioPlayer error : $msg');
+    _playerCompleteSubscription = _audioPlayer.onPlayerComplete.listen((event) {
+      setState(() => _playerState = PlayerState.completed);
     });
     if (widget.autoPlay == true) {
       _playPronunciation();
