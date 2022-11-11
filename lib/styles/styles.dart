@@ -4,6 +4,8 @@ import './colors.dart';
 import './variables.dart';
 import './themes/themes.dart';
 
+export './themes/theme.dart';
+
 class Styles {
   const Styles();
 

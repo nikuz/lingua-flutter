@@ -18,7 +18,7 @@ class DBProvider {
   }
 
   Future<Database> _initDatabase() async {
-    return await openDatabase('dictionary.SQLITE3', version: 1, onCreate: this.createTable);
+    return await openDatabase('database/dictionary.SQLITE3', version: 1, onCreate: this.createTable);
   }
 
   Future createTable(Database db, int version) async {
@@ -96,6 +96,8 @@ class DBProvider {
     _db = null;
   }
 }
+
+Future<String> getDatabasesPath() => databaseFactory.getDatabasesPath();
 
 class DBException implements Exception {
   int? code;

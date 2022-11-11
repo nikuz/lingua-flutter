@@ -6,7 +6,7 @@ import 'package:lingua_flutter/utils/files.dart';
 class ResizableImage extends StatefulWidget {
   final double width;
   final double height;
-  final String? imageSource;
+  final String imageSource;
   final bool? isLocal;
   final bool? withPreviewOverlay;
   final Function? onTap;
@@ -49,7 +49,7 @@ class _ResizableImageState extends State<ResizableImage> {
     Widget image = Container();
 
     if (isBase64Image) {
-      image = Image.memory(getBytesFrom64String(widget.imageSource!));
+      image = Image.memory(getBytesFrom64String(widget.imageSource));
     } else {
       if (widget.isLocal != null && imageBaseUrl != null) {
         image = Image.file(
@@ -88,9 +88,7 @@ class _ResizableImageState extends State<ResizableImage> {
   }
 
   void _isBase64Image() {
-    if (widget.imageSource != null) {
-      isBase64Image = widget.imageSource!.indexOf('data:image') == 0;
-    }
+    isBase64Image = widget.imageSource.indexOf('data:image') == 0;
   }
 
   void _getImageBaseUrl() async {

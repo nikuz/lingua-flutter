@@ -219,7 +219,7 @@ Future<void> translateControllerUpdate(Map<String, dynamic> params) async {
   );
 }
 
-Future<Map<String, dynamic>> translateControllerRemoveItem(int id) async {
+Future<void> translateControllerRemoveItem(int id) async {
   final List<dynamic> dbResponse = await DBProvider().rawQuery(
       'SELECT * FROM dictionary WHERE id=?;',
       [id]
@@ -237,9 +237,7 @@ Future<Map<String, dynamic>> translateControllerRemoveItem(int id) async {
       pronunciation.deleteSync();
     }
 
-    final int count = await DBProvider().rawDelete('DELETE FROM dictionary WHERE id=?;', [id]);
-
-    return { 'success': count == 1 };
+    await DBProvider().rawDelete('DELETE FROM dictionary WHERE id=?;', [id]);
   } else {
     throw DBException({
       'error': 'remove_error_exists',

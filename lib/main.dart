@@ -1,33 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import './blocs/observer.dart';
-import './screens/search/home/bloc/bloc.dart';
-import './screens/search/translation_view/bloc/bloc.dart';
-import './screens/settings/home/bloc/bloc.dart';
-import './screens/settings/home/bloc/state.dart';
+import './screens/search/bloc/search_cubit.dart';
+import './screens/translation_view/bloc/translation_view_cubit.dart';
+import './screens/settings/bloc/settings_cubit.dart';
+import './screens/settings/bloc/settings_state.dart';
 
-import './screens/main.dart';
+import './screens/router.gr.dart';
 
 void main() async {
   Bloc.observer = MyBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
-  final http.Client httpClient = http.Client();
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider<TranslationsBloc>(
-          create: (context) => TranslationsBloc(httpClient: httpClient),
+        BlocProvider<SearchCubit>(
+          create: (context) => SearchCubit(),
         ),
-        BlocProvider<TranslationBloc>(
-          create: (context) => TranslationBloc(httpClient: httpClient),
+        BlocProvider<TranslationViewCubit>(
+          create: (context) => TranslationViewCubit(),
         ),
-        BlocProvider<SettingsBloc>(
-          create: (context) => SettingsBloc(prefs: prefs),
+        BlocProvider<SettingsCubit>(
+          create: (context) => SettingsCubit(prefs),
         ),
       ],
       child: App(),
@@ -35,22 +33,56 @@ void main() async {
   );
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> with WidgetsBindingObserver {
+  final _appRouter = AppRouter();
+  late Brightness _brightness;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _brightness = WidgetsBinding.instance.window.platformBrightness;
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    setState(() {
+      _brightness = WidgetsBinding.instance.window.platformBrightness;
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SettingsBloc, SettingsState>(
+    return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (context, state) {
-        return MaterialApp(
+        ThemeMode themeMode = ThemeMode.light;
+
+        if (state.autoDarkMode) {
+          themeMode = _brightness == Brightness.light
+              ? ThemeMode.light
+              : ThemeMode.dark;
+        } if (state.darkMode) {
+          themeMode = ThemeMode.dark;
+        }
+
+        return MaterialApp.router(
           title: 'Lingua',
           theme: ThemeData(fontFamily: 'Montserrat'),
           darkTheme: ThemeData.dark(),
-          themeMode: (
-            state is SettingsLoaded && (state.settings['darkModeEnabled'] || state.settings['autoDarkMode'])
-                ? ThemeMode.dark
-                : ThemeMode.light
-          ),
-          home: MainScreen(),
-          debugShowCheckedModeBanner: false,
+          themeMode: themeMode,
+          routerDelegate: _appRouter.delegate(),
+          routeInformationParser: _appRouter.defaultRouteParser(),
         );
       },
     );

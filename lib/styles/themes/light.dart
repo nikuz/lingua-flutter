@@ -8,5 +8,7 @@ final myThemeDataLight = MyTheme(
     primary: myColors.black,
     secondary: myColors.white,
     focus: myColors.blue,
+    background: myColors.paleGrey,
+    grey: myColors.grey,
   ),
 );

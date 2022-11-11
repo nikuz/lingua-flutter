@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 
 Future<String> apiRequest({
   required String method,
-  required http.Client client,
   required String url,
   Map<String, String>? params,
   Map<String, String>? headers,
@@ -11,24 +10,24 @@ Future<String> apiRequest({
   late http.Response response;
 
   if (method == 'get') {
-    response = await client.get(
+    response = await http.get(
       Uri.parse(url),
       headers: headers,
     );
   } else if (method == 'post') {
-    response = await client.post(
+    response = await http.post(
       Uri.parse(url),
       headers: headers,
       body: params,
     );
   } else if (method == 'put') {
-    response = await client.put(
+    response = await http.put(
       Uri.parse(url),
       headers: headers,
       body: params,
     );
   } else if (method == 'delete') {
-    response = await client.delete(
+    response = await http.delete(
       Uri.parse(url),
       headers: headers,
     );
@@ -45,14 +44,12 @@ Future<String> apiRequest({
 }
 
 Future<String> apiGet({
-  required http.Client client,
   required String url,
   Map<String, String>? params,
   Map<String, String>? headers,
 }) async {
   Future<String> response = apiRequest(
     method: 'get',
-    client: client,
     url: url,
     params: params,
     headers: headers,
@@ -62,14 +59,12 @@ Future<String> apiGet({
 }
 
 Future<String> apiPost({
-  required http.Client client,
   required String url,
   Map<String, String>? params,
   Map<String, String>? headers,
 }) async {
   Future<String> response = apiRequest(
     method: 'post',
-    client: client,
     url: url,
     params: params,
     headers: headers,
@@ -79,14 +74,12 @@ Future<String> apiPost({
 }
 
 Future<String> apiPut({
-  required http.Client client,
   required String url,
   Map<String, String>? params,
   Map<String, String>? headers,
 }) async {
   Future<String> response = apiRequest(
     method: 'put',
-    client: client,
     url: url,
     params: params,
     headers: headers,
@@ -96,14 +89,12 @@ Future<String> apiPut({
 }
 
 Future<String> apiDelete({
-  required http.Client client,
   required String url,
   Map<String, String>? params,
   Map<String, String>? headers,
 }) async {
   Future<String> response = apiRequest(
     method: 'delete',
-    client: client,
     url: url,
     params: params,
     headers: headers,

@@ -17,7 +17,7 @@ Future<bool> prompt({
           acceptCallback();
         }
       },
-      child: Text("OK")
+      child: Text('OK')
     ),
   ];
 
@@ -30,7 +30,7 @@ Future<bool> prompt({
             cancelCallback();
           }
         },
-        child: Text("CANCEL"),
+        child: Text('CANCEL'),
       )
     );
   }

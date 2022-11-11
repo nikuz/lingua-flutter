@@ -16,12 +16,6 @@ PODS:
   - sqflite (0.0.2):
     - Flutter
     - FMDB (>= 2.7.5)
-  - video_player_avfoundation (0.0.1):
-    - Flutter
-  - wakelock (0.0.1):
-    - Flutter
-  - webview_flutter_wkwebview (0.0.1):
-    - Flutter
 
 DEPENDENCIES:
   - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/ios`)
@@ -30,9 +24,6 @@ DEPENDENCIES:
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
-  - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/ios`)
-  - wakelock (from `.symlinks/plugins/wakelock/ios`)
-  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
 
 SPEC REPOS:
   trunk:
@@ -52,12 +43,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_ios/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
-  video_player_avfoundation:
-    :path: ".symlinks/plugins/video_player_avfoundation/ios"
-  wakelock:
-    :path: ".symlinks/plugins/wakelock/ios"
-  webview_flutter_wkwebview:
-    :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
   audioplayers_darwin: 387322cb364026a1782298c982693b1b6aa9fa1b
@@ -68,9 +53,6 @@ SPEC CHECKSUMS:
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
-  video_player_avfoundation: e489aac24ef5cf7af82702979ed16f2a5ef84cff
-  wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
-  webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
 
 PODFILE CHECKSUM: ef19549a9bc3046e7bb7d2fab4d021637c0c58a3
 

@@ -8,5 +8,7 @@ final myThemeDataDark = MyTheme(
     primary: myColors.white,
     secondary: myColors.black,
     focus: myColors.blue,
+    background: myColors.darkGrey,
+    grey: myColors.grey,
   ),
 );
