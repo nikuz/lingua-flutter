@@ -13,6 +13,7 @@ import 'package:lingua_flutter/screens/search/bloc/search_cubit.dart';
 import './bloc/translation_view_cubit.dart';
 import './bloc/translation_view_state.dart';
 
+import './widgets/menu.dart';
 import './widgets/header.dart';
 import './widgets/other_translations.dart';
 import './widgets/definitions.dart';
@@ -31,7 +32,7 @@ class TranslationView extends StatefulWidget {
 }
 
 class _TranslationViewState extends State<TranslationView> {
-  late TranslationViewCubit translationViewCubit;
+  late TranslationViewCubit _translationViewCubit;
   late String? _appBarTitle;
   bool _appBarTitleUpdated = false;
   int? _wordId;
@@ -43,9 +44,9 @@ class _TranslationViewState extends State<TranslationView> {
   @override
   void initState() {
     super.initState();
-    translationViewCubit = context.read<TranslationViewCubit>();
+    _translationViewCubit = context.read<TranslationViewCubit>();
     if (widget.word != null) {
-      translationViewCubit.translate(widget.word!);
+      _translationViewCubit.translate(widget.word!);
     }
     _appBarTitle = widget.word;
     _getInternetConnectionStatus();
@@ -53,7 +54,7 @@ class _TranslationViewState extends State<TranslationView> {
 
   @override
   void dispose() {
-    translationViewCubit.reset();
+    _translationViewCubit.reset();
     super.dispose();
   }
 
@@ -61,107 +62,60 @@ class _TranslationViewState extends State<TranslationView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          automaticallyImplyLeading: true,
-          //`true` if you want Flutter to automatically add Back Button when needed,
-          //or `false` if you want to force your own back button every where
-          title: Text(
-            _appBarTitle ?? '',
-            style: TextStyle(
-              fontSize: 20,
-            ),
+        automaticallyImplyLeading: true, // to automatically add Back Button when needed,
+        title: Text(
+          _appBarTitle ?? '',
+          style: TextStyle(
+            fontSize: 20,
           ),
-          leading: IconButton(icon: Icon(
-              Icons.arrow_back,
-              size: 25,
+        ),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            size: 25,
           ),
-            onPressed: () {
-              Navigator.pop(context, false);
-            },
-          ),
-          elevation: 0,
-          actions: <Widget>[
-            PopupMenuButton<Menu>(
-              icon: Icon(Icons.more_vert),
-              enabled: !_menuDisabled,
-              onSelected: (Menu item) async {
-                if (item.id == 'remove') {
-                  final bool removeAccepted = await wordRemovePrompt(context, _appBarTitle, () {
-                    if (_wordId != null) {
-                      context.read<SearchCubit>().removeTranslation(_wordId!);
-                    }
-                  });
-                  if (removeAccepted) {
-                    Navigator.pop(context, false);
-                  }
-                }
-                if (item.id == 'image') {
-                  // AutoRouter.of(context).push(TranslationViewImagePickerRoute(word: _imageSearchWord));
-                  // Navigator.pushNamed(
-                  //   context,
-                  //   SearchNavigatorRoutes.translation_view_images_picker,
-                  //   arguments: {
-                  //     'word': imageSearchWord,
-                  //   },
-                  // );
-                }
-                if (item.id == 'translation') {
-                  // Navigator.pushNamed(
-                  //   context,
-                  //   SearchNavigatorRoutes.translation_view_own_translation,
-                  //   arguments: {
-                  //     'word': translationWord,
-                  //   },
-                  // );
-                }
-              },
-              itemBuilder: (BuildContext context) {
-                if (_menuDisabled) {
-                  return [];
-                }
-
-                List<Menu> menuList = <Menu>[
-                  const Menu(id: 'image', title: 'Change Image'),
-                  const Menu(id: 'translation', title: 'Change Translation'),
-                  const Menu(id: 'remove', title: 'Remove'),
-                ];
-
-                if (!_hasInternetConnection) {
-                  menuList.removeAt(0);
-                }
-
-                return menuList.map((Menu item) {
-                  return PopupMenuItem<Menu>(
-                    value: item,
-                    child: Text(item.title!),
-                  );
-                }).toList();
-              },
-            ),
-          ],
+          onPressed: () {
+            Navigator.pop(context, false);
+          },
+        ),
+        elevation: 0,
+        actions: translationViewMenuConstructor(
+          context: context,
+          word: widget.word ?? '',
+          imageSearchWord: _imageSearchWord,
+          wordId: _wordId,
+          disabled: _menuDisabled,
+          hasInternetConnection: _hasInternetConnection,
+        ),
       ),
       body: SafeArea(
+        // child: Container(
+        //   decoration: BoxDecoration(
+        //     border: Border.all(color: Colors.green, width: 3),
+        //   ),
+        // ),
         child: BlocListener<TranslationViewCubit, TranslationViewState>(
           listener: (context, state) {
-            if (
-              state.image == null
-              && state.images.isEmpty
-              && state.strangeWord == false
-              && state.imageLoading == false
-              && state.word is String
-              && isCyrillicWord(state.word!) == false
-            ) {
-              translationViewCubit.fetchImages(state.word!);
-            }
-
-            if (!_appBarTitleUpdated) {
-              setState(() {
-                _appBarTitle = state.word;
-                _wordId = state.id;
-                _appBarTitleUpdated = true;
-                _menuDisabled = _wordId == null || state.remote!;
-              });
-            }
-
+            // if (
+            //   state.image == null
+            //   && state.images.isEmpty
+            //   && state.strangeWord == false
+            //   && state.imageLoading == false
+            //   && state.word is String
+            //   && isCyrillicWord(state.word!) == false
+            // ) {
+            //   translationViewCubit.fetchImages(state.word!);
+            // }
+            //
+            // if (!_appBarTitleUpdated) {
+            //   setState(() {
+            //     _appBarTitle = state.word;
+            //     _wordId = state.id;
+            //     _appBarTitleUpdated = true;
+            //     _menuDisabled = _wordId == null || state.remote!;
+            //   });
+            // }
+            //
             if (state.imageSearchWord != _imageSearchWord) {
               setState(() {
                 _imageSearchWord = state.imageSearchWord;
@@ -253,11 +207,4 @@ class _TranslationViewState extends State<TranslationView> {
       _hasInternetConnection = connection;
     });
   }
-}
-
-class Menu {
-  final String? id;
-  final String? title;
-
-  const Menu({this.id, this.title});
 }

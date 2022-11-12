@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:lingua_flutter/styles/styles.dart';
 
 import './tab_navigator_constants.dart';
 import './tab_navigator_item.dart';
@@ -25,23 +26,26 @@ class _TabNavigatorState extends State<TabNavigator> {
 
   @override
   Widget build(BuildContext context) {
-    final BottomNavigationBarThemeData bottomTheme = BottomNavigationBarTheme.of(context);
+    final MyTheme theme = Styles.theme(context);
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Positioned(
       left: 0,
       right: 0,
       bottom: 0,
       child: Container(
-        height: TabNavigatorConstants.height,
-        color: bottomTheme.backgroundColor,
+        height: TabNavigatorConstants.height + bottomPadding,
+        padding: EdgeInsets.only(bottom: bottomPadding),
         decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              width: 1,
-              style: BorderStyle.solid,
-              color: Colors.black.withOpacity(0.2),
-            ), //BorderSide
-          ), //
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 3,
+              offset: Offset(0, 3), // changes position of shadow
+            ),
+          ],
+          color: theme.colors.background,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -5,7 +5,7 @@ import 'package:auto_route/auto_route.dart';
 
 import 'package:lingua_flutter/widgets/pronunciation.dart';
 import 'package:lingua_flutter/widgets/prompts.dart';
-import 'package:lingua_flutter/widgets/resizable_image.dart';
+import 'package:lingua_flutter/widgets/image_preview.dart';
 import 'package:lingua_flutter/screens/translation_view/models/translation.model.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 
@@ -197,12 +197,10 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
         ),
         child: ListTile(
           leading: widget.translationItem.image != null
-            ? ResizableImage(
+            ? ImagePreview(
                 width: 50,
                 height: 50,
                 imageSource: widget.translationItem.image!,
-                isLocal: true,
-                withPreviewOverlay: true,
                 onTap: () {
                   setState(() {
                     isSelected = true;
@@ -239,10 +237,7 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
           ),
           dense: true,
           trailing: widget.translationItem.pronunciation != null
-              ? PronunciationWidget(
-                  pronunciationUrl: widget.translationItem.pronunciation!,
-                  isLocal: true,
-                )
+              ? PronunciationWidget(pronunciationSource: widget.translationItem.pronunciation!)
               : null,
           onTap: () {
             AutoRouter.of(context).push(TranslationViewRoute(word: widget.translationItem.word));

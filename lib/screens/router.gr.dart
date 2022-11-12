@@ -184,7 +184,7 @@ class TranslationViewRouteArgs {
 /// [_i4.TranslationViewImagePicker]
 class TranslationViewImagePickerRoute
     extends _i7.PageRouteInfo<TranslationViewImagePickerRouteArgs> {
-  TranslationViewImagePickerRoute({required String word})
+  TranslationViewImagePickerRoute({required String? word})
       : super(
           TranslationViewImagePickerRoute.name,
           path: 'translation_view/images',
@@ -197,7 +197,7 @@ class TranslationViewImagePickerRoute
 class TranslationViewImagePickerRouteArgs {
   const TranslationViewImagePickerRouteArgs({required this.word});
 
-  final String word;
+  final String? word;
 
   @override
   String toString() {

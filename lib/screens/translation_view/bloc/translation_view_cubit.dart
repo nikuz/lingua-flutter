@@ -96,7 +96,6 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         images: [],
         imageSearchWord: word,
         imageLoading: false,
-        imageUpdate: false,
         createdAt: translation.createdAt,
         updatedAt: translation.updatedAt,
         highestRelevantTranslation: highestRelevantTranslation,
@@ -110,10 +109,12 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         raw: translation.raw,
         remote: translation.remote,
         version: translation.version,
+        translateLoading: false,
       ));
     } catch (e) {
       emit(state.copyWith(
         error: Wrapped.value(e),
+        translateLoading: false,
       ));
     }
   }
@@ -157,10 +158,12 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
 
       emit(state.copyWith(
         images: resultImages,
+        imageLoading: false,
       ));
     } catch (e) {
       emit(state.copyWith(
         error: Wrapped.value(e),
+        imageLoading: false,
       ));
     }
   }
@@ -186,6 +189,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
     } catch (e) {
       emit(state.copyWith(
         error: Wrapped.value(e),
+        saveLoading: false,
       ));
     }
 
@@ -210,6 +214,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
     } catch (e) {
       emit(state.copyWith(
         error: Wrapped.value(e),
+        updateLoading: false,
       ));
     }
 
@@ -219,7 +224,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
   void setImage(String image) {
     emit(state.copyWith(
       image: image,
-      imageUpdate: true,
+      imageUpdated: true,
     ));
   }
 

@@ -7,7 +7,7 @@ import '../bloc/translation_view_cubit.dart';
 import '../bloc/translation_view_state.dart';
 
 class TranslationViewImagePicker extends StatefulWidget {
-  final String word;
+  final String? word;
 
   TranslationViewImagePicker(this.word);
 
@@ -25,8 +25,8 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
     super.initState();
     _textController = TextEditingController(text: widget.word);
     _translationViewCubit = context.read<TranslationViewCubit>();
-    if (_translationViewCubit.state.images.length == 0) {
-      _translationViewCubit.fetchImages(widget.word);
+    if (_translationViewCubit.state.images.length == 0 && widget.word != null) {
+      _translationViewCubit.fetchImages(widget.word!);
     }
 
     new Future.delayed(Duration(milliseconds: 100), this._scrollToSelectedItem);
@@ -168,7 +168,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
   }
 
   void _scrollToSelectedItem() {
-    if (_translationViewCubit.state.imageLoading == false) {
+    if (_translationViewCubit.state.imageLoading == false && itemKey.currentContext != null) {
       Scrollable.ensureVisible(
         itemKey.currentContext!,
         duration: Duration(seconds: 1),

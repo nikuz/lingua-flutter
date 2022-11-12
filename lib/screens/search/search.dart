@@ -22,15 +22,29 @@ class _SearchState extends State<Search> {
   Widget build(BuildContext context) {
     final MyTheme theme = Styles.theme(context);
 
-    return Container(
-      color: theme.colors.background,
-      child: Column(
-        children: <Widget>[
-          SearchField(),
-          Expanded(
-            child: SearchTranslationsList(),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Search',
+          style: TextStyle(
+            fontSize: 20,
           ),
-        ],
+        ),
+      ),
+      body: SafeArea(
+        child: Container(
+          decoration: BoxDecoration(
+            color: theme.colors.background,
+          ),
+          child: Column(
+            children: <Widget>[
+              SearchField(),
+              Expanded(
+                child: SearchTranslationsList(),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

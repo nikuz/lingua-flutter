@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:auto_route/auto_route.dart';
 
+import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/widgets/pronunciation.dart';
-import 'package:lingua_flutter/widgets/resizable_image.dart';
+import 'package:lingua_flutter/widgets/image_preview.dart';
 import 'package:lingua_flutter/utils/string.dart';
-
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_state.dart';
+import 'package:lingua_flutter/screens/router.gr.dart';
 
 import '../bloc/translation_view_cubit.dart';
 import '../bloc/translation_view_state.dart';
@@ -26,63 +28,16 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
   Widget build(BuildContext context) {
     return BlocBuilder<TranslationViewCubit, TranslationViewState>(
       builder: (context, state) {
+        final MyTheme theme = Styles.theme(context);
         final String? translationWord = (
             state.translationOwn != null ? state.translationOwn : state.translationWord
         );
-        bool verified = false;
-        final List<dynamic>? highestRelevantTranslation = state.highestRelevantTranslation;
-        if (highestRelevantTranslation != null) {
-          verified = translationWord == highestRelevantTranslation[0][0] && highestRelevantTranslation[0][4] != 0;
-        }
         final bool cyrillicWord = state.word is String
             ? isCyrillicWord(state.word!)
             : false;
-        final String? imageSource = state.image;
-
-        Widget image = Container();
-
-        if (state.imageLoading) {
-          image = Center(
-            child: CircularProgressIndicator(
-              backgroundColor: Colors.white,
-            ),
-          );
-        }
-
-        if (cyrillicWord == true || state.strangeWord) {
-          image = Center(
-            child: Icon(
-              Icons.broken_image,
-              color: Colors.white,
-              size: 100,
-            ),
-          );
-        }
-
-        if (imageSource != null) {
-          image = ResizableImage(
-            width: 150,
-            height: 150,
-            imageSource: imageSource,
-            isLocal: !state.remote!,
-            withPreviewOverlay: state.id != null && !state.imageUpdate!,
-            onTap: () {
-              if (state.id == null || state.imageUpdate!) {
-                // Navigator.pushNamed(
-                //   context,
-                //   SearchNavigatorRoutes.translation_view_images_picker,
-                //   arguments: {
-                //     'word': state.imageSearchWord,
-                //   },
-                // );
-              }
-            },
-          );
-        }
 
         return Container(
-          color: Theme.of(context).primaryColor,
-          width: double.infinity,
+          color: theme.colors.focus,
           padding: EdgeInsets.only(
             left: 10,
             right: 10,
@@ -100,7 +55,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                     top: 10,
                     bottom: 10,
                   ),
-                  child: image,
+                  child: _buildImage(state),
                 ),
               ),
               Center(
@@ -108,9 +63,6 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      padding: EdgeInsets.only(
-                        left: verified ? 30 : 0,
-                      ),
                       constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width * 0.85,
                       ),
@@ -119,7 +71,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                           backgroundColor: Colors.white,
                         ),
                         child: Text(
-                          translationWord != null ? translationWord : '',
+                          translationWord ?? '',
                           overflow: TextOverflow.ellipsis,
                           maxLines: 5,
                           style: TextStyle(
@@ -131,31 +83,15 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
                         ),
                         onPressed: () {
                           if (cyrillicWord == true) {
-                            // Navigator.pushReplacementNamed(
-                            //   context,
-                            //   SearchNavigatorRoutes.translation_view,
-                            //   arguments: {
-                            //     'word': translationWord,
-                            //   },
-                            // );
+                            AutoRouter.of(context).replace(TranslationViewRoute(word: translationWord));
                           }
                         },
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(
-                        left: verified ? 5 : 0,
-                      ),
-                      child: Icon(
-                        verified ? Icons.check_circle_outline : null,
-                        color: Colors.white,
-                        size: verified ? 25 : 0,
                       ),
                     ),
                   ],
                 ),
               ),
-              _getFooter(state),
+              _buildFooter(state),
             ],
           ),
         );
@@ -163,12 +99,53 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
     );
   }
 
-  Widget _getFooter(TranslationViewState state) {
+  Widget _buildImage(TranslationViewState state) {
+    final bool cyrillicWord = state.word is String
+        ? isCyrillicWord(state.word!)
+        : false;
+    Widget image = Container();
+
+    if (state.imageLoading) {
+      image = Center(
+        child: CircularProgressIndicator(
+          backgroundColor: Colors.white,
+        ),
+      );
+    }
+
+    if (cyrillicWord == true || state.strangeWord) {
+      image = Center(
+        child: Icon(
+          Icons.broken_image,
+          color: Colors.white,
+          size: 100,
+        ),
+      );
+    }
+
+    if (state.image != null) {
+      image = ImagePreview(
+        width: 150,
+        height: 150,
+        imageSource: state.image!,
+        withPreviewOverlay: state.id != null && !state.imageUpdated,
+        onTap: () {
+          if (state.id == null || state.imageUpdated) {
+            AutoRouter.of(context).push(TranslationViewImagePickerRoute(word: state.imageSearchWord));
+          }
+        },
+      );
+    }
+
+    return image;
+  }
+
+  Widget _buildFooter(TranslationViewState state) {
     final bool cyrillicWord = state.word is String
         ? isCyrillicWord(state.word!)
         : false;
     final String? pronunciation = state.pronunciation;
-    final bool? imageUpdate = state.imageUpdate;
+    final bool? imageUpdate = state.imageUpdated;
     final translationUpdate = (
         state.translationOwn != null && state.translationOwn != state.translationWord
     );
@@ -181,11 +158,11 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
 
     final bool? remote = state.remote;
     final bool newWord = state.id == null;
-    bool toSave = newWord || imageUpdate! || translationUpdate;
+    bool toSave = newWord || state.imageUpdated || translationUpdate;
     IconData iconName = Icons.check;
     if (newWord) {
       iconName = Icons.save_alt;
-    } else if (imageUpdate! || translationUpdate) {
+    } else if (state.imageUpdated || translationUpdate) {
       iconName = Icons.update;
     }
 
@@ -213,13 +190,15 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
             children: [
               BlocBuilder<SettingsCubit, SettingsState>(
                 builder: (context, state) {
-                  return PronunciationWidget(
-                    pronunciationUrl: pronunciation ?? '',
-                    color: Colors.blue,
-                    size: 45,
-                    autoPlay: state.pronunciationAutoPlay,
-                    isLocal: remote == false,
-                  );
+                  if (pronunciation != null) {
+                    return PronunciationWidget(
+                      pronunciationSource: pronunciation,
+                      color: Colors.blue,
+                      size: 45,
+                      autoPlay: state.pronunciationAutoPlay,
+                    );
+                  }
+                  return Container();
                 }
               ),
               Container(
@@ -248,7 +227,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
             ),
             child: icon,
             onPressed: () {
-              if (newWord) {
+              if (newWord && state.translationWord != null) {
                 context.read<TranslationViewCubit>().save(
                   Translation(
                     word: state.word,

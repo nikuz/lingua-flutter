@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/widgets/tab_navigator/tab_navigator.dart';
 
 class App extends StatelessWidget {
@@ -8,35 +7,28 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MyTheme theme = Styles.theme(context);
+    return Stack(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(bottom: TabNavigatorConstants.height),
+          child: AutoRouter(),
+        ),
 
-    return Scaffold(
-      backgroundColor: theme.colors.background,
-      body: SafeArea(
-        child: Stack(
+        TabNavigator(
           children: [
-            Padding(
-              padding: EdgeInsets.only(bottom: TabNavigatorConstants.height),
-              child: AutoRouter(),
+            TabNavigatorItem(
+              label: 'Search',
+              icon: Icons.search,
+              path: 'search',
             ),
-
-            TabNavigator(
-              children: [
-                TabNavigatorItem(
-                  label: 'Search',
-                  icon: Icons.search,
-                  path: 'search',
-                ),
-                TabNavigatorItem(
-                  label: 'Settings',
-                  icon: Icons.settings,
-                  path: 'settings',
-                ),
-              ],
+            TabNavigatorItem(
+              label: 'Settings',
+              icon: Icons.settings,
+              path: 'settings',
             ),
           ],
         ),
-      ),
+      ],
     );
   }
 }

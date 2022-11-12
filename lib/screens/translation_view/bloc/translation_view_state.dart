@@ -25,7 +25,7 @@ class TranslationViewState extends Equatable {
   final bool strangeWord;
   final String? image;
   final String? imageUrl;
-  final bool? imageUpdate;
+  final bool imageUpdated;
   final List<dynamic> images;
   final String? imageSearchWord;
   final bool translateLoading;
@@ -50,7 +50,7 @@ class TranslationViewState extends Equatable {
     this.image,
     this.imageUrl,
     this.images = const [],
-    this.imageUpdate,
+    this.imageUpdated = false,
     this.imageSearchWord,
     this.translateLoading = false,
     this.imageLoading = false,
@@ -90,7 +90,7 @@ class TranslationViewState extends Equatable {
     bool? strangeWord,
     String? image,
     String? imageUrl,
-    bool? imageUpdate,
+    bool? imageUpdated,
     List<dynamic>? images,
     String? imageSearchWord,
     bool? translateLoading,
@@ -122,7 +122,7 @@ class TranslationViewState extends Equatable {
       strangeWord: strangeWord ?? this.strangeWord,
       image: image ?? this.image,
       imageUrl: imageUrl ?? this.imageUrl,
-      imageUpdate: imageUpdate ?? this.imageUpdate,
+      imageUpdated: imageUpdated ?? this.imageUpdated,
       images: images ?? this.images,
       imageSearchWord: imageSearchWord ?? this.imageSearchWord,
       translateLoading: translateLoading ?? this.translateLoading,
@@ -163,6 +163,11 @@ class TranslationViewState extends Equatable {
 
   @override
   List<Object?> get props => [
+    id,
+    translateLoading,
+    imageLoading,
+    saveLoading,
+    updateLoading,
     // pronunciationAutoPlay,
     // darkMode,
     // autoDarkMode,

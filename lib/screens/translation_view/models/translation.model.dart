@@ -16,15 +16,6 @@ class Translation extends Equatable {
   final bool? remote;
   final int? version;
 
-  // final int? id;
-  // final String? word;
-  // final String? translation;
-  // final String? pronunciation;
-  // final String? image;
-  // final String? imageUrl;
-  // final String? createdAt;
-  // final String updatedAt;
-
   const Translation({
     this.id,
     this.word,

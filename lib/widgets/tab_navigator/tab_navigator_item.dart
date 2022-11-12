@@ -42,33 +42,37 @@ class TabNavigatorItem extends StatelessWidget {
     final MyTheme theme = Styles.theme(context);
 
     return Expanded(
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: () {
-          if (onPressed is Function) {
-            onPressed!(path);
-          }
-        },
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 10),
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.only(bottom: 5),
-                child: Icon(
-                  icon,
-                  color: active ? theme.colors.focus : theme.colors.primary,
-                ),
+      child: Center(
+        child: Material(
+          child: InkWell(
+            customBorder: const CircleBorder(),
+            onTap: () {
+              if (onPressed is Function) {
+                onPressed!(path);
+              }
+            },
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(bottom: 5),
+                    child: Icon(
+                      icon,
+                      color: active ? theme.colors.focus : theme.colors.primary,
+                    ),
+                  ),
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: active ? theme.colors.focus : theme.colors.primary,
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: active ? theme.colors.focus : theme.colors.primary,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
