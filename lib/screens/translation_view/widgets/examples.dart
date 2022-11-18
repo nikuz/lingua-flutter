@@ -4,11 +4,13 @@ import 'package:flutter_html/flutter_html.dart';
 
 import '../bloc/translation_view_cubit.dart';
 import '../bloc/translation_view_state.dart';
-import 'container.dart';
+import './section_wrapper.dart';
 
 const SHOW_MIN_EXAMPLES = 1;
 
-class Examples extends StatelessWidget {
+class TranslationViewExamples extends StatelessWidget {
+  TranslationViewExamples({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TranslationViewCubit, TranslationViewState>(
@@ -16,9 +18,9 @@ class Examples extends StatelessWidget {
         if (state.examples != null) {
           final List<dynamic> examples = state.examples!;
 
-          return TranslationViewContainer(
-            title: state.word,
-            entity: 'examples',
+          return TranslationViewSectionWrapper(
+            name: 'examples',
+            word: state.word,
             itemsAmount: examples.length,
             maxItemsToShow: SHOW_MIN_EXAMPLES,
             withBottomMargin: true,

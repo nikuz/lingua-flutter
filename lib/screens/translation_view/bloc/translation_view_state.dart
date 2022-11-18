@@ -3,8 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:lingua_flutter/providers/api.dart';
 import 'package:lingua_flutter/providers/db.dart';
 import 'package:lingua_flutter/utils/types.dart';
-
-import '../models/translation.model.dart';
+import 'package:lingua_flutter/models/translation_model.dart';
 
 part 'translation_view_state.g.dart';
 
@@ -17,7 +16,7 @@ class TranslationViewState extends Equatable {
   final String? pronunciation;
   final List<dynamic>? highestRelevantTranslation;
   final String? transcription;
-  final List<dynamic>? otherTranslations;
+  final List<dynamic>? alternativeTranslations;
   final List<dynamic>? definitions;
   final List<dynamic>? definitionsSynonyms;
   final List<dynamic>? examples;
@@ -56,7 +55,7 @@ class TranslationViewState extends Equatable {
     this.imageLoading = false,
     this.highestRelevantTranslation,
     this.transcription,
-    this.otherTranslations,
+    this.alternativeTranslations,
     this.definitions,
     this.definitionsSynonyms,
     this.examples,
@@ -72,7 +71,7 @@ class TranslationViewState extends Equatable {
     this.updatedTranslation,
     this.version,
     this.error,
-  }) : assert(error is ApiException || error is DBException || error == null);
+  });
 
   TranslationViewState copyWith({
     int? id,
@@ -82,7 +81,7 @@ class TranslationViewState extends Equatable {
     String? pronunciation,
     List<dynamic>? highestRelevantTranslation,
     String? transcription,
-    List<dynamic>? otherTranslations,
+    List<dynamic>? alternativeTranslations,
     List<dynamic>? definitions,
     List<dynamic>? definitionsSynonyms,
     List<dynamic>? examples,
@@ -114,7 +113,7 @@ class TranslationViewState extends Equatable {
       pronunciation: pronunciation ?? this.pronunciation,
       highestRelevantTranslation: highestRelevantTranslation ?? this.highestRelevantTranslation,
       transcription: transcription ?? this.transcription,
-      otherTranslations: otherTranslations ?? this.otherTranslations,
+      alternativeTranslations: alternativeTranslations ?? this.alternativeTranslations,
       definitions: definitions ?? this.definitions,
       definitionsSynonyms: definitionsSynonyms ?? this.definitionsSynonyms,
       examples: examples ?? this.examples,

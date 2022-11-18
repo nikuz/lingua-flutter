@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/controllers/translate.dart';
-import 'package:lingua_flutter/screens/translation_view/models/translation.model.dart';
+import 'package:lingua_flutter/models/translation_model.dart';
 import 'package:lingua_flutter/utils/types.dart';
 
 import '../search_constants.dart';

@@ -7,6 +7,8 @@ import 'widgets/search_field.dart';
 import 'widgets/search_translations_list.dart';
 
 class Search extends StatefulWidget {
+  Search({Key? key}) : super(key: key);
+
   @override
   State<Search> createState() => _SearchState();
 }

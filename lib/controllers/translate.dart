@@ -77,20 +77,20 @@ Future<Map<String, dynamic>> translateControllerSearch(String searchText, int fr
 }
 
 Future<Map<String, dynamic>?> translateControllerGet(String? word) async {
-  final List<Map> dbResponse = await DBProvider().rawQuery(
-    'SELECT * FROM dictionary WHERE word=?;',
-    [word]
-  );
-
-  if (dbResponse.length > 0) {
-    final Map<String, dynamic> item = dbResponse[0] as Map<String, dynamic>;
-    return {
-      ...item,
-      'raw': jsonDecode(item['raw']),
-    };
-  } else {
+  // final List<Map> dbResponse = await DBProvider().rawQuery(
+  //   'SELECT * FROM dictionary WHERE word=?;',
+  //   [word]
+  // );
+  //
+  // if (dbResponse.length > 0) {
+  //   final Map<String, dynamic> item = dbResponse[0] as Map<String, dynamic>;
+  //   return {
+  //     ...item,
+  //     'raw': jsonDecode(item['raw']),
+  //   };
+  // } else {
     return null;
-  }
+  // }
 }
 
 Future<void> translateControllerSave(Map<String, dynamic> params) async {

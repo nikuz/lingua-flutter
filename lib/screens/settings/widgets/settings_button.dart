@@ -9,13 +9,14 @@ class SettingsButton extends StatelessWidget {
   final Function? onPressed;
 
   SettingsButton({
+    Key? key,
     this.text,
     this.icon,
     this.loading,
     this.color,
     this.disabled,
     this.onPressed,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

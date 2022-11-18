@@ -10,6 +10,8 @@ import './widgets/settings_row.dart';
 import './widgets/settings_button.dart';
 
 class Settings extends StatefulWidget {
+  Settings({Key? key}) : super(key: key);
+
   @override
   State<Settings> createState() => _SettingsState();
 }

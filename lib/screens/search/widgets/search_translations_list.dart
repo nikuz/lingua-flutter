@@ -6,7 +6,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/widgets/pronunciation.dart';
 import 'package:lingua_flutter/widgets/prompts.dart';
 import 'package:lingua_flutter/widgets/image_preview.dart';
-import 'package:lingua_flutter/screens/translation_view/models/translation.model.dart';
+import 'package:lingua_flutter/models/translation_model.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 
 import '../bloc/search_cubit.dart';
@@ -14,6 +14,8 @@ import '../bloc/search_state.dart';
 import '../search_constants.dart';
 
 class SearchTranslationsList extends StatefulWidget {
+  SearchTranslationsList({Key? key}) : super(key: key);
+
   @override
   State<SearchTranslationsList> createState() => _SearchTranslationsListState();
 }
@@ -249,6 +251,8 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
 }
 
 class BottomLoader extends StatelessWidget {
+  BottomLoader({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SearchCubit, SearchState>(

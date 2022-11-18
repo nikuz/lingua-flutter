@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:lingua_flutter/utils/string.dart';
 
-class TranslationViewCategory extends StatelessWidget {
+// wrapper class to represent speech parts, such as: noun, pronoun, verb, adjective, etc.
+class TranslationViewSpeechPartWrapper extends StatelessWidget {
   final List<dynamic> category;
-  final Function itemBuilder;
   final int maxItemsToShow;
   final bool expanded;
+  final Widget Function(BuildContext, int) itemBuilder;
 
-  TranslationViewCategory({
+  const TranslationViewSpeechPartWrapper({
     Key? key,
     required this.category,
-    required this.itemBuilder,
     required this.maxItemsToShow,
-    required this.expanded
+    required this.expanded,
+    required this.itemBuilder,
   }) : super(key: key);
 
   @override
@@ -21,12 +23,13 @@ class TranslationViewCategory extends StatelessWidget {
     int itemsLength = items.length;
 
     if (category[0] != null) {
+      String name = category[0];
       categoryName = Container(
         margin: EdgeInsets.only(
           bottom: 5,
         ),
         child: Text(
-          '${category[0][0].toUpperCase()}${category[0].substring(1)}',
+          '${name.capitalize()}',
           style: TextStyle(
             fontSize: 16,
             color: Theme.of(context).buttonTheme.colorScheme?.secondaryContainer,
@@ -50,8 +53,8 @@ class TranslationViewCategory extends StatelessWidget {
           ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemBuilder: itemBuilder as Widget Function(BuildContext, int),
             itemCount: itemsLength,
+            itemBuilder: itemBuilder,
           ),
         ],
       ),

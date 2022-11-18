@@ -34,9 +34,11 @@ class AppRouter extends _i7.RootStackRouter {
       );
     },
     SearchRoute.name: (routeData) {
+      final args = routeData.argsAs<SearchRouteArgs>(
+          orElse: () => const SearchRouteArgs());
       return _i7.CustomPage<dynamic>(
         routeData: routeData,
-        child: _i2.Search(),
+        child: _i2.Search(key: args.key),
         transitionsBuilder: _i7.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
@@ -54,23 +56,32 @@ class AppRouter extends _i7.RootStackRouter {
       );
     },
     TranslationViewImagePickerRoute.name: (routeData) {
-      final args = routeData.argsAs<TranslationViewImagePickerRouteArgs>();
+      final args = routeData.argsAs<TranslationViewImagePickerRouteArgs>(
+          orElse: () => const TranslationViewImagePickerRouteArgs());
       return _i7.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: _i4.TranslationViewImagePicker(args.word),
+        child: _i4.TranslationViewImagePicker(
+          key: args.key,
+          word: args.word,
+        ),
       );
     },
     TranslationViewOwnTranslationRoute.name: (routeData) {
       final args = routeData.argsAs<TranslationViewOwnTranslationRouteArgs>();
       return _i7.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: _i5.TranslationViewOwnTranslation(args.word),
+        child: _i5.TranslationViewOwnTranslation(
+          key: args.key,
+          word: args.word,
+        ),
       );
     },
     SettingsRoute.name: (routeData) {
+      final args = routeData.argsAs<SettingsRouteArgs>(
+          orElse: () => const SettingsRouteArgs());
       return _i7.CustomPage<dynamic>(
         routeData: routeData,
-        child: _i6.Settings(),
+        child: _i6.Settings(key: args.key),
         transitionsBuilder: _i7.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
@@ -136,14 +147,26 @@ class AppRoute extends _i7.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.Search]
-class SearchRoute extends _i7.PageRouteInfo<void> {
-  const SearchRoute()
+class SearchRoute extends _i7.PageRouteInfo<SearchRouteArgs> {
+  SearchRoute({_i8.Key? key})
       : super(
           SearchRoute.name,
           path: 'search',
+          args: SearchRouteArgs(key: key),
         );
 
   static const String name = 'SearchRoute';
+}
+
+class SearchRouteArgs {
+  const SearchRouteArgs({this.key});
+
+  final _i8.Key? key;
+
+  @override
+  String toString() {
+    return 'SearchRouteArgs{key: $key}';
+  }
 }
 
 /// generated route for
@@ -184,24 +207,34 @@ class TranslationViewRouteArgs {
 /// [_i4.TranslationViewImagePicker]
 class TranslationViewImagePickerRoute
     extends _i7.PageRouteInfo<TranslationViewImagePickerRouteArgs> {
-  TranslationViewImagePickerRoute({required String? word})
-      : super(
+  TranslationViewImagePickerRoute({
+    _i8.Key? key,
+    String? word,
+  }) : super(
           TranslationViewImagePickerRoute.name,
           path: 'translation_view/images',
-          args: TranslationViewImagePickerRouteArgs(word: word),
+          args: TranslationViewImagePickerRouteArgs(
+            key: key,
+            word: word,
+          ),
         );
 
   static const String name = 'TranslationViewImagePickerRoute';
 }
 
 class TranslationViewImagePickerRouteArgs {
-  const TranslationViewImagePickerRouteArgs({required this.word});
+  const TranslationViewImagePickerRouteArgs({
+    this.key,
+    this.word,
+  });
+
+  final _i8.Key? key;
 
   final String? word;
 
   @override
   String toString() {
-    return 'TranslationViewImagePickerRouteArgs{word: $word}';
+    return 'TranslationViewImagePickerRouteArgs{key: $key, word: $word}';
   }
 }
 
@@ -209,35 +242,57 @@ class TranslationViewImagePickerRouteArgs {
 /// [_i5.TranslationViewOwnTranslation]
 class TranslationViewOwnTranslationRoute
     extends _i7.PageRouteInfo<TranslationViewOwnTranslationRouteArgs> {
-  TranslationViewOwnTranslationRoute({required String word})
-      : super(
+  TranslationViewOwnTranslationRoute({
+    _i8.Key? key,
+    required String word,
+  }) : super(
           TranslationViewOwnTranslationRoute.name,
           path: 'translation_view/own',
-          args: TranslationViewOwnTranslationRouteArgs(word: word),
+          args: TranslationViewOwnTranslationRouteArgs(
+            key: key,
+            word: word,
+          ),
         );
 
   static const String name = 'TranslationViewOwnTranslationRoute';
 }
 
 class TranslationViewOwnTranslationRouteArgs {
-  const TranslationViewOwnTranslationRouteArgs({required this.word});
+  const TranslationViewOwnTranslationRouteArgs({
+    this.key,
+    required this.word,
+  });
+
+  final _i8.Key? key;
 
   final String word;
 
   @override
   String toString() {
-    return 'TranslationViewOwnTranslationRouteArgs{word: $word}';
+    return 'TranslationViewOwnTranslationRouteArgs{key: $key, word: $word}';
   }
 }
 
 /// generated route for
 /// [_i6.Settings]
-class SettingsRoute extends _i7.PageRouteInfo<void> {
-  const SettingsRoute()
+class SettingsRoute extends _i7.PageRouteInfo<SettingsRouteArgs> {
+  SettingsRoute({_i8.Key? key})
       : super(
           SettingsRoute.name,
           path: 'settings',
+          args: SettingsRouteArgs(key: key),
         );
 
   static const String name = 'SettingsRoute';
+}
+
+class SettingsRouteArgs {
+  const SettingsRouteArgs({this.key});
+
+  final _i8.Key? key;
+
+  @override
+  String toString() {
+    return 'SettingsRouteArgs{key: $key}';
+  }
 }

@@ -7,10 +7,11 @@ class SettingsRow extends StatelessWidget {
   final Widget child;
 
   SettingsRow({
+    Key? key,
     required this.title,
     this.subtitle,
     required this.child,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

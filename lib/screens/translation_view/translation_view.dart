@@ -15,7 +15,8 @@ import './bloc/translation_view_state.dart';
 
 import './widgets/menu.dart';
 import './widgets/header.dart';
-import './widgets/other_translations.dart';
+import './widgets/auto_spelling_fix.dart';
+import 'widgets/alternative_translations/alternative_translations.dart';
 import './widgets/definitions.dart';
 import './widgets/examples.dart';
 
@@ -144,29 +145,9 @@ class _TranslationViewState extends State<TranslationView> {
           },
           child: BlocBuilder<TranslationViewCubit, TranslationViewState>(
             builder: (context, state) {
-              Widget autoSpellingFix = Container();
-
-              if (state.autoSpellingFix != null) {
-                autoSpellingFix = Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.only(
-                    left: 10,
-                    top: 4,
-                    right: 10,
-                    bottom: 6,
-                  ),
-                  color: Colors.red,
-                  child: Wrap(
-                    direction: Axis.horizontal,
-                    children: <Widget>[
-                      Text('Original word ', style: TextStyle(color: Colors.white)),
-                      Text(
-                        '"${state.autoSpellingFix}"',
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                      Text(' had a spelling mistake', style: TextStyle(color: Colors.white))
-                    ],
-                  ),
+              if (state.error != null && state.error.message != null) {
+                return Center(
+                  child: Text(state.error.message),
                 );
               }
 
@@ -175,19 +156,13 @@ class _TranslationViewState extends State<TranslationView> {
                   physics: new ClampingScrollPhysics(),
                   child: Column(
                     children: <Widget>[
-                      TranslationViewHeader(widget.word!),
-                      autoSpellingFix,
-                      OtherTranslations(),
-                      Definitions(),
-                      Examples(),
+                      TranslationViewHeader(word: widget.word!),
+                      TranslationViewAutoSpellingFix(),
+                      TranslationViewAlternativeTranslations(),
+                      // TranslationViewDefinitions(),
+                      // TranslationViewExamples(),
                     ],
                   ),
-                );
-              }
-
-              if (state.error != null && state.error.message != null) {
-                return Center(
-                  child: Text(state.error.message),
                 );
               }
 

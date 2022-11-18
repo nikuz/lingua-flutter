@@ -8,16 +8,19 @@ import 'package:lingua_flutter/widgets/image_preview.dart';
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_state.dart';
+import 'package:lingua_flutter/models/translation_model.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 
 import '../bloc/translation_view_cubit.dart';
 import '../bloc/translation_view_state.dart';
-import '../models/translation.model.dart';
 
 class TranslationViewHeader extends StatefulWidget {
   final String word;
 
-  TranslationViewHeader(this.word);
+  TranslationViewHeader({
+    Key? key,
+    required this.word,
+  }) : super(key: key);
 
   @override
   _TranslationViewHeaderState createState() => _TranslationViewHeaderState();
@@ -33,7 +36,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
             state.translationOwn != null ? state.translationOwn : state.translationWord
         );
         final bool cyrillicWord = state.word is String
-            ? isCyrillicWord(state.word!)
+            ? state.word!.isCyrillic()
             : false;
 
         return Container(
@@ -101,7 +104,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
 
   Widget _buildImage(TranslationViewState state) {
     final bool cyrillicWord = state.word is String
-        ? isCyrillicWord(state.word!)
+        ? state.word!.isCyrillic()
         : false;
     Widget image = Container();
 
@@ -142,7 +145,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
 
   Widget _buildFooter(TranslationViewState state) {
     final bool cyrillicWord = state.word is String
-        ? isCyrillicWord(state.word!)
+        ? state.word!.isCyrillic()
         : false;
     final String? pronunciation = state.pronunciation;
     final bool? imageUpdate = state.imageUpdated;

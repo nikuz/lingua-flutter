@@ -9,7 +9,10 @@ import '../bloc/translation_view_state.dart';
 class TranslationViewImagePicker extends StatefulWidget {
   final String? word;
 
-  TranslationViewImagePicker(this.word);
+  TranslationViewImagePicker({
+    Key? key,
+    this.word,
+  }) : super(key: key);
 
   @override
   _TranslationViewImagePickerState createState() => _TranslationViewImagePickerState();

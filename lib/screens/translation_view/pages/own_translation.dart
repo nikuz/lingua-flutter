@@ -6,7 +6,10 @@ import '../bloc/translation_view_cubit.dart';
 class TranslationViewOwnTranslation extends StatefulWidget {
   final String word;
 
-  TranslationViewOwnTranslation(this.word);
+  TranslationViewOwnTranslation({
+    Key? key,
+    required this.word,
+  }) : super(key: key);
 
   @override
   _TranslationViewOwnTranslationState createState() => _TranslationViewOwnTranslationState();

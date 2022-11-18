@@ -13,9 +13,10 @@ class TabNavigator extends StatefulWidget {
   final Function(String label)? onSelectTab;
 
   TabNavigator({
+    Key? key,
     required this.children,
     this.onSelectTab,
-  });
+  }) : super(key: key);
 
   @override
   State<TabNavigator> createState() => _TabNavigatorState();

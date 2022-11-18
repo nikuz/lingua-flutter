@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/controllers/translate.dart';
-import 'package:lingua_flutter/screens/translation_view/models/translation.model.dart';
+import 'package:lingua_flutter/models/translation_model.dart';
 import 'package:lingua_flutter/utils/types.dart';
 import 'package:lingua_flutter/app_config.dart' as appConfig;
 import 'package:lingua_flutter/providers/api.dart';
@@ -17,9 +17,10 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
       emit(state.copyWith(translateLoading: true));
 
       final Translation translation = await _fetchTranslation(word);
+      final List<dynamic>? raw = translation.raw;
       List<dynamic>? highestRelevantTranslation;
       String? transcription;
-      List<dynamic>? otherTranslations;
+      List<dynamic>? alternativeTranslations;
       List<dynamic>? definitions;
       List<dynamic>? definitionsSynonyms;
       List<dynamic>? examples;
@@ -28,11 +29,10 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
       String? autoSpellingFix;
       bool strangeWord = false;
 
-      if (translation.raw != null) {
-        final List<dynamic>? raw = translation.raw;
+      if (raw != null) {
         if (version == 1) {
-          highestRelevantTranslation = raw![0];
-          otherTranslations = raw[1];
+          highestRelevantTranslation = raw[0];
+          alternativeTranslations = raw[1];
           if (raw.length >= 12) {
             definitionsSynonyms = raw[11];
           }
@@ -60,9 +60,9 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
             transcription = highestRelevantTranslation[1][3];
           }
         } else if (version == 2) {
-          highestRelevantTranslation = raw![1][0];
+          highestRelevantTranslation = raw[1][0];
           if (raw.length > 3 && raw[3].length >= 6 && raw[3][5] != null) {
-            otherTranslations = raw[3][5][0];
+            alternativeTranslations = raw[3][5][0];
           }
           if (raw.length > 3 && raw[3].length >= 2 && raw[3][1] != null) {
             definitions = raw[3][1][0];
@@ -84,7 +84,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         }
 
         strangeWord = word.toLowerCase() == translationWord!.toLowerCase()
-            && otherTranslations == null;
+            && alternativeTranslations == null;
       }
 
       emit(state.copyWith(
@@ -100,7 +100,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         updatedAt: translation.updatedAt,
         highestRelevantTranslation: highestRelevantTranslation,
         transcription: transcription,
-        otherTranslations: otherTranslations,
+        alternativeTranslations: alternativeTranslations,
         definitions: definitions,
         definitionsSynonyms: definitionsSynonyms,
         examples: examples,
@@ -245,7 +245,7 @@ Future<Translation> _fetchTranslation(String word) async {
   if (response == null) {
     String sourceLanguage = 'en';
     String targetLanguage = 'ru';
-    final bool wordIsCyrillic = isCyrillicWord(word);
+    final bool wordIsCyrillic = word.isCyrillic();
 
     if (wordIsCyrillic) {
       sourceLanguage = 'ru';

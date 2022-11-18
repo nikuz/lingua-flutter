@@ -10,6 +10,8 @@ import 'package:lingua_flutter/screens/router.gr.dart';
 import '../bloc/search_cubit.dart';
 
 class SearchField extends StatefulWidget {
+  SearchField({Key? key}) : super(key: key);
+
   @override
   State<SearchField> createState() => _SearchFieldState();
 }

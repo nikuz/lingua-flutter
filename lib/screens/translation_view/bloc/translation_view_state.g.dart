@@ -24,7 +24,8 @@ TranslationViewState _$TranslationViewStateFromJson(
       highestRelevantTranslation:
           json['highestRelevantTranslation'] as List<dynamic>?,
       transcription: json['transcription'] as String?,
-      otherTranslations: json['otherTranslations'] as List<dynamic>?,
+      alternativeTranslations:
+          json['alternativeTranslations'] as List<dynamic>?,
       definitions: json['definitions'] as List<dynamic>?,
       definitionsSynonyms: json['definitionsSynonyms'] as List<dynamic>?,
       examples: json['examples'] as List<dynamic>?,
@@ -58,7 +59,7 @@ Map<String, dynamic> _$TranslationViewStateToJson(
       'pronunciation': instance.pronunciation,
       'highestRelevantTranslation': instance.highestRelevantTranslation,
       'transcription': instance.transcription,
-      'otherTranslations': instance.otherTranslations,
+      'alternativeTranslations': instance.alternativeTranslations,
       'definitions': instance.definitions,
       'definitionsSynonyms': instance.definitionsSynonyms,
       'examples': instance.examples,

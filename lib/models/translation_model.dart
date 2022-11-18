@@ -1,10 +1,9 @@
-import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'translation.model.g.dart';
+part 'translation_model.g.dart';
 
 @JsonSerializable()
-class Translation extends Equatable {
+class Translation {
   final int? id;
   final String? word;
   final String? translation;
@@ -29,23 +28,6 @@ class Translation extends Equatable {
     this.version,
   });
 
-  @override
-  List<Object?> get props => [
-    id,
-    word,
-    translation,
-    pronunciation,
-    image,
-    raw,
-    createdAt,
-    updatedAt,
-    remote,
-    version,
-  ];
-
   factory Translation.fromJson(Map<String, dynamic> json) => _$TranslationFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationToJson(this);
-
-  @override
-  String toString() => '{ id: $id, word: $word, translation: $translation }';
 }

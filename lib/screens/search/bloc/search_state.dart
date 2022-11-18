@@ -3,7 +3,7 @@ import 'package:lingua_flutter/providers/api.dart';
 import 'package:lingua_flutter/providers/db.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lingua_flutter/utils/types.dart';
-import 'package:lingua_flutter/screens/translation_view/models/translation.model.dart';
+import 'package:lingua_flutter/models/translation_model.dart';
 
 import '../search_constants.dart';
 part 'search_state.g.dart';
@@ -26,7 +26,7 @@ class SearchState extends Equatable {
     this.searchText,
     this.loading = false,
     this.error,
-  }) : assert(error is ApiException || error is DBException || error == null);
+  });
 
   SearchState copyWith({
     int? from,

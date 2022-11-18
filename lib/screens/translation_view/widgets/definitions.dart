@@ -3,40 +3,48 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/translation_view_cubit.dart';
 import '../bloc/translation_view_state.dart';
-import 'container.dart';
-import 'category.dart';
+import './section_wrapper.dart';
+import './speech_part_wrapper.dart';
 
 const SHOW_MIN_DEFINITIONS = 1;
 
-class Definitions extends StatelessWidget {
+class TranslationViewDefinitions extends StatelessWidget {
+  TranslationViewDefinitions({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TranslationViewCubit, TranslationViewState>(
       builder: (context, state) {
-        if (state.definitions != null) {
+        final definitions = state.definitions;
+        if (definitions == null) {
+          return Container();
+        }
 
-          int itemsAmount = 0;
-          for (int i = 0, l = state.definitions!.length; i < l; i++) {
-            final List<dynamic> definitions = state.definitions![i][1];
-            itemsAmount += definitions.length;
+        int itemsAmount = 0;
+        for (int i = 0, l = definitions.length; i < l; i++) {
+          final List<dynamic>? definitionItems = definitions[i][1];
+          if (definitionItems != null) {
+            itemsAmount += definitionItems.length;
           }
+        }
 
-          return TranslationViewContainer(
-            title: state.word,
-            entity: 'definitions',
-            itemsAmount: itemsAmount,
-            maxItemsToShow: SHOW_MIN_DEFINITIONS * state.definitions!.length,
-            childBuilder: (bool expanded) => ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (BuildContext context, int index) => TranslationViewCategory(
-                category: state.definitions![index],
+        return TranslationViewSectionWrapper(
+          name: 'definitions',
+          word: state.word,
+          itemsAmount: itemsAmount,
+          maxItemsToShow: SHOW_MIN_DEFINITIONS * definitions.length,
+          childBuilder: (bool expanded) => ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: definitions.length,
+            itemBuilder: (BuildContext context, int index) => TranslationViewSpeechPartWrapper(
+                category: definitions[index],
                 maxItemsToShow: SHOW_MIN_DEFINITIONS,
                 expanded: expanded,
                 itemBuilder: (BuildContext context, int itemIndex) {
-                  final category = state.definitions![index];
+                  final category = definitions[index];
                   final String? categoryName = category[0];
-                  final List<dynamic> definitions = category[1];
+                  final List<dynamic> definitionItems = category[1];
                   final List<dynamic>? synonyms = state.definitionsSynonyms;
                   List<dynamic>? synonymsCategory;
 
@@ -51,17 +59,13 @@ class Definitions extends StatelessWidget {
                   return DefinitionsItem(
                     state: state,
                     id: itemIndex + 1,
-                    item: definitions[itemIndex],
+                    item: definitionItems[itemIndex],
                     synonymsCategory: synonymsCategory,
                   );
                 }
-              ),
-              itemCount: state.definitions!.length,
             ),
-          );
-        }
-
-        return Container();
+          ),
+        );
       }
     );
   }

@@ -13,13 +13,14 @@ class ImagePreview extends StatefulWidget {
   final Function? onPreviewClose;
 
   ImagePreview({
+    Key? key,
     required this.width,
     required this.height,
     required this.imageSource,
     this.withPreviewOverlay = true,
     this.onTap,
     this.onPreviewClose,
-  });
+  }) : super(key: key);
 
   @override
   State<ImagePreview> createState() => _ImagePreviewState();
