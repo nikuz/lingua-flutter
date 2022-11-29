@@ -121,7 +121,7 @@ Future<void> translateControllerSave(Map<String, dynamic> params) async {
 
   try {
     String dir = await getDocumentsPath();
-    String fileId = getFileId(newTranslationData?['id'], params['word']);
+    String fileId = generateFileIdFromWord(newTranslationData?['id'], params['word']);
 
     // save image
     String imageUrl = params['image'];
@@ -190,7 +190,7 @@ Future<void> translateControllerUpdate(Map<String, dynamic> params) async {
     }
     painting.imageCache.clear();
 
-    String fileId = getFileId(translationData['id'], params['word']);
+    String fileId = generateFileIdFromWord(translationData['id'], params['word']);
     RegExpMatch? imageParts = base64ImageReg.firstMatch(params['image']);
     String? extension = imageParts?.group(1);
     String? value = imageParts?.group(2);

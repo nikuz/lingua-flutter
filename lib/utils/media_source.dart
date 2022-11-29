@@ -9,7 +9,7 @@ class MediaSource {
   static MediaSourceType getType(String source) {
     MediaSourceType sourceType = MediaSourceType.none;
 
-    if (source.indexOf('data:image') == 0) {
+    if (source.indexOf('data:') == 0) {
       sourceType = MediaSourceType.base64;
     } else if (source.startsWith('http')) {
       sourceType = MediaSourceType.network;

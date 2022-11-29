@@ -8,17 +8,12 @@ Future<String> getTempPath() async => (
     (await getTemporaryDirectory()).path
 );
 
-String getFileId(int? id, String word) {
-  word.trim().replaceAll(new RegExp(r'[\s|/.,]'), '-');
-  final String cleanedWord = word
+String generateFileIdFromWord(int id, String word) {
+  final String sanitisedWord = word
       .split(' ')
       .map((part) => (part.trim().replaceAll(new RegExp(r'[^A-Za-z0-9]'), '')))
       .join('-')
       .toLowerCase();
 
-  if (cleanedWord.length == 0) {
-    return '';
-  }
-
-  return '$id-$cleanedWord';
+  return '$id-$sanitisedWord';
 }

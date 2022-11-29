@@ -30,7 +30,7 @@ class DBProvider {
         translation VARCHAR COLLATE NOCASE,
         raw TEXT NOT NULL,
         image VARCHAR,
-        version INTEGER DEFAULT 1,
+        schema_version INTEGER DEFAULT 1,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
         updated_at TEXT DEFAULT CURRENT_TIMESTAMP
       )
