@@ -58,36 +58,29 @@ class DBProvider {
     return await db.rawDelete(query, arguments);
   }
 
-  Future<List<dynamic>> batchQuery(List<Map<String, dynamic>> props, {bool? noResult}) async {
+  Future<List<dynamic>> batchQuery(List<BatchQueryRequest> requests) async {
     Database db = await instance.database;
     Batch batch = db.batch();
 
-    for (int i = 0, l = props.length; i < l; i++) {
-      final Map<String, dynamic> item = props[i];
-      String? type = item['type'];
-      String? query = item['query'];
-      List<dynamic>? arguments = item['arguments'];
-
-      if (query is String) {
-        switch (type) {
-          case 'rawQuery':
-            batch.rawQuery(query, arguments);
-            break;
-          case 'rawInsert':
-            batch.rawInsert(query, arguments);
-            break;
-          case 'rawUpdate':
-            batch.rawUpdate(query, arguments);
-            break;
-          case 'rawDelete':
-            batch.rawDelete(query, arguments);
-            break;
-          default:
-        }
+    for (var request in requests) {
+      switch (request.type) {
+        case 'rawQuery':
+          batch.rawQuery(request.query, request.arguments);
+          break;
+        case 'rawInsert':
+          batch.rawInsert(request.query, request.arguments);
+          break;
+        case 'rawUpdate':
+          batch.rawUpdate(request.query, request.arguments);
+          break;
+        case 'rawDelete':
+          batch.rawDelete(request.query, request.arguments);
+          break;
+        default:
       }
     }
 
-    return await batch.commit(noResult: noResult ?? false);
+    return await batch.commit();
   }
 
   void close() async {
@@ -97,31 +90,14 @@ class DBProvider {
   }
 }
 
-Future<String> getDatabasesPath() => databaseFactory.getDatabasesPath();
+class BatchQueryRequest {
+  final String type;
+  final String query;
+  final List<Object>? arguments;
 
-class DBException implements Exception {
-  int? code;
-  String? message;
-
-  DBException(Map<String, dynamic> errorBody) {
-    final errorCode = errorBody['error'];
-    final errorMessage = errorBody['message'];
-
-    this.code = errorCode is int ? errorCode : 0;
-
-    if (errorMessage is List) {
-      this.message = errorMessage[0];
-    } else if (errorMessage is String) {
-      this.message = errorMessage;
-    } else {
-      this.message = 'DatabaseExceptionError';
-    }
-  }
-
-  List<Object?> get props => [code, message];
-
-  @override
-  String toString() {
-    return '$code: $message';
-  }
+  const BatchQueryRequest({
+    required this.type,
+    required this.query,
+    this.arguments,
+  });
 }

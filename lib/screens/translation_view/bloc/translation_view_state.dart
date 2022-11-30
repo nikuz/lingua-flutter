@@ -1,9 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:lingua_flutter/providers/api.dart';
-import 'package:lingua_flutter/providers/db.dart';
+import 'package:lingua_flutter/models/error.dart';
 import 'package:lingua_flutter/utils/types.dart';
-import 'package:lingua_flutter/models/translation_model.dart';
+import 'package:lingua_flutter/models/translation.dart';
 
 part 'translation_view_state.g.dart';
 
@@ -37,8 +36,8 @@ class TranslationViewState extends Equatable {
   final Translation? updatedTranslation;
   final List<dynamic>? raw;
   final bool? remote;
-  final int? version;
-  final error;
+  final String? version;
+  final CustomError? error;
 
   const TranslationViewState({
     this.id,
@@ -102,7 +101,7 @@ class TranslationViewState extends Equatable {
     Translation? updatedTranslation,
     List<dynamic>? raw,
     bool? remote,
-    int? version,
+    String? version,
     Wrapped? error,
   }) {
     return TranslationViewState(

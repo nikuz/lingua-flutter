@@ -1,27 +1,30 @@
 import 'package:json_annotation/json_annotation.dart';
+import './parsing_schema/schema.dart';
 
-part 'translation_model.g.dart';
+part 'translation.g.dart';
 
 @JsonSerializable()
 class Translation {
   final int? id;
-  final String? word;
-  final String? translation;
+  final String word;
+  final String translation;
   final String? pronunciation;
   final String? image;
-  final List<dynamic>? raw;
+  final List<dynamic> raw;
+  ParsingSchema? schema;
   final String? createdAt;
   final String? updatedAt;
   final bool? remote;
-  final int? version;
+  final String? version;
 
-  const Translation({
+  Translation({
     this.id,
-    this.word,
-    this.translation,
+    required this.word,
+    required this.translation,
     this.pronunciation,
     this.image,
-    this.raw,
+    required this.raw,
+    this.schema,
     this.createdAt,
     this.updatedAt,
     this.remote,

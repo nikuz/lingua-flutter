@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 
 import 'package:lingua_flutter/utils/string.dart';
-import 'package:lingua_flutter/models/translation_model.dart';
+import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 
 import '../../bloc/translation_view_cubit.dart';
@@ -77,24 +77,24 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
                   if (state.word!.isCyrillic()) {
                     AutoRouter.of(context).replace(TranslationViewRoute(word: word));
                   } else if (state.id == null) {
-                    context.read<TranslationViewCubit>().save(
-                        Translation(
-                          word: state.word!,
-                          translation: word,
-                          pronunciation: state.pronunciation ?? '',
-                          image: state.image ?? '',
-                          raw: state.raw ?? [],
-                          version: state.version ?? 2,
-                        )
-                    );
+                    // context.read<TranslationViewCubit>().save(
+                    //     Translation(
+                    //       word: state.word!,
+                    //       translation: word,
+                    //       pronunciation: state.pronunciation ?? '',
+                    //       image: state.image ?? '',
+                    //       raw: state.raw ?? [],
+                    //       version: state.version ?? 2,
+                    //     )
+                    // );
                   } else {
-                    context.read<TranslationViewCubit>().update(
-                        Translation(
-                          word: word,
-                          translation: state.translationWord,
-                          image: state.image,
-                        )
-                    );
+                    // context.read<TranslationViewCubit>().update(
+                    //     Translation(
+                    //       word: word,
+                    //       translation: state.translationWord,
+                    //       image: state.image,
+                    //     )
+                    // );
                   }
                 }
               },

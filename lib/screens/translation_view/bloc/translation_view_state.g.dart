@@ -45,7 +45,7 @@ TranslationViewState _$TranslationViewStateFromJson(
           ? null
           : Translation.fromJson(
               json['updatedTranslation'] as Map<String, dynamic>),
-      version: json['version'] as int?,
+      version: json['version'] as String?,
       error: json['error'],
     );
 

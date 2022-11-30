@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lingua_flutter/controllers/translate.dart';
-import 'package:lingua_flutter/models/translation_model.dart';
+import 'package:lingua_flutter/controllers/translation.dart';
+import 'package:lingua_flutter/models/error.dart';
+import 'package:lingua_flutter/models/translation.dart';
+import 'package:lingua_flutter/models/translation_list.dart';
 import 'package:lingua_flutter/utils/types.dart';
 
 import '../search_constants.dart';
@@ -16,44 +18,35 @@ class SearchCubit extends Cubit<SearchState> {
     ));
 
     try {
-      Map<String, dynamic> response;
+      TranslationList translationList;
 
       if (searchText != null) {
-        response = await translateControllerSearch(searchText, from, to);
+        translationList = await translateControllerSearch(searchText, from, to);
       } else {
-        response = await translateControllerGetList(from, to);
+        translationList = await translateControllerGetList(from, to);
       }
 
       List<Translation> translations = [];
 
-      final List<Translation> newTranslations = response['translations']
-          .map<Translation>((rawTranslation) => (Translation(
-                id: rawTranslation['id'],
-                word: rawTranslation['word'],
-                translation: rawTranslation['translation'],
-                pronunciation: rawTranslation['pronunciation'],
-                image: rawTranslation['image'],
-                createdAt: rawTranslation['created_at'],
-                updatedAt: rawTranslation['updated_at'],
-              )))
-          .toList();
-
       if (to > SearchConstants.itemsPerPage) {
-        translations = [...state.translations, ...newTranslations];
+        translations = [...state.translations, ...translationList.translations];
       } else {
-        translations = newTranslations;
+        translations = translationList.translations;
       }
 
       emit(state.copyWith(
         loading: false,
-        from: response['from'],
-        to: response['to'],
-        totalAmount: response['totalAmount'],
+        from: translationList.from,
+        to: translationList.to,
+        totalAmount: translationList.totalAmount,
         translations: translations,
       ));
-    } catch (e) {
+    } catch (err) {
       emit(state.copyWith(
-        error: Wrapped.value(e),
+        error: Wrapped.value(CustomError(
+          code: err.hashCode,
+          message: err.toString(),
+        )),
       ));
     }
   }

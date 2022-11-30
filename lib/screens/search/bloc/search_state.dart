@@ -1,9 +1,8 @@
 import 'package:equatable/equatable.dart';
-import 'package:lingua_flutter/providers/api.dart';
-import 'package:lingua_flutter/providers/db.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:lingua_flutter/models/error.dart';
 import 'package:lingua_flutter/utils/types.dart';
-import 'package:lingua_flutter/models/translation_model.dart';
+import 'package:lingua_flutter/models/translation.dart';
 
 import '../search_constants.dart';
 part 'search_state.g.dart';
@@ -16,7 +15,7 @@ class SearchState extends Equatable {
   final List<Translation> translations;
   final String? searchText;
   final bool loading;
-  final error;
+  final CustomError? error;
 
   const SearchState({
     this.from = 0,

@@ -86,11 +86,11 @@ class StoredParsingSchema {
         // pronunciation
         pronunciation: PronunciationSchema(
           fields: PronunciationSchemaFields(
-            url: schemaJson['translation']['fields']['url'],
-            parameter: schemaJson['translation']['fields']['parameter'],
-            body: schemaJson['translation']['fields']['body'],
-            marker: schemaJson['translation']['fields']['marker'],
-            base64Prefix: schemaJson['translation']['fields']['marker'],
+            url: schemaJson['pronunciation']['fields']['url'],
+            parameter: schemaJson['pronunciation']['fields']['parameter'],
+            body: schemaJson['pronunciation']['fields']['body'],
+            marker: schemaJson['pronunciation']['fields']['marker'],
+            base64Prefix: schemaJson['pronunciation']['fields']['base64Prefix'],
           ),
           data: SchemaItem(value: schemaJson['pronunciation']['data']['value']),
         ),

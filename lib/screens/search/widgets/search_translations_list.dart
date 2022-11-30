@@ -6,7 +6,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/widgets/pronunciation.dart';
 import 'package:lingua_flutter/widgets/prompts.dart';
 import 'package:lingua_flutter/widgets/image_preview.dart';
-import 'package:lingua_flutter/models/translation_model.dart';
+import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 
 import '../bloc/search_cubit.dart';
@@ -63,6 +63,12 @@ class _SearchTranslationsListState extends State<SearchTranslationsList> {
       },
       child: BlocBuilder<SearchCubit, SearchState>(
         builder: (context, state) {
+          if (state.error?.message != null) {
+            return Center(
+              child: Text(state.error?.message ?? ''),
+            );
+          }
+
           if (state.translations.isEmpty) {
             if (state.loading) {
               return Center(
@@ -73,12 +79,6 @@ class _SearchTranslationsListState extends State<SearchTranslationsList> {
                 child: Text('No translations found in your dictionary'),
               );
             }
-          }
-
-          if (state.error != null) {
-            return Center(
-              child: Text(state.error.message),
-            );
           }
 
           return Container(

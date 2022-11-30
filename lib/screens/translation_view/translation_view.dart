@@ -145,9 +145,9 @@ class _TranslationViewState extends State<TranslationView> {
           },
           child: BlocBuilder<TranslationViewCubit, TranslationViewState>(
             builder: (context, state) {
-              if (state.error != null && state.error.message != null) {
+              if (state.error?.message != null) {
                 return Center(
-                  child: Text(state.error.message),
+                  child: Text(state.error?.message ?? ''),
                 );
               }
 

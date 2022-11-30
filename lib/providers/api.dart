@@ -1,5 +1,6 @@
 import 'dart:core';
 import 'package:http/http.dart' as http;
+import 'package:lingua_flutter/models/error.dart';
 
 Future<String> apiRequest({
   required String method,
@@ -36,10 +37,10 @@ Future<String> apiRequest({
   if (response.statusCode == 200) {
     return response.body;
   } else {
-    throw ApiException({
-      'code': response.statusCode,
-      'message': response.body,
-    });
+    throw CustomError(
+      code: response.statusCode,
+      message: response.body,
+    );
   }
 }
 
@@ -101,31 +102,4 @@ Future<String> apiDelete({
   );
 
   return response;
-}
-
-class ApiException implements Exception {
-  int? code;
-  String? message;
-
-  ApiException(Map<String, dynamic> errorBody) {
-    final errorCode = errorBody['error'];
-    final errorMessage = errorBody['message'];
-
-    this.code = errorCode is int ? errorCode : 0;
-
-    if (errorMessage is List) {
-      this.message = errorMessage[0];
-    } else if (errorMessage is String) {
-      this.message = errorMessage;
-    } else {
-      this.message = 'ApiExceptionError';
-    }
-  }
-
-  List<Object?> get props => [code, message];
-
-  @override
-  String toString() {
-    return '$code: $message';
-  }
 }

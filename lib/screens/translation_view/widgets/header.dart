@@ -8,7 +8,7 @@ import 'package:lingua_flutter/widgets/image_preview.dart';
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_state.dart';
-import 'package:lingua_flutter/models/translation_model.dart';
+import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 
 import '../bloc/translation_view_cubit.dart';
@@ -231,24 +231,24 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> {
             child: icon,
             onPressed: () {
               if (newWord && state.translationWord != null) {
-                context.read<TranslationViewCubit>().save(
-                  Translation(
-                    word: state.word,
-                    translation: state.translationWord!,
-                    pronunciation: pronunciation ?? '',
-                    image: state.image ?? '',
-                    raw: state.raw ?? [],
-                    version: state.version ?? 2,
-                  )
-                );
+                // context.read<TranslationViewCubit>().save(
+                //   Translation(
+                //     word: state.word,
+                //     translation: state.translationWord!,
+                //     pronunciation: pronunciation ?? '',
+                //     image: state.image ?? '',
+                //     raw: state.raw ?? [],
+                //     version: state.version ?? 'v2',
+                //   )
+                // );
               } else if (imageUpdate! || translationUpdate) {
-                context.read<TranslationViewCubit>().update(
-                  Translation(
-                    word: state.word,
-                    translation: translationUpdate ? state.translationOwn : state.translationWord,
-                    image: imageUpdate ? state.image : null,
-                  )
-                );
+                // context.read<TranslationViewCubit>().update(
+                //   Translation(
+                //     word: state.word ?? '',
+                //     translation: translationUpdate ? state.translationOwn : state.translationWord,
+                //     image: imageUpdate ? state.image : null,
+                //   )
+                // );
               }
             },
           )

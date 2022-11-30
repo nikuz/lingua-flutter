@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import './firebase_options.dart';
-import './providers/parsing_schemas.dart';
+import './controllers/parsing_schemas.dart';
 import './blocs/observer.dart';
 import './screens/search/bloc/search_cubit.dart';
 import './screens/translation_view/bloc/translation_view_cubit.dart';

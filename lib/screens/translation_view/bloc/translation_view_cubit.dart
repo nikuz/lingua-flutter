@@ -1,11 +1,15 @@
 import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lingua_flutter/controllers/translate.dart';
-import 'package:lingua_flutter/models/translation_model.dart';
+import 'package:jmespath/jmespath.dart' as jmespath;
+import 'package:lingua_flutter/controllers/translation.dart';
+import 'package:lingua_flutter/controllers/parsing_schemas.dart';
+import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/utils/types.dart';
 import 'package:lingua_flutter/app_config.dart' as appConfig;
 import 'package:lingua_flutter/providers/api.dart';
 import 'package:lingua_flutter/utils/string.dart';
+import 'package:lingua_flutter/utils/json.dart';
+import 'package:lingua_flutter/models/error.dart';
 
 import 'translation_view_state.dart';
 
@@ -24,13 +28,13 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
       List<dynamic>? definitions;
       List<dynamic>? definitionsSynonyms;
       List<dynamic>? examples;
-      int? version = translation.version;
+      String? version = translation.version;
       String? translationWord = translation.translation;
       String? autoSpellingFix;
       bool strangeWord = false;
 
       if (raw != null) {
-        if (version == 1) {
+        if (version == '1') {
           highestRelevantTranslation = raw[0];
           alternativeTranslations = raw[1];
           if (raw.length >= 12) {
@@ -59,7 +63,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
           ) {
             transcription = highestRelevantTranslation[1][3];
           }
-        } else if (version == 2) {
+        } else if (version == '2') {
           highestRelevantTranslation = raw[1][0];
           if (raw.length > 3 && raw[3].length >= 6 && raw[3][5] != null) {
             alternativeTranslations = raw[3][5][0];
@@ -111,9 +115,12 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         version: translation.version,
         translateLoading: false,
       ));
-    } catch (e) {
+    } catch (err) {
       emit(state.copyWith(
-        error: Wrapped.value(e),
+        error: Wrapped.value(CustomError(
+          code: err.hashCode,
+          message: err.toString(),
+        )),
         translateLoading: false,
       ));
     }
@@ -160,9 +167,12 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         images: resultImages,
         imageLoading: false,
       ));
-    } catch (e) {
+    } catch (err) {
       emit(state.copyWith(
-        error: Wrapped.value(e),
+        error: Wrapped.value(CustomError(
+          code: err.hashCode,
+          message: err.toString(),
+        )),
         imageLoading: false,
       ));
     }
@@ -173,22 +183,18 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
       emit(state.copyWith(
         saveLoading: true,
       ));
-      await translateControllerSave({
-        'word': '${translation.word}',
-        'translation': '${translation.translation}',
-        'pronunciationURL': '${translation.pronunciation}',
-        'image': '${translation.image}',
-        'raw': jsonEncode(translation.raw),
-        'version': '${translation.version}',
-      });
+      await translateControllerSave(translation);
       emit(state.copyWith(
         saveLoading: false,
       ));
 
       return true;
-    } catch (e) {
+    } catch (err) {
       emit(state.copyWith(
-        error: Wrapped.value(e),
+        error: Wrapped.value(CustomError(
+          code: err.hashCode,
+          message: err.toString(),
+        )),
         saveLoading: false,
       ));
     }
@@ -211,9 +217,12 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
       ));
 
       return true;
-    } catch (e) {
+    } catch (err) {
       emit(state.copyWith(
-        error: Wrapped.value(e),
+        error: Wrapped.value(CustomError(
+          code: err.hashCode,
+          message: err.toString(),
+        )),
         updateLoading: false,
       ));
     }
@@ -240,84 +249,102 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
 }
 
 Future<Translation> _fetchTranslation(String word) async {
-  Map<String, dynamic>? response = await translateControllerGet(word);
-
-  if (response == null) {
-    String sourceLanguage = 'en';
-    String targetLanguage = 'ru';
-    final bool wordIsCyrillic = word.isCyrillic();
-
-    if (wordIsCyrillic) {
-      sourceLanguage = 'ru';
-      targetLanguage = 'en';
+  final existingTranslation = await translateControllerGet(word);
+  if (existingTranslation != null) {
+    final schemaVersion = existingTranslation.version;
+    StoredParsingSchema? storedParsingSchema;
+    if (schemaVersion != null) {
+      storedParsingSchema = await getParsingSchema(schemaVersion);
     }
 
-    List<dynamic>? translationResult;
-    String pronunciationResult = '';
+    existingTranslation.schema = storedParsingSchema?.schema;
 
-    String translationRaw = await apiPost(
-        url: appConfig.translationURL,
-        params: {
-          'f.req': '[[["${appConfig.translationMarker}","[[\\"$word\\",\\"$sourceLanguage\\",\\"$targetLanguage\\",true],[null]]",null,"generic"]]]'
-        }
-    );
-
-    final List<String> translationRawStrings = translationRaw.split('\n');
-
-    for (int i = 0, l = translationRawStrings.length; i < l; i++) {
-      if (translationRawStrings[i].contains(appConfig.translationMarker)) {
-        translationResult = jsonDecode(jsonDecode(translationRawStrings[i])[0][2]);
-        break;
-      }
-    }
-
-    if (!wordIsCyrillic) {
-      String correctedWord = word;
-
-      final List<dynamic>? correctionData = translationResult![0][1];
-      if (correctionData != null && correctionData[0] != null && correctionData[0][0] != null && correctionData[0][0][1] != null) {
-        correctedWord = correctionData[0][0][1].replaceAll(new RegExp(r'</?[i|b]>'), '');
-      }
-
-      if (word != correctedWord) {
-        return _fetchTranslation(correctedWord);
-      }
-
-      String pronunciationRaw = await apiPost(
-          url: appConfig.translationURL,
-          params: {
-            'f.req': '[[["${appConfig.pronunciationMarker}","[\\"$word\\",\\"$sourceLanguage\\",null,\\"null\\"]",null,"generic"]]]'
-          }
-      );
-
-      final List<String> pronunciationRawStrings = pronunciationRaw.split('\n');
-
-      for (int i = 0, l = pronunciationRawStrings.length; i < l; i++) {
-        if (pronunciationRawStrings[i].contains(appConfig.pronunciationMarker)) {
-          final decodedPronunciationData = jsonDecode(pronunciationRawStrings[i]);
-          pronunciationResult = 'data:audio/mpeg;base64,' + jsonDecode(decodedPronunciationData[0][2])[0];
-          break;
-        }
-      }
-    }
-
-    response = {
-      'raw': translationResult,
-      'pronunciation': pronunciationResult,
-      'remote': true,
-      'version': 2,
-    };
+    return existingTranslation;
   }
 
-  return Translation(
-    id: response['id'],
-    translation: response['translation'],
-    pronunciation: response['pronunciation'],
-    image: response['image'],
-    raw: response['raw'],
-    createdAt: response['created_at'],
-    updatedAt: response['updated_at'],
-    remote: response['remote'] == true,
-    version: response['version'],
+  StoredParsingSchema? storedParsingSchema = await getParsingSchema('current');
+
+  if (storedParsingSchema == null) {
+    throw CustomError(
+      code: 404,
+      message: 'Can\'t retrieve "current" parsing schema',
+    );
+  }
+
+  ParsingSchema? parsingSchema = storedParsingSchema.schema;
+
+  String sourceLanguage = 'en';
+  String targetLanguage = 'ru';
+  final bool wordIsCyrillic = word.isCyrillic();
+
+  if (wordIsCyrillic) {
+    sourceLanguage = 'ru';
+    targetLanguage = 'en';
+  }
+
+  List<dynamic>? translationResult;
+  String? pronunciationResult;
+
+  // fetch raw translate
+  String translationRaw = await apiPost(
+      url: parsingSchema.translation.fields.url,
+      params: {
+        '${parsingSchema.translation.fields.parameter}': parsingSchema.translation.fields.body
+          .replaceAll('{marker}', parsingSchema.translation.fields.marker)
+          .replaceAll('{word}', word)
+          .replaceAll('{sourceLanguage}', sourceLanguage)
+          .replaceAll('{targetLanguage}', targetLanguage)
+      }
   );
+
+  translationResult = _retrieveTranslationRawData(translationRaw, parsingSchema.translation.fields.marker);
+  // print(translationResult);
+
+  // fetch raw pronunciation
+  String pronunciationRaw = await apiPost(
+      url: parsingSchema.pronunciation.fields.url,
+      params: {
+        '${parsingSchema.pronunciation.fields.parameter}': parsingSchema.pronunciation.fields.body
+            .replaceAll('{marker}', parsingSchema.pronunciation.fields.marker)
+            .replaceAll('{word}', word)
+            .replaceAll('{sourceLanguage}', sourceLanguage)
+      }
+  );
+
+  final pronunciationRawData = _retrieveTranslationRawData(pronunciationRaw, parsingSchema.pronunciation.fields.marker);
+  if (pronunciationRawData != null) {
+    final base64Value = jmespath.search(parsingSchema.pronunciation.data.value, pronunciationRawData);
+    pronunciationResult = parsingSchema.pronunciation.fields.base64Prefix + base64Value;
+  }
+
+  print(parsingSchema.translation.translation.value);
+  return Translation(
+    word: word,
+    translation: jmespath.search(parsingSchema.translation.translation.value, translationResult ?? []),
+    pronunciation: pronunciationResult,
+    raw: translationResult ?? [],
+    schema: parsingSchema,
+    version: storedParsingSchema.version,
+  );
+}
+
+List<dynamic>? _retrieveTranslationRawData(String rawData, String marker) {
+  // retrieve individual lines from translate response
+  final rawStrings = rawData.split('\n');
+
+  // find the line with translation marker, decode it,
+  // then find inner JSON data string and decode it also
+  // the inner decoded JSON is our translation data
+  for (var item in rawStrings) {
+    if (item.contains(marker)) {
+      final responseJson = jsonDecode(item);
+      List<String> dataStrings = findAllJsonStrings(responseJson);
+      if (dataStrings.isNotEmpty) {
+        return jsonDecode(dataStrings[0]);
+      }
+      break;
+    }
+  }
+
+  return null;
 }
