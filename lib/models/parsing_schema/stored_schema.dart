@@ -99,9 +99,9 @@ class StoredParsingSchema {
         images: ImagesSchema(
           fields: ImagesSchemaFields(
             url: schemaJson['images']['fields']['url'],
-            userAgent: schemaJson['images']['fields']['url'],
-            regExp: schemaJson['images']['fields']['url'],
-            minSize: schemaJson['images']['fields']['url'],
+            userAgent: schemaJson['images']['fields']['userAgent'],
+            regExp: schemaJson['images']['fields']['regExp'],
+            minSize: schemaJson['images']['fields']['minSize'],
           ),
         ),
       ),

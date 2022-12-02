@@ -6,13 +6,13 @@ import '../../bloc/translation_view_cubit.dart';
 import '../../bloc/translation_view_state.dart';
 import '../section_wrapper.dart';
 import '../speech_part_wrapper.dart';
-import './alternative_translations_item.dart';
+import './definitions_item.dart';
 import './constants.dart';
 
-const MIN_TRANSLATIONS_TO_SHOW = TranslationViewAlternativeTranslationsConstants.minTranslationsToShow;
+const SHOW_MIN_DEFINITIONS = TranslationViewDefinitionsConstants.minTranslationsToShow;
 
-class TranslationViewAlternativeTranslations extends StatelessWidget {
-  TranslationViewAlternativeTranslations({Key? key}) : super(key: key);
+class TranslationViewDefinitions extends StatelessWidget {
+  TranslationViewDefinitions({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,49 +25,44 @@ class TranslationViewAlternativeTranslations extends StatelessWidget {
           return Container();
         }
 
-        List<dynamic>? alternativeTranslations = jmespath.search(
-            schema.translation.alternativeTranslations.value,
-            translation.raw
-        );
+        List<dynamic>? definitions = jmespath.search(schema.translation.definitions.value, translation.raw);
 
-        if (alternativeTranslations == null) {
+        if (definitions == null) {
           return Container();
         }
 
         int itemsAmount = 0;
 
-        for (var speechPart in alternativeTranslations) {
-          List<dynamic>? items = jmespath.search(schema.translation.alternativeTranslations.items.value, speechPart);
+        for (var speechPart in definitions) {
+          List<dynamic>? items = jmespath.search(schema.translation.definitions.items.value, speechPart);
           if (items != null) {
             itemsAmount += items.length;
           }
         }
 
         return TranslationViewSectionWrapper(
-          name: 'translations',
+          name: 'definitions',
           word: state.word,
           itemsAmount: itemsAmount,
-          maxItemsToShow: MIN_TRANSLATIONS_TO_SHOW * alternativeTranslations.length,
+          maxItemsToShow: SHOW_MIN_DEFINITIONS * definitions.length,
           childBuilder: (bool expanded) => ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: alternativeTranslations.length,
+            itemCount: definitions.length,
             itemBuilder: (BuildContext context, int index) {
-              List<dynamic>? items = jmespath.search(
-                  schema.translation.alternativeTranslations.items.value,
-                  alternativeTranslations[index]
-              );
+              List<dynamic>? items = jmespath.search(schema.translation.definitions.items.value, definitions[index]);
               return TranslationViewSpeechPartWrapper(
-                  name: jmespath.search(schema.translation.alternativeTranslations.speechPart.value, alternativeTranslations[index]),
+                  name: jmespath.search(schema.translation.definitions.speechPart.value, definitions[index]),
                   items: items,
-                  maxItemsToShow: MIN_TRANSLATIONS_TO_SHOW,
+                  maxItemsToShow: SHOW_MIN_DEFINITIONS,
                   expanded: expanded,
                   itemBuilder: (BuildContext context, int itemIndex) {
                     if (items == null) {
                       return Container();
                     }
 
-                    return TranslationViewAlternativeTranslationsItem(
+                    return DefinitionsItem(
+                      index: itemIndex + 1,
                       data: items[itemIndex],
                     );
                   }

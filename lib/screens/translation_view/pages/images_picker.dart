@@ -28,7 +28,8 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
     super.initState();
     _textController = TextEditingController(text: widget.word);
     _translationViewCubit = context.read<TranslationViewCubit>();
-    if (_translationViewCubit.state.images.length == 0 && widget.word != null) {
+    final images = _translationViewCubit.state.images;
+    if ((images == null || images.isEmpty) && widget.word != null) {
       _translationViewCubit.fetchImages(widget.word!);
     }
 
@@ -49,19 +50,20 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
         bottom: false,
         child: BlocBuilder<TranslationViewCubit, TranslationViewState>(
           builder: (context, state) {
+            final images = state.images;
             Widget imagesList = Center(
               child: CircularProgressIndicator(
                 backgroundColor: Colors.white,
               ),
             );
 
-            if (state.imageLoading == false) {
+            if (!state.imageLoading && images != null) {
               imagesList = SingleChildScrollView(
                 child: Column(
                   children: List<Widget>.generate(
-                    state.images.length,
-                        (index) {
-                      final String imageSource = state.images[index];
+                    images.length,
+                    (index) {
+                      final String imageSource = images[index];
                       final bool isActive = state.image == imageSource;
                       return Container(
                         key: isActive ? itemKey : Key(index.toString()),

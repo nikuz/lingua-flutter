@@ -133,7 +133,6 @@ Future<Translation?> translateControllerGet(String? word) async {
     raw: jsonDecode(item['raw']),
     createdAt: item['created_at'],
     updatedAt: item['updated_at'],
-    remote: item['remote'] == true,
     version: item['version'],
   );
 }

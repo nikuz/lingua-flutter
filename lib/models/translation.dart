@@ -7,17 +7,16 @@ part 'translation.g.dart';
 class Translation {
   final int? id;
   final String word;
-  final String translation;
+  final String? translation;
   final String? pronunciation;
   final String? image;
   final List<dynamic> raw;
-  ParsingSchema? schema;
+  final ParsingSchema? schema;
   final String? createdAt;
   final String? updatedAt;
-  final bool? remote;
   final String? version;
 
-  Translation({
+  const Translation({
     this.id,
     required this.word,
     required this.translation,
@@ -27,9 +26,34 @@ class Translation {
     this.schema,
     this.createdAt,
     this.updatedAt,
-    this.remote,
     this.version,
   });
+
+  Translation copyWith({
+    int? id,
+    String? word,
+    String? translation,
+    String? pronunciation,
+    String? image,
+    List<dynamic>? raw,
+    ParsingSchema? schema,
+    String? createdAt,
+    String? updatedAt,
+    String? version,
+  }) {
+    return Translation(
+      id: id ?? this.id,
+      word: word ?? this.word,
+      translation: translation ?? this.translation,
+      pronunciation: pronunciation ?? this.pronunciation,
+      image: image ?? this.image,
+      raw: raw ?? this.raw,
+      schema: schema ?? this.schema,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      version: version ?? this.version,
+    );
+  }
 
   factory Translation.fromJson(Map<String, dynamic> json) => _$TranslationFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationToJson(this);

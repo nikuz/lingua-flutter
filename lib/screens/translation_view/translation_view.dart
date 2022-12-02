@@ -16,9 +16,9 @@ import './bloc/translation_view_state.dart';
 import './widgets/menu.dart';
 import './widgets/header.dart';
 import './widgets/auto_spelling_fix.dart';
-import 'widgets/alternative_translations/alternative_translations.dart';
-import './widgets/definitions.dart';
-import './widgets/examples.dart';
+import './widgets/alternative_translations/alternative_translations.dart';
+import './widgets/definitions/definitions.dart';
+import './widgets/examples/examples.dart';
 
 class TranslationView extends StatefulWidget {
   final String? word;
@@ -97,17 +97,10 @@ class _TranslationViewState extends State<TranslationView> {
         // ),
         child: BlocListener<TranslationViewCubit, TranslationViewState>(
           listener: (context, state) {
-            // if (
-            //   state.image == null
-            //   && state.images.isEmpty
-            //   && state.strangeWord == false
-            //   && state.imageLoading == false
-            //   && state.word is String
-            //   && isCyrillicWord(state.word!) == false
-            // ) {
-            //   translationViewCubit.fetchImages(state.word!);
-            // }
-            //
+            if (state.word != null && state.images == null) {
+              _translationViewCubit.fetchImages(state.word!);
+            }
+
             // if (!_appBarTitleUpdated) {
             //   setState(() {
             //     _appBarTitle = state.word;
@@ -117,12 +110,12 @@ class _TranslationViewState extends State<TranslationView> {
             //   });
             // }
             //
-            if (state.imageSearchWord != _imageSearchWord) {
-              setState(() {
-                _imageSearchWord = state.imageSearchWord;
-                _translationWord = state.translationWord;
-              });
-            }
+            // if (state.imageSearchWord != _imageSearchWord) {
+            //   setState(() {
+            //     _imageSearchWord = state.imageSearchWord;
+            //     // _translationWord = state.translationWord;
+            //   });
+            // }
 
             // if (state.updateSuccess == true || state.saveSuccess == true) {
             //   Navigator.pop(context, false);
@@ -145,13 +138,13 @@ class _TranslationViewState extends State<TranslationView> {
           },
           child: BlocBuilder<TranslationViewCubit, TranslationViewState>(
             builder: (context, state) {
-              if (state.error?.message != null) {
+              if (state.error != null) {
                 return Center(
                   child: Text(state.error?.message ?? ''),
                 );
               }
 
-              if (widget.word != null) {
+              if (state.translation != null) {
                 return SingleChildScrollView(
                   physics: new ClampingScrollPhysics(),
                   child: Column(
@@ -159,8 +152,8 @@ class _TranslationViewState extends State<TranslationView> {
                       TranslationViewHeader(word: widget.word!),
                       TranslationViewAutoSpellingFix(),
                       TranslationViewAlternativeTranslations(),
-                      // TranslationViewDefinitions(),
-                      // TranslationViewExamples(),
+                      TranslationViewDefinitions(),
+                      TranslationViewExamples(),
                     ],
                   ),
                 );

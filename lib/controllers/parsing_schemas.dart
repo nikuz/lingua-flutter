@@ -41,7 +41,7 @@ Future<void> preloadLocalParsingSchemas() async {
   }
 }
 
-Future<StoredParsingSchema?> getParsingSchema(String versionName, [ bool? forceUpdate ]) async {
+Future<StoredParsingSchema?> getParsingSchema(String versionName, { bool? forceUpdate }) async {
   if (forceUpdate != true && parsingSchemas[versionName] != null) {
     return parsingSchemas[versionName];
   }
@@ -52,8 +52,6 @@ Future<StoredParsingSchema?> getParsingSchema(String versionName, [ bool? forceU
   if (!schemaDoc.exists) {
     return null;
   }
-
-  print(schemas.doc(versionName).get());
 
   final schemaData = schemaDoc.data();
   if (schemaData == null) {

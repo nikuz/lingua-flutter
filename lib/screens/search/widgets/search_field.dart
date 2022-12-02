@@ -43,9 +43,9 @@ class _SearchFieldState extends State<SearchField> {
   Widget build(BuildContext context) {
     return BlocListener<TranslationViewCubit, TranslationViewState>(
       listener: (context, state) {
-        if (state.savedTranslation != null) {
-          _textController.text = '';
-        }
+        // if (state.savedTranslation != null) {
+        //   _textController.text = '';
+        // }
       },
       child: Container(
         child: TextField(

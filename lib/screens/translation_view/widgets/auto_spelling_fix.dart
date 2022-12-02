@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jmespath/jmespath.dart' as jmespath;
 
 import '../bloc/translation_view_cubit.dart';
 import '../bloc/translation_view_state.dart';
@@ -11,7 +12,16 @@ class TranslationViewAutoSpellingFix extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<TranslationViewCubit, TranslationViewState>(
       builder: (context, state) {
-        if (state.autoSpellingFix == null) {
+        final translation = state.translation;
+        final schema = translation?.schema;
+
+        if (translation == null || schema == null) {
+          return Container();
+        }
+
+        String? autoSpellingFix = jmespath.search(schema.translation.autoSpellingFix.value, translation.raw);
+
+        if (autoSpellingFix == null) {
           return Container();
         }
 
@@ -28,7 +38,7 @@ class TranslationViewAutoSpellingFix extends StatelessWidget {
             children: <Widget>[
               Text('Original word ', style: TextStyle(color: Colors.white)),
               Text(
-                '"${state.autoSpellingFix}"',
+                '"$autoSpellingFix"',
                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
               Text(' had a spelling mistake', style: TextStyle(color: Colors.white))

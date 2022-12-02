@@ -3,14 +3,16 @@ import 'package:lingua_flutter/utils/string.dart';
 
 // wrapper class to represent speech parts, such as: noun, pronoun, verb, adjective, etc.
 class TranslationViewSpeechPartWrapper extends StatelessWidget {
-  final List<dynamic> category;
+  final String? name;
+  final List<dynamic>? items;
   final int maxItemsToShow;
   final bool expanded;
   final Widget Function(BuildContext, int) itemBuilder;
 
   const TranslationViewSpeechPartWrapper({
     Key? key,
-    required this.category,
+    required this.name,
+    required this.items,
     required this.maxItemsToShow,
     required this.expanded,
     required this.itemBuilder,
@@ -19,17 +21,15 @@ class TranslationViewSpeechPartWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget categoryName;
-    final List<dynamic> items = category[1];
-    int itemsLength = items.length;
+    int itemsLength = items?.length ?? 0;
 
-    if (category[0] != null) {
-      String name = category[0];
+    if (name != null) {
       categoryName = Container(
         margin: EdgeInsets.only(
           bottom: 5,
         ),
         child: Text(
-          '${name.capitalize()}',
+          '${name!.capitalize()}',
           style: TextStyle(
             fontSize: 16,
             color: Theme.of(context).buttonTheme.colorScheme?.secondaryContainer,
