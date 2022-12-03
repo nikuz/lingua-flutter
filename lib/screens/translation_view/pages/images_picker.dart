@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 
+import 'package:lingua_flutter/widgets/text_field/text_field.dart';
 import 'package:lingua_flutter/utils/convert.dart';
 
 import '../bloc/translation_view_cubit.dart';
@@ -20,14 +21,12 @@ class TranslationViewImagePicker extends StatefulWidget {
 }
 
 class _TranslationViewImagePickerState extends State<TranslationViewImagePicker> {
-  TextEditingController? _textController;
   late TranslationViewCubit _translationViewCubit;
   final itemKey = new GlobalKey();
 
   @override
   void initState() {
     super.initState();
-    _textController = TextEditingController(text: widget.word);
     _translationViewCubit = context.read<TranslationViewCubit>();
     final images = _translationViewCubit.state.images;
     if (images == null || images.isEmpty) {
@@ -37,10 +36,16 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
     new Future.delayed(Duration(milliseconds: 100), this._scrollToSelectedItem);
   }
 
-  @override
-  void dispose() {
-    _textController!.dispose();
-    super.dispose();
+  void _scrollToSelectedItem() {
+    if (_translationViewCubit.state.imageLoading == false && itemKey.currentContext != null) {
+      Scrollable.ensureVisible(
+        itemKey.currentContext!,
+        duration: Duration(seconds: 1),
+        alignment: 0.5,
+      );
+    } else {
+      new Future.delayed(Duration(milliseconds: 100), this._scrollToSelectedItem);
+    }
   }
 
   @override
@@ -94,75 +99,27 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
 
             return Column(
                 children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Color.fromRGBO(0, 0, 0, 0.1),
-                        ),
-                      ),
+                  CustomTextField(
+                    defaultValue: widget.word,
+                    hintText: 'Search for images...',
+                    textInputAction: TextInputAction.search,
+                    prefixIcon: Icon(
+                      Icons.arrow_back,
+                      size: 25,
                     ),
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          width: 50,
-                          margin: EdgeInsets.only(right: 10),
-                          child: TextButton(
-                            child: Icon(
-                              Icons.arrow_back,
-                              size: 25,
-                            ),
-                            onPressed: () {
-                              AutoRouter.of(context).pop();
-                            },
-                          ),
-                        ),
-                        Expanded(
-                          child: TextField(
-                            controller: _textController,
-                            autocorrect: false,
-                            textInputAction: TextInputAction.search,
-                            onSubmitted: (String value) {
-                              if (value.length > 1 && value != state.imageSearchWord) {
-                                _translationViewCubit.fetchImages(value);
-                              }
-                            },
-                            decoration: InputDecoration(
-                              hintText: 'Search image',
-                              hintStyle: TextStyle(
-                                fontSize: 20,
-                              ),
-                              border: InputBorder.none,
-                            ),
-                            style: TextStyle(
-                              fontSize: 20,
-//                              color: Colors.black
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: 50,
-                          margin: EdgeInsets.only(left: 10),
-                          child: TextButton(
-                            child: Icon(
-                              Icons.clear,
-                              size: 25,
-                            ),
-                            onPressed: () {
-                              if (_textController!.text != '') {
-                                _textController!.text = '';
-                              }
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
+                    prefixAction: () {
+                      AutoRouter.of(context).pop();
+                    },
+                    onSubmitted: (String value) {
+                      if (value.isNotEmpty && value != state.imageSearchWord) {
+                        _translationViewCubit.fetchImages(value);
+                      }
+                    },
                   ),
                   Expanded(
                     child: Container(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        child: imagesList
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      child: imagesList,
                     ),
                   ),
                 ]
@@ -171,17 +128,5 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
         ),
       ),
     );
-  }
-
-  void _scrollToSelectedItem() {
-    if (_translationViewCubit.state.imageLoading == false && itemKey.currentContext != null) {
-      Scrollable.ensureVisible(
-        itemKey.currentContext!,
-        duration: Duration(seconds: 1),
-        alignment: 0.5,
-      );
-    } else {
-      new Future.delayed(Duration(milliseconds: 100), this._scrollToSelectedItem);
-    }
   }
 }

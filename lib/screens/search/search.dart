@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
-import 'bloc/search_cubit.dart';
-import 'widgets/search_field.dart';
-import 'widgets/search_translations_list.dart';
+import './bloc/search_cubit.dart';
+import './widgets/search_field.dart';
+import './widgets/search_translations_list.dart';
 
 class Search extends StatefulWidget {
   Search({Key? key}) : super(key: key);

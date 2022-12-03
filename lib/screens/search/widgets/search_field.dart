@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 
 import 'package:lingua_flutter/models/translation.dart';
+import 'package:lingua_flutter/widgets/text_field/text_field.dart';
 import 'package:lingua_flutter/utils/connectivity.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 
@@ -66,49 +67,16 @@ class _SearchFieldState extends State<SearchField> {
   Widget build(BuildContext context) {
     return BlocBuilder<SearchCubit, SearchState>(
       builder: (context, state) {
-        Widget? suffixIcon;
-
-        if (state.searchText != null && state.searchText != '') {
-          suffixIcon = Material(
-            child: InkWell(
-              customBorder: const CircleBorder(),
-              onTap: () {
-                _textController.clear();
-                _searchCubit.fetchTranslations(searchText: null);
-              },
-              child: Icon(
-                Icons.clear,
-                size: 25,
-                color: Colors.grey,
-              ),
-            ),
-          );
-        }
-
-        return Container(
-          child: TextField(
-            controller: _textController,
-            autocorrect: false,
-            textInputAction: _hasInternetConnection ? TextInputAction.search : TextInputAction.done,
-            onChanged: (text) {
-              _searchCubit.fetchTranslations(searchText: text.isNotEmpty ? text : null);
-            },
-            onSubmitted: (String text) {
-              _submitHandler(text, state);
-            },
-            decoration: InputDecoration(
-              prefix: Text('  '),
-              suffixIcon: suffixIcon,
-              suffixIconConstraints: BoxConstraints(
-                minWidth: 40,
-                minHeight: 40,
-              ),
-              hintText: 'Search...',
-            ),
-            style: TextStyle(
-              fontSize: 18,
-            ),
-          ),
+        return CustomTextField(
+          controller: _textController,
+          textInputAction: _hasInternetConnection ? TextInputAction.search : TextInputAction.done,
+          hintText: 'Search...',
+          onChanged: (text) {
+            _searchCubit.fetchTranslations(searchText: text.isNotEmpty ? text : null);
+          },
+          onSubmitted: (String text) {
+            _submitHandler(text, state);
+          },
         );
       },
     );

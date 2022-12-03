@@ -30,6 +30,8 @@ class TranslationView extends StatefulWidget {
 
 class _TranslationViewState extends State<TranslationView> {
   late TranslationViewCubit _translationViewCubit;
+  late ScrollController _scrollController;
+  ScrollPhysics _scrollPhysics = ClampingScrollPhysics();
   int? _translationId;
   bool _hasInternetConnection = false;
 
@@ -37,19 +39,33 @@ class _TranslationViewState extends State<TranslationView> {
   void initState() {
     super.initState();
     _translationViewCubit = context.read<TranslationViewCubit>();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollHandler);
     _translationViewCubit.translate(widget.word);
     _getInternetConnectionStatus();
+
   }
 
   @override
   void dispose() {
     _translationViewCubit.reset();
+    _scrollController.removeListener(_scrollHandler);
     super.dispose();
+  }
+
+  void _scrollHandler() {
+    final scrollPosition = _scrollController.position.pixels;
+    if (scrollPosition < 50 && !(_scrollPhysics is ClampingScrollPhysics)) {
+      setState(() => _scrollPhysics = ClampingScrollPhysics());
+    } else if (scrollPosition > 50 && !(_scrollPhysics is BouncingScrollPhysics)) {
+      setState(() => _scrollPhysics = BouncingScrollPhysics());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         automaticallyImplyLeading: true, // to automatically add Back Button when needed,
         title: Text(
@@ -127,7 +143,8 @@ class _TranslationViewState extends State<TranslationView> {
 
               if (state.translation != null) {
                 return SingleChildScrollView(
-                  physics: new ClampingScrollPhysics(),
+                  controller: _scrollController,
+                  physics: _scrollPhysics,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[

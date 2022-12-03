@@ -55,35 +55,6 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final double size = widget.size ?? 36;
-    return TextButton(
-      style: TextButton.styleFrom(
-        minimumSize: Size(size + 20, size + 20),
-        padding: EdgeInsets.zero,
-        backgroundColor: Theme.of(context).cardColor,
-        shape: new RoundedRectangleBorder(
-          borderRadius: new BorderRadius.all(
-            Radius.circular(size),
-          ),
-        ),
-      ),
-      child: Icon(
-        _isPlayerStopped(_playerState) ? Icons.volume_up : Icons.stop,
-        color: widget.color != null ? widget.color : Colors.blueGrey,
-        size: size,
-      ),
-      onPressed: () {
-        if (_isPlayerStopped(_playerState)) {
-          _playPronunciation();
-        } else {
-          _stopPronunciation();
-        }
-      },
-    );
-  }
-
   bool _isPlayerStopped(state) => (
       state == PlayerState.stopped || state == PlayerState.completed
   );
@@ -124,6 +95,35 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
 
   void _onPlayerStateChangeError(msg) {
     setState(() => _playerState = PlayerState.stopped);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final double size = widget.size ?? 36;
+    return TextButton(
+      style: TextButton.styleFrom(
+        minimumSize: Size(size + 20, size + 20),
+        padding: EdgeInsets.zero,
+        backgroundColor: Theme.of(context).cardColor,
+        shape: new RoundedRectangleBorder(
+          borderRadius: new BorderRadius.all(
+            Radius.circular(size),
+          ),
+        ),
+      ),
+      child: Icon(
+        _isPlayerStopped(_playerState) ? Icons.volume_up : Icons.stop,
+        color: widget.color != null ? widget.color : Colors.blueGrey,
+        size: size,
+      ),
+      onPressed: () {
+        if (_isPlayerStopped(_playerState)) {
+          _playPronunciation();
+        } else {
+          _stopPronunciation();
+        }
+      },
+    );
   }
 }
 

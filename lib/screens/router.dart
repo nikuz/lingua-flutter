@@ -5,7 +5,6 @@ import './app.dart';
 import './search/search.dart';
 import './translation_view/translation_view.dart';
 import './translation_view/pages/images_picker.dart';
-import './translation_view/pages/own_translation.dart';
 import './settings/settings.dart';
 
 class Routes {
@@ -36,10 +35,6 @@ class Routes {
         AutoRoute(
           path: Routes.translation_images,
           page: TranslationViewImagePicker,
-        ),
-        AutoRoute(
-          path: Routes.translation_own,
-          page: TranslationViewOwnTranslation,
         ),
         CustomRoute(
           path: Routes.settings,

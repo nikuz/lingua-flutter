@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:lingua_flutter/utils/convert.dart';
 import 'package:lingua_flutter/utils/files.dart';
@@ -27,9 +28,10 @@ class ImagePreview extends StatefulWidget {
 }
 
 class _ImagePreviewState extends State<ImagePreview> {
+  late MediaSourceType _sourceType;
   String? _imageLocalPath;
   OverlayEntry? _overlayEntry;
-  late MediaSourceType _sourceType;
+  Uint8List? _sourceBytes;
 
   @override
   void initState() {
@@ -47,6 +49,9 @@ class _ImagePreviewState extends State<ImagePreview> {
       if (_sourceType == MediaSourceType.local) {
         _getLocalPath();
       }
+      if (_sourceBytes != null) {
+        _sourceBytes = getBytesFrom64String(widget.imageSource);
+      }
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -57,33 +62,11 @@ class _ImagePreviewState extends State<ImagePreview> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: widget.height,
-      constraints: BoxConstraints(
-        minWidth: widget.width,
-      ),
-      child: GestureDetector(
-        onTap: () {
-          if (widget.withPreviewOverlay == true) {
-            this._overlayEntry = this._buildOverlayEntry();
-            final contextOverlay = Overlay.of(context);
-            if (contextOverlay != null && this._overlayEntry != null) {
-              contextOverlay.insert(this._overlayEntry!);
-            }
-          }
-          if (widget.onTap is Function) {
-            widget.onTap!();
-          }
-        },
-        child: Container(
-          width: widget.width,
-          height: widget.height,
-          child: _buildImage(),
-        ),
-      ),
-    );
+  void _getLocalPath() async {
+    String imageLocalPath = await getDocumentsPath();
+    setState(() {
+      _imageLocalPath = imageLocalPath;
+    });
   }
 
   Widget _buildImage() {
@@ -91,7 +74,10 @@ class _ImagePreviewState extends State<ImagePreview> {
 
     switch (_sourceType) {
       case MediaSourceType.base64:
-        image = Image.memory(getBytesFrom64String(widget.imageSource));
+        if (_sourceBytes == null) {
+          _sourceBytes = getBytesFrom64String(widget.imageSource);
+        }
+        image = Image.memory(_sourceBytes!);
         break;
       case MediaSourceType.local:
         if (_imageLocalPath != null) {
@@ -154,10 +140,32 @@ class _ImagePreviewState extends State<ImagePreview> {
     );
   }
 
-  void _getLocalPath() async {
-    String imageLocalPath = await getDocumentsPath();
-    setState(() {
-      _imageLocalPath = imageLocalPath;
-    });
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: widget.height,
+      constraints: BoxConstraints(
+        minWidth: widget.width,
+      ),
+      child: GestureDetector(
+        onTap: () {
+          if (widget.withPreviewOverlay == true) {
+            this._overlayEntry = this._buildOverlayEntry();
+            final contextOverlay = Overlay.of(context);
+            if (contextOverlay != null && this._overlayEntry != null) {
+              contextOverlay.insert(this._overlayEntry!);
+            }
+          }
+          if (widget.onTap is Function) {
+            widget.onTap!();
+          }
+        },
+        child: Container(
+          width: widget.width,
+          height: widget.height,
+          child: _buildImage(),
+        ),
+      ),
+    );
   }
 }

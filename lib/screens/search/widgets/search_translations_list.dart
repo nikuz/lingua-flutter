@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 
-import 'package:lingua_flutter/widgets/pronunciation.dart';
-import 'package:lingua_flutter/widgets/prompts.dart';
-import 'package:lingua_flutter/widgets/image_preview.dart';
+import 'package:lingua_flutter/widgets/prompt/prompt.dart';
+import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
+import 'package:lingua_flutter/widgets/image_preview/image_preview.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 
@@ -162,7 +162,7 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: Key(widget.translationItem.word!),
+      key: Key(widget.translationItem.word),
       background: Container(
         color: Colors.red,
         child: Row(
@@ -179,12 +179,22 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
           ],
         ),
       ),
-      confirmDismiss: (DismissDirection direction) async {
-        return await wordRemovePrompt(context, widget.translationItem.word, () {
-          if (widget.translationItem.id != null) {
-            context.read<SearchCubit>().removeTranslation(widget.translationItem.id!);
-          }
+      confirmDismiss: (DismissDirection direction) {
+        final completer = Completer<bool>();
+
+        Prompt(
+          context: context,
+          title: 'Delete "${widget.translationItem.word}" word?',
+          acceptCallback: () {
+            if (widget.translationItem.id != null) {
+              context.read<SearchCubit>().removeTranslation(widget.translationItem.id!);
+            }
+          },
+        ).show().then((value) {
+          completer.complete(value == true);
         });
+
+        return completer.future;
       },
       direction: DismissDirection.endToStart,
       child: Container(
@@ -218,7 +228,7 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
           title: Container(
             margin: EdgeInsets.only(bottom: 2),
             child: Text(
-              widget.translationItem.word!,
+              widget.translationItem.word,
               style: TextStyle(
                 fontSize: 18,
                 color: isSelected
