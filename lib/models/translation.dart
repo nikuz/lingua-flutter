@@ -12,9 +12,9 @@ class Translation {
   final String? image;
   final List<dynamic> raw;
   final ParsingSchema? schema;
+  final String? schemaVersion;
   final String? createdAt;
   final String? updatedAt;
-  final String? version;
 
   const Translation({
     this.id,
@@ -24,9 +24,9 @@ class Translation {
     this.image,
     required this.raw,
     this.schema,
+    this.schemaVersion,
     this.createdAt,
     this.updatedAt,
-    this.version,
   });
 
   Translation copyWith({
@@ -37,9 +37,9 @@ class Translation {
     String? image,
     List<dynamic>? raw,
     ParsingSchema? schema,
+    String? schemaVersion,
     String? createdAt,
     String? updatedAt,
-    String? version,
   }) {
     return Translation(
       id: id ?? this.id,
@@ -49,9 +49,9 @@ class Translation {
       image: image ?? this.image,
       raw: raw ?? this.raw,
       schema: schema ?? this.schema,
+      schemaVersion: schemaVersion ?? this.schemaVersion,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      version: version ?? this.version,
     );
   }
 

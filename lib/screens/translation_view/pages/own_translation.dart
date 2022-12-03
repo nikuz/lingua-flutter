@@ -27,7 +27,7 @@ class _TranslationViewOwnTranslationState extends State<TranslationViewOwnTransl
 
   @override
   void dispose() {
-    _textController!.dispose();
+    _textController?.dispose();
     super.dispose();
   }
 

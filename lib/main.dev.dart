@@ -28,6 +28,7 @@ void main() async {
 
   // preload parsing schemas
   await preloadLocalParsingSchemas();
+  // await getParsingSchema('current', forceUpdate: true);
 
   setGlobalAudioContext();
 

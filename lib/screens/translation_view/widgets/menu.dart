@@ -5,6 +5,8 @@ import 'package:lingua_flutter/widgets/prompts.dart';
 import 'package:lingua_flutter/screens/search/bloc/search_cubit.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 
+import '../bloc/translation_view_cubit.dart';
+
 class Menu {
   final String? id;
   final String? title;
@@ -14,36 +16,39 @@ class Menu {
 
 List<Widget> translationViewMenuConstructor({
   required BuildContext context,
-  required String word,
-  required int? wordId,
-  required bool disabled,
+  required bool isDisabled,
   required bool hasInternetConnection,
-  required String? imageSearchWord,
 }) {
+  final _translationViewCubit = context.read<TranslationViewCubit>();
+  final state = _translationViewCubit.state;
+  final word = state.word;
+  final imageSearchWord = state.imageSearchWord;
+  final translationId = state.translation?.id;
+
   return [
     PopupMenuButton<Menu>(
       icon: Icon(Icons.more_vert),
-      enabled: !disabled,
+      enabled: !isDisabled,
       onSelected: (Menu item) async {
         if (item.id == 'remove') {
           final bool removeAccepted = await wordRemovePrompt(context, word, () {
-            if (wordId != null) {
-              context.read<SearchCubit>().removeTranslation(wordId);
+            if (translationId != null) {
+              context.read<SearchCubit>().removeTranslation(translationId);
             }
           });
           if (removeAccepted) {
             Navigator.pop(context, false);
           }
         }
-        if (item.id == 'image') {
+        if (item.id == 'image' && imageSearchWord != null) {
           AutoRouter.of(context).push(TranslationViewImagePickerRoute(word: imageSearchWord));
         }
-        if (item.id == 'translation') {
+        if (item.id == 'translation' && word != null) {
           AutoRouter.of(context).push(TranslationViewOwnTranslationRoute(word: word));
         }
       },
       itemBuilder: (BuildContext context) {
-        if (disabled) {
+        if (isDisabled) {
           return [];
         }
 
@@ -56,12 +61,12 @@ List<Widget> translationViewMenuConstructor({
           menuList.insert(0, const Menu(id: 'image', title: 'Change Image'));
         }
 
-        return menuList.map((Menu item) {
-          return PopupMenuItem<Menu>(
+        return menuList.map((Menu item) => (
+          PopupMenuItem<Menu>(
             value: item,
             child: Text(item.title!),
-          );
-        }).toList();
+          )
+        )).toList();
       },
     ),
   ];

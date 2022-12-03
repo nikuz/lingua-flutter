@@ -48,27 +48,38 @@ class SearchCubit extends Cubit<SearchState> {
           message: err.toString(),
         )),
       ));
+      throw err;
     }
   }
 
   void removeTranslation(int id) async {
-    await translateControllerRemoveItem(id);
-    List<Translation> translationsClone = [...state.translations];
-    int to = state.to;
-    int totalAmount = state.totalAmount;
+    try {
+      await translateControllerRemoveItem(id);
+      List<Translation> translationsClone = [...state.translations];
+      int to = state.to;
+      int totalAmount = state.totalAmount;
 
-    int index = translationsClone.indexWhere((item) => item.id == id);
-    if (index != -1) {
-      translationsClone.removeAt(index);
-      to--;
-      totalAmount--;
+      int index = translationsClone.indexWhere((item) => item.id == id);
+      if (index != -1) {
+        translationsClone.removeAt(index);
+        to--;
+        totalAmount--;
+      }
+
+      emit(state.copyWith(
+        to: to,
+        totalAmount: totalAmount,
+        translations: translationsClone,
+      ));
+    } catch (err) {
+      emit(state.copyWith(
+        error: Wrapped.value(CustomError(
+          code: err.hashCode,
+          message: err.toString(),
+        )),
+      ));
+      throw err;
     }
-
-    emit(state.copyWith(
-      to: to,
-      totalAmount: totalAmount,
-      translations: translationsClone,
-    ));
   }
 
   void updateTranslation(Translation translation) async {

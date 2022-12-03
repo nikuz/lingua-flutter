@@ -47,7 +47,9 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
 
       emit(state.copyWith(
         images: images,
-        image: images?[0],
+        translation: state.translation?.copyWith(
+          image: images?[0],
+        ),
         imageLoading: false,
       ));
     } catch (err) {
@@ -62,17 +64,17 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
     }
   }
 
-  Future<bool> save(Translation translation) async {
+  void save(Translation translation) async {
     try {
       emit(state.copyWith(
         updateLoading: true,
       ));
+
       await translateControllerSave(translation);
+
       emit(state.copyWith(
         updateLoading: false,
       ));
-
-      return true;
     } catch (err) {
       emit(state.copyWith(
         error: Wrapped.value(CustomError(
@@ -83,25 +85,23 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
       ));
       throw err;
     }
-
-    return false;
   }
 
-  Future<bool> update(Translation translation) async {
+  void update(Translation translation) async {
     try {
       emit(state.copyWith(
         updateLoading: true,
       ));
+
       await translateControllerUpdate({
         'word': '${translation.word}',
         'image': '${translation.image != null ? translation.image : ''}',
         'translation': '${translation.translation}',
       });
+
       emit(state.copyWith(
         updateLoading: false,
       ));
-
-      return true;
     } catch (err) {
       emit(state.copyWith(
         error: Wrapped.value(CustomError(
@@ -112,20 +112,23 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
       ));
       throw err;
     }
-
-    return false;
   }
 
   void setImage(String image) {
     emit(state.copyWith(
-      image: image,
+      translation: state.translation?.copyWith(
+        image: image,
+      ),
       imageIsUpdated: true,
     ));
   }
 
   void setOwnTranslation(String translation) {
     emit(state.copyWith(
-      ownTranslation: translation,
+      translation: state.translation?.copyWith(
+        translation: translation,
+      ),
+      translationIsUpdated: true,
     ));
   }
 
@@ -137,7 +140,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
 Future<Translation> _fetchTranslation(String word, { bool? forceCurrentSchemaDownload }) async {
   final existingTranslation = await translateControllerGet(word);
   if (existingTranslation != null) {
-    final schemaVersion = existingTranslation.version;
+    final schemaVersion = existingTranslation.schemaVersion;
     StoredParsingSchema? storedParsingSchema;
     if (schemaVersion != null) {
       storedParsingSchema = await getParsingSchema(schemaVersion);
@@ -184,7 +187,7 @@ Future<Translation> _fetchTranslation(String word, { bool? forceCurrentSchemaDow
     apiPost(
         url: parsingSchema.pronunciation.fields.url,
         params: {
-          '${parsingSchema.pronunciation.fields.parameter}sd': parsingSchema.pronunciation.fields.body
+          '${parsingSchema.pronunciation.fields.parameter}': parsingSchema.pronunciation.fields.body
               .replaceAll('{marker}', parsingSchema.pronunciation.fields.marker)
               .replaceAll('{word}', word)
               .replaceAll('{sourceLanguage}', sourceLanguage)
@@ -221,7 +224,7 @@ Future<Translation> _fetchTranslation(String word, { bool? forceCurrentSchemaDow
     pronunciation: pronunciationResult,
     raw: translationResult,
     schema: parsingSchema,
-    version: storedParsingSchema.version,
+    schemaVersion: storedParsingSchema.version,
   );
 }
 

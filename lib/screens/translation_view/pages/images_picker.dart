@@ -7,11 +7,11 @@ import '../bloc/translation_view_cubit.dart';
 import '../bloc/translation_view_state.dart';
 
 class TranslationViewImagePicker extends StatefulWidget {
-  final String? word;
+  final String word;
 
   TranslationViewImagePicker({
     Key? key,
-    this.word,
+    required this.word,
   }) : super(key: key);
 
   @override
@@ -29,8 +29,8 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
     _textController = TextEditingController(text: widget.word);
     _translationViewCubit = context.read<TranslationViewCubit>();
     final images = _translationViewCubit.state.images;
-    if ((images == null || images.isEmpty) && widget.word != null) {
-      _translationViewCubit.fetchImages(widget.word!);
+    if (images == null || images.isEmpty) {
+      _translationViewCubit.fetchImages(widget.word);
     }
 
     new Future.delayed(Duration(milliseconds: 100), this._scrollToSelectedItem);
@@ -64,7 +64,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                     images.length,
                     (index) {
                       final String imageSource = images[index];
-                      final bool isActive = state.image == imageSource;
+                      final bool isActive = state.translation?.image == imageSource;
                       return Container(
                         key: isActive ? itemKey : Key(index.toString()),
                         color: isActive ? Colors.greenAccent : Theme.of(context).scaffoldBackgroundColor,

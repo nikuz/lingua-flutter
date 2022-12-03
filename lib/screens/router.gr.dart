@@ -45,8 +45,7 @@ class AppRouter extends _i7.RootStackRouter {
       );
     },
     TranslationViewRoute.name: (routeData) {
-      final args = routeData.argsAs<TranslationViewRouteArgs>(
-          orElse: () => const TranslationViewRouteArgs());
+      final args = routeData.argsAs<TranslationViewRouteArgs>();
       return _i7.MaterialPageX<dynamic>(
         routeData: routeData,
         child: _i3.TranslationView(
@@ -56,8 +55,7 @@ class AppRouter extends _i7.RootStackRouter {
       );
     },
     TranslationViewImagePickerRoute.name: (routeData) {
-      final args = routeData.argsAs<TranslationViewImagePickerRouteArgs>(
-          orElse: () => const TranslationViewImagePickerRouteArgs());
+      final args = routeData.argsAs<TranslationViewImagePickerRouteArgs>();
       return _i7.MaterialPageX<dynamic>(
         routeData: routeData,
         child: _i4.TranslationViewImagePicker(
@@ -174,7 +172,7 @@ class SearchRouteArgs {
 class TranslationViewRoute extends _i7.PageRouteInfo<TranslationViewRouteArgs> {
   TranslationViewRoute({
     _i8.Key? key,
-    String? word,
+    required String word,
   }) : super(
           TranslationViewRoute.name,
           path: 'translation_view',
@@ -190,12 +188,12 @@ class TranslationViewRoute extends _i7.PageRouteInfo<TranslationViewRouteArgs> {
 class TranslationViewRouteArgs {
   const TranslationViewRouteArgs({
     this.key,
-    this.word,
+    required this.word,
   });
 
   final _i8.Key? key;
 
-  final String? word;
+  final String word;
 
   @override
   String toString() {
@@ -209,7 +207,7 @@ class TranslationViewImagePickerRoute
     extends _i7.PageRouteInfo<TranslationViewImagePickerRouteArgs> {
   TranslationViewImagePickerRoute({
     _i8.Key? key,
-    String? word,
+    required String word,
   }) : super(
           TranslationViewImagePickerRoute.name,
           path: 'translation_view/images',
@@ -225,12 +223,12 @@ class TranslationViewImagePickerRoute
 class TranslationViewImagePickerRouteArgs {
   const TranslationViewImagePickerRouteArgs({
     this.key,
-    this.word,
+    required this.word,
   });
 
   final _i8.Key? key;
 
-  final String? word;
+  final String word;
 
   @override
   String toString() {

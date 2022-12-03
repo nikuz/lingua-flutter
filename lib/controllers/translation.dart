@@ -149,7 +149,7 @@ Future<Translation?> translateControllerGet(String? word) async {
     raw: jsonDecode(item['raw']),
     createdAt: item['created_at'],
     updatedAt: item['updated_at'],
-    version: item['version'],
+    schemaVersion: item['schema_version'],
   );
 }
 
@@ -165,20 +165,21 @@ Future<void> translateControllerSave(Translation translation) async {
 
   // populate db with initial data
   await DBProvider().rawQuery('''
-      INSERT INTO dictionary (word, translation, raw, updated_at, version)
+      INSERT INTO dictionary (word, translation, raw, created_at, schema_version)
       VALUES(?, ?, ?, datetime("now"), ?);
       ''',
       [
         translation.word,
         translation.translation,
-        translation.raw,
-        translation.version,
+        jsonEncode(translation.raw),
+        translation.schemaVersion,
       ]
   );
 
-  // get db entry with row ID
+  // get saved in DB translation entry with row ID
   final Translation? newTranslationData = await translateControllerGet(translation.word);
   final newTranslationId = newTranslationData?.id;
+
   if (newTranslationId != null) {
     try {
       String dir = await getDocumentsPath();
@@ -202,28 +203,31 @@ Future<void> translateControllerSave(Translation translation) async {
         }
       }
 
-      // save pronunciation
-      final RegExp pronunciationReg = new RegExp(r'^data:audio/mpeg;base64,(.+)$');
-      String? pronunciationUrl = translation.pronunciation;
-      RegExpMatch? pronunciationParts;
-      if (pronunciationUrl != null) {
-        pronunciationParts = pronunciationReg.firstMatch(pronunciationUrl);
-        String? pronunciationValue = pronunciationParts?.group(1);
+      String? pronunciationUrl;
+      if (translation.schema != null) {
+        // save pronunciation
+        final RegExp pronunciationReg = new RegExp('${translation.schema!.pronunciation.fields.base64Prefix}(.+)');
+        pronunciationUrl = translation.pronunciation;
+        RegExpMatch? pronunciationParts;
+        if (pronunciationUrl != null) {
+          pronunciationParts = pronunciationReg.firstMatch(pronunciationUrl);
+          String? pronunciationValue = pronunciationParts?.group(1);
 
-        if (pronunciationParts != null && pronunciationValue != null) {
-          Uint8List pronunciationBytes = Base64Decoder().convert(pronunciationValue);
-          pronunciationUrl = '/pronunciations/$fileId.mp3';
+          if (pronunciationParts != null && pronunciationValue != null) {
+            Uint8List pronunciationBytes = Base64Decoder().convert(pronunciationValue);
+            pronunciationUrl = '/pronunciations/$fileId.mp3';
 
-          File pronunciation = File('$dir/$pronunciationUrl');
-          pronunciation = await pronunciation.create(recursive: true);
-          await pronunciation.writeAsBytes(pronunciationBytes);
+            File pronunciation = File('$dir/$pronunciationUrl');
+            pronunciation = await pronunciation.create(recursive: true);
+            await pronunciation.writeAsBytes(pronunciationBytes);
+          }
         }
       }
 
       // update db
       await DBProvider().rawQuery('''
         UPDATE dictionary 
-        SET image=?, pronunciation=?, updated_at=datetime("now") 
+        SET image=?, pronunciation=? 
         WHERE id=$newTranslationId;
         ''',
           [

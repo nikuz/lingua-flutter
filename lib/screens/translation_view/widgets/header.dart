@@ -33,7 +33,7 @@ class TranslationViewHeader extends StatelessWidget {
           }
 
           final theme = Styles.theme(context);
-          String? translationWord = state.ownTranslation ?? jmespath.search(
+          String? translationWord = translation.translation ?? jmespath.search(
               schema.translation.translation.value,
               translation.raw
           );
@@ -91,7 +91,7 @@ class TranslationViewHeader extends StatelessWidget {
                     ],
                   ),
                 ),
-                _buildFooter(state),
+                _buildFooter(context, state),
               ],
             ),
           );
@@ -108,15 +108,16 @@ class TranslationViewHeader extends StatelessWidget {
       );
     }
 
-    if (state.image != null) {
+    String? imageSource = state.translation?.image;
+    if (imageSource != null) {
       return ImagePreview(
         width: 150,
         height: 150,
-        imageSource: state.image!,
+        imageSource: imageSource,
         withPreviewOverlay: state.translation?.id != null && !state.imageIsUpdated,
         onTap: () {
-          if (state.translation?.id == null || state.imageIsUpdated) {
-            AutoRouter.of(context).push(TranslationViewImagePickerRoute(word: state.imageSearchWord));
+          if ((state.translation?.id == null || state.imageIsUpdated) && state.imageSearchWord != null) {
+            AutoRouter.of(context).push(TranslationViewImagePickerRoute(word: state.imageSearchWord!));
           }
         },
       );
@@ -125,7 +126,7 @@ class TranslationViewHeader extends StatelessWidget {
     return Container();
   }
 
-  Widget _buildFooter(TranslationViewState state) {
+  Widget _buildFooter(BuildContext context, TranslationViewState state) {
     final translation = state.translation;
     final schema = translation?.schema;
 
@@ -135,16 +136,13 @@ class TranslationViewHeader extends StatelessWidget {
 
     String? pronunciation = state.translation?.pronunciation;
     String? transcription = jmespath.search(schema.translation.transcription.value, translation.raw);
-    final translationUpdate = (
-        state.ownTranslation != null && state.ownTranslation != state.translation?.translation
-    );
 
     final bool newWord = translation.id == null;
-    bool toSave = newWord || state.imageIsUpdated == true || translationUpdate;
+    bool toSave = newWord || state.imageIsUpdated || state.translationIsUpdated;
     IconData iconName = Icons.check;
     if (newWord) {
       iconName = Icons.save_alt;
-    } else if (state.imageIsUpdated || translationUpdate) {
+    } else if (state.imageIsUpdated || state.translationIsUpdated) {
       iconName = Icons.update;
     }
 
@@ -171,17 +169,17 @@ class TranslationViewHeader extends StatelessWidget {
           Row(
             children: [
               BlocBuilder<SettingsCubit, SettingsState>(
-                  builder: (context, state) {
-                    if (pronunciation != null) {
-                      return PronunciationWidget(
-                        pronunciationSource: pronunciation,
-                        color: Colors.blue,
-                        size: 45,
-                        autoPlay: state.pronunciationAutoPlay,
-                      );
-                    }
-                    return Container();
+                builder: (context, state) {
+                  if (pronunciation != null) {
+                    return PronunciationWidget(
+                      pronunciationSource: pronunciation,
+                      color: Colors.blue,
+                      size: 45,
+                      autoPlay: state.pronunciationAutoPlay,
+                    );
                   }
+                  return Container();
+                },
               ),
               Container(
                 margin: EdgeInsets.only(left: 10),
@@ -210,17 +208,8 @@ class TranslationViewHeader extends StatelessWidget {
             child: icon,
             onPressed: () {
               if (newWord && state.translation != null) {
-                // context.read<TranslationViewCubit>().save(
-                //   Translation(
-                //     word: state.word,
-                //     translation: state.translationWord!,
-                //     pronunciation: pronunciation ?? '',
-                //     image: state.image ?? '',
-                //     raw: state.raw ?? [],
-                //     version: state.version ?? 'v2',
-                //   )
-                // );
-              } else if (state.imageIsUpdated == true || translationUpdate) {
+                context.read<TranslationViewCubit>().save(state.translation!);
+              } else if (state.imageIsUpdated || state.translationIsUpdated) {
                 // context.read<TranslationViewCubit>().update(
                 //   Translation(
                 //     word: state.word ?? '',
