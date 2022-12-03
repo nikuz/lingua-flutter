@@ -18,27 +18,15 @@ class DBProvider {
   }
 
   Future<Database> _initDatabase() async {
-    return await openDatabase('database/dictionary.SQLITE3', version: 1, onCreate: this.createTable);
+    return await openDatabase('database/dictionary.SQLITE3', version: 1);
   }
 
-  Future createTable(Database db, int version) async {
-    await db.execute('''
-      CREATE TABLE IF NOT EXISTS dictionary (
-        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-        word VARCHAR NOT NULL COLLATE NOCASE,
-        pronunciation VARCHAR,
-        translation VARCHAR COLLATE NOCASE,
-        raw TEXT NOT NULL,
-        image VARCHAR,
-        schema_version INTEGER DEFAULT 1,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        updated_at TEXT DEFAULT CURRENT_TIMESTAMP
-      )
-      '''
-    );
+  Future execute(String query) async {
+    Database db = await instance.database;
+    await db.execute(query);
   }
 
-  Future<List<Map>> rawQuery(String query, List<dynamic> arguments) async {
+  Future<List<Map>> rawQuery(String query, [List<dynamic>? arguments]) async {
     Database db = await instance.database;
     return await db.rawQuery(query, arguments);
   }

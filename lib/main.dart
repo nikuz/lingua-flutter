@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import './firebase_options.dart';
+import './controllers/translation.dart';
 import './controllers/parsing_schemas.dart';
 import './blocs/observer.dart';
 import './screens/search/bloc/search_cubit.dart';
@@ -28,6 +29,9 @@ void main() async {
 
   Bloc.observer = MyBlocObserver();
   final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  // initiate controllers
+  translateControllerInit();
 
   // preload parsing schemas
   await preloadLocalParsingSchemas();
