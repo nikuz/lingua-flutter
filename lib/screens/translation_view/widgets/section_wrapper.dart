@@ -40,7 +40,6 @@ class _TranslationViewSectionWrapperState extends State<TranslationViewSectionWr
     }
 
     return Container(
-      width: double.infinity,
       margin: EdgeInsets.only(
         top: 10,
         left: 10,

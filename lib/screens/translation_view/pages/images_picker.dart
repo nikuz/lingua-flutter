@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:auto_route/auto_route.dart';
 
 import 'package:lingua_flutter/utils/convert.dart';
 
@@ -80,7 +81,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                             child: Image.memory(getBytesFrom64String(imageSource)),
                             onPressed: () {
                               _translationViewCubit.setImage(imageSource);
-                              Navigator.pop(context, false);
+                              AutoRouter.of(context).pop();
                             },
                           ),
                         ),
@@ -113,7 +114,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                               size: 25,
                             ),
                             onPressed: () {
-                              Navigator.pop(context, false);
+                              AutoRouter.of(context).pop();
                             },
                           ),
                         ),

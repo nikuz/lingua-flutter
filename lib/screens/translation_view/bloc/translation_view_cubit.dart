@@ -65,12 +65,13 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
     }
   }
 
-  void save(Translation translation) async {
+  Future<void> save(Translation translation) async {
     try {
       emit(state.copyWith(
         updateLoading: true,
       ));
 
+      await Future.delayed(Duration(seconds: 1));
       await translateControllerSave(translation);
 
       emit(state.copyWith(

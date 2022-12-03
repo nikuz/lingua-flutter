@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:auto_route/auto_route.dart';
 
 import 'package:lingua_flutter/utils/connectivity.dart';
 // import 'package:lingua_flutter/screens/router.gr.dart';
@@ -63,7 +64,7 @@ class _TranslationViewState extends State<TranslationView> {
             size: 25,
           ),
           onPressed: () {
-            Navigator.pop(context, false);
+            AutoRouter.of(context).pop();
           },
         ),
         elevation: 0,
@@ -92,7 +93,7 @@ class _TranslationViewState extends State<TranslationView> {
             }
 
             // if (state.updateSuccess == true || state.saveSuccess == true) {
-            //   Navigator.pop(context, false);
+            //   AutoRouter.of(context).pop();
             //   _translationBloc.add(TranslationClear());
             //   // if (state.saveSuccess == true) {
             //   //   BlocProvider.of<TranslationsBloc>(context).add(TranslationsRequest());

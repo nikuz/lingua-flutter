@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:auto_route/auto_route.dart';
 
 import '../bloc/translation_view_cubit.dart';
 
@@ -112,6 +113,6 @@ class _TranslationViewOwnTranslationState extends State<TranslationViewOwnTransl
     if (_textController != null && _textController!.text != widget.word) {
       context.read<TranslationViewCubit>().setOwnTranslation(_textController!.text);
     }
-    Navigator.pop(context, false);
+    AutoRouter.of(context).pop();
   }
 }

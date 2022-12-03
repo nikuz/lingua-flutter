@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:jmespath/jmespath.dart' as jmespath;
 
 import 'package:lingua_flutter/styles/styles.dart';
+import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/widgets/pronunciation.dart';
 import 'package:lingua_flutter/widgets/image_preview.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
@@ -208,7 +209,9 @@ class TranslationViewHeader extends StatelessWidget {
             child: icon,
             onPressed: () {
               if (newWord && state.translation != null) {
-                context.read<TranslationViewCubit>().save(state.translation!);
+                context.read<TranslationViewCubit>().save(state.translation!).then((dynamic) {
+                  AutoRouter.of(context).pop<Translation>(state.translation);
+                });
               } else if (state.imageIsUpdated || state.translationIsUpdated) {
                 // context.read<TranslationViewCubit>().update(
                 //   Translation(

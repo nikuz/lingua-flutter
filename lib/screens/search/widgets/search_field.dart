@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 
+import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/utils/connectivity.dart';
-import 'package:lingua_flutter/screens/translation_view/bloc/translation_view_cubit.dart';
-import 'package:lingua_flutter/screens/translation_view/bloc/translation_view_state.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 
 import '../bloc/search_cubit.dart';
+import '../bloc/search_state.dart';
 
 class SearchField extends StatefulWidget {
   SearchField({Key? key}) : super(key: key);
@@ -17,13 +17,14 @@ class SearchField extends StatefulWidget {
 }
 
 class _SearchFieldState extends State<SearchField> {
-  final _textController = TextEditingController();
+  late TextEditingController _textController;
   late SearchCubit _searchCubit;
   bool _hasInternetConnection = false;
 
   @override
   void initState() {
     super.initState();
+    _textController = TextEditingController();
     _searchCubit = context.read<SearchCubit>();
     _getInternetConnectionStatus();
     subscribeToNetworkChange('search', (bool result) {
@@ -39,69 +40,77 @@ class _SearchFieldState extends State<SearchField> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocListener<TranslationViewCubit, TranslationViewState>(
-      listener: (context, state) {
-        // if (state.savedTranslation != null) {
-        //   _textController.text = '';
-        // }
-      },
-      child: Container(
-        child: TextField(
-          controller: _textController,
-          autocorrect: false,
-          textInputAction: _hasInternetConnection ? TextInputAction.search : TextInputAction.done,
-          onChanged: (text) {
-            _searchCubit.fetchTranslations(searchText: text.length > 1 ? text : null);
-          },
-          onSubmitted: (String value) {
-            if (_hasInternetConnection && value.length > 1) {
-              AutoRouter.of(context).push(TranslationViewRoute(word: value));
-            }
-          },
-          decoration: InputDecoration(
-            prefixIcon: Container(
-              margin: EdgeInsets.only(
-                left: 5,
-                right: 5,
-              ),
-              child: Icon(
-                Icons.search,
-                size: 25,
-              )
-            ),
-            suffixIcon: GestureDetector(
-              child: Container(
-                child: Icon(
-                  Icons.clear,
-                  size: 25,
-                ),
-              ),
-              onTap: () {
-                if (_textController.text != '') {
-                  _textController.text = '';
-                  _searchCubit.fetchTranslations();
-                }
-              },
-            ),
-            hintText: 'Search word',
-            hintStyle: TextStyle(
-              fontSize: 20,
-            ),
-          ),
-          style: TextStyle(
-            fontSize: 20,
-          ),
-        ),
-      ),
-    );
-  }
-
   void _getInternetConnectionStatus() async {
     bool connection = await isInternetConnected();
     setState(() {
       _hasInternetConnection = connection;
     });
+  }
+
+  void _submitHandler(String text, SearchState state) async {
+    if (_hasInternetConnection && text != '') {
+      final result = await AutoRouter.of(context).push<Translation>(TranslationViewRoute(word: text));
+      if (result != null) {
+        if (state.translations.any((item) => item.id == result.id)) {
+          _searchCubit.updateTranslation(result);
+        } else {
+          _textController.clear();
+          _searchCubit.fetchTranslations(searchText: null);
+        }
+      }
+      // updateTranslation
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SearchCubit, SearchState>(
+      builder: (context, state) {
+        Widget? suffixIcon;
+
+        if (state.searchText != null && state.searchText != '') {
+          suffixIcon = Material(
+            child: InkWell(
+              customBorder: const CircleBorder(),
+              onTap: () {
+                _textController.clear();
+                _searchCubit.fetchTranslations(searchText: null);
+              },
+              child: Icon(
+                Icons.clear,
+                size: 25,
+                color: Colors.grey,
+              ),
+            ),
+          );
+        }
+
+        return Container(
+          child: TextField(
+            controller: _textController,
+            autocorrect: false,
+            textInputAction: _hasInternetConnection ? TextInputAction.search : TextInputAction.done,
+            onChanged: (text) {
+              _searchCubit.fetchTranslations(searchText: text.isNotEmpty ? text : null);
+            },
+            onSubmitted: (String text) {
+              _submitHandler(text, state);
+            },
+            decoration: InputDecoration(
+              prefix: Text('  '),
+              suffixIcon: suffixIcon,
+              suffixIconConstraints: BoxConstraints(
+                minWidth: 40,
+                minHeight: 40,
+              ),
+              hintText: 'Search...',
+            ),
+            style: TextStyle(
+              fontSize: 18,
+            ),
+          ),
+        );
+      },
+    );
   }
 }

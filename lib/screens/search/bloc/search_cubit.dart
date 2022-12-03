@@ -13,7 +13,7 @@ class SearchCubit extends Cubit<SearchState> {
 
   void fetchTranslations({int from = 0, int to = SearchConstants.itemsPerPage, String? searchText}) async {
     emit(state.copyWith(
-      searchText: searchText,
+      searchText: Wrapped.value(searchText),
       loading: true,
     ));
 

@@ -37,7 +37,7 @@ List<Widget> translationViewMenuConstructor({
             }
           });
           if (removeAccepted) {
-            Navigator.pop(context, false);
+            AutoRouter.of(context).pop();
           }
         }
         if (item.id == 'image' && imageSearchWord != null) {

@@ -27,7 +27,7 @@ class _SearchState extends State<Search> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Search',
+          'My Dictionary',
           style: TextStyle(
             fontSize: 20,
           ),

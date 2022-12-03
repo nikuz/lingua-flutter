@@ -32,7 +32,7 @@ class SearchState extends Equatable {
     int? to,
     int? totalAmount,
     List<Translation>? translations,
-    String? searchText,
+    Wrapped? searchText,
     bool? loading,
     Wrapped? error,
   }) {
@@ -41,7 +41,7 @@ class SearchState extends Equatable {
       to: to ?? this.to,
       totalAmount: totalAmount ?? this.totalAmount,
       translations: translations ?? this.translations,
-      searchText: searchText ?? this.searchText,
+      searchText: searchText != null ? searchText.value : this.searchText,
       loading: loading ?? this.loading,
       error: error != null ? error.value : this.error,
     );

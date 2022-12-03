@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:lingua_flutter/models/translation.dart';
 
 import './app.dart';
 import './search/search.dart';
@@ -28,7 +29,7 @@ class Routes {
           initial: true,
           transitionsBuilder: TransitionsBuilders.noTransition,
         ),
-        AutoRoute(
+        AutoRoute<Translation>(
           path: Routes.translation_view,
           page: TranslationView,
         ),

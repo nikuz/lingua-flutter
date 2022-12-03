@@ -14,6 +14,7 @@
 import 'package:auto_route/auto_route.dart' as _i7;
 import 'package:flutter/material.dart' as _i8;
 
+import '../models/translation.dart' as _i9;
 import 'app.dart' as _i1;
 import 'search/search.dart' as _i2;
 import 'settings/settings.dart' as _i6;
@@ -46,7 +47,7 @@ class AppRouter extends _i7.RootStackRouter {
     },
     TranslationViewRoute.name: (routeData) {
       final args = routeData.argsAs<TranslationViewRouteArgs>();
-      return _i7.MaterialPageX<dynamic>(
+      return _i7.MaterialPageX<_i9.Translation>(
         routeData: routeData,
         child: _i3.TranslationView(
           key: args.key,
