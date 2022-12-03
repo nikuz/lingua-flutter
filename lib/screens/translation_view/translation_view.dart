@@ -128,8 +128,9 @@ class _TranslationViewState extends State<TranslationView> {
                 return SingleChildScrollView(
                   physics: new ClampingScrollPhysics(),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      TranslationViewHeader(word: widget.word!),
+                      TranslationViewHeader(word: widget.word),
                       TranslationViewAutoSpellingFix(),
                       TranslationViewAlternativeTranslations(),
                       TranslationViewDefinitions(),

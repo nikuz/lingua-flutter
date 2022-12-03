@@ -4,6 +4,7 @@ import 'package:jmespath/jmespath.dart' as jmespath;
 import 'package:lingua_flutter/controllers/translation.dart';
 import 'package:lingua_flutter/controllers/parsing_schemas.dart';
 import 'package:lingua_flutter/models/translation.dart';
+import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/utils/types.dart';
 import 'package:lingua_flutter/providers/api.dart';
 import 'package:lingua_flutter/utils/json.dart';
@@ -138,7 +139,8 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
 }
 
 Future<Translation> _fetchTranslation(String word, { bool? forceCurrentSchemaDownload }) async {
-  final existingTranslation = await translateControllerGet(word);
+  final encodedWord = removeSlash(word);
+  final existingTranslation = await translateControllerGet(encodedWord);
   if (existingTranslation != null) {
     final schemaVersion = existingTranslation.schemaVersion;
     StoredParsingSchema? storedParsingSchema;
@@ -178,7 +180,7 @@ Future<Translation> _fetchTranslation(String word, { bool? forceCurrentSchemaDow
         params: {
           '${parsingSchema.translation.fields.parameter}': parsingSchema.translation.fields.body
               .replaceAll('{marker}', parsingSchema.translation.fields.marker)
-              .replaceAll('{word}', word)
+              .replaceAll('{word}', encodedWord)
               .replaceAll('{sourceLanguage}', sourceLanguage)
               .replaceAll('{targetLanguage}', targetLanguage)
         }
@@ -189,7 +191,7 @@ Future<Translation> _fetchTranslation(String word, { bool? forceCurrentSchemaDow
         params: {
           '${parsingSchema.pronunciation.fields.parameter}': parsingSchema.pronunciation.fields.body
               .replaceAll('{marker}', parsingSchema.pronunciation.fields.marker)
-              .replaceAll('{word}', word)
+              .replaceAll('{word}', encodedWord)
               .replaceAll('{sourceLanguage}', sourceLanguage)
         }
     )
@@ -262,7 +264,7 @@ Future<List<String>> _fetchImages(String word) async {
   ParsingSchema? parsingSchema = storedParsingSchema.schema;
 
   final String imagesRaw = await apiGet(
-    url: parsingSchema.images.fields.url.replaceFirst('{word}', word),
+    url: parsingSchema.images.fields.url.replaceFirst('{word}', removeSlash(word)),
     headers: {
       'user-agent': parsingSchema.images.fields.userAgent,
     },

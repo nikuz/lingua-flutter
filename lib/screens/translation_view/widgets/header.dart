@@ -32,7 +32,7 @@ class TranslationViewHeader extends StatelessWidget {
             return Container();
           }
 
-          final theme = Styles.theme(context);
+          final MyTheme theme = Styles.theme(context);
           String? translationWord = translation.translation ?? jmespath.search(
               schema.translation.translation.value,
               translation.raw
