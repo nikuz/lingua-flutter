@@ -10,6 +10,7 @@ import './blocs/observer.dart';
 import './screens/search/bloc/search_cubit.dart';
 import './screens/translation_view/bloc/translation_view_cubit.dart';
 import './screens/settings/bloc/settings_cubit.dart';
+import './widgets/pronunciation.dart';
 import './app.dart';
 
 void main() async {
@@ -27,6 +28,8 @@ void main() async {
 
   // preload parsing schemas
   await preloadLocalParsingSchemas();
+
+  setGlobalAudioContext();
 
   runApp(
     MultiBlocProvider(

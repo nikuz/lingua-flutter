@@ -100,10 +100,8 @@ class TranslationViewHeader extends StatelessWidget {
   }
 
   Widget _buildImage(BuildContext context, TranslationViewState state) {
-    Widget image = Container();
-
     if (state.imageLoading) {
-      image = Center(
+      return Center(
         child: CircularProgressIndicator(
           backgroundColor: Colors.white,
         ),
@@ -111,7 +109,7 @@ class TranslationViewHeader extends StatelessWidget {
     }
 
     if (state.image != null) {
-      image = ImagePreview(
+      return ImagePreview(
         width: 150,
         height: 150,
         imageSource: state.image!,
@@ -124,7 +122,7 @@ class TranslationViewHeader extends StatelessWidget {
       );
     }
 
-    return image;
+    return Container();
   }
 
   Widget _buildFooter(TranslationViewState state) {

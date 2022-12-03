@@ -90,14 +90,9 @@ class _TranslationViewState extends State<TranslationView> {
         ),
       ),
       body: SafeArea(
-        // child: Container(
-        //   decoration: BoxDecoration(
-        //     border: Border.all(color: Colors.green, width: 3),
-        //   ),
-        // ),
         child: BlocListener<TranslationViewCubit, TranslationViewState>(
           listener: (context, state) {
-            if (state.word != null && state.images == null) {
+            if (state.word != null && state.images == null && !state.imageLoading) {
               _translationViewCubit.fetchImages(state.word!);
             }
 
@@ -140,7 +135,13 @@ class _TranslationViewState extends State<TranslationView> {
             builder: (context, state) {
               if (state.error != null) {
                 return Center(
-                  child: Text(state.error?.message ?? ''),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      'Cannot translate at the moment, \nplease try again later.',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 );
               }
 

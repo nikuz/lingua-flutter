@@ -32,6 +32,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         )),
         translateLoading: false,
       ));
+      throw err;
     }
   }
 
@@ -57,6 +58,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         )),
         imageLoading: false,
       ));
+      throw err;
     }
   }
 
@@ -79,6 +81,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         )),
         updateLoading: false,
       ));
+      throw err;
     }
 
     return false;
@@ -107,6 +110,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         )),
         updateLoading: false,
       ));
+      throw err;
     }
 
     return false;
@@ -164,18 +168,31 @@ Future<Translation> _fetchTranslation(String word, { bool? forceCurrentSchemaDow
   List<dynamic>? translationResult;
   String? pronunciationResult;
 
-  // fetch raw translate
-  String translationRaw = await apiPost(
-      url: parsingSchema.translation.fields.url,
-      params: {
-        '${parsingSchema.translation.fields.parameter}': parsingSchema.translation.fields.body
-          .replaceAll('{marker}', parsingSchema.translation.fields.marker)
-          .replaceAll('{word}', word)
-          .replaceAll('{sourceLanguage}', sourceLanguage)
-          .replaceAll('{targetLanguage}', targetLanguage)
-      }
-  );
+  List<String> results = await Future.wait([
+    // fetch raw translation
+    apiPost(
+        url: parsingSchema.translation.fields.url,
+        params: {
+          '${parsingSchema.translation.fields.parameter}': parsingSchema.translation.fields.body
+              .replaceAll('{marker}', parsingSchema.translation.fields.marker)
+              .replaceAll('{word}', word)
+              .replaceAll('{sourceLanguage}', sourceLanguage)
+              .replaceAll('{targetLanguage}', targetLanguage)
+        }
+    ),
+    // fetch raw pronunciation
+    apiPost(
+        url: parsingSchema.pronunciation.fields.url,
+        params: {
+          '${parsingSchema.pronunciation.fields.parameter}sd': parsingSchema.pronunciation.fields.body
+              .replaceAll('{marker}', parsingSchema.pronunciation.fields.marker)
+              .replaceAll('{word}', word)
+              .replaceAll('{sourceLanguage}', sourceLanguage)
+        }
+    )
+  ]);
 
+  String translationRaw = results[0];
   translationResult = _retrieveTranslationRawData(translationRaw, parsingSchema.translation.fields.marker);
   String? translationString = jmespath.search(parsingSchema.translation.translation.value, translationResult);
   if (translationResult == null || translationString == null) {
@@ -189,17 +206,7 @@ Future<Translation> _fetchTranslation(String word, { bool? forceCurrentSchemaDow
     }
   }
 
-  // fetch raw pronunciation
-  String pronunciationRaw = await apiPost(
-      url: parsingSchema.pronunciation.fields.url,
-      params: {
-        '${parsingSchema.pronunciation.fields.parameter}': parsingSchema.pronunciation.fields.body
-            .replaceAll('{marker}', parsingSchema.pronunciation.fields.marker)
-            .replaceAll('{word}', word)
-            .replaceAll('{sourceLanguage}', sourceLanguage)
-      }
-  );
-
+  String pronunciationRaw = results[1];
   final pronunciationRawData = _retrieveTranslationRawData(pronunciationRaw, parsingSchema.pronunciation.fields.marker);
   if (pronunciationRawData != null) {
     String? base64Value = jmespath.search(parsingSchema.pronunciation.data.value, pronunciationRawData);
