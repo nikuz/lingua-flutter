@@ -59,7 +59,6 @@ class _SearchFieldState extends State<SearchField> {
           _searchCubit.fetchTranslations(searchText: null);
         }
       }
-      // updateTranslation
     }
   }
 

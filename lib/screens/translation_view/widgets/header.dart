@@ -138,10 +138,10 @@ class TranslationViewHeader extends StatelessWidget {
     String? pronunciation = state.translation?.pronunciation;
     String? transcription = jmespath.search(schema.translation.transcription.value, translation.raw);
 
-    final bool newWord = translation.id == null;
-    bool toSave = newWord || state.imageIsUpdated || state.translationIsUpdated;
+    final bool isNewWord = translation.id == null;
+    bool toSave = isNewWord || state.imageIsUpdated || state.translationIsUpdated;
     IconData iconName = Icons.check;
-    if (newWord) {
+    if (isNewWord) {
       iconName = Icons.save_alt;
     } else if (state.imageIsUpdated || state.translationIsUpdated) {
       iconName = Icons.update;
@@ -208,18 +208,18 @@ class TranslationViewHeader extends StatelessWidget {
             ),
             child: icon,
             onPressed: () {
-              if (newWord && state.translation != null) {
-                context.read<TranslationViewCubit>().save(state.translation!).then((dynamic) {
-                  AutoRouter.of(context).pop<Translation>(state.translation);
-                });
-              } else if (state.imageIsUpdated || state.translationIsUpdated) {
-                // context.read<TranslationViewCubit>().update(
-                //   Translation(
-                //     word: state.word ?? '',
-                //     translation: translationUpdate ? state.translationOwn : state.translationWord,
-                //     image: imageUpdate ? state.image : null,
-                //   )
-                // );
+              if (state.translation != null) {
+                if (isNewWord) {
+                  context.read<TranslationViewCubit>().save(state.translation!).then((dynamic) {
+                    AutoRouter.of(context).pop<Translation>(state.translation);
+                  });
+                } else if (state.imageIsUpdated || state.translationIsUpdated) {
+                  context.read<TranslationViewCubit>().update(state.translation!).then((dynamic) {
+                    AutoRouter.of(context).pop<Translation>(state.translation!.copyWith(
+                      updatedAt: DateTime.now().toString(),
+                    ));
+                  });
+                }
               }
             },
           )

@@ -58,7 +58,7 @@ List<Widget> translationViewMenuConstructor({
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
               child: CustomTextField(
-                defaultValue: word,
+                defaultValue: state.translation?.translation,
                 autofocus: true,
                 textInputAction: TextInputAction.done,
                 framed: true,

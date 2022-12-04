@@ -2,12 +2,13 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/painting.dart' as painting;
+import 'package:lingua_flutter/models/translation_list.dart';
+import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/models/error.dart';
 import 'package:lingua_flutter/providers/db.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/regexp.dart';
-import 'package:lingua_flutter/models/translation_list.dart';
-import 'package:lingua_flutter/models/translation.dart';
+import 'package:lingua_flutter/utils/media_source.dart';
 
 Future<void> translateControllerInit() async {
   await DBProvider().rawQuery('''
@@ -247,8 +248,8 @@ Future<void> translateControllerSave(Translation translation) async {
   }
 }
 
-Future<void> translateControllerUpdate(Map<String, dynamic> params) async {
-  final Translation? translationData = await translateControllerGet(params['word']);
+Future<void> translateControllerUpdate(Translation translation) async {
+  final Translation? translationData = await translateControllerGet(translation.word);
   final translationId = translationData?.id;
 
   if (translationData == null || translationId == null) {
@@ -260,25 +261,28 @@ Future<void> translateControllerUpdate(Map<String, dynamic> params) async {
 
   String? imageUrl;
 
-  if (params['image'] != null && params['image'] != '') {
-    String dir = await getDocumentsPath();
-    File image = File('$dir/${params['image']}');
-    if (image.existsSync()) {
-      image.deleteSync();
-    }
-    painting.imageCache.clear();
+  if (translation.image != null) {
+    final imageSourceType = MediaSource.getType(translation.image!);
+    if (imageSourceType == MediaSourceType.base64) {
+      String dir = await getDocumentsPath();
+      File image = File('$dir/${translation.image}');
+      if (image.existsSync()) {
+        image.deleteSync();
+      }
+      painting.imageCache.clear();
 
-    String fileId = generateFileIdFromWord(translationId, params['word']);
-    RegExpMatch? imageParts = base64ImageReg.firstMatch(params['image']);
-    String? extension = imageParts?.group(1);
-    String? value = imageParts?.group(2);
+      String fileId = generateFileIdFromWord(translationId, translation.word);
+      RegExpMatch? imageParts = base64ImageReg.firstMatch(translation.image!);
+      String? extension = imageParts?.group(1);
+      String? value = imageParts?.group(2);
 
-    if (imageParts != null && extension is String && value is String) {
-      Uint8List imageBytes = Base64Decoder().convert(value);
-      imageUrl = '/images/$fileId.$extension';
+      if (imageParts != null && extension is String && value is String) {
+        Uint8List imageBytes = Base64Decoder().convert(value);
+        imageUrl = '/images/$fileId.$extension';
 
-      image = File('$dir/$imageUrl');
-      await image.writeAsBytes(imageBytes);
+        image = File('$dir/$imageUrl');
+        await image.writeAsBytes(imageBytes);
+      }
     }
   }
 
@@ -294,7 +298,7 @@ Future<void> translateControllerUpdate(Map<String, dynamic> params) async {
         SET translation=?, updated_at=datetime("now") $imageTransaction
         WHERE id=$translationId;
       ''',
-      [params['translation']]
+      [translation.translation]
   );
 }
 

@@ -55,9 +55,10 @@ class _TranslationViewState extends State<TranslationView> {
 
   void _scrollHandler() {
     final scrollPosition = _scrollController.position.pixels;
-    if (scrollPosition < 50 && !(_scrollPhysics is ClampingScrollPhysics)) {
+    final threshold = MediaQuery.of(context).size.height;
+    if (scrollPosition < threshold && !(_scrollPhysics is ClampingScrollPhysics)) {
       setState(() => _scrollPhysics = ClampingScrollPhysics());
-    } else if (scrollPosition > 50 && !(_scrollPhysics is BouncingScrollPhysics)) {
+    } else if (scrollPosition > threshold && !(_scrollPhysics is BouncingScrollPhysics)) {
       setState(() => _scrollPhysics = BouncingScrollPhysics());
     }
   }

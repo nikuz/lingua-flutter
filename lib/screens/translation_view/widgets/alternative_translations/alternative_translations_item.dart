@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:jmespath/jmespath.dart' as jmespath;
 
+import 'package:lingua_flutter/models/translation.dart';
 import '../../bloc/translation_view_cubit.dart';
 import '../../bloc/translation_view_state.dart';
 
@@ -24,6 +26,7 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
           return Container();
         }
 
+        final bool isNewWord = translation.id == null;
         String? word = jmespath.search(schema.translation.alternativeTranslations.items.translation.value, data);
         List<dynamic>? words = jmespath.search(schema.translation.alternativeTranslations.items.words.value, data);
         int? frequency = jmespath.search(schema.translation.alternativeTranslations.items.frequency.value, data);
@@ -56,29 +59,18 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
                     ),
                   ),
                   onTap: () {
-                    if (state.word != null) {
-                      // if (state.word!.isCyrillic())
-                        // AutoRouter.of(context).replace(TranslationViewRoute(word: word));
-                      if (translation.id == null) {
-                        // context.read<TranslationViewCubit>().save(
-                        //     Translation(
-                        //       word: state.word!,
-                        //       translation: word,
-                        //       pronunciation: state.pronunciation ?? '',
-                        //       image: state.image ?? '',
-                        //       raw: state.raw ?? [],
-                        //       version: state.version ?? 2,
-                        //     )
-                        // );
-                      } else {
-                        // context.read<TranslationViewCubit>().update(
-                        //     Translation(
-                        //       word: word,
-                        //       translation: state.translationWord,
-                        //       image: state.image,
-                        //     )
-                        // );
-                      }
+                    final alteredTranslation = translation.copyWith(
+                      translation: word,
+                      updatedAt: DateTime.now().toString(),
+                    );
+                    if (isNewWord) {
+                      context.read<TranslationViewCubit>().save(alteredTranslation).then((dynamic) {
+                        AutoRouter.of(context).pop<Translation>(alteredTranslation);
+                      });
+                    } else {
+                      context.read<TranslationViewCubit>().update(alteredTranslation).then((dynamic) {
+                        AutoRouter.of(context).pop<Translation>(alteredTranslation);
+                      });
                     }
                   },
                 ),

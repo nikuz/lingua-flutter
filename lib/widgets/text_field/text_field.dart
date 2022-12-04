@@ -142,7 +142,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       decoration: InputDecoration(
         filled: true,
         fillColor: Theme.of(context).scaffoldBackgroundColor,
-        prefix: widget.prefix ?? Text('  '),
+        prefix: widget.prefix,
         prefixIcon: prefixIcon,
         prefixIconConstraints: BoxConstraints(
           minWidth: TextFieldConstants.iconSize,

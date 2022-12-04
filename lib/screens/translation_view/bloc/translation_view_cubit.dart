@@ -88,17 +88,13 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
     }
   }
 
-  void update(Translation translation) async {
+  Future<void> update(Translation translation) async {
     try {
       emit(state.copyWith(
         updateLoading: true,
       ));
 
-      await translateControllerUpdate({
-        'word': '${translation.word}',
-        'image': '${translation.image != null ? translation.image : ''}',
-        'translation': '${translation.translation}',
-      });
+      await translateControllerUpdate(translation);
 
       emit(state.copyWith(
         updateLoading: false,

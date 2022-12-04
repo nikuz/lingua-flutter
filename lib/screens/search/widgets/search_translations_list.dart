@@ -161,101 +161,128 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: Key(widget.translationItem.word),
-      background: Container(
-        color: Colors.red,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Container(
-              width: 80,
-              child: Icon(
-                Icons.delete,
-                color: Colors.white,
-                size: 30,
-              ),
-            ),
-          ],
-        ),
-      ),
-      confirmDismiss: (DismissDirection direction) {
-        final completer = Completer<bool>();
-
-        Prompt(
-          context: context,
-          title: 'Delete "${widget.translationItem.word}" word?',
-          acceptCallback: () {
-            if (widget.translationItem.id != null) {
-              context.read<SearchCubit>().removeTranslation(widget.translationItem.id!);
-            }
-          },
-        ).show().then((value) {
-          completer.complete(value == true);
-        });
-
-        return completer.future;
-      },
-      direction: DismissDirection.endToStart,
-      child: Container(
-        margin: EdgeInsets.only(bottom: 2),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: widget.withBorder ? Theme.of(context).dividerColor : Color.fromRGBO(0, 0, 0, 0.0),
+    return BlocBuilder<SearchCubit, SearchState>(
+      builder: (context, state) {
+        return Dismissible(
+          key: Key(widget.translationItem.word),
+          background: Container(
+            color: Colors.red,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Container(
+                  width: 80,
+                  child: Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                ),
+              ],
             ),
           ),
-          color: isSelected ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
-        ),
-        child: ListTile(
-          leading: widget.translationItem.image != null
-            ? ImagePreview(
-                width: 50,
-                height: 50,
-                imageSource: widget.translationItem.image!,
-                onTap: () {
-                  setState(() {
-                    isSelected = true;
-                  });
-                },
-                onPreviewClose: () {
-                  setState(() {
-                    isSelected = false;
-                  });
+          confirmDismiss: (DismissDirection direction) {
+            final completer = Completer<bool>();
+
+            Prompt(
+              context: context,
+              title: 'Delete "${widget.translationItem.word}" word?',
+              acceptCallback: () {
+                if (widget.translationItem.id != null) {
+                  context.read<SearchCubit>().removeTranslation(widget.translationItem.id!);
                 }
-            )
-            : null,
-          title: Container(
-            margin: EdgeInsets.only(bottom: 2),
-            child: Text(
-              widget.translationItem.word,
-              style: TextStyle(
-                fontSize: 18,
-                color: isSelected
-                    ? Colors.white
-                    : Theme.of(context).textTheme.headline1!.decorationColor,
-              ),
-            ),
-          ),
-          subtitle: Container(
-            margin: EdgeInsets.only(bottom: 2),
-            child: Text(
-              widget.translationItem.translation!,
-              style: TextStyle(
-                fontSize: 16,
-                color: isSelected ? Colors.white : Theme.of(context).textTheme.headline1!.color,
-              ),
-            ),
-          ),
-          dense: true,
-          trailing: widget.translationItem.pronunciation != null
-              ? PronunciationWidget(pronunciationSource: widget.translationItem.pronunciation!)
-              : null,
-          onTap: () {
-            AutoRouter.of(context).push(TranslationViewRoute(word: widget.translationItem.word));
+              },
+            ).show().then((value) {
+              completer.complete(value == true);
+            });
+
+            return completer.future;
           },
-        ),
-      ),
+          direction: DismissDirection.endToStart,
+          child: Container(
+            margin: EdgeInsets.only(bottom: 2),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: widget.withBorder ? Theme
+                      .of(context)
+                      .dividerColor : Color.fromRGBO(0, 0, 0, 0.0),
+                ),
+              ),
+              color: isSelected ? Theme
+                  .of(context)
+                  .colorScheme
+                  .secondary : Theme
+                  .of(context)
+                  .scaffoldBackgroundColor,
+            ),
+            child: ListTile(
+              leading: widget.translationItem.image != null
+                  ? ImagePreview(
+                  width: 50,
+                  height: 50,
+                  imageSource: widget.translationItem.image!,
+                  onTap: () {
+                    setState(() {
+                      isSelected = true;
+                    });
+                  },
+                  onPreviewClose: () {
+                    setState(() {
+                      isSelected = false;
+                    });
+                  }
+              )
+                  : null,
+              title: Container(
+                margin: EdgeInsets.only(bottom: 2),
+                child: Text(
+                  widget.translationItem.word,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: isSelected
+                        ? Colors.white
+                        : Theme
+                        .of(context)
+                        .textTheme
+                        .headline1!
+                        .decorationColor,
+                  ),
+                ),
+              ),
+              subtitle: Container(
+                margin: EdgeInsets.only(bottom: 2),
+                child: Text(
+                  widget.translationItem.translation!,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: isSelected ? Colors.white : Theme
+                        .of(context)
+                        .textTheme
+                        .headline1!
+                        .color,
+                  ),
+                ),
+              ),
+              dense: true,
+              trailing: widget.translationItem.pronunciation != null
+                  ? PronunciationWidget(pronunciationSource: widget.translationItem.pronunciation!)
+                  : null,
+              onTap: () async {
+                final result = await AutoRouter.of(context).push<Translation>(
+                    TranslationViewRoute(word: widget.translationItem.word)
+                );
+                if (result != null) {
+                  final searchCubit = context.read<SearchCubit>();
+                  if (state.translations.any((item) => item.id == result.id)) {
+                    searchCubit.updateTranslation(result);
+                  }
+                }
+              },
+            ),
+          ),
+        );
+      }
     );
   }
 }
