@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 
 import 'package:lingua_flutter/utils/connectivity.dart';
-// import 'package:lingua_flutter/screens/router.gr.dart';
-// import 'package:lingua_flutter/screens/search/bloc/search_cubit.dart';
 
 import './bloc/translation_view_cubit.dart';
 import './bloc/translation_view_state.dart';
@@ -100,7 +98,11 @@ class _TranslationViewState extends State<TranslationView> {
               && state.images == null
               && !state.imageLoading
             ) {
-              _translationViewCubit.fetchImages(state.translation!.word);
+              _translationViewCubit.fetchImages(state.translation!.word).then((String? image) {
+                if (image != null) {
+                  _translationViewCubit.setImage(image);
+                }
+              });
             }
 
             if (state.translation?.id != null && _translationId == null) {
@@ -108,25 +110,6 @@ class _TranslationViewState extends State<TranslationView> {
                 _translationId = state.translation!.id;
               });
             }
-
-            // if (state.updateSuccess == true || state.saveSuccess == true) {
-            //   AutoRouter.of(context).pop();
-            //   _translationBloc.add(TranslationClear());
-            //   // if (state.saveSuccess == true) {
-            //   //   BlocProvider.of<TranslationsBloc>(context).add(TranslationsRequest());
-            //   // } else if (state.updateSuccess!) {
-            //   //   BlocProvider.of<TranslationsBloc>(context).add(TranslationsUpdateItem(
-            //   //     id: state.id,
-            //   //     word: state.word,
-            //   //     translation: (state.translationOwn != null ? state.translationOwn : state.translationWord),
-            //   //     pronunciation: state.pronunciation,
-            //   //     imageUrl: state.imageUrl,
-            //   //     image: state.image,
-            //   //     createdAt: state.createdAt,
-            //   //     updatedAt: '${new DateTime.now().millisecondsSinceEpoch}',
-            //   //   ));
-            //   // }
-            // }
           },
           child: BlocBuilder<TranslationViewCubit, TranslationViewState>(
             builder: (context, state) {

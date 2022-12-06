@@ -22,11 +22,7 @@ List<Widget> translationViewMenuConstructor({
   required bool hasInternetConnection,
 }) {
   final translationViewCubit = context.read<TranslationViewCubit>();
-  final state = translationViewCubit.state;
-  final word = state.word;
-  final imageSearchWord = state.imageSearchWord;
-  final translationId = state.translation?.id;
-  String? newTranslation = word;
+  String? newTranslation = context.read<TranslationViewCubit>().state.word;
 
   return [
     PopupMenuButton<Menu>(
@@ -34,6 +30,11 @@ List<Widget> translationViewMenuConstructor({
       enabled: !isDisabled,
 
       onSelected: (Menu item) async {
+        final state = translationViewCubit.state;
+        final word = state.word;
+        final imageSearchWord = state.imageSearchWord;
+        final translationId = state.translation?.id;
+
         if (item.id == 'remove') {
           Prompt(
             context: context,

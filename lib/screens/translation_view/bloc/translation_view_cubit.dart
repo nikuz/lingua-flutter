@@ -23,6 +23,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
 
       emit(state.copyWith(
         word: word,
+        imageSearchWord: word,
         translation: translation,
       ));
     } catch (err) {
@@ -37,7 +38,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
     }
   }
 
-  void fetchImages(String word) async {
+  Future<String?> fetchImages(String word) async {
     emit(state.copyWith(
       imageLoading: true,
       imageSearchWord: word,
@@ -48,11 +49,9 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
 
       emit(state.copyWith(
         images: images,
-        translation: state.translation?.copyWith(
-          image: images?[0],
-        ),
         imageLoading: false,
       ));
+      return images?[0];
     } catch (err) {
       emit(state.copyWith(
         error: Wrapped.value(CustomError(
