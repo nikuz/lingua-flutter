@@ -8,7 +8,7 @@ import '../../bloc/translation_view_state.dart';
 class DefinitionsItemSynonyms extends StatelessWidget {
   final List<dynamic> data;
 
-  DefinitionsItemSynonyms({
+  const DefinitionsItemSynonyms({
     Key? key,
     required this.data,
   }) : super(key: key);
@@ -24,7 +24,7 @@ class DefinitionsItemSynonyms extends StatelessWidget {
           return Container();
         }
 
-        String? type = jmespath.search(schema.translation.definitions.items.synonyms.type.value, data);
+        // String? type = jmespath.search(schema.translation.definitions.items.synonyms.type.value, data);
         List<dynamic>? items = jmespath.search(schema.translation.definitions.items.synonyms.items.value, data);
 
         if (items == null) {
@@ -39,7 +39,7 @@ class DefinitionsItemSynonyms extends StatelessWidget {
             String? text = jmespath.search(schema.translation.definitions.items.synonyms.items.text.value, item);
 
             return Container(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 top: 3,
                 right: 8,
                 bottom: 5,
@@ -49,13 +49,13 @@ class DefinitionsItemSynonyms extends StatelessWidget {
                 border: Border.all(
                   width: 1,
                   style: BorderStyle.solid,
-                  color: Color.fromRGBO(218, 220, 224, 1),
+                  color: const Color.fromRGBO(218, 220, 224, 1),
                 ),
-                borderRadius: BorderRadius.all(Radius.circular(7)),
+                borderRadius: const BorderRadius.all(Radius.circular(7)),
               ),
               child: Text(
                 text ?? '',
-                style: TextStyle(fontSize: 15),
+                style: const TextStyle(fontSize: 15),
               ),
             );
           }).toList(),

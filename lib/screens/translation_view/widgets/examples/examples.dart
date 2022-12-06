@@ -8,10 +8,8 @@ import '../section_wrapper.dart';
 import './examples_item.dart';
 import './constants.dart';
 
-const SHOW_MIN_EXAMPLES = TranslationViewExamplesConstants.minTranslationsToShow;
-
 class TranslationViewExamples extends StatelessWidget {
-  TranslationViewExamples({Key? key}) : super(key: key);
+  const TranslationViewExamples({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +32,12 @@ class TranslationViewExamples extends StatelessWidget {
           name: 'examples',
           word: state.word,
           itemsAmount: examples.length,
-          maxItemsToShow: SHOW_MIN_EXAMPLES,
+          maxItemsToShow: TranslationViewExamplesConstants.minTranslationsToShow,
           withBottomMargin: true,
           childBuilder: (bool expanded) => ListView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: expanded ? examples.length : SHOW_MIN_EXAMPLES,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: expanded ? examples.length : TranslationViewExamplesConstants.minTranslationsToShow,
             itemBuilder: (BuildContext context, int index) => ExamplesItem(
               data: examples[index],
             ),

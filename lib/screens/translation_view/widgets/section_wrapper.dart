@@ -9,7 +9,7 @@ class TranslationViewSectionWrapper extends StatefulWidget {
   final bool withBottomMargin;
   final Function childBuilder;
 
-  TranslationViewSectionWrapper({
+  const TranslationViewSectionWrapper({
     Key? key,
     required this.name,
     this.word,
@@ -31,11 +31,8 @@ class _TranslationViewSectionWrapperState extends State<TranslationViewSectionWr
     int? hiddenItemsAmount;
 
     if (widget.itemsAmount > widget.maxItemsToShow) {
-      if (hiddenItemsAmount == null) {
-        hiddenItemsAmount = 0;
-      }
       if (!expanded) {
-        hiddenItemsAmount += widget.itemsAmount - widget.maxItemsToShow;
+        hiddenItemsAmount = widget.itemsAmount - widget.maxItemsToShow;
       }
     }
 
@@ -49,7 +46,7 @@ class _TranslationViewSectionWrapperState extends State<TranslationViewSectionWr
       child: Column(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               border: Border.all(
                   color: Theme.of(context).dividerColor,
@@ -57,8 +54,8 @@ class _TranslationViewSectionWrapperState extends State<TranslationViewSectionWr
                   style: BorderStyle.solid
               ),
               borderRadius: BorderRadius.vertical(
-                top: new Radius.circular(8),
-                bottom: new Radius.circular(hiddenItemsAmount != null ? 0 : 8),
+                top: const Radius.circular(8),
+                bottom: Radius.circular(hiddenItemsAmount != null ? 0 : 8),
               ),
             ),
             child: Column(
@@ -111,7 +108,7 @@ class TranslationViewSectionWrapperExpandButton extends StatelessWidget {
   final int? amount;
   final VoidCallback? onPressed;
 
-  TranslationViewSectionWrapperExpandButton({
+  const TranslationViewSectionWrapperExpandButton({
     Key? key,
     required this.expanded,
     required this.name,
@@ -127,19 +124,20 @@ class TranslationViewSectionWrapperExpandButton extends StatelessWidget {
 
     return TextButton(
       style: TextButton.styleFrom(
-        minimumSize: Size(0, 43),
+        minimumSize: const Size(0, 43),
         backgroundColor: Theme.of(context).buttonTheme.colorScheme?.secondaryContainer,
-        shape: new RoundedRectangleBorder(
-          borderRadius: new BorderRadius.only(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(8),
             bottomRight: Radius.circular(8),
           ),
         ),
       ),
+      onPressed: onPressed,
       child: Row( // Replace with a Row for horizontal icon + text
         children: <Widget>[
           Container(
-            margin: EdgeInsets.only(right: 10),
+            margin: const EdgeInsets.only(right: 10),
             child: Icon(
               expanded ? Icons.expand_less : Icons.expand_more,
               color: Theme.of(context).selectedRowColor,
@@ -157,7 +155,6 @@ class TranslationViewSectionWrapperExpandButton extends StatelessWidget {
           )
         ],
       ),
-      onPressed: onPressed,
     );
   }
 }

@@ -9,7 +9,7 @@ import '../../bloc/translation_view_state.dart';
 class ExamplesItem extends StatelessWidget {
   final List<dynamic> data;
 
-  ExamplesItem({
+  const ExamplesItem({
     Key? key,
     required this.data,
   }) : super(key: key);
@@ -32,20 +32,20 @@ class ExamplesItem extends StatelessWidget {
         }
 
         return Container(
-          margin: EdgeInsets.only(top: 15),
+          margin: const EdgeInsets.only(top: 15),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Icon(
+              const Icon(
                 Icons.format_quote,
                 size: 20,
                 color: Color.fromRGBO(119, 119, 119, 1),
               ),
               Expanded(
                 child: Container(
-                  margin: EdgeInsets.only(left: 20),
+                  margin: const EdgeInsets.only(left: 20),
                   child: Html(
-                    data: """$text""",
+                    data: text,
                     style: {
                       "*": Style(fontSize: FontSize(16)),
                     },

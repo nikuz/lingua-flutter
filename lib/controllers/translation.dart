@@ -39,7 +39,7 @@ Future<TranslationList> translateControllerGetList(int from, int to) async {
       ''',
       arguments: [to - from, from],
     ),
-    BatchQueryRequest(
+    const BatchQueryRequest(
       type: 'rawQuery',
       query: 'SELECT $countColumnName FROM dictionary',
     )
@@ -158,7 +158,7 @@ Future<void> translateControllerSave(Translation translation) async {
   final Translation? alreadyExists = await translateControllerGet(translation.word);
 
   if (alreadyExists != null) {
-    throw CustomError(
+    throw const CustomError(
       code: 409,
       message: 'Such translation already exists in local database',
     );
@@ -195,7 +195,7 @@ Future<void> translateControllerSave(Translation translation) async {
         String? imageValue = imageParts?.group(2);
 
         if (imageParts != null && extension != null && imageValue != null) {
-          Uint8List imageBytes = Base64Decoder().convert(imageValue);
+          Uint8List imageBytes = const Base64Decoder().convert(imageValue);
           imageUrl = '/images/$fileId.$extension';
 
           File image = File('$dir/$imageUrl');
@@ -207,7 +207,7 @@ Future<void> translateControllerSave(Translation translation) async {
       String? pronunciationUrl;
       if (translation.schema != null) {
         // save pronunciation
-        final RegExp pronunciationReg = new RegExp('${translation.schema!.pronunciation.fields.base64Prefix}(.+)');
+        final RegExp pronunciationReg = RegExp('${translation.schema!.pronunciation.fields.base64Prefix}(.+)');
         pronunciationUrl = translation.pronunciation;
         RegExpMatch? pronunciationParts;
         if (pronunciationUrl != null) {
@@ -215,7 +215,7 @@ Future<void> translateControllerSave(Translation translation) async {
           String? pronunciationValue = pronunciationParts?.group(1);
 
           if (pronunciationParts != null && pronunciationValue != null) {
-            Uint8List pronunciationBytes = Base64Decoder().convert(pronunciationValue);
+            Uint8List pronunciationBytes = const Base64Decoder().convert(pronunciationValue);
             pronunciationUrl = '/pronunciations/$fileId.mp3';
 
             File pronunciation = File('$dir/$pronunciationUrl');
@@ -238,10 +238,10 @@ Future<void> translateControllerSave(Translation translation) async {
       );
     } catch (err) {
       await DBProvider().rawDelete('DELETE FROM dictionary WHERE id=?;', [newTranslationId]);
-      throw err;
+      rethrow;
     }
   } else {
-    throw CustomError(
+    throw const CustomError(
       code: 500,
       message: 'Can\'t save translation ito DB',
     );
@@ -253,7 +253,7 @@ Future<void> translateControllerUpdate(Translation translation) async {
   final translationId = translationData?.id;
 
   if (translationData == null || translationId == null) {
-    throw CustomError(
+    throw const CustomError(
       code: 404,
       message: 'Such translation does not exist in the local database',
     );
@@ -277,7 +277,7 @@ Future<void> translateControllerUpdate(Translation translation) async {
       String? value = imageParts?.group(2);
 
       if (imageParts != null && extension is String && value is String) {
-        Uint8List imageBytes = Base64Decoder().convert(value);
+        Uint8List imageBytes = const Base64Decoder().convert(value);
         imageUrl = '/images/$fileId.$extension';
 
         image = File('$dir/$imageUrl');
@@ -309,7 +309,7 @@ Future<void> translateControllerRemoveItem(int id) async {
   );
 
   if (dbResponse.isEmpty) {
-    throw CustomError(
+    throw const CustomError(
       code: 404,
       message: 'Such translation does not exist in the local database',
     );

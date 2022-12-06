@@ -31,7 +31,7 @@ class Modal {
             child: Container(
               width: screenWidth - screenWidth * 0.2,
               margin: MediaQuery.of(context).viewInsets,
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: theme.colors.secondary,
                 borderRadius: BorderRadius.circular(4),

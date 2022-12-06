@@ -10,9 +10,8 @@ import './settings/settings.dart';
 class Routes {
   static const home = '/';
   static const search = 'search';
-  static const translation_view = 'translation_view';
-  static const translation_images = 'translation_view/images';
-  static const translation_own = 'translation_view/own';
+  static const translationView = 'translation_view';
+  static const translationImages = 'translation_view/images';
   static const settings = 'settings';
 }
 
@@ -29,11 +28,11 @@ class Routes {
           transitionsBuilder: TransitionsBuilders.noTransition,
         ),
         AutoRoute<Translation>(
-          path: Routes.translation_view,
+          path: Routes.translationView,
           page: TranslationView,
         ),
         AutoRoute(
-          path: Routes.translation_images,
+          path: Routes.translationImages,
           page: TranslationViewImagePicker,
         ),
         CustomRoute(

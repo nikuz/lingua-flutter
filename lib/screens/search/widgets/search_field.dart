@@ -11,7 +11,7 @@ import '../bloc/search_cubit.dart';
 import '../bloc/search_state.dart';
 
 class SearchField extends StatefulWidget {
-  SearchField({Key? key}) : super(key: key);
+  const SearchField({Key? key}) : super(key: key);
 
   @override
   State<SearchField> createState() => _SearchFieldState();

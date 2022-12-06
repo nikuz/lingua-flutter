@@ -17,19 +17,19 @@ import './widgets/examples/examples.dart';
 class TranslationView extends StatefulWidget {
   final String word;
 
-  TranslationView({
+  const TranslationView({
     Key? key,
     required this.word,
   }) : super(key: key);
 
   @override
-  _TranslationViewState createState() => _TranslationViewState();
+  State<TranslationView> createState() => _TranslationViewState();
 }
 
 class _TranslationViewState extends State<TranslationView> {
   late TranslationViewCubit _translationViewCubit;
   late ScrollController _scrollController;
-  ScrollPhysics _scrollPhysics = ClampingScrollPhysics();
+  ScrollPhysics _scrollPhysics = const ClampingScrollPhysics();
   int? _translationId;
   bool _hasInternetConnection = false;
 
@@ -54,10 +54,10 @@ class _TranslationViewState extends State<TranslationView> {
   void _scrollHandler() {
     final scrollPosition = _scrollController.position.pixels;
     final threshold = MediaQuery.of(context).size.height;
-    if (scrollPosition < threshold && !(_scrollPhysics is ClampingScrollPhysics)) {
-      setState(() => _scrollPhysics = ClampingScrollPhysics());
-    } else if (scrollPosition > threshold && !(_scrollPhysics is BouncingScrollPhysics)) {
-      setState(() => _scrollPhysics = BouncingScrollPhysics());
+    if (scrollPosition < threshold && _scrollPhysics is! ClampingScrollPhysics) {
+      setState(() => _scrollPhysics = const ClampingScrollPhysics());
+    } else if (scrollPosition > threshold && _scrollPhysics is! BouncingScrollPhysics) {
+      setState(() => _scrollPhysics = const BouncingScrollPhysics());
     }
   }
 
@@ -69,12 +69,12 @@ class _TranslationViewState extends State<TranslationView> {
         automaticallyImplyLeading: true, // to automatically add Back Button when needed,
         title: Text(
           widget.word,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 20,
           ),
         ),
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             size: 25,
           ),
@@ -114,7 +114,7 @@ class _TranslationViewState extends State<TranslationView> {
           child: BlocBuilder<TranslationViewCubit, TranslationViewState>(
             builder: (context, state) {
               if (state.error != null) {
-                return Center(
+                return const Center(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
@@ -131,18 +131,18 @@ class _TranslationViewState extends State<TranslationView> {
                   physics: _scrollPhysics,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
+                    children: [
                       TranslationViewHeader(word: widget.word),
-                      TranslationViewAutoSpellingFix(),
-                      TranslationViewAlternativeTranslations(),
-                      TranslationViewDefinitions(),
-                      TranslationViewExamples(),
+                      const TranslationViewAutoSpellingFix(),
+                      const TranslationViewAlternativeTranslations(),
+                      const TranslationViewDefinitions(),
+                      const TranslationViewExamples(),
                     ],
                   ),
                 );
               }
 
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             },

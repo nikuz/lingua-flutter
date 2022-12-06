@@ -13,7 +13,7 @@ import 'package:lingua_flutter/models/error.dart';
 import 'translation_view_state.dart';
 
 class TranslationViewCubit extends Cubit<TranslationViewState> {
-  TranslationViewCubit() : super(TranslationViewState());
+  TranslationViewCubit() : super(const TranslationViewState());
 
   void translate(String word) async {
     try {
@@ -34,7 +34,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         )),
         translateLoading: false,
       ));
-      throw err;
+      rethrow;
     }
   }
 
@@ -60,7 +60,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         )),
         imageLoading: false,
       ));
-      throw err;
+      rethrow;
     }
   }
 
@@ -83,7 +83,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         )),
         updateLoading: false,
       ));
-      throw err;
+      rethrow;
     }
   }
 
@@ -106,7 +106,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         )),
         updateLoading: false,
       ));
-      throw err;
+      rethrow;
     }
   }
 
@@ -129,7 +129,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
   }
 
   void reset() {
-    emit(TranslationViewState());
+    emit(const TranslationViewState());
   }
 }
 
@@ -154,7 +154,7 @@ Future<Translation> _fetchTranslation(String word, { bool? forceCurrentSchemaDow
   );
 
   if (storedParsingSchema == null) {
-    throw CustomError(
+    throw const CustomError(
       code: 404,
       message: 'Can\'t retrieve "current" parsing schema',
     );
@@ -173,7 +173,7 @@ Future<Translation> _fetchTranslation(String word, { bool? forceCurrentSchemaDow
     apiPost(
         url: parsingSchema.translation.fields.url,
         params: {
-          '${parsingSchema.translation.fields.parameter}': parsingSchema.translation.fields.body
+          parsingSchema.translation.fields.parameter: parsingSchema.translation.fields.body
               .replaceAll('{marker}', parsingSchema.translation.fields.marker)
               .replaceAll('{word}', encodedWord)
               .replaceAll('{sourceLanguage}', sourceLanguage)
@@ -184,7 +184,7 @@ Future<Translation> _fetchTranslation(String word, { bool? forceCurrentSchemaDow
     apiPost(
         url: parsingSchema.pronunciation.fields.url,
         params: {
-          '${parsingSchema.pronunciation.fields.parameter}': parsingSchema.pronunciation.fields.body
+          parsingSchema.pronunciation.fields.parameter: parsingSchema.pronunciation.fields.body
               .replaceAll('{marker}', parsingSchema.pronunciation.fields.marker)
               .replaceAll('{word}', encodedWord)
               .replaceAll('{sourceLanguage}', sourceLanguage)
@@ -199,7 +199,7 @@ Future<Translation> _fetchTranslation(String word, { bool? forceCurrentSchemaDow
     if (forceCurrentSchemaDownload == null) {
       return _fetchTranslation(word, forceCurrentSchemaDownload: true);
     } else {
-      throw CustomError(
+      throw const CustomError(
         code: 500,
         message: 'Can\'t parse translation response with "current" schema',
       );
@@ -246,11 +246,11 @@ List<dynamic>? _retrieveTranslationRawData(String rawData, String marker) {
   return null;
 }
 
-Future<List<String>> _fetchImages(String word) async {
+Future<List<String>?> _fetchImages(String word) async {
   StoredParsingSchema? storedParsingSchema = await getParsingSchema('current');
 
   if (storedParsingSchema == null) {
-    throw CustomError(
+    throw const CustomError(
       code: 404,
       message: 'Can\'t retrieve "current" parsing schema',
     );
@@ -266,7 +266,7 @@ Future<List<String>> _fetchImages(String word) async {
   );
 
   final minImageSize = int.parse(parsingSchema.images.fields.minSize); // in base64 characters
-  final imageReg = RegExp('${parsingSchema.images.fields.regExp}');
+  final imageReg = RegExp(parsingSchema.images.fields.regExp);
   final base64EndReg = RegExp(r'\\x3d');
   final slashReg = RegExp(r'\\/');
   List<String> resultImages = [];

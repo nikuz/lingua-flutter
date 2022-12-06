@@ -59,7 +59,7 @@ class SettingsState extends Equatable {
     return SettingsState(
       pronunciationAutoPlay: pronunciationAutoPlay,
       darkMode: darkMode,
-      autoDarkMode: autoDarkMode != null ? autoDarkMode : true,
+      autoDarkMode: autoDarkMode ?? true,
       backupLoading: false,
       backupError: false,
       backupTime: backupTime,

@@ -26,7 +26,7 @@ List<Widget> translationViewMenuConstructor({
 
   return [
     PopupMenuButton<Menu>(
-      icon: Icon(Icons.more_vert),
+      icon: const Icon(Icons.more_vert),
       enabled: !isDisabled,
 
       onSelected: (Menu item) async {
@@ -57,7 +57,7 @@ List<Widget> translationViewMenuConstructor({
             context: context,
             title: 'Custom translation for "$word"',
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+              margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
               child: CustomTextField(
                 defaultValue: state.translation?.translation,
                 autofocus: true,

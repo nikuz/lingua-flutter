@@ -7,7 +7,7 @@ import './widgets/search_field.dart';
 import './widgets/search_translations_list.dart';
 
 class Search extends StatefulWidget {
-  Search({Key? key}) : super(key: key);
+  const Search({Key? key}) : super(key: key);
 
   @override
   State<Search> createState() => _SearchState();
@@ -27,7 +27,7 @@ class _SearchState extends State<Search> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'My Dictionary',
           style: TextStyle(
             fontSize: 20,
@@ -40,7 +40,7 @@ class _SearchState extends State<Search> {
             color: theme.colors.background,
           ),
           child: Column(
-            children: <Widget>[
+            children: const [
               SearchField(),
               Expanded(
                 child: SearchTranslationsList(),

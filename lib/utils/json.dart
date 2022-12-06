@@ -13,7 +13,7 @@ List<String> findAllJsonStrings(dynamic json, [List<String>? buffer]) {
   for (var item in values) {
     if (item is Map || item is List) {
       findAllJsonStrings(item, strings);
-    } else if (item is String && item.indexOf('"') != -1) {
+    } else if (item is String && item.contains('"')) {
       strings.add(item);
     }
   }

@@ -12,7 +12,7 @@ class TabNavigator extends StatefulWidget {
   final List<TabNavigatorItem> children;
   final Function(String label)? onSelectTab;
 
-  TabNavigator({
+  const TabNavigator({
     Key? key,
     required this.children,
     this.onSelectTab,
@@ -43,7 +43,7 @@ class _TabNavigatorState extends State<TabNavigator> {
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 2,
               blurRadius: 3,
-              offset: Offset(0, 3), // changes position of shadow
+              offset: const Offset(0, 3), // changes position of shadow
             ),
           ],
           color: theme.colors.background,

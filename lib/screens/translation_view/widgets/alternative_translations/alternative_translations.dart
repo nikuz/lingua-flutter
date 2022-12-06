@@ -9,10 +9,8 @@ import '../speech_part_wrapper.dart';
 import './alternative_translations_item.dart';
 import './constants.dart';
 
-const MIN_TRANSLATIONS_TO_SHOW = TranslationViewAlternativeTranslationsConstants.minTranslationsToShow;
-
 class TranslationViewAlternativeTranslations extends StatelessWidget {
-  TranslationViewAlternativeTranslations({Key? key}) : super(key: key);
+  const TranslationViewAlternativeTranslations({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,10 +45,10 @@ class TranslationViewAlternativeTranslations extends StatelessWidget {
           name: 'translations',
           word: state.word,
           itemsAmount: itemsAmount,
-          maxItemsToShow: MIN_TRANSLATIONS_TO_SHOW * alternativeTranslations.length,
+          maxItemsToShow: TranslationViewAlternativeTranslationsConstants.minTranslationsToShow * alternativeTranslations.length,
           childBuilder: (bool expanded) => ListView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: alternativeTranslations.length,
             itemBuilder: (BuildContext context, int index) {
               List<dynamic>? items = jmespath.search(
@@ -60,7 +58,7 @@ class TranslationViewAlternativeTranslations extends StatelessWidget {
               return TranslationViewSpeechPartWrapper(
                   name: jmespath.search(schema.translation.alternativeTranslations.speechPart.value, alternativeTranslations[index]),
                   items: items,
-                  maxItemsToShow: MIN_TRANSLATIONS_TO_SHOW,
+                  maxItemsToShow: TranslationViewAlternativeTranslationsConstants.minTranslationsToShow,
                   expanded: expanded,
                   itemBuilder: (BuildContext context, int itemIndex) {
                     if (items == null) {

@@ -68,7 +68,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
     VoidCallback? callback,
   }) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Material(
         child: InkWell(
           customBorder: const CircleBorder(),
@@ -96,7 +96,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
     Widget? suffixIcon;
     if (_textValue != null && _textValue!.isNotEmpty) {
       suffixIcon = _buildIcon(
-        icon: Icon(
+        icon: const Icon(
           Icons.clear,
           size: 25,
           color: Colors.grey,
@@ -111,11 +111,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
       );
     }
 
-    InputBorder border = UnderlineInputBorder(
+    InputBorder border = const UnderlineInputBorder(
       borderSide: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.2)),
     );
     if (widget.framed) {
-      border = OutlineInputBorder(
+      border = const OutlineInputBorder(
         borderSide: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.2)),
       );
     }
@@ -144,13 +144,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
         fillColor: Theme.of(context).scaffoldBackgroundColor,
         prefix: widget.prefix,
         prefixIcon: prefixIcon,
-        prefixIconConstraints: BoxConstraints(
+        prefixIconConstraints: const BoxConstraints(
           minWidth: TextFieldConstants.iconSize,
           minHeight: TextFieldConstants.iconSize,
         ),
         suffix: widget.suffix,
         suffixIcon: suffixIcon,
-        suffixIconConstraints: BoxConstraints(
+        suffixIconConstraints: const BoxConstraints(
           minWidth: TextFieldConstants.iconSize,
           minHeight: TextFieldConstants.iconSize,
         ),
@@ -159,7 +159,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         enabledBorder: border,
         focusedBorder: border,
       ),
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 18,
       ),
     );

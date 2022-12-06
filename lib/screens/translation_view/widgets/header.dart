@@ -17,7 +17,7 @@ import '../bloc/translation_view_state.dart';
 class TranslationViewHeader extends StatelessWidget {
   final String word;
 
-  TranslationViewHeader({
+  const TranslationViewHeader({
     Key? key,
     required this.word,
   }) : super(key: key);
@@ -41,7 +41,7 @@ class TranslationViewHeader extends StatelessWidget {
 
           return Container(
             color: theme.colors.focus,
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
               left: 10,
               right: 10,
             ),
@@ -54,7 +54,7 @@ class TranslationViewHeader extends StatelessWidget {
                   child: Container(
                     width: 150,
                     height: 150,
-                    margin: EdgeInsets.only(
+                    margin: const EdgeInsets.only(
                       top: 10,
                       bottom: 10,
                     ),
@@ -77,7 +77,7 @@ class TranslationViewHeader extends StatelessWidget {
                             translationWord ?? '',
                             overflow: TextOverflow.ellipsis,
                             maxLines: 5,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'Merriweather',
                               fontSize: 20,
                               letterSpacing: 1,
@@ -102,7 +102,7 @@ class TranslationViewHeader extends StatelessWidget {
 
   Widget _buildImage(BuildContext context, TranslationViewState state) {
     if (state.imageLoading) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(
           backgroundColor: Colors.white,
         ),
@@ -154,13 +154,13 @@ class TranslationViewHeader extends StatelessWidget {
     );
 
     if (state.updateLoading == true) {
-      icon = CircularProgressIndicator(
+      icon = const CircularProgressIndicator(
         backgroundColor: Colors.white,
       );
     }
 
     return Container(
-      margin: EdgeInsets.only(
+      margin: const EdgeInsets.only(
         top: 10,
         bottom: 10,
       ),
@@ -183,10 +183,10 @@ class TranslationViewHeader extends StatelessWidget {
                 },
               ),
               Container(
-                margin: EdgeInsets.only(left: 10),
+                margin: const EdgeInsets.only(left: 10),
                 child: Text(
                   transcription ?? '',
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 15,
                   ),
@@ -197,11 +197,11 @@ class TranslationViewHeader extends StatelessWidget {
           TextButton(
             style: TextButton.styleFrom(
               // padding: EdgeInsets.zero,
-              minimumSize: Size(65, 65),
+              minimumSize: const Size(65, 65),
               padding: EdgeInsets.zero,
               backgroundColor: toSave ? Colors.white : Colors.blue,
-              shape: new RoundedRectangleBorder(
-                borderRadius: new BorderRadius.all(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
                   Radius.circular(45),
                 ),
               ),

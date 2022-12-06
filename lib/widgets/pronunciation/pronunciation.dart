@@ -22,11 +22,11 @@ class PronunciationWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _PronunciationWidgetState createState() => _PronunciationWidgetState();
+  State<PronunciationWidget> createState() => _PronunciationWidgetState();
 }
 
 class _PronunciationWidgetState extends State<PronunciationWidget> {
-  AudioPlayer _audioPlayer = AudioPlayer();
+  final AudioPlayer _audioPlayer = AudioPlayer();
   PlayerState _playerState = PlayerState.stopped;
   late StreamSubscription<PlayerState> _audioPlayerStateSubscription;
   late StreamSubscription  _playerCompleteSubscription;
@@ -81,12 +81,12 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
 
       default:
     }
-    setState(() => this._playerState = PlayerState.playing);
+    setState(() => _playerState = PlayerState.playing);
   }
 
   Future<void> _stopPronunciation() async {
     await _audioPlayer.stop();
-    setState(() => this._playerState = PlayerState.stopped);
+    setState(() => _playerState = PlayerState.stopped);
   }
 
   void _onPlayerStateChange(PlayerState state) {
@@ -105,15 +105,15 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
         minimumSize: Size(size + 20, size + 20),
         padding: EdgeInsets.zero,
         backgroundColor: Theme.of(context).cardColor,
-        shape: new RoundedRectangleBorder(
-          borderRadius: new BorderRadius.all(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
             Radius.circular(size),
           ),
         ),
       ),
       child: Icon(
         _isPlayerStopped(_playerState) ? Icons.volume_up : Icons.stop,
-        color: widget.color != null ? widget.color : Colors.blueGrey,
+        color: widget.color ?? Colors.blueGrey,
         size: size,
       ),
       onPressed: () {

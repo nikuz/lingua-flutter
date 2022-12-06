@@ -8,7 +8,6 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import './firebase_options.dart';
 import './controllers/translation.dart';
 import './controllers/parsing_schemas.dart';
-import './blocs/observer.dart';
 import './screens/search/bloc/search_cubit.dart';
 import './screens/translation_view/bloc/translation_view_cubit.dart';
 import './screens/settings/bloc/settings_cubit.dart';
@@ -28,7 +27,6 @@ void main() async {
     return true;
   };
 
-  Bloc.observer = MyBlocObserver();
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
   // initiate controllers
@@ -52,7 +50,7 @@ void main() async {
           create: (context) => SettingsCubit(prefs),
         ),
       ],
-      child: App(),
+      child: const App(),
     ),
   );
 }

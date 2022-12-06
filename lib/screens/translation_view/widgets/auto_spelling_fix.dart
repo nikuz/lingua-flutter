@@ -7,7 +7,7 @@ import '../bloc/translation_view_cubit.dart';
 import '../bloc/translation_view_state.dart';
 
 class TranslationViewAutoSpellingFix extends StatelessWidget {
-  TranslationViewAutoSpellingFix({Key? key}) : super(key: key);
+  const TranslationViewAutoSpellingFix({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class TranslationViewAutoSpellingFix extends StatelessWidget {
         }
 
         return Container(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
             left: 10,
             top: 4,
             right: 10,
@@ -37,14 +37,14 @@ class TranslationViewAutoSpellingFix extends StatelessWidget {
           color: theme.colors.focus,
           child: RichText(
             text: TextSpan(
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
               children: [
-                TextSpan(text: 'Did you mean '),
+                const TextSpan(text: 'Did you mean '),
                 TextSpan(
                   text: '"$autoSpellingFix"',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                TextSpan(text: '?'),
+                const TextSpan(text: '?'),
               ],
             ),
           ),

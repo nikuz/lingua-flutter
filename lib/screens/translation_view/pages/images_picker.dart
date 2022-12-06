@@ -11,18 +11,18 @@ import '../bloc/translation_view_state.dart';
 class TranslationViewImagePicker extends StatefulWidget {
   final String word;
 
-  TranslationViewImagePicker({
+  const TranslationViewImagePicker({
     Key? key,
     required this.word,
   }) : super(key: key);
 
   @override
-  _TranslationViewImagePickerState createState() => _TranslationViewImagePickerState();
+  State<TranslationViewImagePicker> createState() => _TranslationViewImagePickerState();
 }
 
 class _TranslationViewImagePickerState extends State<TranslationViewImagePicker> {
   late TranslationViewCubit _translationViewCubit;
-  final itemKey = new GlobalKey();
+  final itemKey = GlobalKey();
 
   @override
   void initState() {
@@ -33,18 +33,18 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
       _translationViewCubit.fetchImages(widget.word);
     }
 
-    new Future.delayed(Duration(milliseconds: 100), this._scrollToSelectedItem);
+    Future.delayed(const Duration(milliseconds: 100), _scrollToSelectedItem);
   }
 
   void _scrollToSelectedItem() {
     if (_translationViewCubit.state.imageLoading == false && itemKey.currentContext != null) {
       Scrollable.ensureVisible(
         itemKey.currentContext!,
-        duration: Duration(seconds: 1),
+        duration: const Duration(seconds: 1),
         alignment: 0.5,
       );
     } else {
-      new Future.delayed(Duration(milliseconds: 100), this._scrollToSelectedItem);
+      Future.delayed(const Duration(milliseconds: 100), _scrollToSelectedItem);
     }
   }
 
@@ -58,7 +58,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
         child: BlocBuilder<TranslationViewCubit, TranslationViewState>(
           builder: (context, state) {
             final images = state.images;
-            Widget imagesList = Center(
+            Widget imagesList = const Center(
               child: CircularProgressIndicator(
                 backgroundColor: Colors.white,
               ),
@@ -75,7 +75,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                       return Container(
                         key: isActive ? itemKey : Key(index.toString()),
                         color: isActive ? Colors.greenAccent : Theme.of(context).scaffoldBackgroundColor,
-                        padding: EdgeInsets.only(
+                        padding: const EdgeInsets.only(
                           top: 10,
                           bottom: 10,
                         ),
@@ -104,7 +104,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                     defaultValue: widget.word,
                     hintText: 'Search for images...',
                     textInputAction: TextInputAction.search,
-                    prefixIcon: Icon(
+                    prefixIcon: const Icon(
                       Icons.arrow_back,
                       size: 25,
                     ),

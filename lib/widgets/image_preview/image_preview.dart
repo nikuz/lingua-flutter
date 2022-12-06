@@ -13,7 +13,7 @@ class ImagePreview extends StatefulWidget {
   final Function? onTap;
   final Function? onPreviewClose;
 
-  ImagePreview({
+  const ImagePreview({
     Key? key,
     required this.width,
     required this.height,
@@ -58,7 +58,7 @@ class _ImagePreviewState extends State<ImagePreview> {
 
   @override
   void dispose() {
-    this._overlayEntry?.remove();
+    _overlayEntry?.remove();
     super.dispose();
   }
 
@@ -74,9 +74,7 @@ class _ImagePreviewState extends State<ImagePreview> {
 
     switch (_sourceType) {
       case MediaSourceType.base64:
-        if (_sourceBytes == null) {
-          _sourceBytes = getBytesFrom64String(widget.imageSource);
-        }
+        _sourceBytes ??= getBytesFrom64String(widget.imageSource);
         image = Image.memory(_sourceBytes!);
         break;
       case MediaSourceType.local:
@@ -97,7 +95,7 @@ class _ImagePreviewState extends State<ImagePreview> {
   }
 
   OverlayEntry _buildOverlayEntry() {
-    final Widget imageContainer = Container(
+    final Widget imageContainer = SizedBox(
       width: 300,
       height: 300,
       child: _buildImage(),
@@ -105,7 +103,7 @@ class _ImagePreviewState extends State<ImagePreview> {
 
     return OverlayEntry(
       builder: (context) => Material(
-        color: Color.fromRGBO(255, 255, 255, 0.6),
+        color: const Color.fromRGBO(255, 255, 255, 0.6),
         elevation: 4.0,
         child: TextButton(
           child: Row(
@@ -115,22 +113,22 @@ class _ImagePreviewState extends State<ImagePreview> {
               Draggable(
                 maxSimultaneousDrags: 1,
                 axis: Axis.vertical,
-                child: imageContainer,
                 feedback: imageContainer,
                 childWhenDragging: Container(),
                 onDragEnd: (drag) {
                   if (drag.offset.dy > 300 || drag.offset.dy < -10) {
-                    this._overlayEntry?.remove();
+                    _overlayEntry?.remove();
                     if (widget.onPreviewClose is Function) {
                       widget.onPreviewClose!();
                     }
                   }
                 },
+                child: imageContainer,
               )
             ],
           ),
           onPressed: () {
-            this._overlayEntry?.remove();
+            _overlayEntry?.remove();
             if (widget.onPreviewClose is Function) {
               widget.onPreviewClose!();
             }
@@ -150,17 +148,17 @@ class _ImagePreviewState extends State<ImagePreview> {
       child: GestureDetector(
         onTap: () {
           if (widget.withPreviewOverlay == true) {
-            this._overlayEntry = this._buildOverlayEntry();
+            _overlayEntry = _buildOverlayEntry();
             final contextOverlay = Overlay.of(context);
-            if (contextOverlay != null && this._overlayEntry != null) {
-              contextOverlay.insert(this._overlayEntry!);
+            if (contextOverlay != null && _overlayEntry != null) {
+              contextOverlay.insert(_overlayEntry!);
             }
           }
           if (widget.onTap is Function) {
             widget.onTap!();
           }
         },
-        child: Container(
+        child: SizedBox(
           width: widget.width,
           height: widget.height,
           child: _buildImage(),

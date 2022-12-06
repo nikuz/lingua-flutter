@@ -24,7 +24,7 @@ class Prompt {
       context: context,
       children: [
         Container(
-          margin: EdgeInsets.only(
+          margin: const EdgeInsets.only(
             top: 5,
             right: 5,
             bottom: 10,
@@ -32,7 +32,7 @@ class Prompt {
           ),
           child: Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
             ),
           ),
@@ -42,13 +42,13 @@ class Prompt {
           child!,
 
         Container(
-          margin: EdgeInsets.only(top: 10),
+          margin: const EdgeInsets.only(top: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               if (withCancel)
                 Container(
-                  margin: EdgeInsets.only(right: 20),
+                  margin: const EdgeInsets.only(right: 20),
                   child: TextButton(
                     onPressed: () {
                       Navigator.of(context, rootNavigator: true).pop(false);
@@ -56,7 +56,7 @@ class Prompt {
                         cancelCallback!();
                       }
                     },
-                    child: Text('CANCEL'),
+                    child: const Text('CANCEL'),
                   ),
                 ),
 
@@ -65,7 +65,7 @@ class Prompt {
                   Navigator.of(context, rootNavigator: true).pop(true);
                   acceptCallback();
                 },
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           ),

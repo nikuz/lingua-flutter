@@ -25,11 +25,11 @@ class TranslationViewSpeechPartWrapper extends StatelessWidget {
 
     if (name != null) {
       categoryName = Container(
-        margin: EdgeInsets.only(
+        margin: const EdgeInsets.only(
           bottom: 5,
         ),
         child: Text(
-          '${name!.capitalize()}',
+          name!.capitalize(),
           style: TextStyle(
             fontSize: 16,
             color: Theme.of(context).buttonTheme.colorScheme?.secondaryContainer,
@@ -45,14 +45,14 @@ class TranslationViewSpeechPartWrapper extends StatelessWidget {
     }
 
     return Container(
-      margin: EdgeInsets.only(top: 15),
+      margin: const EdgeInsets.only(top: 15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           categoryName,
           ListView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: itemsLength,
             itemBuilder: itemBuilder,
           ),

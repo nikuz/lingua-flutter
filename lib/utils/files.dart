@@ -11,7 +11,7 @@ Future<String> getTempPath() async => (
 String generateFileIdFromWord(int id, String word) {
   final String sanitisedWord = word
       .split(' ')
-      .map((part) => (part.trim().replaceAll(new RegExp(r'[^A-Za-z0-9]'), '')))
+      .map((part) => (part.trim().replaceAll(RegExp(r'[^A-Za-z0-9]'), '')))
       .join('-')
       .toLowerCase();
 

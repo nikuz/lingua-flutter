@@ -8,7 +8,7 @@ class SettingsButton extends StatelessWidget {
   final bool? disabled;
   final Function? onPressed;
 
-  SettingsButton({
+  const SettingsButton({
     Key? key,
     this.text,
     this.icon,
@@ -23,7 +23,7 @@ class SettingsButton extends StatelessWidget {
     Widget content = Container();
 
     if (loading == true) {
-      content = SizedBox(
+      content = const SizedBox(
         width: 25,
         height: 25,
         child: CircularProgressIndicator(strokeWidth: 1.5),

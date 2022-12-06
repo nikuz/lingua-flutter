@@ -8,7 +8,7 @@ import './bloc/settings_state.dart';
 import './widgets/settings_row.dart';
 
 class Settings extends StatefulWidget {
-  Settings({Key? key}) : super(key: key);
+  const Settings({Key? key}) : super(key: key);
 
   @override
   State<Settings> createState() => _SettingsState();
@@ -27,7 +27,7 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Settings',
           style: TextStyle(
             fontSize: 20,
@@ -42,8 +42,8 @@ class _SettingsState extends State<Settings> {
             String backupTime = '';
 
             if (state.backupTime != null) {
-              final DateTime lastUpdateDate = new DateTime.fromMillisecondsSinceEpoch(state.backupTime!);
-              backupTime = new DateFormat.yMMMd().add_jm().format(lastUpdateDate);
+              final DateTime lastUpdateDate = DateTime.fromMillisecondsSinceEpoch(state.backupTime!);
+              backupTime = DateFormat.yMMMd().add_jm().format(lastUpdateDate);
             }
 
             if (state.backupSize != null) {

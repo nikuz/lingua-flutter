@@ -9,7 +9,7 @@ import '../search_constants.dart';
 import 'search_state.dart';
 
 class SearchCubit extends Cubit<SearchState> {
-  SearchCubit() : super(SearchState());
+  SearchCubit() : super(const SearchState());
 
   void fetchTranslations({int from = 0, int to = SearchConstants.itemsPerPage, String? searchText}) async {
     emit(state.copyWith(
@@ -48,7 +48,7 @@ class SearchCubit extends Cubit<SearchState> {
           message: err.toString(),
         )),
       ));
-      throw err;
+      rethrow;
     }
   }
 
@@ -78,7 +78,7 @@ class SearchCubit extends Cubit<SearchState> {
           message: err.toString(),
         )),
       ));
-      throw err;
+      rethrow;
     }
   }
 

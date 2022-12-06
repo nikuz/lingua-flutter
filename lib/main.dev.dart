@@ -45,7 +45,7 @@ void main() async {
           create: (context) => SettingsCubit(prefs),
         ),
       ],
-      child: App(),
+      child: const App(),
     ),
   );
 }

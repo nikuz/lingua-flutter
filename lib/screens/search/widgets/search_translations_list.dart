@@ -14,7 +14,7 @@ import '../bloc/search_state.dart';
 import '../search_constants.dart';
 
 class SearchTranslationsList extends StatefulWidget {
-  SearchTranslationsList({Key? key}) : super(key: key);
+  const SearchTranslationsList({Key? key}) : super(key: key);
 
   @override
   State<SearchTranslationsList> createState() => _SearchTranslationsListState();
@@ -71,69 +71,67 @@ class _SearchTranslationsListState extends State<SearchTranslationsList> {
 
           if (state.translations.isEmpty) {
             if (state.loading) {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             } else {
-              return Center(
+              return const Center(
                 child: Text('No translations found in your dictionary'),
               );
             }
           }
 
-          return Container(
-            child: RefreshIndicator(
-              onRefresh: () {
-                if (state.searchText != null) {
-                  _searchCubit.fetchTranslations(searchText: state.searchText);
-                } else {
-                  _searchCubit.fetchTranslations();
-                }
-                return _refreshCompleter!.future;
-              },
-              child: ListView.builder(
-                physics: const AlwaysScrollableScrollPhysics(),
-                itemBuilder: (BuildContext context, int index) {
-                  if (index == 0) {
-                    return Container(
-                      padding: EdgeInsets.only(
-                        left: 15,
-                        top: 10,
-                      ),
-                      child: Row(
-                        children: <Widget>[
-                          Text(
-                            'Total: ',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
+          return RefreshIndicator(
+            onRefresh: () {
+              if (state.searchText != null) {
+                _searchCubit.fetchTranslations(searchText: state.searchText);
+              } else {
+                _searchCubit.fetchTranslations();
+              }
+              return _refreshCompleter!.future;
+            },
+            child: ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemBuilder: (BuildContext context, int index) {
+                if (index == 0) {
+                  return Container(
+                    padding: const EdgeInsets.only(
+                      left: 15,
+                      top: 10,
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        const Text(
+                          'Total: ',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
                           ),
-                          Text(
-                            '${state.totalAmount}',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        ),
+                        Text(
+                          '${state.totalAmount}',
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
                           ),
-                        ],
-                      ),
-                    );
-                  }
-
-                  if (index - 1 == state.translations.length) {
-                    return BottomLoader();
-                  }
-
-                  return TranslationsListItemWidget(
-                    key: ValueKey('$index-${state.translations[index - 1].updatedAt}'),
-                    translationItem: state.translations[index - 1],
-                    withBorder: index < state.translations.length,
+                        ),
+                      ],
+                    ),
                   );
-                },
-                itemCount: state.translations.length + 2,
-                controller: _scrollController,
-              ),
+                }
+
+                if (index - 1 == state.translations.length) {
+                  return const BottomLoader();
+                }
+
+                return TranslationsListItemWidget(
+                  key: ValueKey('$index-${state.translations[index - 1].updatedAt}'),
+                  translationItem: state.translations[index - 1],
+                  withBorder: index < state.translations.length,
+                );
+              },
+              itemCount: state.translations.length + 2,
+              controller: _scrollController,
             ),
           );
         },
@@ -146,14 +144,14 @@ class TranslationsListItemWidget extends StatefulWidget {
   final Translation translationItem;
   final bool withBorder;
 
-  TranslationsListItemWidget({
+  const TranslationsListItemWidget({
     Key? key,
     required this.translationItem,
     required this.withBorder,
   }) : super(key: key);
 
   @override
-  _TranslationsListItemWidgetState createState() => _TranslationsListItemWidgetState();
+  State<TranslationsListItemWidget> createState() => _TranslationsListItemWidgetState();
 }
 
 class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget> {
@@ -169,8 +167,8 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
             color: Colors.red,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Container(
+              children: const [
+                SizedBox(
                   width: 80,
                   child: Icon(
                     Icons.delete,
@@ -200,13 +198,13 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
           },
           direction: DismissDirection.endToStart,
           child: Container(
-            margin: EdgeInsets.only(bottom: 2),
+            margin: const EdgeInsets.only(bottom: 2),
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
                   color: widget.withBorder ? Theme
                       .of(context)
-                      .dividerColor : Color.fromRGBO(0, 0, 0, 0.0),
+                      .dividerColor : const Color.fromRGBO(0, 0, 0, 0.0),
                 ),
               ),
               color: isSelected ? Theme
@@ -235,7 +233,7 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
               )
                   : null,
               title: Container(
-                margin: EdgeInsets.only(bottom: 2),
+                margin: const EdgeInsets.only(bottom: 2),
                 child: Text(
                   widget.translationItem.word,
                   style: TextStyle(
@@ -251,7 +249,7 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
                 ),
               ),
               subtitle: Container(
-                margin: EdgeInsets.only(bottom: 2),
+                margin: const EdgeInsets.only(bottom: 2),
                 child: Text(
                   widget.translationItem.translation!,
                   style: TextStyle(
@@ -269,11 +267,11 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
                   ? PronunciationWidget(pronunciationSource: widget.translationItem.pronunciation!)
                   : null,
               onTap: () async {
+                final searchCubit = context.read<SearchCubit>();
                 final result = await AutoRouter.of(context).push<Translation>(
                     TranslationViewRoute(word: widget.translationItem.word)
                 );
                 if (result != null) {
-                  final searchCubit = context.read<SearchCubit>();
                   if (state.translations.any((item) => item.id == result.id)) {
                     searchCubit.updateTranslation(result);
                   }
@@ -288,7 +286,7 @@ class _TranslationsListItemWidgetState extends State<TranslationsListItemWidget>
 }
 
 class BottomLoader extends StatelessWidget {
-  BottomLoader({Key? key}) : super(key: key);
+  const BottomLoader({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -296,7 +294,7 @@ class BottomLoader extends StatelessWidget {
       builder: (context, state) {
         final int listLength = state.translations.length;
         if (listLength >= SearchConstants.itemsPerPage && listLength < state.totalAmount) {
-          return Container(
+          return const Padding(
             padding: EdgeInsets.only(
               top: 10,
               bottom: 10,

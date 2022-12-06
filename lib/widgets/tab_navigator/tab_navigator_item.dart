@@ -52,11 +52,11 @@ class TabNavigatorItem extends StatelessWidget {
               }
             },
             child: Padding(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Column(
                 children: [
                   Container(
-                    margin: EdgeInsets.only(bottom: 5),
+                    margin: const EdgeInsets.only(bottom: 5),
                     child: Icon(
                       icon,
                       color: active ? theme.colors.focus : theme.colors.primary,

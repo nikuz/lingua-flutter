@@ -10,7 +10,7 @@ import '../../bloc/translation_view_state.dart';
 class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
   final List<dynamic> data;
 
-  TranslationViewAlternativeTranslationsItem({
+  const TranslationViewAlternativeTranslationsItem({
     Key? key,
     required this.data,
   }) : super(key: key);
@@ -37,7 +37,7 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
         final double screenWidth = MediaQuery.of(context).size.width;
 
         return Container(
-          margin: EdgeInsets.only(
+          margin: const EdgeInsets.only(
             top: 5,
             bottom: 5,
           ),
@@ -53,7 +53,7 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
                     word ?? '',
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: 'Montserrat',
                       fontSize: 18,
                     ),
@@ -77,7 +77,7 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
               ),
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                     top: 4,
                   ),
                   child: _getWordsList(words, screenWidth),
@@ -123,7 +123,7 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
 
         return Text(
           '${words[i]}$separator',
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 14,
           ),
         );
@@ -139,8 +139,8 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
       decoration: BoxDecoration(
         color: active
           ? Theme.of(context).buttonTheme.colorScheme?.secondaryContainer
-          : Color.fromRGBO(218, 220, 224, 1),
-        borderRadius: BorderRadius.all(Radius.circular(1)),
+          : const Color.fromRGBO(218, 220, 224, 1),
+        borderRadius: const BorderRadius.all(Radius.circular(1)),
       ),
     );
   }

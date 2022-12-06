@@ -6,7 +6,7 @@ class SettingsRow extends StatelessWidget {
   final String? subtitle;
   final Widget child;
 
-  SettingsRow({
+  const SettingsRow({
     Key? key,
     required this.title,
     this.subtitle,
@@ -18,7 +18,7 @@ class SettingsRow extends StatelessWidget {
     final MyTheme theme = Styles.theme(context);
 
     return Padding(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         vertical: 8,
         horizontal: 15,
       ),

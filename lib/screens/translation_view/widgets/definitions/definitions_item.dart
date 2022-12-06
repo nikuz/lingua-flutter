@@ -10,7 +10,7 @@ class DefinitionsItem extends StatelessWidget {
   final List<dynamic> data;
   final int index;
 
-  DefinitionsItem({
+  const DefinitionsItem({
     Key? key,
     required this.data,
     required this.index,
@@ -32,7 +32,7 @@ class DefinitionsItem extends StatelessWidget {
         List<dynamic>? synonyms = jmespath.search(schema.translation.definitions.items.synonyms.value, data);
 
         return Container(
-          margin: EdgeInsets.only(
+          margin: const EdgeInsets.only(
             top: 5,
             bottom: 5,
           ),
@@ -42,7 +42,7 @@ class DefinitionsItem extends StatelessWidget {
               Container(
                 width: 20,
                 height: 20,
-                margin: EdgeInsets.only(
+                margin: const EdgeInsets.only(
                   top: 3,
                   right: 20,
                 ),
@@ -52,12 +52,12 @@ class DefinitionsItem extends StatelessWidget {
                       width: 1,
                       style: BorderStyle.solid
                   ),
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
                 ),
                 child: Center(
                   child: Text(
                     index.toString(),
-                    style: TextStyle(fontSize: 12),
+                    style: const TextStyle(fontSize: 12),
                   ),
                 ),
               ),
@@ -69,12 +69,12 @@ class DefinitionsItem extends StatelessWidget {
                     if (text != null)
                       Text(
                         text,
-                        style: TextStyle(fontSize: 17),
+                        style: const TextStyle(fontSize: 17),
                       ),
 
                     if (example != null)
                       Container(
-                        margin: EdgeInsets.only(top: 5),
+                        margin: const EdgeInsets.only(top: 5),
                         child: Text(
                           example,
                           style: TextStyle(
@@ -86,7 +86,7 @@ class DefinitionsItem extends StatelessWidget {
 
                     if (synonyms != null)
                       Container(
-                        margin: EdgeInsets.only(
+                        margin: const EdgeInsets.only(
                           top: 15,
                           bottom: 10,
                         ),

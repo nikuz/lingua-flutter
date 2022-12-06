@@ -8,7 +8,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      children: [
+      children: const [
         Padding(
           padding: EdgeInsets.only(bottom: TabNavigatorConstants.height),
           child: AutoRouter(),

@@ -9,10 +9,8 @@ import '../speech_part_wrapper.dart';
 import './definitions_item.dart';
 import './constants.dart';
 
-const SHOW_MIN_DEFINITIONS = TranslationViewDefinitionsConstants.minTranslationsToShow;
-
 class TranslationViewDefinitions extends StatelessWidget {
-  TranslationViewDefinitions({Key? key}) : super(key: key);
+  const TranslationViewDefinitions({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,17 +42,17 @@ class TranslationViewDefinitions extends StatelessWidget {
           name: 'definitions',
           word: state.word,
           itemsAmount: itemsAmount,
-          maxItemsToShow: SHOW_MIN_DEFINITIONS * definitions.length,
+          maxItemsToShow: TranslationViewDefinitionsConstants.minTranslationsToShow * definitions.length,
           childBuilder: (bool expanded) => ListView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: definitions.length,
             itemBuilder: (BuildContext context, int index) {
               List<dynamic>? items = jmespath.search(schema.translation.definitions.items.value, definitions[index]);
               return TranslationViewSpeechPartWrapper(
                   name: jmespath.search(schema.translation.definitions.speechPart.value, definitions[index]),
                   items: items,
-                  maxItemsToShow: SHOW_MIN_DEFINITIONS,
+                  maxItemsToShow: TranslationViewDefinitionsConstants.minTranslationsToShow,
                   expanded: expanded,
                   itemBuilder: (BuildContext context, int itemIndex) {
                     if (items == null) {
