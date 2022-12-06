@@ -4,7 +4,6 @@ import 'package:jmespath/jmespath.dart' as jmespath;
 
 import '../../bloc/translation_view_cubit.dart';
 import '../../bloc/translation_view_state.dart';
-import './definitions_item_synonyms.dart';
 
 class DefinitionsItem extends StatelessWidget {
   final List<dynamic> data;
@@ -29,7 +28,6 @@ class DefinitionsItem extends StatelessWidget {
 
         String? text = jmespath.search(schema.translation.definitions.items.text.value, data);
         String? example = jmespath.search(schema.translation.definitions.items.example.value, data);
-        List<dynamic>? synonyms = jmespath.search(schema.translation.definitions.items.synonyms.value, data);
 
         return Container(
           margin: const EdgeInsets.only(
@@ -48,9 +46,9 @@ class DefinitionsItem extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   border: Border.all(
-                      color: Theme.of(context).textTheme.headline2!.color!,
-                      width: 1,
-                      style: BorderStyle.solid
+                    color: Theme.of(context).textTheme.headline2!.color!,
+                    width: 1,
+                    style: BorderStyle.solid,
                   ),
                   borderRadius: const BorderRadius.all(Radius.circular(20)),
                 ),
@@ -83,25 +81,6 @@ class DefinitionsItem extends StatelessWidget {
                           ),
                         ),
                       ),
-
-                    if (synonyms != null)
-                      Container(
-                        margin: const EdgeInsets.only(
-                          top: 15,
-                          bottom: 10,
-                        ),
-                        child: Text(
-                          'Synonyms',
-                          style: TextStyle(
-                            color: Theme.of(context).hintColor,
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-
-                    if (synonyms != null)
-                      for (var item in synonyms)
-                        DefinitionsItemSynonyms(data: item),
                   ],
                 ),
               ),

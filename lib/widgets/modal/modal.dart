@@ -33,7 +33,7 @@ class Modal {
               margin: MediaQuery.of(context).viewInsets,
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: theme.colors.secondary,
+                color: theme.colors.background,
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Column(

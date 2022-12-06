@@ -104,6 +104,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
         callback: () {
           _textController.clear();
           _focusNode.requestFocus();
+          if (widget.onChanged != null) {
+            widget.onChanged!('');
+          }
           if (widget.onClearPressed != null) {
             widget.onClearPressed!();
           }

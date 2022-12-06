@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/utils/string.dart';
+
+const double buttonHeight = 40;
 
 class TranslationViewSectionWrapper extends StatefulWidget {
   final String name;
@@ -25,12 +28,14 @@ class TranslationViewSectionWrapper extends StatefulWidget {
 
 class _TranslationViewSectionWrapperState extends State<TranslationViewSectionWrapper> {
   bool expanded = false;
+  final buttonKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     int? hiddenItemsAmount;
 
     if (widget.itemsAmount > widget.maxItemsToShow) {
+      hiddenItemsAmount ??= 0;
       if (!expanded) {
         hiddenItemsAmount = widget.itemsAmount - widget.maxItemsToShow;
       }
@@ -43,15 +48,16 @@ class _TranslationViewSectionWrapperState extends State<TranslationViewSectionWr
         right: 10,
         bottom: widget.withBottomMargin ? 10 : 0,
       ),
-      child: Column(
-        children: <Widget>[
+      child: Stack(
+        children: [
           Container(
             padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.only(bottom: buttonHeight - 1),
             decoration: BoxDecoration(
               border: Border.all(
-                  color: Theme.of(context).dividerColor,
-                  width: 1,
-                  style: BorderStyle.solid
+                color: Theme.of(context).dividerColor,
+                width: 1,
+                style: BorderStyle.solid,
               ),
               borderRadius: BorderRadius.vertical(
                 top: const Radius.circular(8),
@@ -86,15 +92,31 @@ class _TranslationViewSectionWrapperState extends State<TranslationViewSectionWr
               ],
             ),
           ),
-          TranslationViewSectionWrapperExpandButton(
-            amount: hiddenItemsAmount,
-            name: widget.name,
-            expanded: expanded,
-            onPressed: () {
-              setState(() {
-                expanded = !expanded;
-              });
-            },
+
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: TranslationViewSectionWrapperExpandButton(
+              key: buttonKey,
+              amount: hiddenItemsAmount,
+              name: widget.name,
+              expanded: expanded,
+              onPressed: () {
+                setState(() {
+                  expanded = !expanded;
+                });
+                if (buttonKey.currentContext != null) {
+                  WidgetsBinding.instance.addPostFrameCallback((dynamic) {
+                    Scrollable.ensureVisible(
+                      buttonKey.currentContext!,
+                      duration: const Duration(milliseconds: 500),
+                      alignment: 1,
+                    );
+                  });
+                }
+              },
+            ),
           ),
         ],
       ),
@@ -106,14 +128,14 @@ class TranslationViewSectionWrapperExpandButton extends StatelessWidget {
   final bool expanded;
   final String name;
   final int? amount;
-  final VoidCallback? onPressed;
+  final VoidCallback onPressed;
 
   const TranslationViewSectionWrapperExpandButton({
     Key? key,
     required this.expanded,
     required this.name,
     this.amount,
-    this.onPressed,
+    required this.onPressed,
   }) : super(key: key);
 
   @override
@@ -122,38 +144,43 @@ class TranslationViewSectionWrapperExpandButton extends StatelessWidget {
       return Container();
     }
 
-    return TextButton(
-      style: TextButton.styleFrom(
-        minimumSize: const Size(0, 43),
-        backgroundColor: Theme.of(context).buttonTheme.colorScheme?.secondaryContainer,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(8),
-            bottomRight: Radius.circular(8),
+    final MyTheme theme = Styles.theme(context);
+    BorderRadius borderRadius = const BorderRadius.vertical(
+      top: Radius.circular(0),
+      bottom: Radius.circular(8),
+    );
+
+    return Material(
+      color: theme.colors.focus,
+      borderRadius: borderRadius,
+      child: InkWell(
+        borderRadius: borderRadius,
+        onTap: onPressed,
+        child: Container(
+          height: buttonHeight,
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: Icon(
+                  expanded ? Icons.expand_less : Icons.expand_more,
+                  color: Theme.of(context).selectedRowColor,
+                  size: 25,
+                ),
+              ),
+              Text(
+                expanded
+                    ? 'Show less $name'
+                    : 'Show more $amount $name',
+                style: TextStyle(
+                  color: Theme.of(context).selectedRowColor,
+                  fontSize: 15,
+                ),
+              )
+            ],
           ),
         ),
-      ),
-      onPressed: onPressed,
-      child: Row( // Replace with a Row for horizontal icon + text
-        children: <Widget>[
-          Container(
-            margin: const EdgeInsets.only(right: 10),
-            child: Icon(
-              expanded ? Icons.expand_less : Icons.expand_more,
-              color: Theme.of(context).selectedRowColor,
-              size: 25,
-            ),
-          ),
-          Text(
-            expanded
-                ? 'Show less $name'
-                : 'Show more $amount $name',
-            style: TextStyle(
-              color: Theme.of(context).selectedRowColor,
-              fontSize: 15,
-            ),
-          )
-        ],
       ),
     );
   }

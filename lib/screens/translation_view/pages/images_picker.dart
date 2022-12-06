@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:lingua_flutter/styles/styles.dart';
 
 import 'package:lingua_flutter/widgets/text_field/text_field.dart';
 import 'package:lingua_flutter/utils/convert.dart';
@@ -33,7 +34,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
       _translationViewCubit.fetchImages(widget.word);
     }
 
-    Future.delayed(const Duration(milliseconds: 100), _scrollToSelectedItem);
+    _scrollToSelectedItem();
   }
 
   void _scrollToSelectedItem() {
@@ -50,6 +51,8 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
 
   @override
   Widget build(BuildContext context) {
+    final MyTheme theme = Styles.theme(context);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).primaryColor,
@@ -66,64 +69,61 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
 
             if (!state.imageLoading && images != null) {
               imagesList = SingleChildScrollView(
-                child: Column(
-                  children: List<Widget>.generate(
-                    images.length,
-                    (index) {
-                      final String imageSource = images[index];
-                      final bool isActive = state.translation?.image == imageSource;
-                      return Container(
-                        key: isActive ? itemKey : Key(index.toString()),
-                        color: isActive ? Colors.greenAccent : Theme.of(context).scaffoldBackgroundColor,
-                        padding: const EdgeInsets.only(
-                          top: 10,
-                          bottom: 10,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: images.length,
+                  itemBuilder: (context, index) {
+                    final String imageSource = images[index];
+                    final bool isActive = state.translation?.image == imageSource;
+                    return Container(
+                      key: isActive ? itemKey : Key(index.toString()),
+                      color: isActive ? Colors.greenAccent : Theme.of(context).scaffoldBackgroundColor,
+                      padding: const EdgeInsets.only(
+                        top: 10,
+                        bottom: 10,
+                      ),
+                      child: Center(
+                        child: InkWell(
+                          onTap: () {
+                            _translationViewCubit.setImage(imageSource);
+                            AutoRouter.of(context).pop();
+                          },
+                          child: Image.memory(getBytesFrom64String(imageSource)),
                         ),
-                        child: Center(
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                            ),
-                            child: Image.memory(getBytesFrom64String(imageSource)),
-                            onPressed: () {
-                              _translationViewCubit.setImage(imageSource);
-                              AutoRouter.of(context).pop();
-                            },
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
               );
             }
 
             return Column(
-                children: <Widget>[
-                  CustomTextField(
-                    defaultValue: widget.word,
-                    hintText: 'Search for images...',
-                    textInputAction: TextInputAction.search,
-                    prefixIcon: const Icon(
-                      Icons.arrow_back,
-                      size: 25,
-                    ),
-                    prefixAction: () {
-                      AutoRouter.of(context).pop();
-                    },
-                    onSubmitted: (String value) {
-                      if (value.isNotEmpty && value != state.imageSearchWord) {
-                        _translationViewCubit.fetchImages(value);
-                      }
-                    },
+              children: <Widget>[
+                CustomTextField(
+                  defaultValue: widget.word,
+                  hintText: 'Search for images...',
+                  textInputAction: TextInputAction.search,
+                  prefixIcon: const Icon(
+                    Icons.arrow_back,
+                    size: 25,
                   ),
-                  Expanded(
-                    child: Container(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      child: imagesList,
-                    ),
+                  prefixAction: () {
+                    AutoRouter.of(context).pop();
+                  },
+                  onSubmitted: (String value) {
+                    if (value.isNotEmpty && value != state.imageSearchWord) {
+                      _translationViewCubit.fetchImages(value);
+                    }
+                  },
+                ),
+                Expanded(
+                  child: Container(
+                    color: theme.colors.background,
+                    child: imagesList,
                   ),
-                ]
+                ),
+              ],
             );
           },
         ),

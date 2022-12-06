@@ -35,15 +35,18 @@ class ExamplesItem extends StatelessWidget {
           margin: const EdgeInsets.only(top: 15),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              const Icon(
-                Icons.format_quote,
-                size: 20,
-                color: Color.fromRGBO(119, 119, 119, 1),
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 5),
+                child: const Icon(
+                  Icons.format_quote,
+                  size: 20,
+                  color: Color.fromRGBO(119, 119, 119, 1),
+                ),
               ),
               Expanded(
                 child: Container(
-                  margin: const EdgeInsets.only(left: 20),
+                  margin: const EdgeInsets.only(left: 15),
                   child: Html(
                     data: text,
                     style: {
