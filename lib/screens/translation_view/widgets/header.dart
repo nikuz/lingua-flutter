@@ -22,84 +22,6 @@ class TranslationViewHeader extends StatelessWidget {
     required this.word,
   }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<TranslationViewCubit, TranslationViewState>(
-        builder: (context, state) {
-          final translation = state.translation;
-          final schema = translation?.schema;
-
-          if (translation == null || schema == null) {
-            return Container();
-          }
-
-          final MyTheme theme = Styles.theme(context);
-          String? translationWord = translation.translation ?? jmespath.search(
-              schema.translation.translation.value,
-              translation.raw
-          );
-
-          return Container(
-            color: theme.colors.focus,
-            padding: const EdgeInsets.only(
-              left: 10,
-              right: 10,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Center(
-                  child: Container(
-                    width: 150,
-                    height: 150,
-                    margin: const EdgeInsets.only(
-                      top: 10,
-                      bottom: 10,
-                    ),
-                    child: _buildImage(context, state),
-                  ),
-                ),
-                Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.85,
-                        ),
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: Colors.white,
-                          ),
-                          child: Text(
-                            translationWord ?? '',
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 5,
-                            style: const TextStyle(
-                              fontFamily: 'Merriweather',
-                              fontSize: 20,
-                              letterSpacing: 1,
-                              color: Colors.blue,
-                            ),
-                          ),
-                          onPressed: () {
-                            // AutoRouter.of(context).replace(TranslationViewRoute(word: translationWord));
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                _buildFooter(context, state),
-              ],
-            ),
-          );
-        }
-    );
-  }
-
   Widget _buildImage(BuildContext context, TranslationViewState state) {
     if (state.imageLoading) {
       return const Center(
@@ -225,6 +147,84 @@ class TranslationViewHeader extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<TranslationViewCubit, TranslationViewState>(
+        builder: (context, state) {
+          final translation = state.translation;
+          final schema = translation?.schema;
+
+          if (translation == null || schema == null) {
+            return Container();
+          }
+
+          final MyTheme theme = Styles.theme(context);
+          String? translationWord = translation.translation ?? jmespath.search(
+              schema.translation.translation.value,
+              translation.raw
+          );
+
+          return Container(
+            color: theme.colors.focusBackground,
+            padding: const EdgeInsets.only(
+              left: 10,
+              right: 10,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Center(
+                  child: Container(
+                    width: 150,
+                    height: 150,
+                    margin: const EdgeInsets.only(
+                      top: 10,
+                      bottom: 10,
+                    ),
+                    child: _buildImage(context, state),
+                  ),
+                ),
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.85,
+                        ),
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.white,
+                          ),
+                          child: Text(
+                            translationWord ?? '',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 5,
+                            style: const TextStyle(
+                              fontFamily: 'Merriweather',
+                              fontSize: 20,
+                              letterSpacing: 1,
+                              color: Colors.blue,
+                            ),
+                          ),
+                          onPressed: () {
+                            // AutoRouter.of(context).replace(TranslationViewRoute(word: translationWord));
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                _buildFooter(context, state),
+              ],
+            ),
+          );
+        }
     );
   }
 }

@@ -34,11 +34,9 @@ class AppRouter extends _i6.RootStackRouter {
       );
     },
     SearchRoute.name: (routeData) {
-      final args = routeData.argsAs<SearchRouteArgs>(
-          orElse: () => const SearchRouteArgs());
       return _i6.CustomPage<dynamic>(
         routeData: routeData,
-        child: _i2.Search(key: args.key),
+        child: const _i2.Search(),
         transitionsBuilder: _i6.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
@@ -65,11 +63,9 @@ class AppRouter extends _i6.RootStackRouter {
       );
     },
     SettingsRoute.name: (routeData) {
-      final args = routeData.argsAs<SettingsRouteArgs>(
-          orElse: () => const SettingsRouteArgs());
       return _i6.CustomPage<dynamic>(
         routeData: routeData,
-        child: _i5.Settings(key: args.key),
+        child: const _i5.Settings(),
         transitionsBuilder: _i6.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
@@ -130,26 +126,14 @@ class AppRoute extends _i6.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.Search]
-class SearchRoute extends _i6.PageRouteInfo<SearchRouteArgs> {
-  SearchRoute({_i7.Key? key})
+class SearchRoute extends _i6.PageRouteInfo<void> {
+  const SearchRoute()
       : super(
           SearchRoute.name,
           path: 'search',
-          args: SearchRouteArgs(key: key),
         );
 
   static const String name = 'SearchRoute';
-}
-
-class SearchRouteArgs {
-  const SearchRouteArgs({this.key});
-
-  final _i7.Key? key;
-
-  @override
-  String toString() {
-    return 'SearchRouteArgs{key: $key}';
-  }
 }
 
 /// generated route for
@@ -223,24 +207,12 @@ class TranslationViewImagePickerRouteArgs {
 
 /// generated route for
 /// [_i5.Settings]
-class SettingsRoute extends _i6.PageRouteInfo<SettingsRouteArgs> {
-  SettingsRoute({_i7.Key? key})
+class SettingsRoute extends _i6.PageRouteInfo<void> {
+  const SettingsRoute()
       : super(
           SettingsRoute.name,
           path: 'settings',
-          args: SettingsRouteArgs(key: key),
         );
 
   static const String name = 'SettingsRoute';
-}
-
-class SettingsRouteArgs {
-  const SettingsRouteArgs({this.key});
-
-  final _i7.Key? key;
-
-  @override
-  String toString() {
-    return 'SettingsRouteArgs{key: $key}';
-  }
 }

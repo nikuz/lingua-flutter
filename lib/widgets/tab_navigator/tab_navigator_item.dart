@@ -44,6 +44,7 @@ class TabNavigatorItem extends StatelessWidget {
     return Expanded(
       child: Center(
         child: Material(
+          type: MaterialType.transparency,
           child: InkWell(
             customBorder: const CircleBorder(),
             onTap: () {

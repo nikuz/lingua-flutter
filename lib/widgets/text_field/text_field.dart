@@ -114,12 +114,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
       );
     }
 
-    InputBorder border = const UnderlineInputBorder(
-      borderSide: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.2)),
+    InputBorder border = UnderlineInputBorder(
+      borderSide: BorderSide(color: Theme.of(context).dividerColor),
     );
     if (widget.framed) {
-      border = const OutlineInputBorder(
-        borderSide: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.2)),
+      border = OutlineInputBorder(
+        borderSide: BorderSide(color: Theme.of(context).dividerColor),
       );
     }
 

@@ -151,7 +151,7 @@ class TranslationViewSectionWrapperExpandButton extends StatelessWidget {
     );
 
     return Material(
-      color: theme.colors.focus,
+      color: theme.colors.focusBackground,
       borderRadius: borderRadius,
       child: InkWell(
         borderRadius: borderRadius,

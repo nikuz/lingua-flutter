@@ -4,7 +4,7 @@ import 'package:lingua_flutter/styles/styles.dart';
 
 import './bloc/search_cubit.dart';
 import './widgets/search_field.dart';
-import './widgets/search_translations_list.dart';
+import './widgets/search_list/search_list.dart';
 
 class Search extends StatefulWidget {
   const Search({Key? key}) : super(key: key);
@@ -43,7 +43,7 @@ class _SearchState extends State<Search> {
             children: const [
               SearchField(),
               Expanded(
-                child: SearchTranslationsList(),
+                child: SearchList(),
               ),
             ],
           ),
