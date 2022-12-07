@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import './firebase_options.dart';
 import './controllers/translation.dart';
 import './controllers/parsing_schemas.dart';
+import './controllers/languages.dart';
 import './blocs/observer.dart';
 import './screens/search/bloc/search_cubit.dart';
 import './screens/translation_view/bloc/translation_view_cubit.dart';
@@ -26,9 +27,11 @@ void main() async {
   // initiate controllers
   translateControllerInit();
 
-  // preload parsing schemas
+  // preload parsing schemas and languages
   await preloadLocalParsingSchemas();
   // await getParsingSchema('current', forceUpdate: true);
+  await preloadLanguages();
+  await getLanguages();
 
   setGlobalAudioContext();
 

@@ -8,6 +8,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import './firebase_options.dart';
 import './controllers/translation.dart';
 import './controllers/parsing_schemas.dart';
+import './controllers/languages.dart';
 import './screens/search/bloc/search_cubit.dart';
 import './screens/translation_view/bloc/translation_view_cubit.dart';
 import './screens/settings/bloc/settings_cubit.dart';
@@ -32,8 +33,9 @@ void main() async {
   // initiate controllers
   translateControllerInit();
 
-  // preload parsing schemas
+  // preload parsing schemas and languages
   await preloadLocalParsingSchemas();
+  await preloadLanguages();
 
   setGlobalAudioContext();
 

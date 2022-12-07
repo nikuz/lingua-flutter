@@ -7,7 +7,7 @@ import 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
 
 export 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
 
-Map<String, StoredParsingSchema> parsingSchemas = {};
+final Map<String, StoredParsingSchema> parsingSchemas = {};
 
 Future<void> preloadLocalParsingSchemas() async {
   final schemasPath = await _getSchemasPath();

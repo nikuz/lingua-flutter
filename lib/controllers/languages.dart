@@ -1,0 +1,85 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:lingua_flutter/utils/files.dart';
+import 'package:lingua_flutter/models/language.dart';
+
+List<Language>? languages;
+
+Future<void> preloadLanguages() async {
+  final languagesPath = await _getLanguagesPath();
+  final languagesDir = Directory(languagesPath);
+
+  if (!(await languagesDir.exists())) {
+    await languagesDir.create();
+  }
+
+  await for (var item in languagesDir.list()) {
+    // read languages file
+    final file = File(item.path);
+    final languagesFileContent = await file.readAsString();
+
+    // decode file JSON content
+    List<dynamic>? languagesData;
+    try {
+      Map<String, dynamic> languagesRawData = jsonDecode(languagesFileContent);
+      languagesData = jsonDecode(languagesRawData['raw']);
+    } catch (err, stack) {
+      FirebaseCrashlytics.instance.recordError(err, stack);
+    }
+
+    if (languagesData != null) {
+      languages = languagesData.map((item) => Language(
+        id: item['id'],
+        value: item['value'],
+      )).toList();
+    }
+  }
+}
+
+Future<List<Language>?> getLanguages({ bool? forceUpdate }) async {
+  if (forceUpdate != true && languages?.isNotEmpty == true) {
+    return languages;
+  }
+
+  final languagesCollection = FirebaseFirestore.instance.collection('languages');
+  final languagesDoc = await languagesCollection.doc('languages').get();
+
+  if (!languagesDoc.exists) {
+    return null;
+  }
+
+  final languagesRawData = languagesDoc.data();
+  if (languagesRawData == null) {
+    return null;
+  }
+
+  List<dynamic>? languagesData;
+  try {
+    languagesData = jsonDecode(languagesRawData['raw']);
+  } catch (err, stack) {
+    FirebaseCrashlytics.instance.recordError(err, stack);
+    return null;
+  }
+
+  if (languagesData == null) {
+    return null;
+  }
+
+  final languagesPath = await _getLanguagesPath();
+  final file = File('$languagesPath/languages');
+  await file.writeAsString(jsonEncode(languagesRawData));
+
+  languages = languagesData.map((item) => Language(
+    id: item['id'],
+    value: item['value'],
+  )).toList();
+
+  return languages;
+}
+
+Future<String> _getLanguagesPath() async {
+  final documentsPath = await getDocumentsPath();
+  return '$documentsPath/languages';
+}
