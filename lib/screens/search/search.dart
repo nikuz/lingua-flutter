@@ -25,7 +25,6 @@ class _SearchState extends State<Search> {
     final MyTheme theme = Styles.theme(context);
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text(
           'My Dictionary',

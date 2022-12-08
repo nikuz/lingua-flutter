@@ -7,6 +7,8 @@ part 'settings_state.g.dart';
 
 @JsonSerializable()
 class SettingsState extends Equatable {
+  final String translateFrom;
+  final String translateTo;
   final bool pronunciationAutoPlay;
   final bool darkMode;
   final bool autoDarkMode;
@@ -17,6 +19,8 @@ class SettingsState extends Equatable {
   final int? backupPreloadSize;
 
   const SettingsState({
+    required this.translateFrom,
+    required this.translateTo,
     required this.pronunciationAutoPlay,
     required this.darkMode,
     required this.autoDarkMode,
@@ -28,6 +32,8 @@ class SettingsState extends Equatable {
   });
 
   SettingsState copyWith({
+    String? translateFrom,
+    String? translateTo,
     bool? pronunciationAutoPlay,
     bool? darkMode,
     bool? autoDarkMode,
@@ -38,6 +44,8 @@ class SettingsState extends Equatable {
     Wrapped<int?>? backupPreloadSize,
   }) {
     return SettingsState(
+      translateFrom: translateFrom ?? this.translateFrom,
+      translateTo: translateTo ?? this.translateTo,
       pronunciationAutoPlay: pronunciationAutoPlay ?? this.pronunciationAutoPlay,
       darkMode: darkMode ?? this.darkMode,
       autoDarkMode: autoDarkMode ?? this.autoDarkMode,
@@ -50,6 +58,8 @@ class SettingsState extends Equatable {
   }
 
   factory SettingsState.initial(SharedPreferences prefs) {
+    final String translateFrom = prefs.getString('translateFrom') ?? 'en';
+    final String translateTo = prefs.getString('translateTo') ?? 'en';
     final bool pronunciationAutoPlay = prefs.getBool('pronunciationAutoPlay') ?? true;
     final bool darkMode = prefs.getBool('darkMode') ?? false;
     final bool? autoDarkMode = prefs.getBool('autoDarkMode');
@@ -57,6 +67,8 @@ class SettingsState extends Equatable {
     final int? backupSize = prefs.getInt('backupSize');
 
     return SettingsState(
+      translateFrom: translateFrom,
+      translateTo: translateTo,
       pronunciationAutoPlay: pronunciationAutoPlay,
       darkMode: darkMode,
       autoDarkMode: autoDarkMode ?? true,

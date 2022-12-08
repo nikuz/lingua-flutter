@@ -7,7 +7,7 @@ class Games extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Games'),
+        title: const Text('Play a game'),
       ),
       body: SafeArea(
         child: Column(
@@ -15,7 +15,7 @@ class Games extends StatelessWidget {
             Center(
               child: Container(
                 padding: const EdgeInsets.all(10),
-                child: const Text('Games page'),
+                child: const Text('Play a game'),
               ),
             )
           ],

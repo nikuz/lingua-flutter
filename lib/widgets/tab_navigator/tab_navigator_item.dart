@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
+import './tab_navigator_constants.dart';
+
 class TabNavigatorItem extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -40,6 +42,11 @@ class TabNavigatorItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MyTheme theme = Styles.theme(context);
+    Color color = theme.colors.primaryPale;
+
+    if (active) {
+      color = theme.colors.focus;
+    }
 
     return Expanded(
       child: Center(
@@ -52,15 +59,18 @@ class TabNavigatorItem extends StatelessWidget {
                 onPressed!(path);
               }
             },
-            child: Padding(
+            child: Container(
               padding: const EdgeInsets.all(10),
+              constraints: const BoxConstraints(
+                minWidth: TabNavigatorConstants.minItemWidth,
+              ),
               child: Column(
                 children: [
                   Container(
-                    margin: const EdgeInsets.only(bottom: 5),
+                    margin: const EdgeInsets.only(bottom: 2),
                     child: Icon(
                       icon,
-                      color: active ? theme.colors.focus : theme.colors.primary,
+                      color: color,
                     ),
                   ),
                   Text(
@@ -68,7 +78,8 @@ class TabNavigatorItem extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: active ? theme.colors.focus : theme.colors.primary,
+                      color: color,
+                      fontSize: 10,
                     ),
                   ),
                 ],

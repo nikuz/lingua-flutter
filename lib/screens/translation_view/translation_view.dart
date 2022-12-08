@@ -64,7 +64,6 @@ class _TranslationViewState extends State<TranslationView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         automaticallyImplyLeading: true, // to automatically add Back Button when needed,
         title: Text(

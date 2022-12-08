@@ -7,19 +7,25 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final keyboardIsVisible = MediaQuery.of(context).viewInsets.bottom != 0;
     return Stack(
-      children: const [
+      children: [
         Padding(
-          padding: EdgeInsets.only(bottom: TabNavigatorConstants.height),
-          child: AutoRouter(),
+          padding: EdgeInsets.only(bottom: keyboardIsVisible ? 0 : TabNavigatorConstants.height),
+          child: const AutoRouter(),
         ),
 
-        TabNavigator(
+        const TabNavigator(
           children: [
             TabNavigatorItem(
               label: 'Search',
               icon: Icons.search,
               path: 'search',
+            ),
+            TabNavigatorItem(
+              label: 'Play',
+              icon: Icons.games,
+              path: 'games',
             ),
             TabNavigatorItem(
               label: 'Settings',

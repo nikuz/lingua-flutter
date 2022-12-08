@@ -1,11 +1,11 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lingua_flutter/styles/styles.dart';
 
 import './bloc/settings_cubit.dart';
 import './bloc/settings_state.dart';
 import './widgets/settings_row.dart';
+import './widgets/languages_selector/settings_languages_selector.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -37,8 +37,6 @@ class _SettingsState extends State<Settings> {
       body: SafeArea(
         child: BlocBuilder<SettingsCubit, SettingsState>(
           builder: (context, state) {
-            final MyTheme theme = Styles.theme(context);
-
             String backupTime = '';
 
             if (state.backupTime != null) {
@@ -51,42 +49,40 @@ class _SettingsState extends State<Settings> {
               backupTime = '$backupTime, $size';
             }
 
-            return Container(
-              color: theme.colors.background,
-              child: Column(
-                children: <Widget>[
-                  SettingsRow(
-                    title: 'Autoplay pronunciation',
-                    child: Switch(
-                      value: state.pronunciationAutoPlay,
-                      onChanged: (value) {
-                        _settingsCubit.setPronunciationAutoPlay(value);
-                      },
-                    ),
+            return Column(
+              children: <Widget>[
+                const SettingsLanguagesSelector(),
+                SettingsRow(
+                  title: 'Autoplay pronunciation',
+                  child: Switch(
+                    value: state.pronunciationAutoPlay,
+                    onChanged: (value) {
+                      _settingsCubit.setPronunciationAutoPlay(value);
+                    },
                   ),
-                  SettingsRow(
-                    title: 'Dark mode',
-                    child: Switch(
-                      value: state.darkMode,
-                      onChanged: state.autoDarkMode ? null : (value) {
-                        _settingsCubit.setDarkMode(value);
-                      },
-                    ),
+                ),
+                SettingsRow(
+                  title: 'Dark mode',
+                  child: Switch(
+                    value: state.darkMode,
+                    onChanged: state.autoDarkMode ? null : (value) {
+                      _settingsCubit.setDarkMode(value);
+                    },
                   ),
-                  SettingsRow(
-                    title: 'Auto Dark mode',
-                    child: Switch(
-                      value: state.autoDarkMode,
-                      onChanged: (value) {
-                        _settingsCubit.setAutoDarkMode(value);
-                        if (value) {
-                          _settingsCubit.setDarkMode(false);
-                        }
-                      },
-                    ),
+                ),
+                SettingsRow(
+                  title: 'Auto Dark mode',
+                  child: Switch(
+                    value: state.autoDarkMode,
+                    onChanged: (value) {
+                      _settingsCubit.setAutoDarkMode(value);
+                      if (value) {
+                        _settingsCubit.setDarkMode(false);
+                      }
+                    },
                   ),
-                ],
-              ),
+                ),
+              ],
             );
           },
         ),

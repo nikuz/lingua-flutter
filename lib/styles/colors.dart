@@ -10,6 +10,8 @@ class MyColors {
   final Color paleGrey = const Color(0xFFFAFAFA);
   final Color grey = const Color(0xFF9E9E9E);
   final Color darkGrey = const Color(0xFF303030);
+  final Color dividerLight = const Color(0x1fffffff);
+  final Color dividerDark = const Color(0x1f000000);
 }
 
 const myColors = MyColors();

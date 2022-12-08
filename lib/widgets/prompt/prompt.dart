@@ -22,55 +22,59 @@ class Prompt {
   Future show() {
     return Modal(
       context: context,
-      children: [
-        Container(
-          margin: const EdgeInsets.only(
-            top: 5,
-            right: 5,
-            bottom: 10,
-            left: 5,
-          ),
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(
+              top: 5,
+              right: 5,
+              bottom: 10,
+              left: 5,
+            ),
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 18,
+              ),
             ),
           ),
-        ),
 
-        if (child != null)
-          child!,
+          if (child != null)
+            child!,
 
-        Container(
-          margin: const EdgeInsets.only(top: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              if (withCancel)
-                Container(
-                  margin: const EdgeInsets.only(right: 20),
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.of(context, rootNavigator: true).pop(false);
-                      if (cancelCallback != null) {
-                        cancelCallback!();
-                      }
-                    },
-                    child: const Text('CANCEL'),
+          Container(
+            margin: const EdgeInsets.only(top: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (withCancel)
+                  Container(
+                    margin: const EdgeInsets.only(right: 20),
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).pop(false);
+                        if (cancelCallback != null) {
+                          cancelCallback!();
+                        }
+                      },
+                      child: const Text('CANCEL'),
+                    ),
                   ),
-                ),
 
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).pop(true);
-                  acceptCallback();
-                },
-                child: const Text('OK'),
-              ),
-            ],
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop(true);
+                    acceptCallback();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     ).show();
   }
 }

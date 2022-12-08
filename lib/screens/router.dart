@@ -5,6 +5,7 @@ import './app.dart';
 import './search/search.dart';
 import './translation_view/translation_view.dart';
 import './translation_view/pages/images_picker.dart';
+import './games/games.dart';
 import './settings/settings.dart';
 
 class Routes {
@@ -12,6 +13,7 @@ class Routes {
   static const search = 'search';
   static const translationView = 'translation_view';
   static const translationImages = 'translation_view/images';
+  static const games = 'games';
   static const settings = 'settings';
 }
 
@@ -34,6 +36,11 @@ class Routes {
         AutoRoute(
           path: Routes.translationImages,
           page: TranslationViewImagePicker,
+        ),
+        CustomRoute(
+          path: Routes.games,
+          page: Games,
+          transitionsBuilder: TransitionsBuilders.noTransition,
         ),
         CustomRoute(
           path: Routes.settings,

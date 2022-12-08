@@ -22,7 +22,7 @@ List<Widget> translationViewMenuConstructor({
   required bool hasInternetConnection,
 }) {
   final translationViewCubit = context.read<TranslationViewCubit>();
-  String? newTranslation = context.read<TranslationViewCubit>().state.word;
+  String? newTranslation = translationViewCubit.state.translation?.translation;
 
   return [
     PopupMenuButton<Menu>(
@@ -74,7 +74,7 @@ List<Widget> translationViewMenuConstructor({
               ),
             ),
             acceptCallback: () {
-              if (newTranslation != null) {
+              if (newTranslation != null && newTranslation != '' && translationViewCubit.state.translation?.translation != newTranslation) {
                 translationViewCubit.setOwnTranslation(newTranslation!);
               }
             },
