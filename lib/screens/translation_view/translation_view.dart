@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 
 import 'package:lingua_flutter/utils/connectivity.dart';
+import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 
 import './bloc/translation_view_cubit.dart';
 import './bloc/translation_view_state.dart';
@@ -37,9 +38,14 @@ class _TranslationViewState extends State<TranslationView> {
   void initState() {
     super.initState();
     _translationViewCubit = context.read<TranslationViewCubit>();
+    final settingsCubit = context.read<SettingsCubit>();
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollHandler);
-    _translationViewCubit.translate(widget.word);
+    _translationViewCubit.translate(
+      widget.word,
+      settingsCubit.state.translateFrom,
+      settingsCubit.state.translateTo,
+    );
     _getInternetConnectionStatus();
 
   }

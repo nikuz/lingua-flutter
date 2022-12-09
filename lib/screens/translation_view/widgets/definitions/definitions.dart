@@ -50,20 +50,20 @@ class TranslationViewDefinitions extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               List<dynamic>? items = jmespath.search(schema.translation.definitions.items.value, definitions[index]);
               return TranslationViewSpeechPartWrapper(
-                  name: jmespath.search(schema.translation.definitions.speechPart.value, definitions[index]),
-                  items: items,
-                  maxItemsToShow: TranslationViewDefinitionsConstants.minTranslationsToShow,
-                  expanded: expanded,
-                  itemBuilder: (BuildContext context, int itemIndex) {
-                    if (items == null) {
-                      return Container();
-                    }
-
-                    return DefinitionsItem(
-                      index: itemIndex + 1,
-                      data: items[itemIndex],
-                    );
+                name: jmespath.search(schema.translation.definitions.speechPart.value, definitions[index]),
+                items: items,
+                maxItemsToShow: TranslationViewDefinitionsConstants.minTranslationsToShow,
+                expanded: expanded,
+                itemBuilder: (BuildContext context, int itemIndex) {
+                  if (items == null) {
+                    return Container();
                   }
+
+                  return DefinitionsItem(
+                    index: itemIndex + 1,
+                    data: items[itemIndex],
+                  );
+                },
               );
             },
           ),

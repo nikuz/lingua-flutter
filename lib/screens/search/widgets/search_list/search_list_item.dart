@@ -81,7 +81,6 @@ class _SearchListItemState extends State<SearchListItem> {
           },
           direction: DismissDirection.endToStart,
           child: Container(
-            // margin: const EdgeInsets.only(bottom: 2),
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
@@ -90,53 +89,55 @@ class _SearchListItemState extends State<SearchListItem> {
               ),
               color: _isSelected ? theme.colors.secondaryPale : theme.colors.background,
             ),
-            child: ListTile(
-              leading: ImagePreview(
-                width: 50,
-                height: 50,
-                imageSource: widget.translationItem.image,
-                onTap: () {
-                  setState(() {
-                    _isSelected = true;
-                  });
-                },
-                onPreviewClose: () {
-                  setState(() {
-                    _isSelected = false;
-                  });
-                },
-              ),
-              title: Container(
-                margin: const EdgeInsets.only(bottom: 2),
-                child: Text(
-                  widget.translationItem.word,
-                  style: const TextStyle(
-                    fontSize: 18,
+            child: Material(
+              child: ListTile(
+                leading: ImagePreview(
+                  width: 50,
+                  height: 50,
+                  imageSource: widget.translationItem.image,
+                  onTap: () {
+                    setState(() {
+                      _isSelected = true;
+                    });
+                  },
+                  onPreviewClose: () {
+                    setState(() {
+                      _isSelected = false;
+                    });
+                  },
+                ),
+                title: Container(
+                  margin: const EdgeInsets.only(bottom: 2),
+                  child: Text(
+                    widget.translationItem.word,
+                    style: const TextStyle(
+                      fontSize: 18,
+                    ),
                   ),
                 ),
-              ),
-              subtitle: Container(
-                margin: const EdgeInsets.only(bottom: 2),
-                child: Text(
-                  widget.translationItem.translation ?? '',
-                  style: const TextStyle(
-                    fontSize: 16,
+                subtitle: Container(
+                  margin: const EdgeInsets.only(bottom: 2),
+                  child: Text(
+                    widget.translationItem.translation ?? '',
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
                   ),
                 ),
-              ),
-              // dense: true,
-              trailing: pronunciation,
-              onTap: () async {
-                final searchCubit = context.read<SearchCubit>();
-                final result = await AutoRouter.of(context).push<Translation>(
-                    TranslationViewRoute(word: widget.translationItem.word)
-                );
-                if (result != null) {
-                  if (state.translations.any((item) => item.id == result.id)) {
-                    searchCubit.updateTranslation(result);
+                // dense: true,
+                trailing: pronunciation,
+                onTap: () async {
+                  final searchCubit = context.read<SearchCubit>();
+                  final result = await AutoRouter.of(context).push<Translation>(
+                      TranslationViewRoute(word: widget.translationItem.word)
+                  );
+                  if (result != null) {
+                    if (state.translations.any((item) => item.id == result.id)) {
+                      searchCubit.updateTranslation(result);
+                    }
                   }
-                }
-              },
+                },
+              ),
             ),
           ),
         );

@@ -86,7 +86,9 @@ class _SearchListState extends State<SearchList> {
               return _refreshCompleter!.future;
             },
             child: ListView.builder(
+              controller: _scrollController,
               physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: state.translations.length + 2,
               itemBuilder: (BuildContext context, int index) {
                 if (index == 0) {
                   return Container(
@@ -125,8 +127,6 @@ class _SearchListState extends State<SearchList> {
                   withBorder: index < state.translations.length,
                 );
               },
-              itemCount: state.translations.length + 2,
-              controller: _scrollController,
             ),
           );
         },

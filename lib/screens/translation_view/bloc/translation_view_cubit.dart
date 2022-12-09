@@ -15,11 +15,15 @@ import 'translation_view_state.dart';
 class TranslationViewCubit extends Cubit<TranslationViewState> {
   TranslationViewCubit() : super(const TranslationViewState());
 
-  void translate(String word) async {
+  void translate(String word, String translateFrom, String translateTo) async {
     try {
       emit(state.copyWith(translateLoading: true));
 
-      final translation = await _fetchTranslation(word);
+      final translation = await _fetchTranslation(
+        word: word,
+        translateFrom: translateFrom,
+        translateTo: translateTo,
+      );
 
       emit(state.copyWith(
         word: word,
@@ -133,7 +137,12 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
   }
 }
 
-Future<Translation> _fetchTranslation(String word, { bool? forceCurrentSchemaDownload }) async {
+Future<Translation> _fetchTranslation({
+  required String word,
+  required String translateFrom,
+  required String translateTo,
+  bool? forceCurrentSchemaDownload,
+}) async {
   final encodedWord = removeSlash(word);
   final existingTranslation = await translateControllerGet(encodedWord);
   if (existingTranslation != null) {
@@ -162,9 +171,6 @@ Future<Translation> _fetchTranslation(String word, { bool? forceCurrentSchemaDow
 
   ParsingSchema? parsingSchema = storedParsingSchema.schema;
 
-  String sourceLanguage = 'en';
-  String targetLanguage = 'ru';
-
   List<dynamic>? translationResult;
   String? pronunciationResult;
 
@@ -176,8 +182,8 @@ Future<Translation> _fetchTranslation(String word, { bool? forceCurrentSchemaDow
           parsingSchema.translation.fields.parameter: parsingSchema.translation.fields.body
               .replaceAll('{marker}', parsingSchema.translation.fields.marker)
               .replaceAll('{word}', encodedWord)
-              .replaceAll('{sourceLanguage}', sourceLanguage)
-              .replaceAll('{targetLanguage}', targetLanguage)
+              .replaceAll('{sourceLanguage}', translateFrom)
+              .replaceAll('{targetLanguage}', translateTo)
         }
     ),
     // fetch raw pronunciation
@@ -187,7 +193,7 @@ Future<Translation> _fetchTranslation(String word, { bool? forceCurrentSchemaDow
           parsingSchema.pronunciation.fields.parameter: parsingSchema.pronunciation.fields.body
               .replaceAll('{marker}', parsingSchema.pronunciation.fields.marker)
               .replaceAll('{word}', encodedWord)
-              .replaceAll('{sourceLanguage}', sourceLanguage)
+              .replaceAll('{sourceLanguage}', translateFrom)
         }
     )
   ]);
@@ -197,7 +203,12 @@ Future<Translation> _fetchTranslation(String word, { bool? forceCurrentSchemaDow
   String? translationString = jmespath.search(parsingSchema.translation.translation.value, translationResult);
   if (translationResult == null || translationString == null) {
     if (forceCurrentSchemaDownload == null) {
-      return _fetchTranslation(word, forceCurrentSchemaDownload: true);
+      return _fetchTranslation(
+        word: word,
+        translateFrom: translateFrom,
+        translateTo: translateTo,
+        forceCurrentSchemaDownload: true
+      );
     } else {
       throw const CustomError(
         code: 500,

@@ -56,19 +56,19 @@ class TranslationViewAlternativeTranslations extends StatelessWidget {
                   alternativeTranslations[index]
               );
               return TranslationViewSpeechPartWrapper(
-                  name: jmespath.search(schema.translation.alternativeTranslations.speechPart.value, alternativeTranslations[index]),
-                  items: items,
-                  maxItemsToShow: TranslationViewAlternativeTranslationsConstants.minTranslationsToShow,
-                  expanded: expanded,
-                  itemBuilder: (BuildContext context, int itemIndex) {
-                    if (items == null) {
-                      return Container();
-                    }
-
-                    return TranslationViewAlternativeTranslationsItem(
-                      data: items[itemIndex],
-                    );
+                name: jmespath.search(schema.translation.alternativeTranslations.speechPart.value, alternativeTranslations[index]),
+                items: items,
+                maxItemsToShow: TranslationViewAlternativeTranslationsConstants.minTranslationsToShow,
+                expanded: expanded,
+                itemBuilder: (BuildContext context, int itemIndex) {
+                  if (items == null) {
+                    return Container();
                   }
+
+                  return TranslationViewAlternativeTranslationsItem(
+                    data: items[itemIndex],
+                  );
+                },
               );
             },
           ),

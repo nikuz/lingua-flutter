@@ -84,6 +84,8 @@ class SettingsState extends Equatable {
 
   @override
   List<Object?> get props => [
+    translateFrom,
+    translateTo,
     pronunciationAutoPlay,
     darkMode,
     autoDarkMode,

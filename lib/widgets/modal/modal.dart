@@ -22,7 +22,6 @@ class Modal {
       context: context,
       barrierLabel: '',
       barrierColor: Colors.transparent,
-      // barrierDismissible: true,
       transitionDuration: const Duration(milliseconds: 100),
       pageBuilder: (BuildContext context, Animation animation, Animation secondaryAnimation) {
         return ModalContent(

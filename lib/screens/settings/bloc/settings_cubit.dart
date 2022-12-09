@@ -8,6 +8,20 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   SettingsCubit(this.prefs) : super(SettingsState.initial(prefs));
 
+  void setTranslateFrom(String language) async {
+    await prefs.setString('translateFrom', language);
+    emit(state.copyWith(
+      translateFrom: language,
+    ));
+  }
+
+  void setTranslateTo(String language) async {
+    await prefs.setString('translateTo', language);
+    emit(state.copyWith(
+      translateTo: language,
+    ));
+  }
+
   void setPronunciationAutoPlay(bool value) async {
     await prefs.setBool('pronunciationAutoPlay', value);
     emit(state.copyWith(

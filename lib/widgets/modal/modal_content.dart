@@ -67,7 +67,7 @@ class _ModalContentState extends State<ModalContent> {
         },
         child: Stack(
           children: [
-            InkWell(
+            GestureDetector(
               onTap: widget.close,
               child: Container(
                 width: double.infinity,
