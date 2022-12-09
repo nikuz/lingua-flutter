@@ -93,15 +93,12 @@ class TranslationViewHeader extends StatelessWidget {
             children: [
               BlocBuilder<SettingsCubit, SettingsState>(
                 builder: (context, state) {
-                  if (pronunciation != null) {
-                    return PronunciationWidget(
-                      pronunciationSource: pronunciation,
-                      color: Colors.blue,
-                      size: 45,
-                      autoPlay: state.pronunciationAutoPlay,
-                    );
-                  }
-                  return Container();
+                  return PronunciationWidget(
+                    pronunciationSource: pronunciation,
+                    color: Colors.blue,
+                    size: 45,
+                    autoPlay: state.pronunciationAutoPlay,
+                  );
                 },
               ),
               Container(

@@ -35,12 +35,7 @@ class _SearchListItemState extends State<SearchListItem> {
     return BlocBuilder<SearchCubit, SearchState>(
       builder: (context, state) {
         MyTheme theme = Styles.theme(context);
-        Widget? pronunciation;
         Color borderColor = Colors.transparent;
-
-        if (widget.translationItem.pronunciation != null) {
-          pronunciation = PronunciationWidget(pronunciationSource: widget.translationItem.pronunciation!);
-        }
 
         if (widget.withBorder) {
           borderColor = theme.colors.divider;
@@ -125,7 +120,7 @@ class _SearchListItemState extends State<SearchListItem> {
                   ),
                 ),
                 // dense: true,
-                trailing: pronunciation,
+                trailing: PronunciationWidget(pronunciationSource: widget.translationItem.pronunciation),
                 onTap: () async {
                   final searchCubit = context.read<SearchCubit>();
                   final result = await AutoRouter.of(context).push<Translation>(
