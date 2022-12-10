@@ -82,9 +82,9 @@ class _SearchListItemState extends State<SearchListItem> {
                   color: borderColor,
                 ),
               ),
-              color: _isSelected ? theme.colors.secondaryPale : theme.colors.background,
             ),
             child: Material(
+              color: _isSelected ? theme.colors.secondaryPale : theme.colors.background,
               child: ListTile(
                 leading: ImagePreview(
                   width: 50,

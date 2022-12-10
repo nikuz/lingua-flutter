@@ -4,14 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import './firebase_options.dart';
-import './controllers/translation.dart';
-import './controllers/parsing_schemas.dart';
-import './controllers/languages.dart';
+import './controllers/local_translation.dart' as local_translate_controller;
+import './controllers/parsing_schemas.dart' as parsing_schemas_controller;
+import './controllers/languages.dart' as languages_controller;
+import './controllers/audio.dart' as audio_controller;
 import './blocs/observer.dart';
 import './screens/search/bloc/search_cubit.dart';
 import './screens/translation_view/bloc/translation_view_cubit.dart';
 import './screens/settings/bloc/settings_cubit.dart';
-import 'widgets/pronunciation/pronunciation.dart';
 import './app.dart';
 
 void main() async {
@@ -25,15 +25,14 @@ void main() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
   // initiate controllers
-  translateControllerInit();
+  local_translate_controller.init();
 
   // preload parsing schemas and languages
-  await preloadLocalParsingSchemas();
+  await parsing_schemas_controller.preload();
   // await getParsingSchema('current', forceUpdate: true);
-  await preloadLanguages();
-  await getLanguages();
+  await languages_controller.preload();
 
-  setGlobalAudioContext();
+  audio_controller.setGlobalAudioContext();
 
   runApp(
     MultiBlocProvider(

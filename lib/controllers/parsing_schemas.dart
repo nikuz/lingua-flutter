@@ -4,12 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
+import 'package:lingua_flutter/app_config.dart';
 
 export 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
 
 final Map<String, StoredParsingSchema> parsingSchemas = {};
 
-Future<void> preloadLocalParsingSchemas() async {
+Future<void> preload() async {
   final schemasPath = await _getSchemasPath();
   final schemasDir = Directory(schemasPath);
 
@@ -41,9 +42,14 @@ Future<void> preloadLocalParsingSchemas() async {
   }
 }
 
-Future<StoredParsingSchema?> getParsingSchema(String versionName, { bool? forceUpdate }) async {
+Future<StoredParsingSchema?> get(String versionName, { bool? forceUpdate }) async {
   if (forceUpdate != true && parsingSchemas[versionName] != null) {
-    return parsingSchemas[versionName];
+    int versionNumber = int.parse(parsingSchemas[versionName]!.version);
+
+    // check that version of "current" schema is more or equal minimum acceptable
+    if (versionName != 'current' || versionNumber >= minCurrentParsingSchema) {
+      return parsingSchemas[versionName];
+    }
   }
 
   final schemas = FirebaseFirestore.instance.collection('schemas');

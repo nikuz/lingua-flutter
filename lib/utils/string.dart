@@ -16,6 +16,6 @@ String findLongestStringInList(List<String> strings) {
   return longestString;
 }
 
-String removeSlash(String value) {
+String removeSlashFromString(String value) {
   return value.replaceAll('\\', '').replaceAll('"', '');
 }

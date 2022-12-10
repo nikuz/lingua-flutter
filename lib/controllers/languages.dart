@@ -7,7 +7,7 @@ import 'package:lingua_flutter/models/language.dart';
 
 List<Language>? languages;
 
-Future<void> preloadLanguages() async {
+Future<void> preload() async {
   final languagesPath = await _getLanguagesPath();
   final languagesDir = Directory(languagesPath);
 
@@ -38,7 +38,7 @@ Future<void> preloadLanguages() async {
   }
 }
 
-Future<List<Language>?> getLanguages({ bool? forceUpdate }) async {
+Future<List<Language>?> get({ bool? forceUpdate }) async {
   if (forceUpdate != true && languages?.isNotEmpty == true) {
     return languages;
   }

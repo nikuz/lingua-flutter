@@ -14,6 +14,8 @@ class SearchState extends Equatable {
   final int totalAmount;
   final List<Translation> translations;
   final String? searchText;
+  final Translation? quickTranslation;
+  final CustomError? quickTranslationError;
   final bool loading;
   final CustomError? error;
 
@@ -23,7 +25,9 @@ class SearchState extends Equatable {
     this.totalAmount = 0,
     this.translations = const [],
     this.searchText,
-    this.loading = false,
+    this.quickTranslation,
+    this.quickTranslationError,
+    this.loading = true,
     this.error,
   });
 
@@ -32,9 +36,11 @@ class SearchState extends Equatable {
     int? to,
     int? totalAmount,
     List<Translation>? translations,
-    Wrapped? searchText,
+    Wrapped<String?>? searchText,
+    Wrapped<Translation?>? quickTranslation,
+    Wrapped<CustomError?>? quickTranslationError,
     bool? loading,
-    Wrapped? error,
+    Wrapped<CustomError?>? error,
   }) {
     return SearchState(
       from: from ?? this.from,
@@ -42,6 +48,8 @@ class SearchState extends Equatable {
       totalAmount: totalAmount ?? this.totalAmount,
       translations: translations ?? this.translations,
       searchText: searchText != null ? searchText.value : this.searchText,
+      quickTranslation: quickTranslation != null ? quickTranslation.value : this.quickTranslation,
+      quickTranslationError: quickTranslationError != null ? quickTranslationError.value : this.quickTranslationError,
       loading: loading ?? this.loading,
       error: error != null ? error.value : this.error,
     );
@@ -57,6 +65,8 @@ class SearchState extends Equatable {
     totalAmount,
     translations,
     searchText,
+    quickTranslation,
+    quickTranslationError,
     loading,
     error,
   ];

@@ -11,13 +11,12 @@ class Games extends StatelessWidget {
       ),
       body: SafeArea(
         child: Column(
-          children: <Widget>[
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: const [
             Center(
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                child: const Text('Play a game'),
-              ),
-            )
+              child: Text('Play a game'),
+            ),
           ],
         ),
       ),

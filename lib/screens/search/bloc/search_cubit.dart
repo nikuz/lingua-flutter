@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lingua_flutter/controllers/translation.dart';
+import 'package:lingua_flutter/controllers/local_translation.dart' as local_translate_controller;
+import 'package:lingua_flutter/controllers/cloud_translation.dart' as cloud_translate_controller;
 import 'package:lingua_flutter/models/error.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/models/translation_list.dart';
@@ -14,16 +15,17 @@ class SearchCubit extends Cubit<SearchState> {
   void fetchTranslations({int from = 0, int to = SearchConstants.itemsPerPage, String? searchText}) async {
     emit(state.copyWith(
       searchText: Wrapped.value(searchText),
-      loading: true,
+      // show loading only on search list refresh, but not on every letter typed into the search field
+      loading: searchText == null ? true : false,
     ));
 
     try {
       TranslationList translationList;
 
       if (searchText != null) {
-        translationList = await translateControllerSearch(searchText, from, to);
+        translationList = await local_translate_controller.search(searchText, from, to);
       } else {
-        translationList = await translateControllerGetList(from, to);
+        translationList = await local_translate_controller.getList(from, to);
       }
 
       List<Translation> translations = [];
@@ -47,14 +49,64 @@ class SearchCubit extends Cubit<SearchState> {
           code: err.hashCode,
           message: err.toString(),
         )),
+        loading: false,
       ));
       rethrow;
     }
   }
 
+  void quickTranslate({
+    required String word,
+    required String translateFrom,
+    required String translateTo,
+  }) async {
+    try {
+      // emit(state.copyWith(
+      //   // quickTranslationTimestamp: Wrapped.value(timestamp),
+      // ));
+
+      if (word == state.searchText) {
+        final translation = await cloud_translate_controller.translate(
+          word: word,
+          translateFrom: translateFrom,
+          translateTo: translateTo,
+        );
+
+        if (translation.word != state.searchText) {
+          // print('translation.word: ${translation.word}');
+          // print('state.searchText: ${state.searchText}');
+          // print('word: $word');
+        }
+        if (translation.word == state.searchText) {
+          print('translation.word: ${translation.word}');
+          emit(state.copyWith(
+            quickTranslation: Wrapped.value(translation),
+            // quickTranslationTimestamp: const Wrapped.value(null),
+          ));
+        }
+      }
+    } catch (err) {
+      emit(state.copyWith(
+        quickTranslationError: Wrapped.value(CustomError(
+          code: err.hashCode,
+          message: err.toString(),
+        )),
+        // quickTranslationTimestamp: const Wrapped.value(null),
+      ));
+      rethrow;
+    }
+  }
+
+  void clearQuickTranslate() {
+    emit(state.copyWith(
+      quickTranslation: const Wrapped.value(null),
+      quickTranslationError: const Wrapped.value(null),
+    ));
+  }
+
   void removeTranslation(int id) async {
     try {
-      await translateControllerRemoveItem(id);
+      await local_translate_controller.removeItem(id);
       List<Translation> translationsClone = [...state.translations];
       int to = state.to;
       int totalAmount = state.totalAmount;

@@ -18,7 +18,7 @@ class SearchList extends StatefulWidget {
 class _SearchListState extends State<SearchList> {
   final _scrollController = ScrollController();
   late SearchCubit _searchCubit;
-  Completer<void>? _refreshCompleter;
+  late Completer<void> _refreshCompleter;
 
   @override
   void initState() {
@@ -51,31 +51,13 @@ class _SearchListState extends State<SearchList> {
   Widget build(BuildContext context) {
     return BlocListener<SearchCubit, SearchState>(
       listener: (context, state) {
-        if (!state.loading && _refreshCompleter?.isCompleted == false) {
-          _refreshCompleter?.complete();
+        if (!state.loading && _refreshCompleter.isCompleted == false) {
+          _refreshCompleter.complete();
           _refreshCompleter = Completer();
         }
       },
       child: BlocBuilder<SearchCubit, SearchState>(
         builder: (context, state) {
-          if (state.error?.message != null) {
-            return Center(
-              child: Text(state.error?.message ?? ''),
-            );
-          }
-
-          if (state.translations.isEmpty) {
-            if (state.loading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else {
-              return const Center(
-                child: Text('No translations found in your dictionary'),
-              );
-            }
-          }
-
           return RefreshIndicator(
             onRefresh: () {
               if (state.searchText != null) {
@@ -83,7 +65,7 @@ class _SearchListState extends State<SearchList> {
               } else {
                 _searchCubit.fetchTranslations();
               }
-              return _refreshCompleter!.future;
+              return _refreshCompleter.future;
             },
             child: ListView.builder(
               controller: _scrollController,

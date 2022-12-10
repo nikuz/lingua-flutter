@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/models/language.dart';
-import 'package:lingua_flutter/controllers/languages.dart';
+import 'package:lingua_flutter/controllers/languages.dart' as languages_controller;
 import 'package:lingua_flutter/widgets/bottom_drawer/bottom_drawer.dart';
 
 import '../../bloc/settings_cubit.dart';
@@ -44,7 +44,7 @@ class _SettingsLanguagesSelectorItemState extends State<SettingsLanguagesSelecto
 
   Future<void> _retrieveLanguages() async {
     if (_languages == null) {
-      final storedLanguages = await getLanguages();
+      final storedLanguages = await languages_controller.get();
       if (storedLanguages != null) {
         _languages = storedLanguages;
       }

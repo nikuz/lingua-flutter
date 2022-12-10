@@ -13,6 +13,8 @@ class Translation {
   final List<dynamic> raw;
   final ParsingSchema? schema;
   final String? schemaVersion;
+  final String translateFrom;
+  final String translateTo;
   final String? createdAt;
   final String? updatedAt;
 
@@ -25,6 +27,8 @@ class Translation {
     required this.raw,
     this.schema,
     this.schemaVersion,
+    required this.translateFrom,
+    required this.translateTo,
     this.createdAt,
     this.updatedAt,
   });
@@ -38,6 +42,8 @@ class Translation {
     List<dynamic>? raw,
     ParsingSchema? schema,
     String? schemaVersion,
+    String? translateFrom,
+    String? translateTo,
     String? createdAt,
     String? updatedAt,
   }) {
@@ -50,6 +56,8 @@ class Translation {
       raw: raw ?? this.raw,
       schema: schema ?? this.schema,
       schemaVersion: schemaVersion ?? this.schemaVersion,
+      translateFrom: translateFrom ?? this.translateFrom,
+      translateTo: translateTo ?? this.translateTo,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

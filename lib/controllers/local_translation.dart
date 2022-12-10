@@ -10,7 +10,7 @@ import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/regexp.dart';
 import 'package:lingua_flutter/utils/media_source.dart';
 
-Future<void> translateControllerInit() async {
+Future<void> init() async {
   await DBProvider().rawQuery('''
     CREATE TABLE IF NOT EXISTS dictionary (
       id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -19,20 +19,22 @@ Future<void> translateControllerInit() async {
       translation VARCHAR COLLATE NOCASE,
       raw TEXT NOT NULL,
       image VARCHAR,
-      schema_version INTEGER DEFAULT 1,
+      translate_from VARCHAR NOT NULL,
+      translate_to VARCHAR NOT NULL,
+      schema_version VARCHAR NOT NULL,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT DEFAULT CURRENT_TIMESTAMP
     )
   ''');
 }
 
-Future<TranslationList> translateControllerGetList(int from, int to) async {
+Future<TranslationList> getList(int from, int to) async {
   const countColumnName = 'COUNT(id)';
   final results = await DBProvider().batchQuery([
     BatchQueryRequest(
       type: 'rawQuery',
       query: '''
-        SELECT id, word, pronunciation, translation, image, created_at, updated_at
+        SELECT id, word, pronunciation, translation, image, translate_from, translate_to, created_at, updated_at
         FROM dictionary
         ORDER BY created_at DESC
         LIMIT ? OFFSET ?;
@@ -57,6 +59,8 @@ Future<TranslationList> translateControllerGetList(int from, int to) async {
         pronunciation: rawTranslation['pronunciation'],
         image: rawTranslation['image'],
         raw: [], // raw data is not present in database response above
+        translateFrom: rawTranslation['translate_from'],
+        translateTo: rawTranslation['translate_to'],
         createdAt: rawTranslation['created_at'],
         updatedAt: rawTranslation['updated_at'],
       )
@@ -64,7 +68,7 @@ Future<TranslationList> translateControllerGetList(int from, int to) async {
   );
 }
 
-Future<TranslationList> translateControllerSearch(String searchText, int from, int to) async {
+Future<TranslationList> search(String searchText, int from, int to) async {
   final searchPattern = '%$searchText%';
   final searchPatternStart = '%$searchText';
   final searchPatternEnd = '$searchText%';
@@ -74,7 +78,7 @@ Future<TranslationList> translateControllerSearch(String searchText, int from, i
     BatchQueryRequest(
       type: 'rawQuery',
       query: '''
-        SELECT id, word, pronunciation, translation, image, created_at, updated_at
+        SELECT id, word, pronunciation, translation, image, translate_from, translate_to, created_at, updated_at
         FROM dictionary
         WHERE
           word LIKE '$searchPattern'
@@ -118,6 +122,8 @@ Future<TranslationList> translateControllerSearch(String searchText, int from, i
         pronunciation: rawTranslation['pronunciation'],
         image: rawTranslation['image'],
         raw: [], // raw data is not present in database response above
+        translateFrom: rawTranslation['translate_from'],
+        translateTo: rawTranslation['translate_to'],
         createdAt: rawTranslation['created_at'],
         updatedAt: rawTranslation['updated_at'],
       )
@@ -125,7 +131,7 @@ Future<TranslationList> translateControllerSearch(String searchText, int from, i
   );
 }
 
-Future<Translation?> translateControllerGet(String? word) async {
+Future<Translation?> get(String? word) async {
   if (word == null) {
     return null;
   }
@@ -148,14 +154,16 @@ Future<Translation?> translateControllerGet(String? word) async {
     pronunciation: item['pronunciation'],
     image: item['image'],
     raw: jsonDecode(item['raw']),
+    schemaVersion: item['schema_version'],
+    translateFrom: item['translate_from'],
+    translateTo: item['translate_to'],
     createdAt: item['created_at'],
     updatedAt: item['updated_at'],
-    schemaVersion: item['schema_version'],
   );
 }
 
-Future<void> translateControllerSave(Translation translation) async {
-  final Translation? alreadyExists = await translateControllerGet(translation.word);
+Future<void> save(Translation translation) async {
+  final Translation? alreadyExists = await get(translation.word);
 
   if (alreadyExists != null) {
     throw const CustomError(
@@ -166,19 +174,21 @@ Future<void> translateControllerSave(Translation translation) async {
 
   // populate db with initial data
   await DBProvider().rawQuery('''
-      INSERT INTO dictionary (word, translation, raw, created_at, schema_version)
-      VALUES(?, ?, ?, datetime("now"), ?);
+      INSERT INTO dictionary (word, translation, raw, created_at, schema_version, translate_from, translate_to)
+      VALUES(?, ?, ?, datetime("now"), ?, ?, ?);
       ''',
       [
         translation.word,
         translation.translation,
         jsonEncode(translation.raw),
         translation.schemaVersion,
+        translation.translateFrom,
+        translation.translateTo,
       ]
   );
 
   // get saved in DB translation entry with row ID
-  final Translation? newTranslationData = await translateControllerGet(translation.word);
+  final Translation? newTranslationData = await get(translation.word);
   final newTranslationId = newTranslationData?.id;
 
   if (newTranslationId != null) {
@@ -248,8 +258,8 @@ Future<void> translateControllerSave(Translation translation) async {
   }
 }
 
-Future<void> translateControllerUpdate(Translation translation) async {
-  final Translation? translationData = await translateControllerGet(translation.word);
+Future<void> update(Translation translation) async {
+  final Translation? translationData = await get(translation.word);
   final translationId = translationData?.id;
 
   if (translationData == null || translationId == null) {
@@ -302,7 +312,7 @@ Future<void> translateControllerUpdate(Translation translation) async {
   );
 }
 
-Future<void> translateControllerRemoveItem(int id) async {
+Future<void> removeItem(int id) async {
   final List<dynamic> dbResponse = await DBProvider().rawQuery(
       'SELECT * FROM dictionary WHERE id=?;',
       [id]

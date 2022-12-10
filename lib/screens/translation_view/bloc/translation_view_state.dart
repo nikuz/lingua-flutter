@@ -42,7 +42,7 @@ class TranslationViewState extends Equatable {
     bool? translateLoading,
     bool? imageLoading,
     bool? updateLoading,
-    Wrapped? error,
+    Wrapped<CustomError?>? error,
   }) {
     return TranslationViewState(
       word: word ?? this.word,

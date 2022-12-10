@@ -1,0 +1,1 @@
+const minCurrentParsingSchema = 3;
