@@ -8,8 +8,8 @@ class TranslationSchema {
   final TranslationSchemaFields fields;
   final SchemaItem word;
   final SchemaItem autoSpellingFix;
-  final SchemaItem translation;
   final SchemaItem transcription;
+  final TranslationSchemaTranslations translations;
   final TranslationSchemaAlternativeTranslations alternativeTranslations;
   final TranslationSchemaDefinitions definitions;
   final TranslationSchemaExamples examples;
@@ -18,8 +18,8 @@ class TranslationSchema {
     required this.fields,
     required this.word,
     required this.autoSpellingFix,
-    required this.translation,
     required this.transcription,
+    required this.translations,
     required this.alternativeTranslations,
     required this.definitions,
     required this.examples,
@@ -48,6 +48,39 @@ class TranslationSchemaFields {
   Map<String, dynamic> toJson() => _$TranslationSchemaFieldsToJson(this);
 }
 
+// Translation
+@JsonSerializable(explicitToJson: true)
+class TranslationSchemaTranslations {
+  final String value;
+  final SchemaItem word;
+  final SchemaItem gender;
+  final TranslationSchemaTranslationsSentences sentences;
+
+  const TranslationSchemaTranslations({
+    required this.value,
+    required this.word,
+    required this.gender,
+    required this.sentences,
+  });
+
+  factory TranslationSchemaTranslations.fromJson(Map<String, dynamic> json) => _$TranslationSchemaTranslationsFromJson(json);
+  Map<String, dynamic> toJson() => _$TranslationSchemaTranslationsToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class TranslationSchemaTranslationsSentences {
+  final String value;
+  final SchemaItem word;
+
+  const TranslationSchemaTranslationsSentences({
+    required this.value,
+    required this.word,
+  });
+
+  factory TranslationSchemaTranslationsSentences.fromJson(Map<String, dynamic> json) => _$TranslationSchemaTranslationsSentencesFromJson(json);
+  Map<String, dynamic> toJson() => _$TranslationSchemaTranslationsSentencesToJson(this);
+}
+
 // Alternative translations
 @JsonSerializable(explicitToJson: true)
 class TranslationSchemaAlternativeTranslations {
@@ -68,12 +101,14 @@ class TranslationSchemaAlternativeTranslations {
 @JsonSerializable(explicitToJson: true)
 class TranslationSchemaAlternativeTranslationsItems {
   final String value;
+  final SchemaItem genre;
   final SchemaItem translation;
   final SchemaItem words;
   final SchemaItem frequency;
 
   const TranslationSchemaAlternativeTranslationsItems({
     required this.value,
+    required this.genre,
     required this.translation,
     required this.words,
     required this.frequency,

@@ -8,7 +8,7 @@ class TranslationList {
   final int from;
   final int to;
   final int totalAmount;
-  final List<Translation> translations;
+  final List<TranslationContainer> translations;
 
   const TranslationList({
     required this.from,

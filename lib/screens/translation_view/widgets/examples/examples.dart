@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jmespath/jmespath.dart' as jmespath;
 
 import '../../bloc/translation_view_cubit.dart';
 import '../../bloc/translation_view_state.dart';
@@ -16,13 +15,12 @@ class TranslationViewExamples extends StatelessWidget {
     return BlocBuilder<TranslationViewCubit, TranslationViewState>(
       builder: (context, state) {
         final translation = state.translation;
-        final schema = translation?.schema;
 
-        if (translation == null || schema == null) {
+        if (translation == null) {
           return Container();
         }
 
-        final List<dynamic>? examples = jmespath.search(schema.translation.examples.value, translation.raw);
+        final examples = translation.examples;
 
         if (examples == null) {
           return Container();
@@ -39,7 +37,7 @@ class TranslationViewExamples extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: expanded ? examples.length : TranslationViewExamplesConstants.minTranslationsToShow,
             itemBuilder: (BuildContext context, int index) => ExamplesItem(
-              data: examples[index],
+              item: examples[index],
             ),
           ),
         );

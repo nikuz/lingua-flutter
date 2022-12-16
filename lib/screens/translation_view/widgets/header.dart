@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:jmespath/jmespath.dart' as jmespath;
 
 import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
 import 'package:lingua_flutter/widgets/image_preview/image_preview.dart';
+import 'package:lingua_flutter/widgets/translation_word_view/translation_word_view.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_state.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
@@ -51,14 +51,10 @@ class TranslationViewHeader extends StatelessWidget {
 
   Widget _buildFooter(BuildContext context, TranslationViewState state) {
     final translation = state.translation;
-    final schema = translation?.schema;
 
-    if (translation == null || schema == null) {
+    if (translation == null) {
       return Container();
     }
-
-    String? pronunciation = state.translation?.pronunciation;
-    String? transcription = jmespath.search(schema.translation.transcription.value, translation.raw);
 
     final bool isNewWord = translation.id == null;
     bool toSave = isNewWord || state.imageIsUpdated || state.translationIsUpdated;
@@ -92,19 +88,19 @@ class TranslationViewHeader extends StatelessWidget {
           Row(
             children: [
               BlocBuilder<SettingsCubit, SettingsState>(
-                builder: (context, state) {
+                builder: (context, settingsState) {
                   return PronunciationWidget(
-                    pronunciationSource: pronunciation,
+                    pronunciationSource: state.translation?.pronunciation,
                     color: Colors.blue,
                     size: 45,
-                    autoPlay: state.pronunciationAutoPlay,
+                    autoPlay: settingsState.pronunciationAutoPlay,
                   );
                 },
               ),
               Container(
                 margin: const EdgeInsets.only(left: 10),
                 child: Text(
-                  transcription ?? '',
+                  translation.transcription ?? '',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 15,
@@ -115,7 +111,6 @@ class TranslationViewHeader extends StatelessWidget {
           ),
           TextButton(
             style: TextButton.styleFrom(
-              // padding: EdgeInsets.zero,
               minimumSize: const Size(65, 65),
               padding: EdgeInsets.zero,
               backgroundColor: toSave ? Colors.white : Colors.blue,
@@ -130,11 +125,11 @@ class TranslationViewHeader extends StatelessWidget {
               if (state.translation != null) {
                 if (isNewWord) {
                   context.read<TranslationViewCubit>().save(state.translation!).then((dynamic) {
-                    AutoRouter.of(context).pop<Translation>(state.translation);
+                    AutoRouter.of(context).pop<TranslationContainer>(state.translation);
                   });
                 } else if (state.imageIsUpdated || state.translationIsUpdated) {
                   context.read<TranslationViewCubit>().update(state.translation!).then((dynamic) {
-                    AutoRouter.of(context).pop<Translation>(state.translation!.copyWith(
+                    AutoRouter.of(context).pop<TranslationContainer>(state.translation!.copyWith(
                       updatedAt: DateTime.now().toString(),
                     ));
                   });
@@ -152,17 +147,12 @@ class TranslationViewHeader extends StatelessWidget {
     return BlocBuilder<TranslationViewCubit, TranslationViewState>(
         builder: (context, state) {
           final translation = state.translation;
-          final schema = translation?.schema;
 
-          if (translation == null || schema == null) {
+          if (translation == null) {
             return Container();
           }
 
           final MyTheme theme = Styles.theme(context);
-          String? translationWord = translation.translation ?? jmespath.search(
-              schema.translation.translation.value,
-              translation.raw
-          );
 
           return Container(
             color: theme.colors.focusBackground,
@@ -198,17 +188,11 @@ class TranslationViewHeader extends StatelessWidget {
                           style: TextButton.styleFrom(
                             backgroundColor: Colors.white,
                           ),
-                          child: Text(
-                            translationWord ?? '',
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 5,
-                            style: const TextStyle(
-                              fontFamily: 'Merriweather',
-                              fontSize: 20,
-                              letterSpacing: 1,
-                              color: Colors.blue,
-                            ),
-                          ),
+                          child: state.translation != null
+                              ? TranslationWordView(
+                                  translation: state.translation!,
+                              )
+                              : Container(),
                           onPressed: () {
                             // AutoRouter.of(context).replace(TranslationViewRoute(word: translationWord));
                           },

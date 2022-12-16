@@ -40,7 +40,7 @@ class _SearchFieldState extends State<SearchField> {
 
   void _submitHandler(String text, SearchState state) async {
     if (widget.hasInternetConnection && text != '') {
-      final result = await AutoRouter.of(context).push<Translation>(TranslationViewRoute(word: text));
+      final result = await AutoRouter.of(context).push<TranslationContainer>(TranslationViewRoute(word: text));
       if (result != null) {
         if (state.translations.any((item) => item.id == result.id)) {
           _searchCubit.updateTranslation(result);

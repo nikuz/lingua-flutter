@@ -52,7 +52,9 @@ class _TranslationViewSectionWrapperState extends State<TranslationViewSectionWr
         children: [
           Container(
             padding: const EdgeInsets.all(10),
-            margin: const EdgeInsets.only(bottom: buttonHeight - 1),
+            margin: hiddenItemsAmount != null
+                ? const EdgeInsets.only(bottom: buttonHeight - 1)
+                : null,
             decoration: BoxDecoration(
               border: Border.all(
                 color: Theme.of(context).dividerColor,

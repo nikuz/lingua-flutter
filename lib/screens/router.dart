@@ -29,7 +29,7 @@ class Routes {
           initial: true,
           transitionsBuilder: TransitionsBuilders.noTransition,
         ),
-        AutoRoute<Translation>(
+        AutoRoute<TranslationContainer>(
           path: Routes.translationView,
           page: TranslationView,
         ),

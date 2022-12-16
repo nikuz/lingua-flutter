@@ -64,7 +64,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
     }
   }
 
-  Future<void> save(Translation translation) async {
+  Future<void> save(TranslationContainer translation) async {
     try {
       emit(state.copyWith(
         updateLoading: true,
@@ -87,7 +87,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
     }
   }
 
-  Future<void> update(Translation translation) async {
+  Future<void> update(TranslationContainer translation) async {
     try {
       emit(state.copyWith(
         updateLoading: true,

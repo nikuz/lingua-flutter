@@ -40,8 +40,18 @@ class StoredParsingSchema {
           //
           word: SchemaItem(value: schemaJson['translation']['word']['value']),
           autoSpellingFix: SchemaItem(value: schemaJson['translation']['auto_spelling_fix']['value']),
-          translation: SchemaItem(value: schemaJson['translation']['translation']['value']),
           transcription: SchemaItem(value: schemaJson['translation']['transcription']['value']),
+
+          // translation
+          translations: TranslationSchemaTranslations(
+            value: schemaJson['translation']['translations']['value'],
+            word: SchemaItem(value: schemaJson['translation']['translations']['word']['value']),
+            gender: SchemaItem(value: schemaJson['translation']['translations']['gender']['value']),
+            sentences: TranslationSchemaTranslationsSentences(
+              value: schemaJson['translation']['translations']['sentences']['value'],
+              word: SchemaItem(value: schemaJson['translation']['translations']['sentences']['word']['value']),
+            ),
+          ),
 
           // alternative translations
           alternativeTranslations: TranslationSchemaAlternativeTranslations(
@@ -49,6 +59,7 @@ class StoredParsingSchema {
             speechPart: SchemaItem(value: schemaJson['translation']['alternative_translations']['speech_part']['value']),
             items: TranslationSchemaAlternativeTranslationsItems(
               value: schemaJson['translation']['alternative_translations']['items']['value'],
+              genre: SchemaItem(value: schemaJson['translation']['alternative_translations']['items']['genre']['value']),
               translation: SchemaItem(value: schemaJson['translation']['alternative_translations']['items']['translation']['value']),
               frequency: SchemaItem(value: schemaJson['translation']['alternative_translations']['items']['frequency']['value']),
               words: SchemaItem(value: schemaJson['translation']['alternative_translations']['items']['words']['value']),

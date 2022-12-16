@@ -46,6 +46,7 @@ class _SettingsLanguagesListState extends State<SettingsLanguagesList> {
           CustomTextField(
             textInputAction: TextInputAction.search,
             hintText: 'Search language',
+            autofocus: true,
             onChanged: (value) {
               _filterLanguages(value);
             },

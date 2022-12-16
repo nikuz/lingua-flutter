@@ -45,7 +45,7 @@ class AppRouter extends _i7.RootStackRouter {
     },
     TranslationViewRoute.name: (routeData) {
       final args = routeData.argsAs<TranslationViewRouteArgs>();
-      return _i7.MaterialPageX<_i9.Translation>(
+      return _i7.MaterialPageX<_i9.TranslationContainer>(
         routeData: routeData,
         child: _i3.TranslationView(
           key: args.key,

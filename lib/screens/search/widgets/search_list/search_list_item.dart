@@ -14,7 +14,7 @@ import '../../bloc/search_cubit.dart';
 import '../../bloc/search_state.dart';
 
 class SearchListItem extends StatefulWidget {
-  final Translation translationItem;
+  final TranslationContainer translationItem;
   final bool withBorder;
 
   const SearchListItem({
@@ -113,7 +113,7 @@ class _SearchListItemState extends State<SearchListItem> {
                 subtitle: Container(
                   margin: const EdgeInsets.only(bottom: 2),
                   child: Text(
-                    widget.translationItem.translation ?? '',
+                    widget.translationItem.translation,
                     style: const TextStyle(
                       fontSize: 16,
                     ),
@@ -123,7 +123,7 @@ class _SearchListItemState extends State<SearchListItem> {
                 trailing: PronunciationWidget(pronunciationSource: widget.translationItem.pronunciation),
                 onTap: () async {
                   final searchCubit = context.read<SearchCubit>();
-                  final result = await AutoRouter.of(context).push<Translation>(
+                  final result = await AutoRouter.of(context).push<TranslationContainer>(
                       TranslationViewRoute(word: widget.translationItem.word)
                   );
                   if (result != null) {

@@ -6,27 +6,49 @@ import 'package:lingua_flutter/controllers/parsing_schemas.dart' as parsing_sche
 import 'package:lingua_flutter/controllers/local_translation.dart' as local_translate_controller;
 import 'package:lingua_flutter/utils/json.dart';
 import 'package:lingua_flutter/utils/string.dart';
+import 'package:lingua_flutter/utils/types.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/models/error.dart';
 
-Future<Translation> translate({
+Future<TranslationContainer> translate({
   required String word,
   required String translateFrom,
   required String translateTo,
   bool? forceCurrentSchemaDownload,
 }) async {
   final encodedWord = removeSlashFromString(word);
-  final existingTranslation = await local_translate_controller.get(encodedWord);
-  if (existingTranslation != null) {
-    final schemaVersion = existingTranslation.schemaVersion;
-    StoredParsingSchema? storedParsingSchema;
-    if (schemaVersion != null) {
-      storedParsingSchema = await parsing_schemas_controller.get(schemaVersion);
-    }
 
-    return existingTranslation.copyWith(
-      schema: storedParsingSchema?.schema,
-    );
+  // if "forceCurrentSchemaDownload" set to true, then local retrieving and parsing has already failed,
+  // so we want to refresh the locally stored "current" parsing schema and translate this word from scratch
+  if (forceCurrentSchemaDownload == null) {
+    final existingTranslation = await local_translate_controller.get(encodedWord);
+    if (existingTranslation != null) {
+      final schemaVersion = existingTranslation.schemaVersion;
+      StoredParsingSchema? storedParsingSchema;
+      if (schemaVersion != null) {
+        storedParsingSchema = await parsing_schemas_controller.get(schemaVersion);
+      }
+
+      if (existingTranslation.raw != null && storedParsingSchema != null) {
+        try {
+          return TranslationContainer.fromRaw(
+            id: existingTranslation.id,
+            word: word,
+            pronunciation: existingTranslation.pronunciation,
+            image: existingTranslation.image,
+            raw: existingTranslation.raw!,
+            schema: storedParsingSchema.schema,
+            schemaVersion: storedParsingSchema.version,
+            translateFrom: translateFrom,
+            translateTo: translateTo,
+            createdAt: existingTranslation.createdAt,
+            updatedAt: existingTranslation.updatedAt,
+          );
+        } catch (e) {
+          //
+        }
+      }
+    }
   }
 
   StoredParsingSchema? storedParsingSchema = await parsing_schemas_controller.get(
@@ -72,14 +94,23 @@ Future<Translation> translate({
 
   String translationRaw = results[0];
   translationResult = _retrieveTranslationRawData(translationRaw, parsingSchema.translation.fields.marker);
-  String? translationString = jmespath.search(parsingSchema.translation.translation.value, translationResult);
-  if (translationResult == null || translationString == null) {
+
+  String pronunciationRaw = results[1];
+  final pronunciationRawData = _retrieveTranslationRawData(pronunciationRaw, parsingSchema.pronunciation.fields.marker);
+  if (pronunciationRawData != null) {
+    String? base64Value = getDynamicString(jmespath.search(parsingSchema.pronunciation.data.value, pronunciationRawData));
+    if (base64Value != null) {
+      pronunciationResult = parsingSchema.pronunciation.fields.base64Prefix + base64Value;
+    }
+  }
+
+  if (translationResult == null || pronunciationResult == null) {
     if (forceCurrentSchemaDownload == null) {
       return translate(
-          word: word,
-          translateFrom: translateFrom,
-          translateTo: translateTo,
-          forceCurrentSchemaDownload: true
+        word: word,
+        translateFrom: translateFrom,
+        translateTo: translateTo,
+        forceCurrentSchemaDownload: true,
       );
     } else {
       throw const CustomError(
@@ -89,25 +120,28 @@ Future<Translation> translate({
     }
   }
 
-  String pronunciationRaw = results[1];
-  final pronunciationRawData = _retrieveTranslationRawData(pronunciationRaw, parsingSchema.pronunciation.fields.marker);
-  if (pronunciationRawData != null) {
-    String? base64Value = jmespath.search(parsingSchema.pronunciation.data.value, pronunciationRawData);
-    if (base64Value != null) {
-      pronunciationResult = parsingSchema.pronunciation.fields.base64Prefix + base64Value;
+  try {
+    return TranslationContainer.fromRaw(
+      word: word,
+      pronunciation: pronunciationResult,
+      raw: translationResult,
+      schema: parsingSchema,
+      schemaVersion: storedParsingSchema.version,
+      translateFrom: translateFrom,
+      translateTo: translateTo,
+    );
+  } catch (error) {
+    if (forceCurrentSchemaDownload == null) {
+      return translate(
+        word: word,
+        translateFrom: translateFrom,
+        translateTo: translateTo,
+        forceCurrentSchemaDownload: true,
+      );
+    } else {
+      rethrow;
     }
   }
-
-  return Translation(
-    word: word,
-    translation: translationString,
-    pronunciation: pronunciationResult,
-    raw: translationResult,
-    schema: parsingSchema,
-    schemaVersion: storedParsingSchema.version,
-    translateFrom: translateFrom,
-    translateTo: translateTo,
-  );
 }
 
 List<dynamic>? _retrieveTranslationRawData(String rawData, String marker) {

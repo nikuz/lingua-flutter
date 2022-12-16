@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jmespath/jmespath.dart' as jmespath;
 
 import 'package:lingua_flutter/styles/styles.dart';
 import '../bloc/translation_view_cubit.dart';
@@ -14,16 +13,14 @@ class TranslationViewAutoSpellingFix extends StatelessWidget {
     return BlocBuilder<TranslationViewCubit, TranslationViewState>(
       builder: (context, state) {
         final translation = state.translation;
-        final schema = translation?.schema;
 
-        if (translation == null || schema == null) {
+        if (translation == null) {
           return Container();
         }
 
         final MyTheme theme = Styles.theme(context);
-        String? autoSpellingFix = jmespath.search(schema.translation.autoSpellingFix.value, translation.raw);
 
-        if (autoSpellingFix == null) {
+        if (translation.autoSpellingFix == null) {
           return Container();
         }
 
@@ -41,7 +38,7 @@ class TranslationViewAutoSpellingFix extends StatelessWidget {
               children: [
                 const TextSpan(text: 'Did you mean '),
                 TextSpan(
-                  text: '"$autoSpellingFix"',
+                  text: '"${translation.autoSpellingFix}"',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const TextSpan(text: '?'),

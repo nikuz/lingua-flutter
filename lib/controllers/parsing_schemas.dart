@@ -33,10 +33,18 @@ Future<void> preload() async {
 
     // create schema class instance and store in parsingSchemas cache variable
     if (schemaData != null) {
-      final schema = StoredParsingSchema.fromFirestore(schemaData);
-      parsingSchemas[schema.version] = schema;
-      if (schema.current) {
-        parsingSchemas['current'] = schema;
+      StoredParsingSchema? schema;
+      // schemas can be outdated and trying to parse them with current StoredParsingSchema structure throws error
+      try {
+        schema = StoredParsingSchema.fromFirestore(schemaData);
+      } catch (e) {
+        //
+      }
+      if (schema != null) {
+        parsingSchemas[schema.version] = schema;
+        if (schema.current) {
+          parsingSchemas['current'] = schema;
+        }
       }
     }
   }
@@ -65,10 +73,21 @@ Future<StoredParsingSchema?> get(String versionName, { bool? forceUpdate }) asyn
   }
 
   final schema = StoredParsingSchema.fromFirestore(schemaData);
-  parsingSchemas[schema.version] = schema;
   final schemasPath = await _getSchemasPath();
-  final file = File('$schemasPath/$versionName');
-  await file.writeAsString(jsonEncode(schemaData));
+  final schemaJson = jsonEncode(schemaData);
+
+  // store schema with "schema.version" name
+  parsingSchemas[schema.version] = schema;
+  final file = File('$schemasPath/${schema.version}');
+  await file.writeAsString(schemaJson);
+
+  // if "current" schema was retrieved, then it's version will not match the "versionName" variable it was requested with,
+  // so we also store file with "versionName" file name
+  if (versionName != schema.version) {
+    parsingSchemas[versionName] = schema;
+    final file = File('$schemasPath/$versionName');
+    await file.writeAsString(schemaJson);
+  }
 
   return schema;
 }

@@ -51,19 +51,18 @@ Future<TranslationList> getList(int from, int to) async {
     from: from,
     to: to,
     totalAmount: results[1][0][countColumnName],
-    translations: results[0]?.map<Translation>((rawTranslation) => (
-      Translation(
-        id: rawTranslation['id'],
-        word: rawTranslation['word'],
-        translation: rawTranslation['translation'],
-        pronunciation: rawTranslation['pronunciation'],
-        image: rawTranslation['image'],
-        raw: [], // raw data is not present in database response above
-        translateFrom: rawTranslation['translate_from'],
-        translateTo: rawTranslation['translate_to'],
-        createdAt: rawTranslation['created_at'],
-        updatedAt: rawTranslation['updated_at'],
-      )
+    translations: results[0]?.map<TranslationContainer>((rawTranslation) => (
+        TranslationContainer(
+          id: rawTranslation['id'],
+          word: rawTranslation['word'],
+          translation: rawTranslation['translation'],
+          pronunciation: rawTranslation['pronunciation'],
+          image: rawTranslation['image'],
+          translateFrom: rawTranslation['translate_from'],
+          translateTo: rawTranslation['translate_to'],
+          createdAt: rawTranslation['created_at'],
+          updatedAt: rawTranslation['updated_at'],
+        )
     )).toList(),
   );
 }
@@ -114,24 +113,23 @@ Future<TranslationList> search(String searchText, int from, int to) async {
     from: from,
     to: to,
     totalAmount: results[1][0][countColumnName],
-    translations: results[0].map<Translation>((rawTranslation) => (
-      Translation(
-        id: rawTranslation['id'],
-        word: rawTranslation['word'],
-        translation: rawTranslation['translation'],
-        pronunciation: rawTranslation['pronunciation'],
-        image: rawTranslation['image'],
-        raw: [], // raw data is not present in database response above
-        translateFrom: rawTranslation['translate_from'],
-        translateTo: rawTranslation['translate_to'],
-        createdAt: rawTranslation['created_at'],
-        updatedAt: rawTranslation['updated_at'],
-      )
+    translations: results[0].map<TranslationContainer>((rawTranslation) => (
+        TranslationContainer(
+          id: rawTranslation['id'],
+          word: rawTranslation['word'],
+          translation: rawTranslation['translation'],
+          pronunciation: rawTranslation['pronunciation'],
+          image: rawTranslation['image'],
+          translateFrom: rawTranslation['translate_from'],
+          translateTo: rawTranslation['translate_to'],
+          createdAt: rawTranslation['created_at'],
+          updatedAt: rawTranslation['updated_at'],
+        )
     )).toList(),
   );
 }
 
-Future<Translation?> get(String? word) async {
+Future<TranslationContainer?> get(String? word) async {
   if (word == null) {
     return null;
   }
@@ -147,13 +145,14 @@ Future<Translation?> get(String? word) async {
 
   final item = dbResponse[0];
 
-  return Translation(
+  return TranslationContainer(
     id: item['id'],
     word: word,
     translation: item['translation'],
     pronunciation: item['pronunciation'],
     image: item['image'],
     raw: jsonDecode(item['raw']),
+    // raw: [],
     schemaVersion: item['schema_version'],
     translateFrom: item['translate_from'],
     translateTo: item['translate_to'],
@@ -162,14 +161,14 @@ Future<Translation?> get(String? word) async {
   );
 }
 
-Future<void> save(Translation translation) async {
-  final Translation? alreadyExists = await get(translation.word);
+Future<void> save(TranslationContainer translation) async {
+  final TranslationContainer? alreadyExists = await get(translation.word);
 
+  // update translation if it already exists
+  // user can appear in this situation if their local parsing schema is corrupted
+  // and new schema and translation were received
   if (alreadyExists != null) {
-    throw const CustomError(
-      code: 409,
-      message: 'Such translation already exists in local database',
-    );
+    return update(translation);
   }
 
   // populate db with initial data
@@ -188,7 +187,7 @@ Future<void> save(Translation translation) async {
   );
 
   // get saved in DB translation entry with row ID
-  final Translation? newTranslationData = await get(translation.word);
+  final TranslationContainer? newTranslationData = await get(translation.word);
   final newTranslationId = newTranslationData?.id;
 
   if (newTranslationId != null) {
@@ -258,8 +257,8 @@ Future<void> save(Translation translation) async {
   }
 }
 
-Future<void> update(Translation translation) async {
-  final Translation? translationData = await get(translation.word);
+Future<void> update(TranslationContainer translation) async {
+  final TranslationContainer? translationData = await get(translation.word);
   final translationId = translationData?.id;
 
   if (translationData == null || translationId == null) {

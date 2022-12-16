@@ -12,9 +12,9 @@ class SearchState extends Equatable {
   final int from;
   final int to;
   final int totalAmount;
-  final List<Translation> translations;
+  final List<TranslationContainer> translations;
   final String? searchText;
-  final Translation? quickTranslation;
+  final TranslationContainer? quickTranslation;
   final CustomError? quickTranslationError;
   final bool loading;
   final CustomError? error;
@@ -35,9 +35,9 @@ class SearchState extends Equatable {
     int? from,
     int? to,
     int? totalAmount,
-    List<Translation>? translations,
+    List<TranslationContainer>? translations,
     Wrapped<String?>? searchText,
-    Wrapped<Translation?>? quickTranslation,
+    Wrapped<TranslationContainer?>? quickTranslation,
     Wrapped<CustomError?>? quickTranslationError,
     bool? loading,
     Wrapped<CustomError?>? error,

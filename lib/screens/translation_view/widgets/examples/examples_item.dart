@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:jmespath/jmespath.dart' as jmespath;
+import 'package:lingua_flutter/models/translation.dart';
 
 import '../../bloc/translation_view_cubit.dart';
 import '../../bloc/translation_view_state.dart';
 
 class ExamplesItem extends StatelessWidget {
-  final List<dynamic> data;
+  final TranslationExample item;
 
   const ExamplesItem({
     Key? key,
-    required this.data,
+    required this.item,
   }) : super(key: key);
 
   @override
@@ -19,15 +19,8 @@ class ExamplesItem extends StatelessWidget {
     return BlocBuilder<TranslationViewCubit, TranslationViewState>(
       builder: (context, state) {
         final translation = state.translation;
-        final schema = translation?.schema;
 
-        if (translation == null || schema == null) {
-          return Container();
-        }
-
-        String? text = jmespath.search(schema.translation.examples.text.value, data);
-
-        if (text == null) {
+        if (translation == null) {
           return Container();
         }
 
@@ -48,7 +41,7 @@ class ExamplesItem extends StatelessWidget {
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),
                   child: Html(
-                    data: text,
+                    data: item.text,
                     style: {
                       "*": Style(fontSize: FontSize(16)),
                     },

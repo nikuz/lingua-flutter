@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jmespath/jmespath.dart' as jmespath;
 
 import '../../bloc/translation_view_cubit.dart';
 import '../../bloc/translation_view_state.dart';
@@ -17,28 +16,20 @@ class TranslationViewAlternativeTranslations extends StatelessWidget {
     return BlocBuilder<TranslationViewCubit, TranslationViewState>(
       builder: (context, state) {
         final translation = state.translation;
-        final schema = translation?.schema;
 
-        if (translation == null || schema == null) {
+        if (translation == null) {
           return Container();
         }
 
-        List<dynamic>? alternativeTranslations = jmespath.search(
-            schema.translation.alternativeTranslations.value,
-            translation.raw
-        );
+        final alternativeTranslations = translation.alternativeTranslations;
 
         if (alternativeTranslations == null) {
           return Container();
         }
 
         int itemsAmount = 0;
-
-        for (var speechPart in alternativeTranslations) {
-          List<dynamic>? items = jmespath.search(schema.translation.alternativeTranslations.items.value, speechPart);
-          if (items != null) {
-            itemsAmount += items.length;
-          }
+        for (var item in alternativeTranslations) {
+          itemsAmount += item.items.length;
         }
 
         return TranslationViewSectionWrapper(
@@ -51,22 +42,15 @@ class TranslationViewAlternativeTranslations extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: alternativeTranslations.length,
             itemBuilder: (BuildContext context, int index) {
-              List<dynamic>? items = jmespath.search(
-                  schema.translation.alternativeTranslations.items.value,
-                  alternativeTranslations[index]
-              );
+              final items = alternativeTranslations[index].items;
               return TranslationViewSpeechPartWrapper(
-                name: jmespath.search(schema.translation.alternativeTranslations.speechPart.value, alternativeTranslations[index]),
+                name: alternativeTranslations[index].speechPart,
                 items: items,
                 maxItemsToShow: TranslationViewAlternativeTranslationsConstants.minTranslationsToShow,
                 expanded: expanded,
                 itemBuilder: (BuildContext context, int itemIndex) {
-                  if (items == null) {
-                    return Container();
-                  }
-
                   return TranslationViewAlternativeTranslationsItem(
-                    data: items[itemIndex],
+                    item: items[itemIndex],
                   );
                 },
               );

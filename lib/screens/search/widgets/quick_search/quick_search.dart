@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:lingua_flutter/widgets/translation_word_view/translation_word_view.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 
 import '../../bloc/search_cubit.dart';
@@ -72,11 +73,8 @@ class _QuickSearchState extends State<QuickSearch> {
 
     if (state.quickTranslation?.translation != null) {
       return ListTile(
-        title: Text(
-          state.quickTranslation!.translation!,
-          style: const TextStyle(
-            fontSize: 16,
-          ),
+        title: TranslationWordView(
+          translation: state.quickTranslation!,
         ),
         trailing: ElevatedButton(
           style: TextButton.styleFrom(

@@ -9,7 +9,7 @@ part 'translation_view_state.g.dart';
 @JsonSerializable()
 class TranslationViewState extends Equatable {
   final String? word;
-  final Translation? translation;
+  final TranslationContainer? translation;
   final List<String>? images;
   final String? imageSearchWord;
   final bool imageIsUpdated;
@@ -34,7 +34,7 @@ class TranslationViewState extends Equatable {
 
   TranslationViewState copyWith({
     String? word,
-    Translation? translation,
+    TranslationContainer? translation,
     List<String>? images,
     String? imageSearchWord,
     bool? imageIsUpdated,

@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jmespath/jmespath.dart' as jmespath;
+import 'package:lingua_flutter/models/translation.dart';
 
 import '../../bloc/translation_view_cubit.dart';
 import '../../bloc/translation_view_state.dart';
 
 class DefinitionsItem extends StatelessWidget {
-  final List<dynamic> data;
   final int index;
+  final TranslationDefinitionItem item;
 
   const DefinitionsItem({
     Key? key,
-    required this.data,
     required this.index,
+    required this.item,
   }) : super(key: key);
 
   @override
@@ -20,14 +20,10 @@ class DefinitionsItem extends StatelessWidget {
     return BlocBuilder<TranslationViewCubit, TranslationViewState>(
       builder: (context, state) {
         final translation = state.translation;
-        final schema = translation?.schema;
 
-        if (translation == null || schema == null) {
+        if (translation == null) {
           return Container();
         }
-
-        String? text = jmespath.search(schema.translation.definitions.items.text.value, data);
-        String? example = jmespath.search(schema.translation.definitions.items.example.value, data);
 
         return Container(
           margin: const EdgeInsets.only(
@@ -40,10 +36,7 @@ class DefinitionsItem extends StatelessWidget {
               Container(
                 width: 20,
                 height: 20,
-                margin: const EdgeInsets.only(
-                  top: 3,
-                  right: 20,
-                ),
+                margin: const EdgeInsets.only(right: 20),
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: Theme.of(context).textTheme.headline2!.color!,
@@ -64,17 +57,16 @@ class DefinitionsItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    if (text != null)
-                      Text(
-                        text,
-                        style: const TextStyle(fontSize: 17),
-                      ),
+                    Text(
+                      item.text,
+                      style: const TextStyle(fontSize: 17),
+                    ),
 
-                    if (example != null)
+                    if (item.example != null)
                       Container(
                         margin: const EdgeInsets.only(top: 5),
                         child: Text(
-                          example,
+                          item.example!,
                           style: TextStyle(
                             color: Theme.of(context).textTheme.headline1!.color,
                             fontSize: 15,

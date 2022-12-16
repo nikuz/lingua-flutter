@@ -29,7 +29,7 @@ void main() async {
 
   // preload parsing schemas and languages
   await parsing_schemas_controller.preload();
-  // await getParsingSchema('current', forceUpdate: true);
+  // await parsing_schemas_controller.get('current');
   await languages_controller.preload();
 
   audio_controller.setGlobalAudioContext();

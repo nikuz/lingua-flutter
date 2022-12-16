@@ -28,7 +28,7 @@ class SearchCubit extends Cubit<SearchState> {
         translationList = await local_translate_controller.getList(from, to);
       }
 
-      List<Translation> translations = [];
+      List<TranslationContainer> translations = [];
 
       if (to > SearchConstants.itemsPerPage) {
         translations = [...state.translations, ...translationList.translations];
@@ -61,10 +61,6 @@ class SearchCubit extends Cubit<SearchState> {
     required String translateTo,
   }) async {
     try {
-      // emit(state.copyWith(
-      //   // quickTranslationTimestamp: Wrapped.value(timestamp),
-      // ));
-
       if (word == state.searchText) {
         final translation = await cloud_translate_controller.translate(
           word: word,
@@ -72,16 +68,9 @@ class SearchCubit extends Cubit<SearchState> {
           translateTo: translateTo,
         );
 
-        if (translation.word != state.searchText) {
-          // print('translation.word: ${translation.word}');
-          // print('state.searchText: ${state.searchText}');
-          // print('word: $word');
-        }
         if (translation.word == state.searchText) {
-          print('translation.word: ${translation.word}');
           emit(state.copyWith(
             quickTranslation: Wrapped.value(translation),
-            // quickTranslationTimestamp: const Wrapped.value(null),
           ));
         }
       }
@@ -91,7 +80,6 @@ class SearchCubit extends Cubit<SearchState> {
           code: err.hashCode,
           message: err.toString(),
         )),
-        // quickTranslationTimestamp: const Wrapped.value(null),
       ));
       rethrow;
     }
@@ -107,7 +95,7 @@ class SearchCubit extends Cubit<SearchState> {
   void removeTranslation(int id) async {
     try {
       await local_translate_controller.removeItem(id);
-      List<Translation> translationsClone = [...state.translations];
+      List<TranslationContainer> translationsClone = [...state.translations];
       int to = state.to;
       int totalAmount = state.totalAmount;
 
@@ -134,8 +122,8 @@ class SearchCubit extends Cubit<SearchState> {
     }
   }
 
-  void updateTranslation(Translation translation) async {
-    List<Translation> translationsClone = [...state.translations];
+  void updateTranslation(TranslationContainer translation) async {
+    List<TranslationContainer> translationsClone = [...state.translations];
     int index = translationsClone.indexWhere((item) => item.id == translation.id);
     if (index != -1) {
       translationsClone[index] = translation;
