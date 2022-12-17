@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:lingua_flutter/widgets/translation_word_view/translation_word_view.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 
 import '../../bloc/search_cubit.dart';
 import '../../bloc/search_state.dart';
+import '../../search_state.dart';
 import './constants.dart';
 
 class QuickSearch extends StatefulWidget {
@@ -43,7 +43,7 @@ class _QuickSearchState extends State<QuickSearch> {
   @override
   void dispose() {
     _debounce?.cancel();
-    _searchCubit.clearQuickTranslate();
+    _searchCubit.clearQuickTranslation();
     super.dispose();
   }
 
@@ -51,7 +51,7 @@ class _QuickSearchState extends State<QuickSearch> {
     _debounce?.cancel();
     _debounce = Timer(QuickSearchConstants.debouncePeriod, () {
       final settingsState = context.read<SettingsCubit>().state;
-      _searchCubit.quickTranslate(
+      _searchCubit.quickTranslation(
         word: widget.searchText,
         translateFrom: settingsState.translateFrom,
         translateTo: settingsState.translateTo,
@@ -69,6 +69,7 @@ class _QuickSearchState extends State<QuickSearch> {
       );
     }
 
+    final searchState = SearchInheritedState.of(context);
     return ListTile(
       title: Wrap(
         crossAxisAlignment: WrapCrossAlignment.end,
@@ -94,9 +95,9 @@ class _QuickSearchState extends State<QuickSearch> {
         ),
         child: const Icon(Icons.arrow_forward),
         onPressed: () {
-          // if (state.quickTranslation != null) {
-          //
-          // }
+          if (searchState?.hasInternetConnection == true) {
+            searchState?.submitHandler(searchState.textController.text);
+          }
         },
       ),
     );

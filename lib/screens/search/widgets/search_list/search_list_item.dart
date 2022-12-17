@@ -1,18 +1,16 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:auto_route/auto_route.dart';
-
 import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/widgets/prompt/prompt.dart';
 import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
 import 'package:lingua_flutter/widgets/image_preview/image_preview.dart';
 import 'package:lingua_flutter/models/translation.dart';
-import 'package:lingua_flutter/screens/router.gr.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 
 import '../../bloc/search_cubit.dart';
 import '../../bloc/search_state.dart';
+import '../../search_state.dart';
 
 class SearchListItem extends StatefulWidget {
   final TranslationContainer translationItem;
@@ -42,9 +40,10 @@ class _SearchListItemState extends State<SearchListItem> {
   Widget build(BuildContext context) {
     return BlocBuilder<SearchCubit, SearchState>(
       builder: (context, state) {
-        MyTheme theme = Styles.theme(context);
+        final MyTheme theme = Styles.theme(context);
         Color borderColor = Colors.transparent;
         final showLanguageSource = _settingsCubit.state.showLanguageSource;
+        final searchState = SearchInheritedState.of(context);
 
         if (widget.withBorder) {
           borderColor = theme.colors.divider;
@@ -95,14 +94,8 @@ class _SearchListItemState extends State<SearchListItem> {
             child: Material(
               color: _isSelected ? theme.colors.secondaryPale : theme.colors.background,
               child: InkWell(
-                onTap: () async {
-                  final searchCubit = context.read<SearchCubit>();
-                  final result = await AutoRouter.of(context).push<TranslationContainer>(
-                      TranslationViewRoute(word: widget.translationItem.word)
-                  );
-                  if (result != null && state.translations.any((item) => item.id == result.id)) {
-                    searchCubit.updateTranslation(result);
-                  }
+                onTap: () {
+                  searchState?.submitHandler(widget.translationItem.word);
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(

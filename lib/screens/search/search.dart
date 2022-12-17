@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/providers/connectivity.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:lingua_flutter/models/translation.dart';
+import 'package:lingua_flutter/screens/router.gr.dart';
 
 import './bloc/search_cubit.dart';
 import './bloc/search_state.dart';
@@ -9,6 +12,7 @@ import './widgets/search_list/search_list.dart';
 import './widgets/quick_search/quick_search.dart';
 import './widgets/empty_dictionary/empty_dictionary.dart';
 import './widgets/empty_search/empty_search.dart';
+import './search_state.dart';
 
 class Search extends StatefulWidget {
   const Search({Key? key}) : super(key: key);
@@ -18,11 +22,15 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
+  late TextEditingController _textController;
+  late SearchCubit _searchCubit;
   bool _hasInternetConnection = false;
 
   @override
   void initState() {
     super.initState();
+    _searchCubit = context.read<SearchCubit>();
+    _textController = TextEditingController();
     _getInternetConnectionStatus();
     subscribeToNetworkChange('search', (bool isConnected) {
       setState(() {
@@ -35,6 +43,7 @@ class _SearchState extends State<Search> {
   @override
   void dispose() {
     unsubscribeFromNetworkChange('search');
+    _textController.dispose();
     super.dispose();
   }
 
@@ -43,6 +52,20 @@ class _SearchState extends State<Search> {
     setState(() {
       _hasInternetConnection = connection;
     });
+  }
+
+  void _submitHandler(String word) async {
+    if (word.isNotEmpty) {
+      final result = await AutoRouter.of(context).push<TranslationContainer>(TranslationViewRoute(word: word));
+      if (result != null) {
+        if (_searchCubit.state.translations.any((item) => item.id == result.id)) {
+          _searchCubit.updateTranslation(result);
+        } else {
+          _textController.clear();
+          _searchCubit.fetchTranslations(searchText: null);
+        }
+      }
+    }
   }
 
   Widget _buildResultsBody(SearchState state) {
@@ -105,13 +128,18 @@ class _SearchState extends State<Search> {
       body: SafeArea(
         child: BlocBuilder<SearchCubit, SearchState>(
           builder: (context, state) {
-            return Column(
-              children: [
-                SearchField(hasInternetConnection: _hasInternetConnection),
-                Expanded(
-                  child: _buildResultsBody(state),
-                ),
-              ],
+            return SearchInheritedState(
+              textController: _textController,
+              hasInternetConnection: _hasInternetConnection,
+              submitHandler: _submitHandler,
+              child: Column(
+                children: [
+                  const SearchField(),
+                  Expanded(
+                    child: _buildResultsBody(state),
+                  ),
+                ],
+              ),
             );
           },
         ),

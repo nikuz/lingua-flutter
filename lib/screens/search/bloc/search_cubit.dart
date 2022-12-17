@@ -56,7 +56,7 @@ class SearchCubit extends Cubit<SearchState> {
     }
   }
 
-  void quickTranslate({
+  void quickTranslation({
     required String word,
     required Language translateFrom,
     required Language translateTo,
@@ -65,6 +65,7 @@ class SearchCubit extends Cubit<SearchState> {
       if (word == state.searchText) {
         emit(state.copyWith(
           quickTranslationLoading: true,
+          quickTranslationError: const Wrapped.value(null),
         ));
         final translation = await cloud_translate_controller.translate(
           word: word,
@@ -91,9 +92,10 @@ class SearchCubit extends Cubit<SearchState> {
     }
   }
 
-  void clearQuickTranslate() {
+  void clearQuickTranslation() {
     emit(state.copyWith(
       quickTranslation: const Wrapped.value(null),
+      quickTranslationLoading: false,
       quickTranslationError: const Wrapped.value(null),
     ));
   }

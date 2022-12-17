@@ -18,7 +18,7 @@ class EmptySearch extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(bottom: 20),
             child: Icon(
-              Icons.signal_wifi_connected_no_internet_4,
+              Icons.wifi_off,
               size: 100,
               color: Styles.colors.grey,
             ),
