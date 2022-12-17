@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/models/translation.dart';
 
-import './app.dart';
+import './root.dart';
 import './search/search.dart';
 import './translation_view/translation_view.dart';
 import './translation_view/pages/images_picker.dart';
@@ -21,7 +21,7 @@ class Routes {
   routes: <AutoRoute>[
     AutoRoute(
       path: Routes.home,
-      page: App,
+      page: Root,
       children: [
         CustomRoute(
           path: Routes.search,

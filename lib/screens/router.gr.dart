@@ -15,7 +15,7 @@ import 'package:auto_route/auto_route.dart' as _i7;
 import 'package:flutter/material.dart' as _i8;
 
 import '../models/translation.dart' as _i9;
-import 'app.dart' as _i1;
+import 'root.dart' as _i1;
 import 'games/games.dart' as _i5;
 import 'search/search.dart' as _i2;
 import 'settings/settings.dart' as _i6;
@@ -31,7 +31,7 @@ class AppRouter extends _i7.RootStackRouter {
     AppRoute.name: (routeData) {
       return _i7.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const _i1.App(),
+        child: const _i1.Root(),
       );
     },
     SearchRoute.name: (routeData) {

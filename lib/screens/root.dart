@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/widgets/tab_navigator/tab_navigator.dart';
 
-class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
+class Root extends StatelessWidget {
+  const Root({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
