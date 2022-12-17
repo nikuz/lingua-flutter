@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lingua_flutter/providers/connectivity.dart';
 
 import './screens/router.gr.dart';
 import './screens/settings/bloc/settings_cubit.dart';
@@ -15,12 +17,14 @@ class App extends StatefulWidget {
 class _AppState extends State<App> with WidgetsBindingObserver {
   final _appRouter = AppRouter();
   late Brightness _brightness;
+  late StreamSubscription _connectivitySubscription;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _brightness = WidgetsBinding.instance.window.platformBrightness;
+    _connectivitySubscription = initiateNetworkChangeSubscription();
   }
 
   @override
@@ -33,6 +37,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _connectivitySubscription.cancel();
     super.dispose();
   }
 

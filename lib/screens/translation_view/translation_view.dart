@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 
-import 'package:lingua_flutter/utils/connectivity.dart';
+import 'package:lingua_flutter/providers/connectivity.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 
 import './bloc/translation_view_cubit.dart';
@@ -47,13 +47,18 @@ class _TranslationViewState extends State<TranslationView> {
       settingsCubit.state.translateTo,
     );
     _getInternetConnectionStatus();
-
+    subscribeToNetworkChange('translation_view', (bool isConnected) {
+      setState(() {
+        _hasInternetConnection = isConnected;
+      });
+    });
   }
 
   @override
   void dispose() {
     _translationViewCubit.reset();
     _scrollController.removeListener(_scrollHandler);
+    unsubscribeFromNetworkChange('translation_view');
     super.dispose();
   }
 
@@ -65,6 +70,13 @@ class _TranslationViewState extends State<TranslationView> {
     } else if (scrollPosition > threshold && _scrollPhysics is! BouncingScrollPhysics) {
       setState(() => _scrollPhysics = const BouncingScrollPhysics());
     }
+  }
+
+  void _getInternetConnectionStatus() async {
+    bool connection = await isInternetConnected();
+    setState(() {
+      _hasInternetConnection = connection;
+    });
   }
 
   @override
@@ -155,12 +167,5 @@ class _TranslationViewState extends State<TranslationView> {
         ),
       ),
     );
-  }
-
-  void _getInternetConnectionStatus() async {
-    bool connection = await isInternetConnected();
-    setState(() {
-      _hasInternetConnection = connection;
-    });
   }
 }

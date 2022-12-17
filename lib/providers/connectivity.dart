@@ -1,23 +1,16 @@
 import 'dart:async';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 Map<String, Function> _listeners = {};
 
 Future<bool> isInternetConnected() async {
-  var connectivityResult = await Connectivity().checkConnectivity();
-
-  return (
-    connectivityResult == ConnectivityResult.mobile
-    || connectivityResult == ConnectivityResult.wifi
-  );
+  var connectivityResult = await (Connectivity().checkConnectivity());
+  return _isConnected(connectivityResult);
 }
 
 StreamSubscription<ConnectivityResult> initiateNetworkChangeSubscription() {
   return Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-    bool isConnected = (
-        result == ConnectivityResult.mobile
-        || result == ConnectivityResult.wifi
-    );
+    bool isConnected = _isConnected(result);
     _listeners.forEach((String key, Function listener) {
       listener(isConnected);
     });
@@ -31,3 +24,10 @@ void subscribeToNetworkChange(String name, Function callback) {
 void unsubscribeFromNetworkChange(String name) {
   _listeners.remove(name);
 }
+
+bool _isConnected(ConnectivityResult result) => (
+    result == ConnectivityResult.mobile
+    || result == ConnectivityResult.wifi
+    || result == ConnectivityResult.ethernet
+    || result == ConnectivityResult.vpn
+);

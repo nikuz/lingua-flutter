@@ -28,14 +28,13 @@ dependencies:
   shared_preferences: ^2.0.15
   path_provider: ^2.0.11
   sqflite: ^2.2.0+3
-  connectivity: ^3.0.6
-  intl: ^0.17.0
+  connectivity_plus: ^3.0.2
   auto_route: ^5.0.2
   json_annotation: ^4.7.0
-  cloud_firestore: ^4.1.0
+  cloud_firestore: ^4.2.0
   jmespath: ^2.0.1
-  firebase_core: ^2.3.0
-  firebase_crashlytics: ^3.0.6
+  firebase_core: ^2.4.0
+  firebase_crashlytics: ^3.0.7
   collection: ^1.16.0
 
   # The following adds the Cupertino Icons font to your application.
@@ -46,7 +45,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   auto_route_generator: ^5.0.3
-  build_runner: ^2.3.2
+  build_runner: ^2.3.3
   json_serializable: ^6.5.4
   flutter_lints: ^2.0.1
 

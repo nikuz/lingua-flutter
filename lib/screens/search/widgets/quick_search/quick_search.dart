@@ -60,11 +60,11 @@ class _QuickSearchState extends State<QuickSearch> {
   }
 
   Widget _buildContentBody(SearchState state) {
-    if (state.quickTranslationError?.message != null) {
-      return Padding(
-        padding: const EdgeInsets.all(10),
+    if (state.quickTranslationError != null) {
+      return const Padding(
+        padding: EdgeInsets.all(10),
         child: Center(
-          child: Text(state.quickTranslationError!.message),
+          child: Text('Can\'t translate at the moment. Please try again later.'),
         ),
       );
     }

@@ -11,9 +11,9 @@ class TranslationWordView extends StatelessWidget {
     this.textStyle,
   }) : super(key: key);
 
-  Widget _buildSentence(TranslationSentence sentence) {
+  Widget _buildSentence(TranslationSentence sentence, bool isLast) {
     return Text(
-      '${sentence.word} ',
+      '${sentence.word}${isLast ? '' : ' '}',
       overflow: TextOverflow.ellipsis,
       maxLines: 5,
       style: textStyle,
@@ -30,8 +30,8 @@ class TranslationWordView extends StatelessWidget {
           Text(item.gender!),
 
         if (item.sentences != null)
-          for (var sentence in item.sentences!)
-            _buildSentence(sentence),
+          for (var i = 0, l = item.sentences!.length; i < l; i++)
+            _buildSentence(item.sentences![i], i == l - 1),
       ],
     );
   }

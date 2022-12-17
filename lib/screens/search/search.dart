@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lingua_flutter/utils/connectivity.dart';
+import 'package:lingua_flutter/providers/connectivity.dart';
 
 import './bloc/search_cubit.dart';
 import './bloc/search_state.dart';
@@ -8,6 +8,7 @@ import './widgets/search_field/search_field.dart';
 import './widgets/search_list/search_list.dart';
 import './widgets/quick_search/quick_search.dart';
 import './widgets/empty_dictionary/empty_dictionary.dart';
+import './widgets/empty_search/empty_search.dart';
 
 class Search extends StatefulWidget {
   const Search({Key? key}) : super(key: key);
@@ -23,8 +24,10 @@ class _SearchState extends State<Search> {
   void initState() {
     super.initState();
     _getInternetConnectionStatus();
-    subscribeToNetworkChange('search', (bool result) {
-      _hasInternetConnection = result;
+    subscribeToNetworkChange('search', (bool isConnected) {
+      setState(() {
+        _hasInternetConnection = isConnected;
+      });
     });
     context.read<SearchCubit>().fetchTranslations();
   }
@@ -32,7 +35,6 @@ class _SearchState extends State<Search> {
   @override
   void dispose() {
     unsubscribeFromNetworkChange('search');
-
     super.dispose();
   }
 
@@ -68,6 +70,14 @@ class _SearchState extends State<Search> {
       return QuickSearch(
         searchText: state.searchText!,
       );
+    }
+
+    if (
+      state.translations.isEmpty
+      && !_hasInternetConnection
+      && state.searchText?.isNotEmpty == true
+    ) {
+      return EmptySearch(hasInternetConnection: _hasInternetConnection);
     }
 
     if (state.translations.isEmpty && !state.loading) {
