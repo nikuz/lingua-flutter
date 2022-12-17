@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
-class EmptySearch extends StatelessWidget {
-  const EmptySearch({Key? key}) : super(key: key);
+class EmptyDictionary extends StatelessWidget {
+  const EmptyDictionary({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

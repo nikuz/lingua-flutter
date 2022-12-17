@@ -7,7 +7,7 @@ import './bloc/search_state.dart';
 import './widgets/search_field/search_field.dart';
 import './widgets/search_list/search_list.dart';
 import './widgets/quick_search/quick_search.dart';
-import './widgets/empty_search/empty_search.dart';
+import './widgets/empty_dictionary/empty_dictionary.dart';
 
 class Search extends StatefulWidget {
   const Search({Key? key}) : super(key: key);
@@ -71,7 +71,7 @@ class _SearchState extends State<Search> {
     }
 
     if (state.translations.isEmpty && !state.loading) {
-      return const EmptySearch();
+      return const EmptyDictionary();
     }
 
     if (state.translations.isNotEmpty && !state.loading) {
