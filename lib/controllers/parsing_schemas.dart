@@ -94,5 +94,5 @@ Future<StoredParsingSchema?> get(String versionName, { bool? forceUpdate }) asyn
 
 Future<String> _getSchemasPath() async {
   final documentsPath = await getDocumentsPath();
-  return '$documentsPath/schemas';
+  return '${documentsPath}schemas';
 }

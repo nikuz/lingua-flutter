@@ -70,6 +70,16 @@ class _SettingsState extends State<Settings> {
                       },
                     ),
                   ),
+                  SettingsRow(
+                    title: 'Show language target',
+                    subtitle: 'Shows source and target languages on translation card',
+                    child: Switch(
+                      value: state.showLanguageSource,
+                      onChanged: (value) {
+                        _settingsCubit.setShowLanguageSource(value);
+                      },
+                    ),
+                  ),
                 ],
               ),
             );

@@ -22,6 +22,34 @@ class TranslationViewHeader extends StatelessWidget {
     required this.word,
   }) : super(key: key);
 
+  Widget _buildLanguageSource(TranslationViewState state) {
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, settingsState) {
+        if (!settingsState.showLanguageSource || state.translation == null) {
+          return Container();
+        }
+
+        return Positioned(
+          top: 10,
+          right: 0,
+          left: 0,
+          child: DefaultTextStyle(
+            style: TextStyle(
+              color: Styles.colors.paleGrey.withOpacity(0.7),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(state.translation!.translateFrom.value),
+                Text(state.translation!.translateTo.value),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildImage(BuildContext context, TranslationViewState state) {
     if (state.imageLoading) {
       return const Center(
@@ -56,6 +84,7 @@ class TranslationViewHeader extends StatelessWidget {
       return Container();
     }
 
+    final MyTheme theme = Styles.theme(context);
     final bool isNewWord = translation.id == null;
     bool toSave = isNewWord || state.imageIsUpdated || state.translationIsUpdated;
     IconData iconName = Icons.check;
@@ -113,7 +142,9 @@ class TranslationViewHeader extends StatelessWidget {
             style: TextButton.styleFrom(
               minimumSize: const Size(65, 65),
               padding: EdgeInsets.zero,
-              backgroundColor: toSave ? Colors.white : Colors.blue,
+              backgroundColor: toSave
+                  ? Colors.white
+                  : theme.colors.focusBackground,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
                   Radius.circular(45),
@@ -145,67 +176,77 @@ class TranslationViewHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TranslationViewCubit, TranslationViewState>(
-        builder: (context, state) {
-          final translation = state.translation;
+      builder: (context, state) {
+        final translation = state.translation;
 
-          if (translation == null) {
-            return Container();
-          }
-
-          final MyTheme theme = Styles.theme(context);
-
-          return Container(
-            color: theme.colors.focusBackground,
-            padding: const EdgeInsets.only(
-              left: 10,
-              right: 10,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Center(
-                  child: Container(
-                    width: 150,
-                    height: 150,
-                    margin: const EdgeInsets.only(
-                      top: 10,
-                      bottom: 10,
-                    ),
-                    child: _buildImage(context, state),
-                  ),
-                ),
-                Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.85,
-                        ),
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: Colors.white,
-                          ),
-                          child: state.translation != null
-                              ? TranslationWordView(
-                                  translation: state.translation!,
-                              )
-                              : Container(),
-                          onPressed: () {
-                            // AutoRouter.of(context).replace(TranslationViewRoute(word: translationWord));
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                _buildFooter(context, state),
-              ],
-            ),
-          );
+        if (translation == null) {
+          return Container();
         }
+
+        final MyTheme theme = Styles.theme(context);
+
+        return Container(
+          color: theme.colors.focusBackground,
+          padding: const EdgeInsets.only(
+            left: 10,
+            right: 10,
+          ),
+          child: Stack(
+            children: [
+              _buildLanguageSource(state),
+
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 150,
+                      height: 150,
+                      margin: const EdgeInsets.only(
+                        top: 10,
+                        bottom: 10,
+                      ),
+                      child: _buildImage(context, state),
+                    ),
+                  ),
+                  Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.85,
+                          ),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.white,
+                            ),
+                            child: TranslationWordView(
+                              translation: translation,
+                              textStyle: const TextStyle(
+                                fontFamily: 'Merriweather',
+                                fontSize: 20,
+                                letterSpacing: 1,
+                                color: Colors.blue,
+                              ),
+                            ),
+                            onPressed: () {
+                              // AutoRouter.of(context).replace(TranslationViewRoute(word: translationWord));
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _buildFooter(context, state),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

@@ -25,26 +25,31 @@ class SettingsRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 17,
-                  color: theme.colors.primary,
-                ),
-              ),
-
-              if (subtitle != null)
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
                 Text(
-                  subtitle!,
+                  title,
                   style: TextStyle(
-                    fontSize: 12,
-                    color: theme.colors.grey,
+                    fontSize: 17,
+                    color: theme.colors.primary,
                   ),
-                )
-            ],
+                ),
+
+                if (subtitle != null)
+                  Container(
+                    margin: const EdgeInsets.only(top: 5),
+                    child: Text(
+                      subtitle!,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: theme.colors.grey,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
 
           child,

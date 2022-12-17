@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart' as painting;
 import 'package:lingua_flutter/models/translation_list.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/models/error.dart';
+import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/providers/db.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/regexp.dart';
@@ -58,8 +60,8 @@ Future<TranslationList> getList(int from, int to) async {
           translation: rawTranslation['translation'],
           pronunciation: rawTranslation['pronunciation'],
           image: rawTranslation['image'],
-          translateFrom: rawTranslation['translate_from'],
-          translateTo: rawTranslation['translate_to'],
+          translateFrom: Language.fromJson(jsonDecode(rawTranslation['translate_from'])),
+          translateTo: Language.fromJson(jsonDecode(rawTranslation['translate_to'])),
           createdAt: rawTranslation['created_at'],
           updatedAt: rawTranslation['updated_at'],
         )
@@ -120,8 +122,8 @@ Future<TranslationList> search(String searchText, int from, int to) async {
           translation: rawTranslation['translation'],
           pronunciation: rawTranslation['pronunciation'],
           image: rawTranslation['image'],
-          translateFrom: rawTranslation['translate_from'],
-          translateTo: rawTranslation['translate_to'],
+          translateFrom: Language.fromJson(jsonDecode(rawTranslation['translate_from'])),
+          translateTo: Language.fromJson(jsonDecode(rawTranslation['translate_to'])),
           createdAt: rawTranslation['created_at'],
           updatedAt: rawTranslation['updated_at'],
         )
@@ -152,10 +154,9 @@ Future<TranslationContainer?> get(String? word) async {
     pronunciation: item['pronunciation'],
     image: item['image'],
     raw: jsonDecode(item['raw']),
-    // raw: [],
     schemaVersion: item['schema_version'],
-    translateFrom: item['translate_from'],
-    translateTo: item['translate_to'],
+    translateFrom: Language.fromJson(jsonDecode(item['translate_from'])),
+    translateTo: Language.fromJson(jsonDecode(item['translate_to'])),
     createdAt: item['created_at'],
     updatedAt: item['updated_at'],
   );
@@ -181,8 +182,8 @@ Future<void> save(TranslationContainer translation) async {
         translation.translation,
         jsonEncode(translation.raw),
         translation.schemaVersion,
-        translation.translateFrom,
-        translation.translateTo,
+        jsonEncode(translation.translateFrom.toJson()),
+        jsonEncode(translation.translateTo.toJson()),
       ]
   );
 
@@ -207,7 +208,7 @@ Future<void> save(TranslationContainer translation) async {
           Uint8List imageBytes = const Base64Decoder().convert(imageValue);
           imageUrl = '/images/$fileId.$extension';
 
-          File image = File('$dir/$imageUrl');
+          File image = File('$dir$imageUrl');
           image = await image.create(recursive: true);
           await image.writeAsBytes(imageBytes);
         }
@@ -274,11 +275,10 @@ Future<void> update(TranslationContainer translation) async {
     final imageSourceType = MediaSource.getType(translation.image!);
     if (imageSourceType == MediaSourceType.base64) {
       String dir = await getDocumentsPath();
-      File image = File('$dir/${translation.image}');
+      File image = File('$dir${translation.image}');
       if (image.existsSync()) {
         image.deleteSync();
       }
-      painting.imageCache.clear();
 
       String fileId = generateFileIdFromWord(translationId, translation.word);
       RegExpMatch? imageParts = base64ImageReg.firstMatch(translation.image!);
@@ -289,8 +289,14 @@ Future<void> update(TranslationContainer translation) async {
         Uint8List imageBytes = const Base64Decoder().convert(value);
         imageUrl = '/images/$fileId.$extension';
 
-        image = File('$dir/$imageUrl');
+        image = File('$dir$imageUrl');
         await image.writeAsBytes(imageBytes);
+
+        // remove image from low level flutter imageCache
+        final key = FileImage(File('$dir$imageUrl'), scale: 1.0);
+        if (painting.imageCache.containsKey(key)) {
+          painting.imageCache.evict(key);
+        }
       }
     }
   }
@@ -326,11 +332,11 @@ Future<void> removeItem(int id) async {
 
   final item = dbResponse[0];
   final dir = await getDocumentsPath();
-  final image = File('$dir/${item['image']}');
+  final image = File('$dir${item['image']}');
   if (image.existsSync()) {
     image.deleteSync();
   }
-  final pronunciation = File('$dir/${item['pronunciation']}');
+  final pronunciation = File('$dir${item['pronunciation']}');
   if (pronunciation.existsSync()) {
     pronunciation.deleteSync();
   }

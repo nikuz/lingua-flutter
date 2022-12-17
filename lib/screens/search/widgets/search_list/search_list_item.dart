@@ -9,6 +9,7 @@ import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
 import 'package:lingua_flutter/widgets/image_preview/image_preview.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
+import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 
 import '../../bloc/search_cubit.dart';
 import '../../bloc/search_state.dart';
@@ -29,6 +30,13 @@ class SearchListItem extends StatefulWidget {
 
 class _SearchListItemState extends State<SearchListItem> {
   bool _isSelected = false;
+  late SettingsCubit _settingsCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _settingsCubit = context.read<SettingsCubit>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +44,7 @@ class _SearchListItemState extends State<SearchListItem> {
       builder: (context, state) {
         MyTheme theme = Styles.theme(context);
         Color borderColor = Colors.transparent;
+        final showLanguageSource = _settingsCubit.state.showLanguageSource;
 
         if (widget.withBorder) {
           borderColor = theme.colors.divider;
@@ -85,53 +94,84 @@ class _SearchListItemState extends State<SearchListItem> {
             ),
             child: Material(
               color: _isSelected ? theme.colors.secondaryPale : theme.colors.background,
-              child: ListTile(
-                leading: ImagePreview(
-                  width: 50,
-                  height: 50,
-                  imageSource: widget.translationItem.image,
-                  onTap: () {
-                    setState(() {
-                      _isSelected = true;
-                    });
-                  },
-                  onPreviewClose: () {
-                    setState(() {
-                      _isSelected = false;
-                    });
-                  },
-                ),
-                title: Container(
-                  margin: const EdgeInsets.only(bottom: 2),
-                  child: Text(
-                    widget.translationItem.word,
-                    style: const TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                subtitle: Container(
-                  margin: const EdgeInsets.only(bottom: 2),
-                  child: Text(
-                    widget.translationItem.translation,
-                    style: const TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-                // dense: true,
-                trailing: PronunciationWidget(pronunciationSource: widget.translationItem.pronunciation),
+              child: InkWell(
                 onTap: () async {
                   final searchCubit = context.read<SearchCubit>();
                   final result = await AutoRouter.of(context).push<TranslationContainer>(
                       TranslationViewRoute(word: widget.translationItem.word)
                   );
-                  if (result != null) {
-                    if (state.translations.any((item) => item.id == result.id)) {
-                      searchCubit.updateTranslation(result);
-                    }
+                  if (result != null && state.translations.any((item) => item.id == result.id)) {
+                    searchCubit.updateTranslation(result);
                   }
                 },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: showLanguageSource ? 10 : 5,
+                    horizontal: 15,
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(right: 15),
+                        child: ImagePreview(
+                          width: 50,
+                          height: 50,
+                          imageSource: widget.translationItem.image,
+                          onTap: () {
+                            setState(() {
+                              _isSelected = true;
+                            });
+                          },
+                          onPreviewClose: () {
+                            setState(() {
+                              _isSelected = false;
+                            });
+                          },
+                        ),
+                      ),
+
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 2),
+                              child: Text(
+                                widget.translationItem.word,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 5),
+                              child: Text(
+                                widget.translationItem.translation,
+                                maxLines: showLanguageSource ? 1 : 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+
+                            if (showLanguageSource)
+                              Text(
+                                '${widget.translationItem.translateFrom.value} - ${widget.translationItem.translateTo.value}',
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+
+                      PronunciationWidget(pronunciationSource: widget.translationItem.pronunciation),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),

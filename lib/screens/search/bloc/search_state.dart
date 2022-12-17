@@ -16,6 +16,7 @@ class SearchState extends Equatable {
   final String? searchText;
   final TranslationContainer? quickTranslation;
   final CustomError? quickTranslationError;
+  final bool quickTranslationLoading;
   final bool loading;
   final CustomError? error;
 
@@ -27,6 +28,7 @@ class SearchState extends Equatable {
     this.searchText,
     this.quickTranslation,
     this.quickTranslationError,
+    this.quickTranslationLoading = false,
     this.loading = true,
     this.error,
   });
@@ -39,6 +41,7 @@ class SearchState extends Equatable {
     Wrapped<String?>? searchText,
     Wrapped<TranslationContainer?>? quickTranslation,
     Wrapped<CustomError?>? quickTranslationError,
+    bool? quickTranslationLoading,
     bool? loading,
     Wrapped<CustomError?>? error,
   }) {
@@ -50,6 +53,7 @@ class SearchState extends Equatable {
       searchText: searchText != null ? searchText.value : this.searchText,
       quickTranslation: quickTranslation != null ? quickTranslation.value : this.quickTranslation,
       quickTranslationError: quickTranslationError != null ? quickTranslationError.value : this.quickTranslationError,
+      quickTranslationLoading: quickTranslationLoading ?? this.quickTranslationLoading,
       loading: loading ?? this.loading,
       error: error != null ? error.value : this.error,
     );
@@ -67,6 +71,7 @@ class SearchState extends Equatable {
     searchText,
     quickTranslation,
     quickTranslationError,
+    quickTranslationLoading,
     loading,
     error,
   ];

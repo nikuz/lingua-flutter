@@ -4,6 +4,7 @@ import 'package:lingua_flutter/controllers/cloud_translation.dart' as cloud_tran
 import 'package:lingua_flutter/models/error.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/models/translation_list.dart';
+import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/utils/types.dart';
 
 import '../search_constants.dart';
@@ -57,11 +58,14 @@ class SearchCubit extends Cubit<SearchState> {
 
   void quickTranslate({
     required String word,
-    required String translateFrom,
-    required String translateTo,
+    required Language translateFrom,
+    required Language translateTo,
   }) async {
     try {
       if (word == state.searchText) {
+        emit(state.copyWith(
+          quickTranslationLoading: true,
+        ));
         final translation = await cloud_translate_controller.translate(
           word: word,
           translateFrom: translateFrom,
@@ -71,6 +75,7 @@ class SearchCubit extends Cubit<SearchState> {
         if (translation.word == state.searchText) {
           emit(state.copyWith(
             quickTranslation: Wrapped.value(translation),
+            quickTranslationLoading: false,
           ));
         }
       }
@@ -80,6 +85,7 @@ class SearchCubit extends Cubit<SearchState> {
           code: err.hashCode,
           message: err.toString(),
         )),
+        quickTranslationLoading: false,
       ));
       rethrow;
     }

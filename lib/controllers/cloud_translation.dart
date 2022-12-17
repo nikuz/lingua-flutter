@@ -9,11 +9,12 @@ import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/utils/types.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/models/error.dart';
+import 'package:lingua_flutter/models/language.dart';
 
 Future<TranslationContainer> translate({
   required String word,
-  required String translateFrom,
-  required String translateTo,
+  required Language translateFrom,
+  required Language translateTo,
   bool? forceCurrentSchemaDownload,
 }) async {
   final encodedWord = removeSlashFromString(word);
@@ -39,8 +40,8 @@ Future<TranslationContainer> translate({
             raw: existingTranslation.raw!,
             schema: storedParsingSchema.schema,
             schemaVersion: storedParsingSchema.version,
-            translateFrom: translateFrom,
-            translateTo: translateTo,
+            translateFrom: existingTranslation.translateFrom,
+            translateTo: existingTranslation.translateTo,
             createdAt: existingTranslation.createdAt,
             updatedAt: existingTranslation.updatedAt,
           );
@@ -76,8 +77,8 @@ Future<TranslationContainer> translate({
           parsingSchema.translation.fields.parameter: parsingSchema.translation.fields.body
               .replaceAll('{marker}', parsingSchema.translation.fields.marker)
               .replaceAll('{word}', encodedWord)
-              .replaceAll('{sourceLanguage}', translateFrom)
-              .replaceAll('{targetLanguage}', translateTo)
+              .replaceAll('{sourceLanguage}', translateFrom.id)
+              .replaceAll('{targetLanguage}', translateTo.id)
         }
     ),
     // fetch raw pronunciation
@@ -87,7 +88,7 @@ Future<TranslationContainer> translate({
           parsingSchema.pronunciation.fields.parameter: parsingSchema.pronunciation.fields.body
               .replaceAll('{marker}', parsingSchema.pronunciation.fields.marker)
               .replaceAll('{word}', encodedWord)
-              .replaceAll('{sourceLanguage}', translateFrom)
+              .replaceAll('{sourceLanguage}', translateFrom.id)
         }
     )
   ]);

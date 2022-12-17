@@ -3,10 +3,10 @@ import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/widgets/text_field/text_field.dart';
 
 class SettingsLanguagesList extends StatefulWidget {
-  final String language;
+  final Language language;
   final ScrollController scrollController;
-  final List<Language>? languages;
-  final Function(String) onSelected;
+  final Map<String, String>? languages;
+  final Function(Language) onSelected;
 
   const SettingsLanguagesList({
     Key? key,
@@ -21,7 +21,7 @@ class SettingsLanguagesList extends StatefulWidget {
 }
 
 class _SettingsLanguagesListState extends State<SettingsLanguagesList> {
-  late List<Language>? _filteredLanguages;
+  late Map<String, String>? _filteredLanguages;
 
   @override
   void initState() {
@@ -30,11 +30,18 @@ class _SettingsLanguagesListState extends State<SettingsLanguagesList> {
   }
 
   void _filterLanguages(String value) {
-    setState(() {
-      _filteredLanguages = widget.languages?.where((item) => (
-          item.value.toLowerCase().contains(value.toLowerCase())
-      )).toList();
-    });
+    if (widget.languages != null) {
+      final Map<String, String> filteredLanguages = {};
+      for (var id in widget.languages!.keys) {
+        final itemValue = widget.languages![id];
+        if (itemValue != null && itemValue.toLowerCase().contains(value.toLowerCase())) {
+          filteredLanguages[id] = itemValue;
+        }
+      }
+      setState(() {
+        _filteredLanguages = filteredLanguages;
+      });
+    }
   }
   
   @override
@@ -53,14 +60,15 @@ class _SettingsLanguagesListState extends State<SettingsLanguagesList> {
           ),
 
           if (_filteredLanguages != null)
-            for (var item in _filteredLanguages!)
+            for (var id in _filteredLanguages!.keys)
               ListTile(
-                title: Text(item.value),
-                trailing: item.id == widget.language
-                    ? const Icon(Icons.check)
-                    : null,
+                title: Text(_filteredLanguages![id] ?? ''),
+                trailing: id == widget.language.id ? const Icon(Icons.check) : null,
                 onTap: () {
-                  widget.onSelected(item.id);
+                  String? value = _filteredLanguages![id];
+                  if (value != null) {
+                    widget.onSelected(Language(id: id, value: value));
+                  }
                 },
               ),
         ],

@@ -48,9 +48,7 @@ class _QuickSearchState extends State<QuickSearch> {
   }
 
   void _debounceRequest() {
-    if (_debounce?.isActive == true) {
-      _debounce!.cancel();
-    }
+    _debounce?.cancel();
     _debounce = Timer(QuickSearchConstants.debouncePeriod, () {
       final settingsState = context.read<SettingsCubit>().state;
       _searchCubit.quickTranslate(
@@ -71,30 +69,37 @@ class _QuickSearchState extends State<QuickSearch> {
       );
     }
 
-    if (state.quickTranslation?.translation != null) {
-      return ListTile(
-        title: TranslationWordView(
-          translation: state.quickTranslation!,
-        ),
-        trailing: ElevatedButton(
-          style: TextButton.styleFrom(
-            minimumSize: const Size(56, 56),
-            padding: EdgeInsets.zero,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(36),
-              ),
+    return ListTile(
+      title: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.end,
+        children: [
+          if (state.quickTranslation != null)
+            TranslationWordView(
+              translation: state.quickTranslation!,
+            ),
+
+          if (state.quickTranslationLoading || state.quickTranslation == null)
+            const Text('...'),
+        ],
+      ),
+      trailing: ElevatedButton(
+        style: TextButton.styleFrom(
+          minimumSize: const Size(56, 56),
+          padding: EdgeInsets.zero,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(36),
             ),
           ),
-          child: const Icon(Icons.arrow_forward),
-          onPressed: () {
-
-          },
         ),
-      );
-    }
-
-    return Container();
+        child: const Icon(Icons.arrow_forward),
+        onPressed: () {
+          // if (state.quickTranslation != null) {
+          //
+          // }
+        },
+      ),
+    );
   }
 
   @override

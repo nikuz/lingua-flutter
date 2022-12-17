@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lingua_flutter/models/language.dart';
 
 import './settings_state.dart';
 
@@ -8,15 +10,15 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   SettingsCubit(this.prefs) : super(SettingsState.initial(prefs));
 
-  void setTranslateFrom(String language) async {
-    await prefs.setString('translateFrom', language);
+  void setTranslateFrom(Language language) async {
+    await prefs.setString('translateFrom', jsonEncode(language.toJson()));
     emit(state.copyWith(
       translateFrom: language,
     ));
   }
 
-  void setTranslateTo(String language) async {
-    await prefs.setString('translateTo', language);
+  void setTranslateTo(Language language) async {
+    await prefs.setString('translateTo', jsonEncode(language.toJson()));
     emit(state.copyWith(
       translateTo: language,
     ));
@@ -40,6 +42,13 @@ class SettingsCubit extends Cubit<SettingsState> {
     await prefs.setBool('autoDarkMode', value);
     emit(state.copyWith(
       autoDarkMode: value,
+    ));
+  }
+
+  void setShowLanguageSource(bool value) async {
+    await prefs.setBool('showLanguageSource', value);
+    emit(state.copyWith(
+      showLanguageSource: value,
     ));
   }
 }

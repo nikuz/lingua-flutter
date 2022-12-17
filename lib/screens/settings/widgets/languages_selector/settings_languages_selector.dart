@@ -1,13 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/styles/styles.dart';
+import 'package:lingua_flutter/controllers/languages.dart' as languages_controller;
 
 import '../../bloc/settings_cubit.dart';
 import '../../bloc/settings_state.dart';
 import './settings_languages_selector_item.dart';
 
-class SettingsLanguagesSelector extends StatelessWidget {
+class SettingsLanguagesSelector extends StatefulWidget {
   const SettingsLanguagesSelector({Key? key}) : super(key: key);
+
+  @override
+  State<SettingsLanguagesSelector> createState() => _SettingsLanguagesSelectorState();
+}
+
+class _SettingsLanguagesSelectorState extends State<SettingsLanguagesSelector> {
+  Map<String, String>? _languages;
+
+  @override
+  void initState() {
+    super.initState();
+    _retrieveLanguages();
+  }
+
+  Future<void> _retrieveLanguages() async {
+    if (_languages == null) {
+      final storedLanguages = await languages_controller.get();
+      if (storedLanguages != null) {
+        setState(() {
+          _languages = storedLanguages;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +53,7 @@ class SettingsLanguagesSelector extends StatelessWidget {
               SettingsLanguagesSelectorItem(
                 settingName: 'translateFrom',
                 title: 'Translate from',
+                languages: _languages,
                 language: state.translateFrom,
               ),
               Container(
@@ -55,6 +81,7 @@ class SettingsLanguagesSelector extends StatelessWidget {
               SettingsLanguagesSelectorItem(
                 settingName: 'translateTo',
                 title: 'Translate to',
+                languages: _languages,
                 language: state.translateTo,
               ),
             ],

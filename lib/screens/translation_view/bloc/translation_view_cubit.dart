@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/models/error.dart';
+import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/controllers/local_translation.dart' as local_translate_controller;
 import 'package:lingua_flutter/controllers/cloud_translation.dart' as cloud_translate_controller;
 import 'package:lingua_flutter/controllers/images.dart' as images_controller;
@@ -11,7 +12,7 @@ import 'translation_view_state.dart';
 class TranslationViewCubit extends Cubit<TranslationViewState> {
   TranslationViewCubit() : super(const TranslationViewState());
 
-  void translate(String word, String translateFrom, String translateTo) async {
+  void translate(String word, Language translateFrom, Language translateTo) async {
     try {
       emit(state.copyWith(translateLoading: true));
 

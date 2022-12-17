@@ -3,9 +3,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:lingua_flutter/utils/files.dart';
-import 'package:lingua_flutter/models/language.dart';
 
-List<Language>? languages;
+final Map<String, String> languages = {};
 
 Future<void> preload() async {
   final languagesPath = await _getLanguagesPath();
@@ -21,7 +20,7 @@ Future<void> preload() async {
     final languagesFileContent = await file.readAsString();
 
     // decode file JSON content
-    List<dynamic>? languagesData;
+    Map<String, dynamic>? languagesData;
     try {
       Map<String, dynamic> languagesRawData = jsonDecode(languagesFileContent);
       languagesData = jsonDecode(languagesRawData['raw']);
@@ -30,16 +29,16 @@ Future<void> preload() async {
     }
 
     if (languagesData != null) {
-      languages = languagesData.map((item) => Language(
-        id: item['id'],
-        value: item['value'],
-      )).toList();
+      languages.clear();
+      for (var id in languagesData.keys) {
+        languages[id] = languagesData[id];
+      }
     }
   }
 }
 
-Future<List<Language>?> get({ bool? forceUpdate }) async {
-  if (forceUpdate != true && languages?.isNotEmpty == true) {
+Future<Map<String, String>?> get({ bool? forceUpdate }) async {
+  if (forceUpdate != true && languages.isNotEmpty) {
     return languages;
   }
 
@@ -55,7 +54,7 @@ Future<List<Language>?> get({ bool? forceUpdate }) async {
     return null;
   }
 
-  List<dynamic>? languagesData;
+  Map<String, dynamic>? languagesData;
   try {
     languagesData = jsonDecode(languagesRawData['raw']);
   } catch (err, stack) {
@@ -71,15 +70,15 @@ Future<List<Language>?> get({ bool? forceUpdate }) async {
   final file = File('$languagesPath/languages');
   await file.writeAsString(jsonEncode(languagesRawData));
 
-  languages = languagesData.map((item) => Language(
-    id: item['id'],
-    value: item['value'],
-  )).toList();
+  languages.clear();
+  for (var id in languagesData.keys) {
+    languages[id] = languagesData[id];
+  }
 
   return languages;
 }
 
 Future<String> _getLanguagesPath() async {
   final documentsPath = await getDocumentsPath();
-  return '$documentsPath/languages';
+  return '${documentsPath}languages';
 }

@@ -1,14 +1,16 @@
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/utils/types.dart';
 
 part 'settings_state.g.dart';
 
 @JsonSerializable()
 class SettingsState extends Equatable {
-  final String translateFrom;
-  final String translateTo;
+  final Language translateFrom;
+  final Language translateTo;
   final bool pronunciationAutoPlay;
   final bool darkMode;
   final bool autoDarkMode;
@@ -17,23 +19,25 @@ class SettingsState extends Equatable {
   final int? backupTime;
   final int? backupSize;
   final int? backupPreloadSize;
+  final bool showLanguageSource;
 
   const SettingsState({
     required this.translateFrom,
     required this.translateTo,
-    required this.pronunciationAutoPlay,
-    required this.darkMode,
-    required this.autoDarkMode,
-    required this.backupLoading,
-    required this.backupError,
+    this.pronunciationAutoPlay = true,
+    this.darkMode = false,
+    this.autoDarkMode = true,
+    this.backupLoading = false,
+    this.backupError = false,
     this.backupTime,
     this.backupSize,
     this.backupPreloadSize,
+    this.showLanguageSource = false,
   });
 
   SettingsState copyWith({
-    String? translateFrom,
-    String? translateTo,
+    Language? translateFrom,
+    Language? translateTo,
     bool? pronunciationAutoPlay,
     bool? darkMode,
     bool? autoDarkMode,
@@ -42,6 +46,7 @@ class SettingsState extends Equatable {
     int? backupTime,
     int? backupSize,
     Wrapped<int?>? backupPreloadSize,
+    bool? showLanguageSource,
   }) {
     return SettingsState(
       translateFrom: translateFrom ?? this.translateFrom,
@@ -54,28 +59,49 @@ class SettingsState extends Equatable {
       backupTime: backupTime ?? this.backupTime,
       backupSize: backupSize ?? this.backupSize,
       backupPreloadSize: backupPreloadSize != null ? backupPreloadSize.value : this.backupPreloadSize,
+      showLanguageSource: showLanguageSource ?? this.showLanguageSource,
     );
   }
 
   factory SettingsState.initial(SharedPreferences prefs) {
-    final String translateFrom = prefs.getString('translateFrom') ?? 'en';
-    final String translateTo = prefs.getString('translateTo') ?? 'en';
-    final bool pronunciationAutoPlay = prefs.getBool('pronunciationAutoPlay') ?? true;
-    final bool darkMode = prefs.getBool('darkMode') ?? false;
+    final String? translateFromString = prefs.getString('translateFrom');
+    Language translateFrom = const Language(id: 'en', value: 'English');
+
+    if (translateFromString != null) {
+      try {
+        translateFrom = Language.fromJson(jsonDecode(translateFromString));
+      } catch (e) {
+        //
+      }
+    }
+
+    final String? translateToString = prefs.getString('translateTo');
+    Language translateTo = const Language(id: 'en', value: 'English');
+
+    if (translateToString != null) {
+      try {
+        translateTo = Language.fromJson(jsonDecode(translateToString));
+      } catch (e) {
+        //
+      }
+    }
+
+    final bool? pronunciationAutoPlay = prefs.getBool('pronunciationAutoPlay');
+    final bool? darkMode = prefs.getBool('darkMode');
     final bool? autoDarkMode = prefs.getBool('autoDarkMode');
     final int? backupTime = prefs.getInt('backupTime');
     final int? backupSize = prefs.getInt('backupSize');
+    final bool? showLanguageSource = prefs.getBool('showLanguageSource');
 
     return SettingsState(
       translateFrom: translateFrom,
       translateTo: translateTo,
-      pronunciationAutoPlay: pronunciationAutoPlay,
-      darkMode: darkMode,
+      pronunciationAutoPlay: pronunciationAutoPlay ?? true,
+      darkMode: darkMode ?? false,
       autoDarkMode: autoDarkMode ?? true,
-      backupLoading: false,
-      backupError: false,
       backupTime: backupTime,
       backupSize: backupSize,
+      showLanguageSource: showLanguageSource ?? false,
     );
   }
 
@@ -94,5 +120,6 @@ class SettingsState extends Equatable {
     backupTime,
     backupSize,
     backupPreloadSize,
+    showLanguageSource,
   ];
 }

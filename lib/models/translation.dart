@@ -2,6 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:jmespath/jmespath.dart' as jmespath;
 import 'package:lingua_flutter/utils/types.dart';
 import './parsing_schema/schema.dart';
+import './language.dart';
 
 part 'translation.g.dart';
 
@@ -22,8 +23,8 @@ class TranslationContainer {
   final List<dynamic>? raw;
   final ParsingSchema? schema;
   final String? schemaVersion;
-  final String translateFrom;
-  final String translateTo;
+  final Language translateFrom;
+  final Language translateTo;
   final String? createdAt;
   final String? updatedAt;
 
@@ -56,8 +57,8 @@ class TranslationContainer {
     required List<dynamic> raw,
     required ParsingSchema schema,
     required String schemaVersion,
-    required String translateFrom,
-    required String translateTo,
+    required Language translateFrom,
+    required Language translateTo,
     String? createdAt,
     String? updatedAt,
   }) {
@@ -230,8 +231,8 @@ class TranslationContainer {
     List<dynamic>? raw,
     ParsingSchema? schema,
     String? schemaVersion,
-    String? translateFrom,
-    String? translateTo,
+    Language? translateFrom,
+    Language? translateTo,
     String? createdAt,
     String? updatedAt,
   }) {
