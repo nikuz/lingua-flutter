@@ -8,6 +8,10 @@ part of 'settings_state.dart';
 
 SettingsState _$SettingsStateFromJson(Map<String, dynamic> json) =>
     SettingsState(
+      translateFrom:
+          Language.fromJson(json['translateFrom'] as Map<String, dynamic>),
+      translateTo:
+          Language.fromJson(json['translateTo'] as Map<String, dynamic>),
       pronunciationAutoPlay: json['pronunciationAutoPlay'] as bool,
       darkMode: json['darkMode'] as bool,
       autoDarkMode: json['autoDarkMode'] as bool,
@@ -20,6 +24,8 @@ SettingsState _$SettingsStateFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$SettingsStateToJson(SettingsState instance) =>
     <String, dynamic>{
+      'translateFrom': instance.translateFrom,
+      'translateTo': instance.translateTo,
       'pronunciationAutoPlay': instance.pronunciationAutoPlay,
       'darkMode': instance.darkMode,
       'autoDarkMode': instance.autoDarkMode,

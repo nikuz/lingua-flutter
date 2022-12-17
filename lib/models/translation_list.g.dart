@@ -12,7 +12,7 @@ TranslationList _$TranslationListFromJson(Map<String, dynamic> json) =>
       to: json['to'] as int,
       totalAmount: json['totalAmount'] as int,
       translations: (json['translations'] as List<dynamic>)
-          .map((e) => Translation.fromJson(e as Map<String, dynamic>))
+          .map((e) => TranslationContainer.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

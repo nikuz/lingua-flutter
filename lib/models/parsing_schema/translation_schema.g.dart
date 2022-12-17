@@ -13,10 +13,10 @@ TranslationSchema _$TranslationSchemaFromJson(Map<String, dynamic> json) =>
       word: SchemaItem.fromJson(json['word'] as Map<String, dynamic>),
       autoSpellingFix:
           SchemaItem.fromJson(json['autoSpellingFix'] as Map<String, dynamic>),
-      translation:
-          SchemaItem.fromJson(json['translation'] as Map<String, dynamic>),
       transcription:
           SchemaItem.fromJson(json['transcription'] as Map<String, dynamic>),
+      translations: TranslationSchemaTranslations.fromJson(
+          json['translations'] as Map<String, dynamic>),
       alternativeTranslations:
           TranslationSchemaAlternativeTranslations.fromJson(
               json['alternativeTranslations'] as Map<String, dynamic>),
@@ -31,8 +31,8 @@ Map<String, dynamic> _$TranslationSchemaToJson(TranslationSchema instance) =>
       'fields': instance.fields.toJson(),
       'word': instance.word.toJson(),
       'autoSpellingFix': instance.autoSpellingFix.toJson(),
-      'translation': instance.translation.toJson(),
       'transcription': instance.transcription.toJson(),
+      'translations': instance.translations.toJson(),
       'alternativeTranslations': instance.alternativeTranslations.toJson(),
       'definitions': instance.definitions.toJson(),
       'examples': instance.examples.toJson(),
@@ -54,6 +54,40 @@ Map<String, dynamic> _$TranslationSchemaFieldsToJson(
       'parameter': instance.parameter,
       'body': instance.body,
       'marker': instance.marker,
+    };
+
+TranslationSchemaTranslations _$TranslationSchemaTranslationsFromJson(
+        Map<String, dynamic> json) =>
+    TranslationSchemaTranslations(
+      value: json['value'] as String,
+      word: SchemaItem.fromJson(json['word'] as Map<String, dynamic>),
+      gender: SchemaItem.fromJson(json['gender'] as Map<String, dynamic>),
+      sentences: TranslationSchemaTranslationsSentences.fromJson(
+          json['sentences'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$TranslationSchemaTranslationsToJson(
+        TranslationSchemaTranslations instance) =>
+    <String, dynamic>{
+      'value': instance.value,
+      'word': instance.word.toJson(),
+      'gender': instance.gender.toJson(),
+      'sentences': instance.sentences.toJson(),
+    };
+
+TranslationSchemaTranslationsSentences
+    _$TranslationSchemaTranslationsSentencesFromJson(
+            Map<String, dynamic> json) =>
+        TranslationSchemaTranslationsSentences(
+          value: json['value'] as String,
+          word: SchemaItem.fromJson(json['word'] as Map<String, dynamic>),
+        );
+
+Map<String, dynamic> _$TranslationSchemaTranslationsSentencesToJson(
+        TranslationSchemaTranslationsSentences instance) =>
+    <String, dynamic>{
+      'value': instance.value,
+      'word': instance.word.toJson(),
     };
 
 TranslationSchemaAlternativeTranslations
@@ -80,6 +114,7 @@ TranslationSchemaAlternativeTranslationsItems
             Map<String, dynamic> json) =>
         TranslationSchemaAlternativeTranslationsItems(
           value: json['value'] as String,
+          genre: SchemaItem.fromJson(json['genre'] as Map<String, dynamic>),
           translation:
               SchemaItem.fromJson(json['translation'] as Map<String, dynamic>),
           words: SchemaItem.fromJson(json['words'] as Map<String, dynamic>),
@@ -91,6 +126,7 @@ Map<String, dynamic> _$TranslationSchemaAlternativeTranslationsItemsToJson(
         TranslationSchemaAlternativeTranslationsItems instance) =>
     <String, dynamic>{
       'value': instance.value,
+      'genre': instance.genre.toJson(),
       'translation': instance.translation.toJson(),
       'words': instance.words.toJson(),
       'frequency': instance.frequency.toJson(),
