@@ -243,8 +243,18 @@ class TranslationViewHeader extends StatelessWidget {
                             ),
                             onPressed: () {
                               context.read<TranslationViewCubit>().reset();
+                              String translationWord = translation.translation;
+
+                              // if translation contains gender-specific variants, then take first word from alternative translations instead
+                              if (translationWord.contains(',')) {
+                                final firstRelativeTranslation = translation.alternativeTranslations?[0].items[0];
+                                if (firstRelativeTranslation != null) {
+                                  translationWord = firstRelativeTranslation.translation;
+                                }
+                              }
+
                               AutoRouter.of(context).replace(TranslationViewRoute(
-                                word: translation.translation,
+                                word: translationWord,
                                 translateFrom: translation.translateTo,
                                 translateTo: translation.translateFrom,
                               ));
