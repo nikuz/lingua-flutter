@@ -41,7 +41,10 @@ class _SettingsState extends State<Settings> {
                 children: <Widget>[
                   LanguageSelector(
                     from: state.translateFrom,
+                    fromTitle: 'Translate from',
                     to: state.translateTo,
+                    toTitle: 'Translate to',
+                    size: LanguageSelectorSize.large,
                     onFromChanged: _settingsCubit.setTranslateFrom,
                     onSwapped: _settingsCubit.swapTranslationLanguages,
                     onToChanged: _settingsCubit.setTranslateTo,

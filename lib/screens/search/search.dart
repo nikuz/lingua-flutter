@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/providers/connectivity.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/models/translation.dart';
+import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 
 import './bloc/search_cubit.dart';
@@ -54,9 +55,20 @@ class _SearchState extends State<Search> {
     });
   }
 
-  void _submitHandler(String word) async {
+  void _submitHandler(String word, {
+    TranslationContainer? quickTranslation,
+    Language? translateFrom,
+    Language? translateTo
+  }) async {
     if (word.isNotEmpty) {
-      final result = await AutoRouter.of(context).push<TranslationContainer>(TranslationViewRoute(word: word));
+      final result = await AutoRouter.of(context).push<TranslationContainer>(
+        TranslationViewRoute(
+          word: word,
+          quickTranslation: quickTranslation,
+          translateFrom: translateFrom,
+          translateTo: translateTo,
+        ),
+      );
       if (result != null) {
         if (_searchCubit.state.translations.any((item) => item.id == result.id)) {
           _searchCubit.updateTranslation(result);

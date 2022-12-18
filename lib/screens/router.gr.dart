@@ -14,9 +14,10 @@
 import 'package:auto_route/auto_route.dart' as _i7;
 import 'package:flutter/material.dart' as _i8;
 
+import '../models/language.dart' as _i10;
 import '../models/translation.dart' as _i9;
-import 'root.dart' as _i1;
 import 'games/games.dart' as _i5;
+import 'root.dart' as _i1;
 import 'search/search.dart' as _i2;
 import 'settings/settings.dart' as _i6;
 import 'translation_view/pages/images_picker.dart' as _i4;
@@ -28,7 +29,7 @@ class AppRouter extends _i7.RootStackRouter {
 
   @override
   final Map<String, _i7.PageFactory> pagesMap = {
-    AppRoute.name: (routeData) {
+    RootRoute.name: (routeData) {
       return _i7.MaterialPageX<dynamic>(
         routeData: routeData,
         child: const _i1.Root(),
@@ -50,6 +51,9 @@ class AppRouter extends _i7.RootStackRouter {
         child: _i3.TranslationView(
           key: args.key,
           word: args.word,
+          quickTranslation: args.quickTranslation,
+          translateFrom: args.translateFrom,
+          translateTo: args.translateTo,
         ),
       );
     },
@@ -86,40 +90,40 @@ class AppRouter extends _i7.RootStackRouter {
   @override
   List<_i7.RouteConfig> get routes => [
         _i7.RouteConfig(
-          AppRoute.name,
+          RootRoute.name,
           path: '/',
           children: [
             _i7.RouteConfig(
               '#redirect',
               path: '',
-              parent: AppRoute.name,
+              parent: RootRoute.name,
               redirectTo: 'search',
               fullMatch: true,
             ),
             _i7.RouteConfig(
               SearchRoute.name,
               path: 'search',
-              parent: AppRoute.name,
+              parent: RootRoute.name,
             ),
             _i7.RouteConfig(
               TranslationViewRoute.name,
               path: 'translation_view',
-              parent: AppRoute.name,
+              parent: RootRoute.name,
             ),
             _i7.RouteConfig(
               TranslationViewImagePickerRoute.name,
               path: 'translation_view/images',
-              parent: AppRoute.name,
+              parent: RootRoute.name,
             ),
             _i7.RouteConfig(
               GamesRoute.name,
               path: 'games',
-              parent: AppRoute.name,
+              parent: RootRoute.name,
             ),
             _i7.RouteConfig(
               SettingsRoute.name,
               path: 'settings',
-              parent: AppRoute.name,
+              parent: RootRoute.name,
             ),
           ],
         )
@@ -127,16 +131,16 @@ class AppRouter extends _i7.RootStackRouter {
 }
 
 /// generated route for
-/// [_i1.App]
-class AppRoute extends _i7.PageRouteInfo<void> {
-  const AppRoute({List<_i7.PageRouteInfo>? children})
+/// [_i1.Root]
+class RootRoute extends _i7.PageRouteInfo<void> {
+  const RootRoute({List<_i7.PageRouteInfo>? children})
       : super(
-          AppRoute.name,
+          RootRoute.name,
           path: '/',
           initialChildren: children,
         );
 
-  static const String name = 'AppRoute';
+  static const String name = 'RootRoute';
 }
 
 /// generated route for
@@ -157,12 +161,18 @@ class TranslationViewRoute extends _i7.PageRouteInfo<TranslationViewRouteArgs> {
   TranslationViewRoute({
     _i8.Key? key,
     required String word,
+    _i9.TranslationContainer? quickTranslation,
+    _i10.Language? translateFrom,
+    _i10.Language? translateTo,
   }) : super(
           TranslationViewRoute.name,
           path: 'translation_view',
           args: TranslationViewRouteArgs(
             key: key,
             word: word,
+            quickTranslation: quickTranslation,
+            translateFrom: translateFrom,
+            translateTo: translateTo,
           ),
         );
 
@@ -173,15 +183,24 @@ class TranslationViewRouteArgs {
   const TranslationViewRouteArgs({
     this.key,
     required this.word,
+    this.quickTranslation,
+    this.translateFrom,
+    this.translateTo,
   });
 
   final _i8.Key? key;
 
   final String word;
 
+  final _i9.TranslationContainer? quickTranslation;
+
+  final _i10.Language? translateFrom;
+
+  final _i10.Language? translateTo;
+
   @override
   String toString() {
-    return 'TranslationViewRouteArgs{key: $key, word: $word}';
+    return 'TranslationViewRouteArgs{key: $key, word: $word, quickTranslation: $quickTranslation, translateFrom: $translateFrom, translateTo: $translateTo}';
   }
 }
 

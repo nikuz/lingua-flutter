@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/widgets/translation_word_view/translation_word_view.dart';
+import 'package:lingua_flutter/widgets/language_selector/language_selector.dart';
+import 'package:lingua_flutter/widgets/button/button.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 
 import '../../bloc/search_cubit.dart';
@@ -24,11 +27,16 @@ class QuickSearch extends StatefulWidget {
 class _QuickSearchState extends State<QuickSearch> {
   late SearchCubit _searchCubit;
   Timer? _debounce;
+  late Language _translateFrom;
+  late Language _translateTo;
 
   @override
   void initState() {
     super.initState();
     _searchCubit = context.read<SearchCubit>();
+    final settingsState = context.read<SettingsCubit>().state;
+    _translateFrom = settingsState.translateFrom;
+    _translateTo = settingsState.translateTo;
     _debounceRequest();
   }
 
@@ -50,11 +58,10 @@ class _QuickSearchState extends State<QuickSearch> {
   void _debounceRequest() {
     _debounce?.cancel();
     _debounce = Timer(QuickSearchConstants.debouncePeriod, () {
-      final settingsState = context.read<SettingsCubit>().state;
       _searchCubit.quickTranslation(
         word: widget.searchText,
-        translateFrom: settingsState.translateFrom,
-        translateTo: settingsState.translateTo,
+        translateFrom: _translateFrom,
+        translateTo: _translateTo,
       );
     });
   }
@@ -70,36 +77,76 @@ class _QuickSearchState extends State<QuickSearch> {
     }
 
     final searchState = SearchInheritedState.of(context);
-    return ListTile(
-      title: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.end,
-        children: [
-          if (state.quickTranslation != null)
-            TranslationWordView(
-              translation: state.quickTranslation!,
-            ),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 5,
+            horizontal: 15,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.end,
+                  children: [
+                    if (state.quickTranslation != null)
+                      TranslationWordView(
+                        translation: state.quickTranslation!,
+                      ),
 
-          if (state.quickTranslationLoading || state.quickTranslation == null)
-            const Text('...'),
-        ],
-      ),
-      trailing: ElevatedButton(
-        style: TextButton.styleFrom(
-          minimumSize: const Size(56, 56),
-          padding: EdgeInsets.zero,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(36),
-            ),
+                    if (state.quickTranslationLoading || state.quickTranslation == null)
+                      const Text('...'),
+                  ],
+                ),
+              ),
+
+              Button(
+                width: 56,
+                height: 56,
+                outlined: false,
+                elevated: true,
+                shape: ButtonShape.circular,
+                icon: Icons.arrow_forward,
+                onPressed: () {
+                  if (searchState?.hasInternetConnection == true) {
+                    searchState?.submitHandler(
+                      searchState.textController.text,
+                      quickTranslation: state.quickTranslation,
+                      translateFrom: _translateFrom,
+                      translateTo: _translateTo,
+                    );
+                  }
+                },
+              ),
+            ],
           ),
         ),
-        child: const Icon(Icons.arrow_forward),
-        onPressed: () {
-          if (searchState?.hasInternetConnection == true) {
-            searchState?.submitHandler(searchState.textController.text);
-          }
-        },
-      ),
+
+        LanguageSelector(
+          from: _translateFrom,
+          to: _translateTo,
+          onFromChanged: (language) {
+            setState(() {
+              _translateFrom = language;
+            });
+            _debounceRequest();
+          },
+          onSwapped: (from, to) {
+            setState(() {
+              _translateFrom = from;
+              _translateTo = to;
+            });
+            _debounceRequest();
+          },
+          onToChanged: (language) {
+            setState(() {
+              _translateTo = language;
+            });
+            _debounceRequest();
+          },
+        ),
+      ],
     );
   }
 

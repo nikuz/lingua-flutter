@@ -1,9 +1,15 @@
 import 'package:flutter/widgets.dart';
+import 'package:lingua_flutter/models/language.dart';
+import 'package:lingua_flutter/models/translation.dart';
 
 class SearchInheritedState extends InheritedWidget {
   final TextEditingController textController;
   final bool hasInternetConnection;
-  final Function(String word) submitHandler;
+  final Function(String word, {
+    TranslationContainer? quickTranslation,
+    Language? translateFrom,
+    Language? translateTo,
+  }) submitHandler;
 
   const SearchInheritedState({
     Key? key,

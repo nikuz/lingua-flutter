@@ -1,0 +1,5 @@
+enum LanguageSelectorSize {
+  regular,
+  large,
+}
+

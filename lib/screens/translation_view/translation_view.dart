@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
-
+import 'package:lingua_flutter/models/language.dart';
+import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/providers/connectivity.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 
@@ -17,10 +18,16 @@ import './widgets/examples/examples.dart';
 
 class TranslationView extends StatefulWidget {
   final String word;
+  final TranslationContainer? quickTranslation;
+  final Language? translateFrom;
+  final Language? translateTo;
 
   const TranslationView({
     Key? key,
     required this.word,
+    this.quickTranslation,
+    this.translateFrom,
+    this.translateTo,
   }) : super(key: key);
 
   @override
@@ -41,11 +48,18 @@ class _TranslationViewState extends State<TranslationView> {
     final settingsCubit = context.read<SettingsCubit>();
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollHandler);
-    _translationViewCubit.translate(
-      widget.word,
-      settingsCubit.state.translateFrom,
-      settingsCubit.state.translateTo,
-    );
+
+    if (widget.quickTranslation != null) {
+      _translationViewCubit.setTranslation(widget.quickTranslation!);
+      _fetchImages(widget.quickTranslation!.word);
+    } else {
+      _translationViewCubit.translate(
+        widget.word,
+        widget.translateFrom ?? settingsCubit.state.translateFrom,
+        widget.translateTo ?? settingsCubit.state.translateTo,
+      );
+    }
+
     _getInternetConnectionStatus();
     subscribeToNetworkChange('translation_view', (bool isConnected) {
       setState(() {
@@ -76,6 +90,14 @@ class _TranslationViewState extends State<TranslationView> {
     bool connection = await isInternetConnected();
     setState(() {
       _hasInternetConnection = connection;
+    });
+  }
+
+  void _fetchImages(String word) {
+    _translationViewCubit.fetchImages(word).then((String? image) {
+      if (image != null) {
+        _translationViewCubit.setImage(image);
+      }
     });
   }
 
@@ -115,11 +137,7 @@ class _TranslationViewState extends State<TranslationView> {
               && state.images == null
               && !state.imageLoading
             ) {
-              _translationViewCubit.fetchImages(state.translation!.word).then((String? image) {
-                if (image != null) {
-                  _translationViewCubit.setImage(image);
-                }
-              });
+              _fetchImages(state.translation!.word);
             }
 
             if (state.translation?.id != null && _translationId == null) {

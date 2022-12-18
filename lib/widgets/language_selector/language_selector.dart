@@ -2,12 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/controllers/languages.dart' as languages_controller;
+import 'package:lingua_flutter/widgets/button/button.dart';
 
 import './language_selector_item.dart';
+import './language_selector_size.dart';
+import './language_selector_emphasis.dart';
+
+export './language_selector_size.dart';
+export './language_selector_emphasis.dart';
 
 class LanguageSelector extends StatefulWidget {
   final Language from;
+  final String? fromTitle;
   final Language to;
+  final String? toTitle;
+  final LanguageSelectorSize size;
+  final LanguageSelectorEmphasis emphasis;
   final Function(Language) onFromChanged;
   final Function(Language, Language) onSwapped;
   final Function(Language) onToChanged;
@@ -15,7 +25,11 @@ class LanguageSelector extends StatefulWidget {
   const LanguageSelector({
     Key? key,
     required this.from,
+    this.fromTitle,
     required this.to,
+    this.toTitle,
+    this.size = LanguageSelectorSize.regular,
+    this.emphasis = LanguageSelectorEmphasis.languages,
     required this.onFromChanged,
     required this.onSwapped,
     required this.onToChanged,
@@ -48,6 +62,15 @@ class _LanguageSelectorState extends State<LanguageSelector> {
   @override
   Widget build(BuildContext context) {
     final MyTheme theme = Styles.theme(context);
+    double swapButtonSize = 38;
+    EdgeInsets swapButtonMargin = const EdgeInsets.symmetric(horizontal: 5);
+    CrossAxisAlignment verticalAlignment = CrossAxisAlignment.center;
+
+    if (widget.size == LanguageSelectorSize.large) {
+      swapButtonSize = 50;
+      swapButtonMargin = const EdgeInsets.symmetric(horizontal: 5, vertical: 6);
+      verticalAlignment = CrossAxisAlignment.end;
+    }
 
     return Container(
       padding: const EdgeInsets.only(
@@ -57,40 +80,35 @@ class _LanguageSelectorState extends State<LanguageSelector> {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: verticalAlignment,
         children: [
           LanguageSelectorItem(
-            title: 'Translate from',
+            title: widget.fromTitle,
             languages: _languages,
             language: widget.from,
+            size: widget.size,
+            emphasis: widget.emphasis,
             onChanged: (Language language) {
               widget.onFromChanged(language);
             },
           ),
-          Container(
-            margin: const EdgeInsets.all(5),
-            child: Material(
-              type: MaterialType.transparency,
-              child: InkWell(
-                customBorder: const CircleBorder(),
-                onTap: () {
-                  widget.onSwapped(widget.to, widget.from);
-                },
-                child: SizedBox(
-                  width: 50,
-                  height: 50,
-                  child: Icon(
-                    Icons.swap_horiz,
-                    color: theme.colors.primaryPale,
-                  ),
-                ),
-              ),
-            ),
+          Button(
+            icon: Icons.swap_horiz,
+            textColor: theme.colors.primaryPale,
+            shape: ButtonShape.circular,
+            width: swapButtonSize,
+            margin: swapButtonMargin,
+            outlined: false,
+            onPressed: () {
+              widget.onSwapped(widget.to, widget.from);
+            },
           ),
           LanguageSelectorItem(
-            title: 'Translate to',
+            title: widget.toTitle,
             languages: _languages,
             language: widget.to,
+            size: widget.size,
+            emphasis: widget.emphasis,
             onChanged: (Language language) {
               widget.onToChanged(language);
             },
