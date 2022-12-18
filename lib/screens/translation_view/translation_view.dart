@@ -45,7 +45,6 @@ class _TranslationViewState extends State<TranslationView> {
   void initState() {
     super.initState();
     _translationViewCubit = context.read<TranslationViewCubit>();
-    final settingsCubit = context.read<SettingsCubit>();
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollHandler);
 
@@ -53,11 +52,7 @@ class _TranslationViewState extends State<TranslationView> {
       _translationViewCubit.setTranslation(widget.quickTranslation!);
       _fetchImages(widget.quickTranslation!.word);
     } else {
-      _translationViewCubit.translate(
-        widget.word,
-        widget.translateFrom ?? settingsCubit.state.translateFrom,
-        widget.translateTo ?? settingsCubit.state.translateTo,
-      );
+      _fetchTranslation();
     }
 
     _getInternetConnectionStatus();
@@ -66,6 +61,18 @@ class _TranslationViewState extends State<TranslationView> {
         _hasInternetConnection = isConnected;
       });
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant TranslationView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (
+      oldWidget.word != widget.word
+      || oldWidget.translateFrom != widget.translateFrom
+      || oldWidget.translateTo != widget.translateTo
+    ) {
+      _fetchTranslation();
+    }
   }
 
   @override
@@ -91,6 +98,15 @@ class _TranslationViewState extends State<TranslationView> {
     setState(() {
       _hasInternetConnection = connection;
     });
+  }
+
+  void _fetchTranslation() {
+    final settingsCubit = context.read<SettingsCubit>();
+    _translationViewCubit.translate(
+      widget.word,
+      widget.translateFrom ?? settingsCubit.state.translateFrom,
+      widget.translateTo ?? settingsCubit.state.translateTo,
+    );
   }
 
   void _fetchImages(String word) {
