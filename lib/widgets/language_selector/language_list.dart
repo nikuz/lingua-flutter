@@ -3,14 +3,14 @@ import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/widgets/text_field/text_field.dart';
 
 class LanguageList extends StatefulWidget {
-  final Language language;
+  final Language? language;
   final ScrollController scrollController;
   final Map<String, String>? languages;
   final Function(Language) onSelected;
 
   const LanguageList({
     Key? key,
-    required this.language,
+    this.language,
     required this.scrollController,
     required this.languages,
     required this.onSelected,
@@ -63,7 +63,7 @@ class _LanguageListState extends State<LanguageList> {
             for (var id in _filteredLanguages!.keys)
               ListTile(
                 title: Text(_filteredLanguages![id] ?? ''),
-                trailing: id == widget.language.id ? const Icon(Icons.check) : null,
+                trailing: id == widget.language?.id ? const Icon(Icons.check) : null,
                 onTap: () {
                   String? value = _filteredLanguages![id];
                   if (value != null) {

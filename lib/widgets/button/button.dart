@@ -23,8 +23,12 @@ class Button extends StatelessWidget {
   final EdgeInsets? margin;
   final EdgeInsets? padding;
   final Color? borderColor;
+  final Color? backgroundColor;
+  final Color? highlightColor;
+  final Color? splashColor;
   final Color? textColor;
   final double borderRadius;
+  final bool disabled;
   final VoidCallback? onPressed;
 
   const Button({
@@ -40,8 +44,12 @@ class Button extends StatelessWidget {
     this.margin,
     this.padding,
     this.borderColor,
+    this.backgroundColor,
+    this.highlightColor,
+    this.splashColor,
     this.textColor,
     this.borderRadius = 4,
+    this.disabled = false,
     this.onPressed,
   }) : super(key: key);
 
@@ -55,15 +63,24 @@ class Button extends StatelessWidget {
     OutlinedBorder inkWellBorder = RoundedRectangleBorder(borderRadius: BorderRadius.circular(this.borderRadius));
     double fontSize = 14;
     Color textColor = this.textColor ?? theme.colors.focus;
-    Color highlightColor = theme.colors.focus.withOpacity(0.1);
-    Color splashColor = theme.colors.focus.withOpacity(0.2);
+    Color highlightColor = this.highlightColor ?? theme.colors.focus.withOpacity(0.1);
+    Color splashColor = this.splashColor ?? theme.colors.focus.withOpacity(0.2);
+    Color backgroundColor = this.backgroundColor ?? Colors.transparent;
     double elevation = 0;
+    EdgeInsets padding = this.padding ?? const EdgeInsets.symmetric(
+      horizontal: 10,
+      vertical: 5,
+    );
 
     if (outlined) {
+      Color borderColor = this.borderColor ?? theme.colors.divider;
+      if (disabled) {
+        borderColor = borderColor.withOpacity(0.05);
+      }
       border = Border.all(
         width: 1,
         style: BorderStyle.solid,
-        color: borderColor ?? theme.colors.divider,
+        color: borderColor,
       );
     }
 
@@ -76,6 +93,7 @@ class Button extends StatelessWidget {
       widthConstraint = width ?? 50;
       heightConstraint = height ?? 50;
       borderRadius = BorderRadius.all(Radius.circular(widthConstraint));
+      padding = EdgeInsets.zero;
     }
 
     if (elevated) {
@@ -83,13 +101,23 @@ class Button extends StatelessWidget {
       highlightColor = Styles.colors.white.withOpacity(0.1);
       splashColor = Styles.colors.white.withOpacity(0.2);
       elevation = 3;
+      if (backgroundColor == Colors.transparent) {
+        backgroundColor = theme.colors.focus;
+      }
+    }
+
+    if (disabled) {
+      if (backgroundColor != Colors.transparent) {
+        backgroundColor = backgroundColor.withOpacity(0.5);
+      }
+      textColor = textColor.withOpacity(0.5);
     }
 
     return Container(
       margin: margin,
       child: Material(
         type: MaterialType.button,
-        color: elevated ? theme.colors.focus : Colors.transparent,
+        color: backgroundColor,
         borderRadius: borderRadius,
         clipBehavior: Clip.hardEdge,
         elevation: elevation,
@@ -97,7 +125,7 @@ class Button extends StatelessWidget {
           customBorder: inkWellBorder,
           highlightColor: highlightColor,
           splashColor: splashColor,
-          onTap: onPressed,
+          onTap: disabled ? null : onPressed,
           child: Container(
             width: widthConstraint,
             height: heightConstraint,
@@ -135,4 +163,49 @@ class Button extends StatelessWidget {
       ),
     );
   }
+}
+
+
+class ButtonBlue extends Button {
+  ButtonBlue({
+    Key? key,
+    text,
+    icon,
+    outlined = true,
+    elevated = false,
+    size = ButtonSize.regular,
+    shape = ButtonShape.rectangular,
+    width,
+    height,
+    margin,
+    padding,
+    borderColor,
+    backgroundColor,
+    highlightColor,
+    splashColor,
+    textColor,
+    borderRadius = 4.0,
+    disabled = false,
+    onPressed,
+  }): super(
+    key: key,
+    text: text,
+    icon: icon,
+    outlined: outlined,
+    elevated: elevated,
+    size: size,
+    shape: shape,
+    width: width,
+    height: height,
+    margin: margin,
+    padding: padding,
+    borderColor: borderColor,
+    backgroundColor: Styles.colors.blue,
+    highlightColor: Styles.colors.white.withOpacity(0.1),
+    splashColor: Styles.colors.white.withOpacity(0.2),
+    textColor: Styles.colors.white,
+    borderRadius: borderRadius,
+    disabled: disabled,
+    onPressed: onPressed,
+  );
 }

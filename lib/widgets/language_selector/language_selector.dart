@@ -12,9 +12,9 @@ export './language_selector_size.dart';
 export './language_selector_emphasis.dart';
 
 class LanguageSelector extends StatefulWidget {
-  final Language from;
+  final Language? from;
   final String? fromTitle;
-  final Language to;
+  final Language? to;
   final String? toTitle;
   final LanguageSelectorSize size;
   final LanguageSelectorEmphasis emphasis;
@@ -24,9 +24,9 @@ class LanguageSelector extends StatefulWidget {
 
   const LanguageSelector({
     Key? key,
-    required this.from,
+    this.from,
     this.fromTitle,
-    required this.to,
+    this.to,
     this.toTitle,
     this.size = LanguageSelectorSize.regular,
     this.emphasis = LanguageSelectorEmphasis.languages,
@@ -100,7 +100,9 @@ class _LanguageSelectorState extends State<LanguageSelector> {
             margin: swapButtonMargin,
             outlined: false,
             onPressed: () {
-              widget.onSwapped(widget.to, widget.from);
+              if (widget.to != null && widget.from != null) {
+                widget.onSwapped(widget.to!, widget.from!);
+              }
             },
           ),
           LanguageSelectorItem(

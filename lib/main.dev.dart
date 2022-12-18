@@ -9,9 +9,6 @@ import './controllers/parsing_schemas.dart' as parsing_schemas_controller;
 import './controllers/languages.dart' as languages_controller;
 import './controllers/audio.dart' as audio_controller;
 import './blocs/observer.dart';
-import './screens/search/bloc/search_cubit.dart';
-import './screens/translation_view/bloc/translation_view_cubit.dart';
-import './screens/settings/bloc/settings_cubit.dart';
 import './app.dart';
 
 void main() async {
@@ -22,7 +19,6 @@ void main() async {
   );
 
   Bloc.observer = MyBlocObserver();
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
 
   // initiate controllers
   local_translate_controller.init();
@@ -35,21 +31,8 @@ void main() async {
 
   audio_controller.setGlobalAudioContext();
 
-  runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider<SearchCubit>(
-          create: (context) => SearchCubit(),
-        ),
-        BlocProvider<TranslationViewCubit>(
-          create: (context) => TranslationViewCubit(),
-        ),
-        BlocProvider<SettingsCubit>(
-          create: (context) => SettingsCubit(prefs),
-        ),
-      ],
-      child: const App(),
-    ),
-  );
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  runApp(App(prefs));
 }
 

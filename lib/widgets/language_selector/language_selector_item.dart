@@ -10,7 +10,7 @@ import './language_selector_emphasis.dart';
 class LanguageSelectorItem extends StatelessWidget {
   final String? title;
   final Map<String, String>? languages;
-  final Language language;
+  final Language? language;
   final LanguageSelectorSize size;
   final LanguageSelectorEmphasis emphasis;
   final Function(Language) onChanged;
@@ -19,7 +19,7 @@ class LanguageSelectorItem extends StatelessWidget {
     Key? key,
     this.title,
     this.languages,
-    required this.language,
+    this.language,
     required this.size,
     required this.emphasis,
     required this.onChanged,
@@ -46,7 +46,7 @@ class LanguageSelectorItem extends StatelessWidget {
             ),
 
           Button(
-            text: language.value,
+            text: language?.value ?? '---',
             size: size == LanguageSelectorSize.large ? ButtonSize.large : ButtonSize.regular,
             height: buttonHeight,
             onPressed: () {

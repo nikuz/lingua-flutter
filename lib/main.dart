@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
@@ -10,9 +9,6 @@ import './controllers/local_translation.dart' as local_translate_controller;
 import './controllers/parsing_schemas.dart' as parsing_schemas_controller;
 import './controllers/languages.dart' as languages_controller;
 import './controllers/audio.dart' as audio_controller;
-import './screens/search/bloc/search_cubit.dart';
-import './screens/translation_view/bloc/translation_view_cubit.dart';
-import './screens/settings/bloc/settings_cubit.dart';
 import './app.dart';
 
 void main() async {
@@ -28,8 +24,6 @@ void main() async {
     return true;
   };
 
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-
   // initiate controllers
   local_translate_controller.init();
 
@@ -39,21 +33,8 @@ void main() async {
 
   audio_controller.setGlobalAudioContext();
 
-  runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider<SearchCubit>(
-          create: (context) => SearchCubit(),
-        ),
-        BlocProvider<TranslationViewCubit>(
-          create: (context) => TranslationViewCubit(),
-        ),
-        BlocProvider<SettingsCubit>(
-          create: (context) => SettingsCubit(prefs),
-        ),
-      ],
-      child: const App(),
-    ),
-  );
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  runApp(App(prefs));
 }
 
