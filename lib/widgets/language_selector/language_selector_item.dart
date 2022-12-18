@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/widgets/bottom_drawer/bottom_drawer.dart';
 
-import '../../bloc/settings_cubit.dart';
-import './settings_languages_list.dart';
+import './language_list.dart';
 
-class SettingsLanguagesSelectorItem extends StatelessWidget {
-  final String settingName;
+class LanguageSelectorItem extends StatelessWidget {
   final String title;
   final Map<String, String>? languages;
   final Language language;
+  final Function(Language) onChanged;
 
-  const SettingsLanguagesSelectorItem({
+  const LanguageSelectorItem({
     Key? key,
-    required this.settingName,
     required this.title,
     this.languages,
     required this.language,
+    required this.onChanged,
   }) : super(key: key);
 
   @override
@@ -40,24 +38,13 @@ class SettingsLanguagesSelectorItem extends StatelessWidget {
                 BottomDrawer(
                   context: context,
                   builder: (BuildContext drawerContext, ScrollController scrollController) {
-                    return SettingsLanguagesList(
+                    return LanguageList(
                       language: language,
                       languages: languages,
                       scrollController: scrollController,
                       onSelected: (Language language) {
-                        final cubit = context.read<SettingsCubit?>();
-
-                        switch (settingName) {
-                          case 'translateFrom':
-                            cubit?.setTranslateFrom(language);
-                            break;
-                          case 'translateTo':
-                            cubit?.setTranslateTo(language);
-                            break;
-                          default:
-                        }
-
                         BottomDrawer.dismiss(context);
+                        onChanged(language);
                       },
                     );
                   },

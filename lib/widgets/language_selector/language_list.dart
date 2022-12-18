@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/widgets/text_field/text_field.dart';
 
-class SettingsLanguagesList extends StatefulWidget {
+class LanguageList extends StatefulWidget {
   final Language language;
   final ScrollController scrollController;
   final Map<String, String>? languages;
   final Function(Language) onSelected;
 
-  const SettingsLanguagesList({
+  const LanguageList({
     Key? key,
     required this.language,
     required this.scrollController,
@@ -17,10 +17,10 @@ class SettingsLanguagesList extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<SettingsLanguagesList> createState() => _SettingsLanguagesListState();
+  State<LanguageList> createState() => _LanguageListState();
 }
 
-class _SettingsLanguagesListState extends State<SettingsLanguagesList> {
+class _LanguageListState extends State<LanguageList> {
   late Map<String, String>? _filteredLanguages;
 
   @override
@@ -43,7 +43,7 @@ class _SettingsLanguagesListState extends State<SettingsLanguagesList> {
       });
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Material(

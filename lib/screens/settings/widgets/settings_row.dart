@@ -4,12 +4,14 @@ import 'package:lingua_flutter/styles/styles.dart';
 class SettingsRow extends StatelessWidget {
   final String title;
   final String? subtitle;
+  final EdgeInsets? margin;
   final Widget child;
 
   const SettingsRow({
     Key? key,
     required this.title,
     this.subtitle,
+    this.margin,
     required this.child,
   }) : super(key: key);
 
@@ -17,7 +19,8 @@ class SettingsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final MyTheme theme = Styles.theme(context);
 
-    return Padding(
+    return Container(
+      margin: margin,
       padding: const EdgeInsets.symmetric(
         vertical: 8,
         horizontal: 15,

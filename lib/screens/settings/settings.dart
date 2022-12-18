@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lingua_flutter/widgets/language_selector/language_selector.dart';
 
 import './bloc/settings_cubit.dart';
 import './bloc/settings_state.dart';
 import './widgets/settings_row.dart';
-import './widgets/languages_selector/settings_languages_selector.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -39,7 +39,24 @@ class _SettingsState extends State<Settings> {
             return SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  const SettingsLanguagesSelector(),
+                  LanguageSelector(
+                    from: state.translateFrom,
+                    to: state.translateTo,
+                    onFromChanged: _settingsCubit.setTranslateFrom,
+                    onSwapped: _settingsCubit.swapTranslationLanguages,
+                    onToChanged: _settingsCubit.setTranslateTo,
+                  ),
+                  SettingsRow(
+                    title: 'Show language target',
+                    subtitle: 'Shows source and target languages on translation card',
+                    margin: const EdgeInsets.only(top: 7),
+                    child: Switch(
+                      value: state.showLanguageSource,
+                      onChanged: (value) {
+                        _settingsCubit.setShowLanguageSource(value);
+                      },
+                    ),
+                  ),
                   SettingsRow(
                     title: 'Autoplay pronunciation',
                     child: Switch(
@@ -67,16 +84,6 @@ class _SettingsState extends State<Settings> {
                         if (value) {
                           _settingsCubit.setDarkMode(false);
                         }
-                      },
-                    ),
-                  ),
-                  SettingsRow(
-                    title: 'Show language target',
-                    subtitle: 'Shows source and target languages on translation card',
-                    child: Switch(
-                      value: state.showLanguageSource,
-                      onChanged: (value) {
-                        _settingsCubit.setShowLanguageSource(value);
                       },
                     ),
                   ),

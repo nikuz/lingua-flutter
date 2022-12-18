@@ -24,6 +24,15 @@ class SettingsCubit extends Cubit<SettingsState> {
     ));
   }
 
+  void swapTranslationLanguages(Language from, Language to) async {
+    await prefs.setString('translateFrom', jsonEncode(from.toJson()));
+    await prefs.setString('translateTo', jsonEncode(to.toJson()));
+    emit(state.copyWith(
+      translateFrom: from,
+      translateTo: to,
+    ));
+  }
+
   void setPronunciationAutoPlay(bool value) async {
     await prefs.setBool('pronunciationAutoPlay', value);
     emit(state.copyWith(
