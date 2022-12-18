@@ -49,7 +49,10 @@ class TranslationViewSpeechPartWrapper extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          categoryName,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: categoryName,
+          ),
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),

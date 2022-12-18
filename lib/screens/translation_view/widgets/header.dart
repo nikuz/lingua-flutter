@@ -6,7 +6,6 @@ import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
 import 'package:lingua_flutter/widgets/image_preview/image_preview.dart';
-import 'package:lingua_flutter/widgets/translation_word_view/translation_word_view.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_state.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
@@ -223,9 +222,9 @@ class TranslationViewHeader extends StatelessWidget {
                             style: TextButton.styleFrom(
                               backgroundColor: Colors.white,
                             ),
-                            child: TranslationWordView(
-                              translation: translation,
-                              textStyle: const TextStyle(
+                            child: Text(
+                              translation.translation.split(', ').join('\n'),
+                              style: const TextStyle(
                                 fontFamily: 'Merriweather',
                                 fontSize: 20,
                                 letterSpacing: 1,
@@ -233,7 +232,12 @@ class TranslationViewHeader extends StatelessWidget {
                               ),
                             ),
                             onPressed: () {
-                              // AutoRouter.of(context).replace(TranslationViewRoute(word: translationWord));
+                              context.read<TranslationViewCubit>().reset();
+                              AutoRouter.of(context).replace(TranslationViewRoute(
+                                word: translation.translation,
+                                translateFrom: translation.translateTo,
+                                translateTo: translation.translateFrom,
+                              ));
                             },
                           ),
                         ),

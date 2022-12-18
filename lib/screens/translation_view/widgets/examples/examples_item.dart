@@ -24,8 +24,12 @@ class ExamplesItem extends StatelessWidget {
           return Container();
         }
 
-        return Container(
-          margin: const EdgeInsets.only(top: 15),
+        return Padding(
+          padding: const EdgeInsets.only(
+            top: 15,
+            right: 10,
+            left: 10,
+          ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

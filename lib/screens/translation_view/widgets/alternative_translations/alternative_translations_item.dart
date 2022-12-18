@@ -57,81 +57,85 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
         final bool frequencySecondActive = item.frequency == 1 || item.frequency == 2;
         final bool frequencyThirdActive = item.frequency == 1;
 
-        return Container(
-          margin: const EdgeInsets.only(
-            top: 5,
-            bottom: 10,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+        return Material(
+          child: InkWell(
+            onTap: () {
+              final alteredTranslation = translation.copyWith(
+                translation: '${item.genre != null ? '${item.genre} ' : ''}${item.translation}',
+                updatedAt: DateTime.now().toString(),
+              );
+              if (isNewWord) {
+                context.read<TranslationViewCubit>().save(alteredTranslation).then((dynamic) {
+                  AutoRouter.of(context).pop<TranslationContainer>(alteredTranslation);
+                });
+              } else {
+                context.read<TranslationViewCubit>().update(alteredTranslation).then((dynamic) {
+                  AutoRouter.of(context).pop<TranslationContainer>(alteredTranslation);
+                });
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(
+                top: 5,
+                right: 10,
+                bottom: 10,
+                left: 10,
+              ),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        if (item.genre != null)
-                          Text(
-                            '${item.genre!} ',
-                            style: const TextStyle(
-                              fontSize: 14,
-                            ),
-                          ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            if (item.genre != null)
+                              Text(
+                                '${item.genre!} ',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                ),
+                              ),
 
-                        GestureDetector(
-                          child: Text(
-                            item.translation,
-                            maxLines: 2,
-                            style: const TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontSize: 18,
+                            Text(
+                              item.translation,
+                              maxLines: 2,
+                              style: const TextStyle(
+                                fontFamily: 'Montserrat',
+                                fontSize: 18,
+                              ),
                             ),
-                          ),
-                          onTap: () {
-                            final alteredTranslation = translation.copyWith(
-                              translation: item.translation,
-                              updatedAt: DateTime.now().toString(),
-                            );
-                            if (isNewWord) {
-                              context.read<TranslationViewCubit>().save(alteredTranslation).then((dynamic) {
-                                AutoRouter.of(context).pop<TranslationContainer>(alteredTranslation);
-                              });
-                            } else {
-                              context.read<TranslationViewCubit>().update(alteredTranslation).then((dynamic) {
-                                AutoRouter.of(context).pop<TranslationContainer>(alteredTranslation);
-                              });
-                            }
-                          },
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+
+                      Container(
+                        padding: const EdgeInsets.only(
+                          top: 8,
+                          left: 5,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: <Widget>[
+                            _buildFrequencyBarItem(context, true),
+                            _buildFrequencyBarItem(context, frequencySecondActive),
+                            _buildFrequencyBarItem(context, frequencyThirdActive),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
 
                   Container(
-                    padding: const EdgeInsets.only(
-                      top: 8,
-                      left: 5,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: <Widget>[
-                        _buildFrequencyBarItem(context, true),
-                        _buildFrequencyBarItem(context, frequencySecondActive),
-                        _buildFrequencyBarItem(context, frequencyThirdActive),
-                      ],
-                    ),
+                    padding: const EdgeInsets.only(top: 4),
+                    child: _buildWordsList(item.words),
                   ),
                 ],
               ),
-
-              Container(
-                padding: const EdgeInsets.only(top: 4),
-                child: _buildWordsList(item.words),
-              ),
-            ],
+            ),
           ),
         );
       },

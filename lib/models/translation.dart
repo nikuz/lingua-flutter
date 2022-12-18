@@ -52,6 +52,7 @@ class TranslationContainer {
   factory TranslationContainer.fromRaw({
     int? id,
     required String word,
+    String? translation,
     String? pronunciation,
     String? image,
     required List<dynamic> raw,
@@ -199,7 +200,7 @@ class TranslationContainer {
       word: word,
       autoSpellingFix: getDynamicString(jmespath.search(schema.translation.autoSpellingFix.value, raw)),
       transcription: getDynamicString(jmespath.search(schema.translation.transcription.value, raw)),
-      translation: translations.join(', '),
+      translation: translation ?? translations.join(', '),
       translations: translations,
       alternativeTranslations: alternativeTranslations,
       definitions: definitions,

@@ -35,6 +35,7 @@ Future<TranslationContainer> translate({
           return TranslationContainer.fromRaw(
             id: existingTranslation.id,
             word: word,
+            translation: existingTranslation.translation,
             pronunciation: existingTranslation.pronunciation,
             image: existingTranslation.image,
             raw: existingTranslation.raw!,

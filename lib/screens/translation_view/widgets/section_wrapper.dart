@@ -51,7 +51,6 @@ class _TranslationViewSectionWrapperState extends State<TranslationViewSectionWr
       child: Stack(
         children: [
           Container(
-            padding: const EdgeInsets.all(10),
             margin: hiddenItemsAmount != null
                 ? const EdgeInsets.only(bottom: buttonHeight - 1)
                 : null,
@@ -69,25 +68,28 @@ class _TranslationViewSectionWrapperState extends State<TranslationViewSectionWr
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                Wrap(
-                  direction: Axis.horizontal,
-                  children: [
-                    Text(
-                      '${widget.name.capitalize()} of ',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).hintColor,
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Wrap(
+                    direction: Axis.horizontal,
+                    children: [
+                      Text(
+                        '${widget.name.capitalize()} of ',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).hintColor,
+                        ),
                       ),
-                    ),
-                    Text(
-                      widget.word ?? '',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).hintColor,
-                        fontWeight: FontWeight.bold,
+                      Text(
+                        widget.word ?? '',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).hintColor,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
 
                 widget.childBuilder(expanded),

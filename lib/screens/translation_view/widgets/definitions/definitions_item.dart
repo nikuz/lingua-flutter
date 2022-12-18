@@ -25,10 +25,10 @@ class DefinitionsItem extends StatelessWidget {
           return Container();
         }
 
-        return Container(
-          margin: const EdgeInsets.only(
-            top: 5,
-            bottom: 5,
+        return Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 10,
+            vertical: 5,
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
