@@ -87,6 +87,8 @@ class TranslationViewHeader extends StatelessWidget {
     final bool isNewWord = translation.id == null;
     bool toSave = isNewWord || state.imageIsUpdated || state.translationIsUpdated;
     IconData iconName = Icons.check;
+    String? transcription = translation.transcription;
+
     if (isNewWord) {
       iconName = Icons.save_alt;
     } else if (state.imageIsUpdated || state.translationIsUpdated) {
@@ -105,6 +107,10 @@ class TranslationViewHeader extends StatelessWidget {
       );
     }
 
+    if (transcription != null && transcription.length > 100) {
+      transcription = transcription.substring(0, 100);
+    }
+
     return Container(
       margin: const EdgeInsets.only(
         top: 10,
@@ -113,29 +119,33 @@ class TranslationViewHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Row(
-            children: [
-              BlocBuilder<SettingsCubit, SettingsState>(
-                builder: (context, settingsState) {
-                  return PronunciationWidget(
-                    pronunciationSource: state.translation?.pronunciation,
-                    color: Colors.blue,
-                    size: 45,
-                    autoPlay: settingsState.pronunciationAutoPlay,
-                  );
-                },
-              ),
-              Container(
-                margin: const EdgeInsets.only(left: 10),
-                child: Text(
-                  translation.transcription ?? '',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
+          Expanded(
+            child: Row(
+              children: [
+                BlocBuilder<SettingsCubit, SettingsState>(
+                  builder: (context, settingsState) {
+                    return PronunciationWidget(
+                      pronunciationSource: state.translation?.pronunciation,
+                      color: Colors.blue,
+                      size: 45,
+                      autoPlay: settingsState.pronunciationAutoPlay,
+                    );
+                  },
+                ),
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 10),
+                    child: Text(
+                      transcription ?? '',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           TextButton(
             style: TextButton.styleFrom(
