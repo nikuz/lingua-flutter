@@ -1,5 +1,0 @@
-enum LanguageSelectorEmphasis {
-  languages,
-  swap,
-}
-

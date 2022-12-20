@@ -33,10 +33,10 @@ class SettingsCubit extends Cubit<SettingsState> {
     ));
   }
 
-  void setPronunciationAutoPlay(bool value) async {
-    await prefs.setBool('pronunciationAutoPlay', value);
+  void setPronunciation(String pronunciation) async {
+    await prefs.setString('pronunciation', pronunciation);
     emit(state.copyWith(
-      pronunciationAutoPlay: value,
+      pronunciation: pronunciation,
     ));
   }
 

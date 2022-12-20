@@ -5,6 +5,7 @@ import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/controllers/local_translation.dart' as local_translate_controller;
 import 'package:lingua_flutter/controllers/cloud_translation.dart' as cloud_translate_controller;
 import 'package:lingua_flutter/controllers/images.dart' as images_controller;
+import 'package:lingua_flutter/controllers/pronunciation.dart' as pronunciation_controller;
 import 'package:lingua_flutter/utils/types.dart';
 
 import 'translation_view_state.dart';
@@ -64,6 +65,48 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
           message: err.toString(),
         )),
         imageLoading: false,
+      ));
+      rethrow;
+    }
+  }
+
+  void fetchPronunciations(TranslationContainer translation) async {
+    if (translation.schema == null) {
+      return null;
+    }
+
+    emit(state.copyWith(
+      pronunciationLoading: true,
+    ));
+
+    try {
+      List<String?> results = await Future.wait([
+        pronunciation_controller.retrieve(
+          word: translation.word,
+          schema: translation.schema!,
+          language: translation.translateFrom,
+        ),
+        pronunciation_controller.retrieve(
+          word: translation.mostRelevantTranslation,
+          schema: translation.schema!,
+          language: translation.translateTo,
+        ),
+      ]);
+
+      emit(state.copyWith(
+        translation: state.translation?.copyWith(
+          pronunciationFrom: results[0],
+          pronunciationTo: results[1],
+        ),
+        imageLoading: false,
+      ));
+    } catch (err) {
+      emit(state.copyWith(
+        error: Wrapped.value(CustomError(
+          code: err.hashCode,
+          message: err.toString(),
+        )),
+        pronunciationLoading: false,
       ));
       rethrow;
     }

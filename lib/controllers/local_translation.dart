@@ -7,6 +7,7 @@ import 'package:lingua_flutter/models/translation_list.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/models/error.dart';
 import 'package:lingua_flutter/models/language.dart';
+import 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
 import 'package:lingua_flutter/providers/db.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/regexp.dart';
@@ -17,7 +18,8 @@ Future<void> init() async {
     CREATE TABLE IF NOT EXISTS dictionary (
       id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
       word VARCHAR NOT NULL COLLATE NOCASE,
-      pronunciation VARCHAR,
+      pronunciationFrom VARCHAR,
+      pronunciationTo VARCHAR,
       translation VARCHAR COLLATE NOCASE,
       raw TEXT NOT NULL,
       image VARCHAR,
@@ -36,7 +38,7 @@ Future<TranslationList> getList(int from, int to) async {
     BatchQueryRequest(
       type: 'rawQuery',
       query: '''
-        SELECT id, word, pronunciation, translation, image, translate_from, translate_to, created_at, updated_at
+        SELECT id, word, pronunciationFrom, pronunciationTo, translation, image, translate_from, translate_to, created_at, updated_at
         FROM dictionary
         ORDER BY created_at DESC
         LIMIT ? OFFSET ?;
@@ -58,7 +60,8 @@ Future<TranslationList> getList(int from, int to) async {
           id: rawTranslation['id'],
           word: rawTranslation['word'],
           translation: rawTranslation['translation'],
-          pronunciation: rawTranslation['pronunciation'],
+          pronunciationFrom: rawTranslation['pronunciationFrom'],
+          pronunciationTo: rawTranslation['pronunciationTo'],
           image: rawTranslation['image'],
           translateFrom: Language.fromJson(jsonDecode(rawTranslation['translate_from'])),
           translateTo: Language.fromJson(jsonDecode(rawTranslation['translate_to'])),
@@ -79,7 +82,7 @@ Future<TranslationList> search(String searchText, int from, int to) async {
     BatchQueryRequest(
       type: 'rawQuery',
       query: '''
-        SELECT id, word, pronunciation, translation, image, translate_from, translate_to, created_at, updated_at
+        SELECT id, word, pronunciationFrom, pronunciationTo, translation, image, translate_from, translate_to, created_at, updated_at
         FROM dictionary
         WHERE
           word LIKE '$searchPattern'
@@ -120,7 +123,8 @@ Future<TranslationList> search(String searchText, int from, int to) async {
           id: rawTranslation['id'],
           word: rawTranslation['word'],
           translation: rawTranslation['translation'],
-          pronunciation: rawTranslation['pronunciation'],
+          pronunciationFrom: rawTranslation['pronunciationFrom'],
+          pronunciationTo: rawTranslation['pronunciationTo'],
           image: rawTranslation['image'],
           translateFrom: Language.fromJson(jsonDecode(rawTranslation['translate_from'])),
           translateTo: Language.fromJson(jsonDecode(rawTranslation['translate_to'])),
@@ -151,7 +155,8 @@ Future<TranslationContainer?> get(String? word) async {
     id: item['id'],
     word: word,
     translation: item['translation'],
-    pronunciation: item['pronunciation'],
+    pronunciationFrom: item['pronunciationFrom'],
+    pronunciationTo: item['pronunciationTo'],
     image: item['image'],
     raw: jsonDecode(item['raw']),
     schemaVersion: item['schema_version'],
@@ -214,36 +219,32 @@ Future<void> save(TranslationContainer translation) async {
         }
       }
 
-      String? pronunciationUrl;
+      String? pronunciationFromFilePath;
+      String? pronunciationToFilePath;
       if (translation.schema != null) {
-        // save pronunciation
-        final RegExp pronunciationReg = RegExp('${translation.schema!.pronunciation.fields.base64Prefix}(.+)');
-        pronunciationUrl = translation.pronunciation;
-        RegExpMatch? pronunciationParts;
-        if (pronunciationUrl != null) {
-          pronunciationParts = pronunciationReg.firstMatch(pronunciationUrl);
-          String? pronunciationValue = pronunciationParts?.group(1);
-
-          if (pronunciationParts != null && pronunciationValue != null) {
-            Uint8List pronunciationBytes = const Base64Decoder().convert(pronunciationValue);
-            pronunciationUrl = '/pronunciations/$fileId.mp3';
-
-            File pronunciation = File('$dir/$pronunciationUrl');
-            pronunciation = await pronunciation.create(recursive: true);
-            await pronunciation.writeAsBytes(pronunciationBytes);
-          }
-        }
+        // save pronunciations
+        pronunciationFromFilePath = await _savePronunciationFile(
+          'from-$fileId',
+          translation.schema!,
+          translation.pronunciationFrom,
+        );
+        pronunciationToFilePath = await _savePronunciationFile(
+          'to-$fileId',
+          translation.schema!,
+          translation.pronunciationTo,
+        );
       }
 
       // update db
       await DBProvider().rawQuery('''
         UPDATE dictionary 
-        SET image=?, pronunciation=? 
+        SET image=?, pronunciationFrom=?, pronunciationTo=? 
         WHERE id=$newTranslationId;
         ''',
           [
             imageUrl,
-            pronunciationUrl,
+            pronunciationFromFilePath,
+            pronunciationToFilePath,
           ]
       );
     } catch (err) {
@@ -336,10 +337,42 @@ Future<void> removeItem(int id) async {
   if (image.existsSync()) {
     image.deleteSync();
   }
-  final pronunciation = File('$dir${item['pronunciation']}');
-  if (pronunciation.existsSync()) {
-    pronunciation.deleteSync();
+  final pronunciationFrom = File('$dir${item['pronunciationFrom']}');
+  if (pronunciationFrom.existsSync()) {
+    pronunciationFrom.deleteSync();
+  }
+  final pronunciationTo = File('$dir${item['pronunciationTo']}');
+  if (pronunciationTo.existsSync()) {
+    pronunciationTo.deleteSync();
   }
 
   await DBProvider().rawDelete('DELETE FROM dictionary WHERE id=?;', [id]);
+}
+
+
+Future<String?> _savePronunciationFile(
+  String fileId,
+  ParsingSchema schema,
+  String? pronunciation,
+) async {
+  String? filePath;
+
+  if (pronunciation != null) {
+    String dir = await getDocumentsPath();
+    final RegExp pronunciationReg = RegExp('${schema.pronunciation.fields.base64Prefix}(.+)');
+    RegExpMatch? pronunciationParts;
+    pronunciationParts = pronunciationReg.firstMatch(pronunciation);
+    String? pronunciationValue = pronunciationParts?.group(1);
+
+    if (pronunciationParts != null && pronunciationValue != null) {
+      Uint8List pronunciationBytes = const Base64Decoder().convert(pronunciationValue);
+      filePath = '/pronunciations/$fileId.mp3';
+
+      File pronunciationFile = File('$dir/$filePath');
+      pronunciationFile = await pronunciationFile.create(recursive: true);
+      await pronunciationFile.writeAsBytes(pronunciationBytes);
+    }
+  }
+
+  return filePath;
 }

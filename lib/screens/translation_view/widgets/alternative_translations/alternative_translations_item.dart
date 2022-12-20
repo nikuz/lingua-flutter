@@ -8,10 +8,12 @@ import '../../bloc/translation_view_state.dart';
 
 class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
   final TranslationAlternativeTranslationItem item;
+  final bool isLast;
 
   const TranslationViewAlternativeTranslationsItem({
     Key? key,
     required this.item,
+    required this.isLast,
   }) : super(key: key);
 
   Widget _buildWordsList(List<String> words) {
@@ -56,9 +58,19 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
         final bool isNewWord = translation.id == null;
         final bool frequencySecondActive = item.frequency == 1 || item.frequency == 2;
         final bool frequencyThirdActive = item.frequency == 1;
+        BorderRadius? borderRadius;
+
+        if (isLast) {
+          borderRadius = const BorderRadius.vertical(
+            top: Radius.circular(0),
+            bottom: Radius.circular(8),
+          );
+        }
 
         return Material(
+          borderRadius: borderRadius,
           child: InkWell(
+            borderRadius: borderRadius,
             onTap: () {
               final alteredTranslation = translation.copyWith(
                 translation: '${item.genre != null ? '${item.genre} ' : ''}${item.translation}',

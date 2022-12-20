@@ -14,6 +14,7 @@ enum ButtonShape {
 class Button extends StatelessWidget {
   final String? text;
   final IconData? icon;
+  final double? iconSize;
   final bool outlined;
   final bool elevated;
   final ButtonSize size;
@@ -35,6 +36,7 @@ class Button extends StatelessWidget {
     Key? key,
     this.text,
     this.icon,
+    this.iconSize,
     this.outlined = true,
     this.elevated = false,
     this.size = ButtonSize.regular,
@@ -144,16 +146,19 @@ class Button extends StatelessWidget {
                     child: Icon(
                       icon,
                       color: textColor,
+                      size: iconSize,
                     ),
                   ),
 
                 if (text != null)
-                  Text(
-                    text!,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: fontSize,
-                      color: textColor,
+                  Flexible(
+                    child: Text(
+                      text!,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        color: textColor,
+                      ),
                     ),
                   ),
               ],

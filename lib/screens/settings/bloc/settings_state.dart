@@ -11,7 +11,7 @@ part 'settings_state.g.dart';
 class SettingsState extends Equatable {
   final Language translateFrom;
   final Language translateTo;
-  final bool pronunciationAutoPlay;
+  final String pronunciation;
   final bool darkMode;
   final bool autoDarkMode;
   final bool backupLoading;
@@ -24,7 +24,7 @@ class SettingsState extends Equatable {
   const SettingsState({
     required this.translateFrom,
     required this.translateTo,
-    this.pronunciationAutoPlay = true,
+    required this.pronunciation,
     this.darkMode = false,
     this.autoDarkMode = true,
     this.backupLoading = false,
@@ -38,7 +38,7 @@ class SettingsState extends Equatable {
   SettingsState copyWith({
     Language? translateFrom,
     Language? translateTo,
-    bool? pronunciationAutoPlay,
+    String? pronunciation,
     bool? darkMode,
     bool? autoDarkMode,
     bool? backupLoading,
@@ -51,7 +51,7 @@ class SettingsState extends Equatable {
     return SettingsState(
       translateFrom: translateFrom ?? this.translateFrom,
       translateTo: translateTo ?? this.translateTo,
-      pronunciationAutoPlay: pronunciationAutoPlay ?? this.pronunciationAutoPlay,
+      pronunciation: pronunciation ?? this.pronunciation,
       darkMode: darkMode ?? this.darkMode,
       autoDarkMode: autoDarkMode ?? this.autoDarkMode,
       backupLoading: backupLoading ?? this.backupLoading,
@@ -86,7 +86,7 @@ class SettingsState extends Equatable {
       }
     }
 
-    final bool? pronunciationAutoPlay = prefs.getBool('pronunciationAutoPlay');
+    final String? pronunciation = prefs.getString('pronunciation');
     final bool? darkMode = prefs.getBool('darkMode');
     final bool? autoDarkMode = prefs.getBool('autoDarkMode');
     final int? backupTime = prefs.getInt('backupTime');
@@ -96,7 +96,7 @@ class SettingsState extends Equatable {
     return SettingsState(
       translateFrom: translateFrom,
       translateTo: translateTo,
-      pronunciationAutoPlay: pronunciationAutoPlay ?? true,
+      pronunciation: pronunciation ?? 'from',
       darkMode: darkMode ?? false,
       autoDarkMode: autoDarkMode ?? true,
       backupTime: backupTime,
@@ -112,7 +112,7 @@ class SettingsState extends Equatable {
   List<Object?> get props => [
     translateFrom,
     translateTo,
-    pronunciationAutoPlay,
+    pronunciation,
     darkMode,
     autoDarkMode,
     backupLoading,

@@ -18,7 +18,8 @@ class TranslationContainer {
   final List<TranslationAlternativeTranslation>? alternativeTranslations;
   final List<TranslationDefinition>? definitions;
   final List<TranslationExample>? examples;
-  final String? pronunciation;
+  final String? pronunciationFrom;
+  final String? pronunciationTo;
   final String? image;
   final List<dynamic>? raw;
   final ParsingSchema? schema;
@@ -38,7 +39,8 @@ class TranslationContainer {
     this.alternativeTranslations,
     this.definitions,
     this.examples,
-    this.pronunciation,
+    this.pronunciationFrom,
+    this.pronunciationTo,
     this.image,
     this.raw,
     this.schema,
@@ -53,7 +55,8 @@ class TranslationContainer {
     int? id,
     required String word,
     String? translation,
-    String? pronunciation,
+    String? pronunciationFrom,
+    String? pronunciationTo,
     String? image,
     required List<dynamic> raw,
     required ParsingSchema schema,
@@ -205,7 +208,8 @@ class TranslationContainer {
       alternativeTranslations: alternativeTranslations,
       definitions: definitions,
       examples: examples,
-      pronunciation: pronunciation,
+      pronunciationFrom: pronunciationFrom,
+      pronunciationTo: pronunciationTo,
       image: image,
       raw: raw,
       schema: schema,
@@ -215,6 +219,20 @@ class TranslationContainer {
       createdAt: createdAt,
       updatedAt: updatedAt,
     );
+  }
+
+  String get mostRelevantTranslation {
+    String translationWord = translation;
+
+    // if translation contains gender-specific variants, then take first word from alternative translations instead
+    if (translationWord.contains(',')) {
+      final firstRelativeTranslation = alternativeTranslations?[0].items[0];
+      if (firstRelativeTranslation != null) {
+        translationWord = firstRelativeTranslation.translation;
+      }
+    }
+
+    return translationWord;
   }
 
   TranslationContainer copyWith({
@@ -227,7 +245,8 @@ class TranslationContainer {
     List<TranslationAlternativeTranslation>? alternativeTranslations,
     List<TranslationDefinition>? definitions,
     List<TranslationExample>? examples,
-    String? pronunciation,
+    String? pronunciationFrom,
+    String? pronunciationTo,
     String? image,
     List<dynamic>? raw,
     ParsingSchema? schema,
@@ -247,7 +266,8 @@ class TranslationContainer {
       alternativeTranslations: alternativeTranslations ?? this.alternativeTranslations,
       definitions: definitions ?? this.definitions,
       examples: examples ?? this.examples,
-      pronunciation: pronunciation ?? this.pronunciation,
+      pronunciationFrom: pronunciationFrom ?? this.pronunciationFrom,
+      pronunciationTo: pronunciationTo ?? this.pronunciationTo,
       image: image ?? this.image,
       raw: raw ?? this.raw,
       schema: schema ?? this.schema,

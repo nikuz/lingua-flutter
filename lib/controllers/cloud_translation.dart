@@ -1,12 +1,10 @@
 import 'dart:convert';
-import 'package:jmespath/jmespath.dart' as jmespath;
 import 'package:lingua_flutter/providers/api.dart';
-import 'package:lingua_flutter/controllers/parsing_schemas.dart';
 import 'package:lingua_flutter/controllers/parsing_schemas.dart' as parsing_schemas_controller;
 import 'package:lingua_flutter/controllers/local_translation.dart' as local_translate_controller;
 import 'package:lingua_flutter/utils/json.dart';
 import 'package:lingua_flutter/utils/string.dart';
-import 'package:lingua_flutter/utils/types.dart';
+import 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/models/error.dart';
 import 'package:lingua_flutter/models/language.dart';
@@ -36,7 +34,8 @@ Future<TranslationContainer> translate({
             id: existingTranslation.id,
             word: word,
             translation: existingTranslation.translation,
-            pronunciation: existingTranslation.pronunciation,
+            pronunciationFrom: existingTranslation.pronunciationFrom,
+            pronunciationTo: existingTranslation.pronunciationTo,
             image: existingTranslation.image,
             raw: existingTranslation.raw!,
             schema: storedParsingSchema.schema,
@@ -68,45 +67,22 @@ Future<TranslationContainer> translate({
   ParsingSchema? parsingSchema = storedParsingSchema.schema;
 
   List<dynamic>? translationResult;
-  String? pronunciationResult;
+  String? pronunciationFromResult;
+  String? pronunciationToResult;
 
-  List<String> results = await Future.wait([
-    // fetch raw translation
-    apiPost(
-        url: parsingSchema.translation.fields.url,
-        params: {
-          parsingSchema.translation.fields.parameter: parsingSchema.translation.fields.body
-              .replaceAll('{marker}', parsingSchema.translation.fields.marker)
-              .replaceAll('{word}', encodedWord)
-              .replaceAll('{sourceLanguage}', translateFrom.id)
-              .replaceAll('{targetLanguage}', translateTo.id)
-        }
-    ),
-    // fetch raw pronunciation
-    apiPost(
-        url: parsingSchema.pronunciation.fields.url,
-        params: {
-          parsingSchema.pronunciation.fields.parameter: parsingSchema.pronunciation.fields.body
-              .replaceAll('{marker}', parsingSchema.pronunciation.fields.marker)
-              .replaceAll('{word}', encodedWord)
-              .replaceAll('{sourceLanguage}', translateFrom.id)
-        }
-    )
-  ]);
+  String translationRaw = await apiPost(
+    url: parsingSchema.translation.fields.url,
+    params: {
+      parsingSchema.translation.fields.parameter: parsingSchema.translation.fields.body
+          .replaceAll('{marker}', parsingSchema.translation.fields.marker)
+          .replaceAll('{word}', encodedWord)
+          .replaceAll('{sourceLanguage}', translateFrom.id)
+          .replaceAll('{targetLanguage}', translateTo.id)
+    },
+  );
 
-  String translationRaw = results[0];
-  translationResult = _retrieveTranslationRawData(translationRaw, parsingSchema.translation.fields.marker);
-
-  String pronunciationRaw = results[1];
-  final pronunciationRawData = _retrieveTranslationRawData(pronunciationRaw, parsingSchema.pronunciation.fields.marker);
-  if (pronunciationRawData != null) {
-    String? base64Value = getDynamicString(jmespath.search(parsingSchema.pronunciation.data.value, pronunciationRawData));
-    if (base64Value != null) {
-      pronunciationResult = parsingSchema.pronunciation.fields.base64Prefix + base64Value;
-    }
-  }
-
-  if (translationResult == null || pronunciationResult == null) {
+  translationResult = retrieveResponseRawData(translationRaw, parsingSchema.translation.fields.marker);
+  if (translationResult == null) {
     if (forceCurrentSchemaDownload == null) {
       return translate(
         word: word,
@@ -125,7 +101,8 @@ Future<TranslationContainer> translate({
   try {
     return TranslationContainer.fromRaw(
       word: word,
-      pronunciation: pronunciationResult,
+      pronunciationFrom: pronunciationFromResult,
+      pronunciationTo: pronunciationToResult,
       raw: translationResult,
       schema: parsingSchema,
       schemaVersion: storedParsingSchema.version,
@@ -146,7 +123,7 @@ Future<TranslationContainer> translate({
   }
 }
 
-List<dynamic>? _retrieveTranslationRawData(String rawData, String marker) {
+List<dynamic>? retrieveResponseRawData(String rawData, String marker) {
   // retrieve individual lines from translate response
   final rawStrings = rawData.split('\n');
 

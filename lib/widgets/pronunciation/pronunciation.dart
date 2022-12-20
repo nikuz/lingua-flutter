@@ -6,19 +6,26 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/convert.dart';
 import 'package:lingua_flutter/utils/media_source.dart';
+import 'package:lingua_flutter/widgets/button/button.dart';
 
 class PronunciationWidget extends StatefulWidget {
   final String? pronunciationSource;
   final double? size;
-  final Color? color;
+  final Color? iconColor;
+  final Color? backgroundColor;
   final bool? autoPlay;
+  final Color? highlightColor;
+  final Color? splashColor;
 
   const PronunciationWidget({
     Key? key,
     this.pronunciationSource,
     this.size,
-    this.color,
+    this.iconColor,
+    this.backgroundColor,
     this.autoPlay,
+    this.highlightColor,
+    this.splashColor,
   }) : super(key: key);
 
   @override
@@ -116,29 +123,25 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
   Widget build(BuildContext context) {
     final double size = widget.size ?? 36;
     IconData icon = _isPlayerStopped(_playerState) ? Icons.volume_up : Icons.stop;
-    Color iconColor = widget.color ?? Colors.blueGrey;
+    Color iconColor = widget.iconColor ?? Colors.blueGrey;
+    Color backgroundColor = widget.backgroundColor ?? Theme.of(context).cardColor;
 
     if (widget.pronunciationSource == null) {
       icon = Icons.volume_off;
-      iconColor = Colors.grey;
+      iconColor = iconColor.withOpacity(0.2);
     }
 
-    return TextButton(
-      style: TextButton.styleFrom(
-        minimumSize: Size(size + 20, size + 20),
-        padding: EdgeInsets.zero,
-        backgroundColor: Theme.of(context).cardColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(size),
-          ),
-        ),
-      ),
-      child: Icon(
-        icon,
-        color: iconColor,
-        size: size,
-      ),
+    return Button(
+      icon: icon,
+      iconSize: size - 15,
+      textColor: iconColor,
+      backgroundColor: backgroundColor,
+      width: size,
+      height: size,
+      shape: ButtonShape.circular,
+      outlined: false,
+      highlightColor: widget.highlightColor,
+      splashColor: widget.splashColor,
       onPressed: () {
         if (widget.pronunciationSource != null) {
           if (_isPlayerStopped(_playerState)) {

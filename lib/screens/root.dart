@@ -1,42 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:lingua_flutter/widgets/tab_navigator/tab_navigator.dart';
-
-import './router.dart';
+import 'package:lingua_flutter/screens/router.gr.dart';
 
 class Root extends StatelessWidget {
   const Root({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final keyboardIsVisible = MediaQuery.of(context).viewInsets.bottom != 0;
-    return Stack(
-      children: [
-        Padding(
-          padding: EdgeInsets.only(bottom: keyboardIsVisible ? 0 : TabNavigatorConstants.height),
-          child: const AutoRouter(),
-        ),
-
-        const TabNavigator(
-          children: [
-            TabNavigatorItem(
+    return AutoTabsScaffold(
+      routes: const [
+        SearchRoute(),
+        // GamesRoute(),
+        SettingsRoute(),
+      ],
+      animationDuration: Duration.zero,
+      bottomNavigationBuilder: (_, tabsRouter) {
+        return BottomNavigationBar(
+          currentIndex: tabsRouter.activeIndex,
+          onTap: tabsRouter.setActiveIndex,
+          items: const [
+            BottomNavigationBarItem(
               label: 'Search',
-              icon: Icons.search,
-              path: Routes.search,
+              icon: Icon(Icons.search),
             ),
-            TabNavigatorItem(
-              label: 'Play',
-              icon: Icons.games,
-              path: Routes.games,
-            ),
-            TabNavigatorItem(
+            // BottomNavigationBarItem(
+            //   label: 'Play',
+            //   icon: Icon(Icons.games),
+            // ),
+            BottomNavigationBarItem(
               label: 'Settings',
-              icon: Icons.settings,
-              path: Routes.settings,
+              icon: Icon(Icons.settings),
             ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 }

@@ -51,6 +51,7 @@ class TranslationViewAlternativeTranslations extends StatelessWidget {
                 itemBuilder: (BuildContext context, int itemIndex) {
                   return TranslationViewAlternativeTranslationsItem(
                     item: items[itemIndex],
+                    isLast: itemIndex == items.length - 1,
                   );
                 },
               );

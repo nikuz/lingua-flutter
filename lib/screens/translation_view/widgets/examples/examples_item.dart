@@ -26,8 +26,9 @@ class ExamplesItem extends StatelessWidget {
 
         return Padding(
           padding: const EdgeInsets.only(
-            top: 15,
+            top: 5,
             right: 10,
+            bottom: 10,
             left: 10,
           ),
           child: Row(

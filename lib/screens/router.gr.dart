@@ -11,57 +11,38 @@
 // ignore_for_file: type=lint
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i8;
-import 'package:flutter/material.dart' as _i9;
+import 'package:auto_route/auto_route.dart' as _i7;
+import 'package:flutter/material.dart' as _i8;
 
-import '../models/language.dart' as _i11;
-import '../models/translation.dart' as _i10;
-import 'games/games.dart' as _i6;
-import 'landing/landing.dart' as _i1;
-import 'root.dart' as _i2;
-import 'search/search.dart' as _i3;
-import 'settings/settings.dart' as _i7;
-import 'translation_view/pages/images_picker.dart' as _i5;
-import 'translation_view/translation_view.dart' as _i4;
+import '../models/language.dart' as _i10;
+import '../models/translation.dart' as _i9;
+import 'games/games.dart' as _i5;
+import 'root.dart' as _i1;
+import 'search/search.dart' as _i4;
+import 'settings/settings.dart' as _i6;
+import 'translation_view/pages/images_picker.dart' as _i3;
+import 'translation_view/translation_view.dart' as _i2;
 
-class AppRouter extends _i8.RootStackRouter {
-  AppRouter([_i9.GlobalKey<_i9.NavigatorState>? navigatorKey])
+class AppRouter extends _i7.RootStackRouter {
+  AppRouter([_i8.GlobalKey<_i8.NavigatorState>? navigatorKey])
       : super(navigatorKey);
 
   @override
-  final Map<String, _i8.PageFactory> pagesMap = {
-    LandingRoute.name: (routeData) {
-      return _i8.CustomPage<dynamic>(
-        routeData: routeData,
-        child: const _i1.Landing(),
-        transitionsBuilder: _i8.TransitionsBuilders.noTransition,
-        opaque: true,
-        barrierDismissible: false,
-      );
-    },
+  final Map<String, _i7.PageFactory> pagesMap = {
     RootRoute.name: (routeData) {
-      return _i8.CustomPage<dynamic>(
+      return _i7.CustomPage<dynamic>(
         routeData: routeData,
-        child: const _i2.Root(),
-        transitionsBuilder: _i8.TransitionsBuilders.noTransition,
-        opaque: true,
-        barrierDismissible: false,
-      );
-    },
-    SearchRoute.name: (routeData) {
-      return _i8.CustomPage<dynamic>(
-        routeData: routeData,
-        child: const _i3.Search(),
-        transitionsBuilder: _i8.TransitionsBuilders.noTransition,
+        child: const _i1.Root(),
+        transitionsBuilder: _i7.TransitionsBuilders.noTransition,
         opaque: true,
         barrierDismissible: false,
       );
     },
     TranslationViewRoute.name: (routeData) {
       final args = routeData.argsAs<TranslationViewRouteArgs>();
-      return _i8.MaterialPageX<_i10.TranslationContainer>(
+      return _i7.MaterialPageX<_i9.TranslationContainer>(
         routeData: routeData,
-        child: _i4.TranslationView(
+        child: _i2.TranslationView(
           key: args.key,
           word: args.word,
           quickTranslation: args.quickTranslation,
@@ -72,103 +53,78 @@ class AppRouter extends _i8.RootStackRouter {
     },
     TranslationViewImagePickerRoute.name: (routeData) {
       final args = routeData.argsAs<TranslationViewImagePickerRouteArgs>();
-      return _i8.MaterialPageX<dynamic>(
+      return _i7.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: _i5.TranslationViewImagePicker(
+        child: _i3.TranslationViewImagePicker(
           key: args.key,
           word: args.word,
         ),
       );
     },
-    GamesRoute.name: (routeData) {
-      return _i8.CustomPage<dynamic>(
+    SearchRoute.name: (routeData) {
+      return _i7.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const _i6.Games(),
-        transitionsBuilder: _i8.TransitionsBuilders.noTransition,
-        opaque: true,
-        barrierDismissible: false,
+        child: const _i4.Search(),
+      );
+    },
+    GamesRoute.name: (routeData) {
+      return _i7.MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: const _i5.Games(),
       );
     },
     SettingsRoute.name: (routeData) {
-      return _i8.CustomPage<dynamic>(
+      return _i7.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const _i7.Settings(),
-        transitionsBuilder: _i8.TransitionsBuilders.noTransition,
-        opaque: true,
-        barrierDismissible: false,
+        child: const _i6.Settings(),
       );
     },
   };
 
   @override
-  List<_i8.RouteConfig> get routes => [
-        _i8.RouteConfig(
+  List<_i7.RouteConfig> get routes => [
+        _i7.RouteConfig(
           '/#redirect',
           path: '/',
-          redirectTo: '/landing',
+          redirectTo: '/home',
           fullMatch: true,
         ),
-        _i8.RouteConfig(
-          LandingRoute.name,
-          path: '/landing',
-        ),
-        _i8.RouteConfig(
+        _i7.RouteConfig(
           RootRoute.name,
           path: '/home',
           children: [
-            _i8.RouteConfig(
-              '#redirect',
-              path: '',
-              parent: RootRoute.name,
-              redirectTo: 'home/search',
-              fullMatch: true,
-            ),
-            _i8.RouteConfig(
+            _i7.RouteConfig(
               SearchRoute.name,
-              path: 'home/search',
+              path: 'search',
               parent: RootRoute.name,
             ),
-            _i8.RouteConfig(
-              TranslationViewRoute.name,
-              path: 'home/translation_view',
-              parent: RootRoute.name,
-            ),
-            _i8.RouteConfig(
-              TranslationViewImagePickerRoute.name,
-              path: 'home/translation_view/images',
-              parent: RootRoute.name,
-            ),
-            _i8.RouteConfig(
+            _i7.RouteConfig(
               GamesRoute.name,
-              path: 'home/games',
+              path: 'games',
               parent: RootRoute.name,
             ),
-            _i8.RouteConfig(
+            _i7.RouteConfig(
               SettingsRoute.name,
-              path: 'home/settings',
+              path: 'settings',
               parent: RootRoute.name,
             ),
           ],
+        ),
+        _i7.RouteConfig(
+          TranslationViewRoute.name,
+          path: 'translation_view',
+        ),
+        _i7.RouteConfig(
+          TranslationViewImagePickerRoute.name,
+          path: 'translation_view/images',
         ),
       ];
 }
 
 /// generated route for
-/// [_i1.Landing]
-class LandingRoute extends _i8.PageRouteInfo<void> {
-  const LandingRoute()
-      : super(
-          LandingRoute.name,
-          path: '/landing',
-        );
-
-  static const String name = 'LandingRoute';
-}
-
-/// generated route for
-/// [_i2.Root]
-class RootRoute extends _i8.PageRouteInfo<void> {
-  const RootRoute({List<_i8.PageRouteInfo>? children})
+/// [_i1.Root]
+class RootRoute extends _i7.PageRouteInfo<void> {
+  const RootRoute({List<_i7.PageRouteInfo>? children})
       : super(
           RootRoute.name,
           path: '/home',
@@ -179,29 +135,17 @@ class RootRoute extends _i8.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i3.Search]
-class SearchRoute extends _i8.PageRouteInfo<void> {
-  const SearchRoute()
-      : super(
-          SearchRoute.name,
-          path: 'home/search',
-        );
-
-  static const String name = 'SearchRoute';
-}
-
-/// generated route for
-/// [_i4.TranslationView]
-class TranslationViewRoute extends _i8.PageRouteInfo<TranslationViewRouteArgs> {
+/// [_i2.TranslationView]
+class TranslationViewRoute extends _i7.PageRouteInfo<TranslationViewRouteArgs> {
   TranslationViewRoute({
-    _i9.Key? key,
+    _i8.Key? key,
     required String word,
-    _i10.TranslationContainer? quickTranslation,
-    _i11.Language? translateFrom,
-    _i11.Language? translateTo,
+    _i9.TranslationContainer? quickTranslation,
+    _i10.Language? translateFrom,
+    _i10.Language? translateTo,
   }) : super(
           TranslationViewRoute.name,
-          path: 'home/translation_view',
+          path: 'translation_view',
           args: TranslationViewRouteArgs(
             key: key,
             word: word,
@@ -223,15 +167,15 @@ class TranslationViewRouteArgs {
     this.translateTo,
   });
 
-  final _i9.Key? key;
+  final _i8.Key? key;
 
   final String word;
 
-  final _i10.TranslationContainer? quickTranslation;
+  final _i9.TranslationContainer? quickTranslation;
 
-  final _i11.Language? translateFrom;
+  final _i10.Language? translateFrom;
 
-  final _i11.Language? translateTo;
+  final _i10.Language? translateTo;
 
   @override
   String toString() {
@@ -240,15 +184,15 @@ class TranslationViewRouteArgs {
 }
 
 /// generated route for
-/// [_i5.TranslationViewImagePicker]
+/// [_i3.TranslationViewImagePicker]
 class TranslationViewImagePickerRoute
-    extends _i8.PageRouteInfo<TranslationViewImagePickerRouteArgs> {
+    extends _i7.PageRouteInfo<TranslationViewImagePickerRouteArgs> {
   TranslationViewImagePickerRoute({
-    _i9.Key? key,
+    _i8.Key? key,
     required String word,
   }) : super(
           TranslationViewImagePickerRoute.name,
-          path: 'home/translation_view/images',
+          path: 'translation_view/images',
           args: TranslationViewImagePickerRouteArgs(
             key: key,
             word: word,
@@ -264,7 +208,7 @@ class TranslationViewImagePickerRouteArgs {
     required this.word,
   });
 
-  final _i9.Key? key;
+  final _i8.Key? key;
 
   final String word;
 
@@ -275,24 +219,36 @@ class TranslationViewImagePickerRouteArgs {
 }
 
 /// generated route for
-/// [_i6.Games]
-class GamesRoute extends _i8.PageRouteInfo<void> {
+/// [_i4.Search]
+class SearchRoute extends _i7.PageRouteInfo<void> {
+  const SearchRoute()
+      : super(
+          SearchRoute.name,
+          path: 'search',
+        );
+
+  static const String name = 'SearchRoute';
+}
+
+/// generated route for
+/// [_i5.Games]
+class GamesRoute extends _i7.PageRouteInfo<void> {
   const GamesRoute()
       : super(
           GamesRoute.name,
-          path: 'home/games',
+          path: 'games',
         );
 
   static const String name = 'GamesRoute';
 }
 
 /// generated route for
-/// [_i7.Settings]
-class SettingsRoute extends _i8.PageRouteInfo<void> {
+/// [_i6.Settings]
+class SettingsRoute extends _i7.PageRouteInfo<void> {
   const SettingsRoute()
       : super(
           SettingsRoute.name,
-          path: 'home/settings',
+          path: 'settings',
         );
 
   static const String name = 'SettingsRoute';

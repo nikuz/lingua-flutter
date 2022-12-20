@@ -7,6 +7,7 @@ import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
 import 'package:lingua_flutter/widgets/image_preview/image_preview.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
+import 'package:lingua_flutter/screens/settings/bloc/settings_state.dart';
 
 import '../../bloc/search_cubit.dart';
 import '../../bloc/search_state.dart';
@@ -28,148 +29,158 @@ class SearchListItem extends StatefulWidget {
 
 class _SearchListItemState extends State<SearchListItem> {
   bool _isSelected = false;
-  late SettingsCubit _settingsCubit;
-
-  @override
-  void initState() {
-    super.initState();
-    _settingsCubit = context.read<SettingsCubit>();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SearchCubit, SearchState>(
-      builder: (context, state) {
-        final MyTheme theme = Styles.theme(context);
-        Color borderColor = Colors.transparent;
-        final showLanguageSource = _settingsCubit.state.showLanguageSource;
-        final searchState = SearchInheritedState.of(context);
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, settingsState) {
+        return BlocBuilder<SearchCubit, SearchState>(
+          builder: (context, state) {
+            final MyTheme theme = Styles.theme(context);
+            Color borderColor = Colors.transparent;
+            final showLanguageSource = settingsState.showLanguageSource;
+            final searchState = SearchInheritedState.of(context);
+            String? pronunciationSource;
 
-        if (widget.withBorder) {
-          borderColor = theme.colors.divider;
-        }
+            if (settingsState.pronunciation == 'from') {
+              pronunciationSource = widget.translationItem.pronunciationFrom;
+            } else if (settingsState.pronunciation == 'to') {
+              pronunciationSource = widget.translationItem.pronunciationTo;
+            }
 
-        return Dismissible(
-          key: Key(widget.translationItem.word),
-          background: Container(
-            color: Colors.red,
-            child: const Align(
-              alignment: Alignment.centerRight,
-              child: SizedBox(
-                width: 80,
-                child: Icon(
-                  Icons.delete,
-                  color: Colors.white,
-                  size: 30,
+            if (widget.withBorder) {
+              borderColor = theme.colors.divider;
+            }
+
+            return Dismissible(
+              key: Key(widget.translationItem.word),
+              background: Container(
+                color: Colors.red,
+                child: const Align(
+                  alignment: Alignment.centerRight,
+                  child: SizedBox(
+                    width: 80,
+                    child: Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          confirmDismiss: (DismissDirection direction) {
-            final completer = Completer<bool>();
+              confirmDismiss: (DismissDirection direction) {
+                final completer = Completer<bool>();
 
-            Prompt(
-              context: context,
-              title: 'Delete "${widget.translationItem.word}" word?',
-              acceptCallback: () {
-                if (widget.translationItem.id != null) {
-                  context.read<SearchCubit>().removeTranslation(widget.translationItem.id!);
-                }
+                Prompt(
+                  context: context,
+                  title: 'Delete "${widget.translationItem.word}" word?',
+                  acceptCallback: () {
+                    if (widget.translationItem.id != null) {
+                      context.read<SearchCubit>().removeTranslation(widget.translationItem.id!);
+                    }
+                  },
+                ).show().then((value) {
+                  completer.complete(value == true);
+                });
+
+                return completer.future;
               },
-            ).show().then((value) {
-              completer.complete(value == true);
-            });
+              direction: DismissDirection.endToStart,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: borderColor,
+                    ),
+                  ),
+                ),
+                child: Material(
+                  color: _isSelected ? theme.colors.secondaryPale : theme.colors.background,
+                  child: InkWell(
+                    onTap: () {
+                      searchState?.submitHandler(widget.translationItem.word);
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: showLanguageSource ? 10 : 5,
+                        horizontal: 15,
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(right: 15),
+                            child: ImagePreview(
+                              width: 50,
+                              height: 50,
+                              imageSource: widget.translationItem.image,
+                              onTap: () {
+                                setState(() {
+                                  _isSelected = true;
+                                });
+                              },
+                              onPreviewClose: () {
+                                setState(() {
+                                  _isSelected = false;
+                                });
+                              },
+                            ),
+                          ),
 
-            return completer.future;
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(bottom: 2),
+                                  child: Text(
+                                    widget.translationItem.word,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ),
+
+                                Container(
+                                  margin: const EdgeInsets.only(bottom: 5),
+                                  child: Text(
+                                    widget.translationItem.translation,
+                                    maxLines: showLanguageSource ? 1 : 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+
+                                if (showLanguageSource)
+                                  Text(
+                                    '${widget.translationItem.translateFrom.value} - ${widget.translationItem.translateTo.value}',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+
+                          Container(
+                            margin: const EdgeInsets.only(left: 10),
+                            child: PronunciationWidget(
+                              pronunciationSource: pronunciationSource,
+                              size: 50,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
           },
-          direction: DismissDirection.endToStart,
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: borderColor,
-                ),
-              ),
-            ),
-            child: Material(
-              color: _isSelected ? theme.colors.secondaryPale : theme.colors.background,
-              child: InkWell(
-                onTap: () {
-                  searchState?.submitHandler(widget.translationItem.word);
-                },
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: showLanguageSource ? 10 : 5,
-                    horizontal: 15,
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(right: 15),
-                        child: ImagePreview(
-                          width: 50,
-                          height: 50,
-                          imageSource: widget.translationItem.image,
-                          onTap: () {
-                            setState(() {
-                              _isSelected = true;
-                            });
-                          },
-                          onPreviewClose: () {
-                            setState(() {
-                              _isSelected = false;
-                            });
-                          },
-                        ),
-                      ),
-
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(bottom: 2),
-                              child: Text(
-                                widget.translationItem.word,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ),
-
-                            Container(
-                              margin: const EdgeInsets.only(bottom: 5),
-                              child: Text(
-                                widget.translationItem.translation,
-                                maxLines: showLanguageSource ? 1 : 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-
-                            if (showLanguageSource)
-                              Text(
-                                '${widget.translationItem.translateFrom.value} - ${widget.translationItem.translateTo.value}',
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-
-                      PronunciationWidget(pronunciationSource: widget.translationItem.pronunciation),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
         );
-      }
+      },
     );
   }
 }

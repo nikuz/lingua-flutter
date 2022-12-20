@@ -41,9 +41,9 @@ class BottomDrawer {
               ),
             ),
             DraggableScrollableSheet(
-              initialChildSize: 0.8,
+              initialChildSize: 0.9,
               minChildSize: 0.5,
-              maxChildSize: 0.9,
+              maxChildSize: 0.95,
               builder: (BuildContext context, ScrollController scrollController) {
                 return Container(
                   clipBehavior: Clip.hardEdge,

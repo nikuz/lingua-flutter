@@ -5,14 +5,12 @@ import 'package:lingua_flutter/widgets/bottom_drawer/bottom_drawer.dart';
 
 import './language_list.dart';
 import './language_selector_size.dart';
-import './language_selector_emphasis.dart';
 
 class LanguageSelectorItem extends StatelessWidget {
   final String? title;
   final Map<String, String>? languages;
   final Language? language;
   final LanguageSelectorSize size;
-  final LanguageSelectorEmphasis emphasis;
   final Function(Language) onChanged;
 
   const LanguageSelectorItem({
@@ -21,7 +19,6 @@ class LanguageSelectorItem extends StatelessWidget {
     this.languages,
     this.language,
     required this.size,
-    required this.emphasis,
     required this.onChanged,
   }) : super(key: key);
 

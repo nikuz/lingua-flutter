@@ -25,7 +25,10 @@ class SearchField extends StatelessWidget {
           },
           onSubmitted: (_) {
             if (searchState?.hasInternetConnection == true) {
-              searchState?.submitHandler(searchState.textController.text);
+              searchState?.submitHandler(
+                searchState.textController.text,
+                quickTranslation: state.quickTranslation,
+              );
             }
           },
         );

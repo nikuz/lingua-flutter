@@ -6,6 +6,7 @@ import 'package:lingua_flutter/widgets/translation_word_view/translation_word_vi
 import 'package:lingua_flutter/widgets/language_selector/language_selector.dart';
 import 'package:lingua_flutter/widgets/button/button.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
+import 'package:lingua_flutter/screens/settings/bloc/settings_state.dart';
 
 import '../../bloc/search_cubit.dart';
 import '../../bloc/search_state.dart';
@@ -27,6 +28,8 @@ class QuickSearch extends StatefulWidget {
 class _QuickSearchState extends State<QuickSearch> {
   late SearchCubit _searchCubit;
   Timer? _debounce;
+  late Language _originalTranslateFrom;
+  late Language _originalTranslateTo;
   late Language _translateFrom;
   late Language _translateTo;
 
@@ -35,7 +38,9 @@ class _QuickSearchState extends State<QuickSearch> {
     super.initState();
     _searchCubit = context.read<SearchCubit>();
     final settingsState = context.read<SettingsCubit>().state;
+    _originalTranslateFrom = settingsState.translateFrom;
     _translateFrom = settingsState.translateFrom;
+    _originalTranslateTo = settingsState.translateTo;
     _translateTo = settingsState.translateTo;
     _debounceRequest();
   }
@@ -123,28 +128,39 @@ class _QuickSearchState extends State<QuickSearch> {
           ),
         ),
 
-        LanguageSelector(
-          from: _translateFrom,
-          to: _translateTo,
-          onFromChanged: (language) {
-            setState(() {
-              _translateFrom = language;
-            });
-            _debounceRequest();
+        BlocListener<SettingsCubit, SettingsState>(
+          listener: (context, state) {
+            if (state.translateFrom != _originalTranslateFrom || state.translateTo != _originalTranslateTo) {
+              setState(() {
+                _translateFrom = state.translateFrom;
+                _translateTo = state.translateTo;
+              });
+              _debounceRequest();
+            }
           },
-          onSwapped: (from, to) {
-            setState(() {
-              _translateFrom = from;
-              _translateTo = to;
-            });
-            _debounceRequest();
-          },
-          onToChanged: (language) {
-            setState(() {
-              _translateTo = language;
-            });
-            _debounceRequest();
-          },
+          child: LanguageSelector(
+            from: _translateFrom,
+            to: _translateTo,
+            onFromChanged: (language) {
+              setState(() {
+                _translateFrom = language;
+              });
+              _debounceRequest();
+            },
+            onSwapped: (from, to) {
+              setState(() {
+                _translateFrom = from;
+                _translateTo = to;
+              });
+              _debounceRequest();
+            },
+            onToChanged: (language) {
+              setState(() {
+                _translateTo = language;
+              });
+              _debounceRequest();
+            },
+          ),
         ),
       ],
     );

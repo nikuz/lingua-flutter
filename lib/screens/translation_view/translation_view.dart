@@ -51,6 +51,7 @@ class _TranslationViewState extends State<TranslationView> {
     if (widget.quickTranslation != null) {
       _translationViewCubit.setTranslation(widget.quickTranslation!);
       _fetchImages(widget.quickTranslation!.word);
+      _translationViewCubit.fetchPronunciations(widget.quickTranslation!);
     } else {
       _fetchTranslation();
     }
@@ -154,6 +155,14 @@ class _TranslationViewState extends State<TranslationView> {
               && !state.imageLoading
             ) {
               _fetchImages(state.translation!.word);
+            }
+
+            if (
+              state.translation != null
+              && state.translation!.pronunciationFrom == null
+              && !state.pronunciationLoading
+            ) {
+              _translationViewCubit.fetchPronunciations(state.translation!);
             }
 
             if (state.translation?.id != null && _translationId == null) {

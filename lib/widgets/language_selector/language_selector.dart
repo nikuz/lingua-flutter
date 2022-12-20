@@ -6,10 +6,8 @@ import 'package:lingua_flutter/widgets/button/button.dart';
 
 import './language_selector_item.dart';
 import './language_selector_size.dart';
-import './language_selector_emphasis.dart';
 
 export './language_selector_size.dart';
-export './language_selector_emphasis.dart';
 
 class LanguageSelector extends StatefulWidget {
   final Language? from;
@@ -17,7 +15,6 @@ class LanguageSelector extends StatefulWidget {
   final Language? to;
   final String? toTitle;
   final LanguageSelectorSize size;
-  final LanguageSelectorEmphasis emphasis;
   final Function(Language) onFromChanged;
   final Function(Language, Language) onSwapped;
   final Function(Language) onToChanged;
@@ -29,7 +26,6 @@ class LanguageSelector extends StatefulWidget {
     this.to,
     this.toTitle,
     this.size = LanguageSelectorSize.regular,
-    this.emphasis = LanguageSelectorEmphasis.languages,
     required this.onFromChanged,
     required this.onSwapped,
     required this.onToChanged,
@@ -87,7 +83,6 @@ class _LanguageSelectorState extends State<LanguageSelector> {
             languages: _languages,
             language: widget.from,
             size: widget.size,
-            emphasis: widget.emphasis,
             onChanged: (Language language) {
               widget.onFromChanged(language);
             },
@@ -110,7 +105,6 @@ class _LanguageSelectorState extends State<LanguageSelector> {
             languages: _languages,
             language: widget.to,
             size: widget.size,
-            emphasis: widget.emphasis,
             onChanged: (Language language) {
               widget.onToChanged(language);
             },

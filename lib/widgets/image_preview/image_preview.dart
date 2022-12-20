@@ -72,7 +72,10 @@ class _ImagePreviewState extends State<ImagePreview> {
       switch (_sourceType) {
         case MediaSourceType.base64:
           _sourceBytes ??= getBytesFrom64String(widget.imageSource!);
-          image = Image.memory(_sourceBytes!);
+          image = Image.memory(
+            _sourceBytes!,
+            fit: BoxFit.contain,
+          );
           break;
         case MediaSourceType.local:
           if (_imageLocalPath != null) {

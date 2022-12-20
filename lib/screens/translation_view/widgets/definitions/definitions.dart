@@ -37,6 +37,7 @@ class TranslationViewDefinitions extends StatelessWidget {
           word: state.word,
           itemsAmount: itemsAmount,
           maxItemsToShow: TranslationViewDefinitionsConstants.minTranslationsToShow * definitions.length,
+          padding: const EdgeInsets.only(bottom: 10),
           childBuilder: (bool expanded) => ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),

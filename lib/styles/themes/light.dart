@@ -12,6 +12,7 @@ final myThemeDataLight = MyTheme(
     focus: myColors.blue,
     background: myColors.paleGrey,
     focusBackground: myColors.blue,
+    cardBackground: myColors.white,
     grey: myColors.grey,
     divider: myColors.dividerDark,
   ),

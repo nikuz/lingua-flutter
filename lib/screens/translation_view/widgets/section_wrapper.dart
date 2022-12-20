@@ -10,6 +10,7 @@ class TranslationViewSectionWrapper extends StatefulWidget {
   final int itemsAmount;
   final int maxItemsToShow;
   final bool withBottomMargin;
+  final EdgeInsets? padding;
   final Function childBuilder;
 
   const TranslationViewSectionWrapper({
@@ -19,6 +20,7 @@ class TranslationViewSectionWrapper extends StatefulWidget {
     required this.itemsAmount,
     required this.maxItemsToShow,
     this.withBottomMargin = false,
+    this.padding,
     required this.childBuilder,
   }) : super(key: key);
 
@@ -54,6 +56,7 @@ class _TranslationViewSectionWrapperState extends State<TranslationViewSectionWr
             margin: hiddenItemsAmount != null
                 ? const EdgeInsets.only(bottom: buttonHeight - 1)
                 : null,
+            padding: widget.padding,
             decoration: BoxDecoration(
               border: Border.all(
                 color: Theme.of(context).dividerColor,

@@ -7,6 +7,7 @@ class TranslationViewSpeechPartWrapper extends StatelessWidget {
   final List<dynamic>? items;
   final int maxItemsToShow;
   final bool expanded;
+  final EdgeInsets? padding;
   final Widget Function(BuildContext, int) itemBuilder;
 
   const TranslationViewSpeechPartWrapper({
@@ -15,6 +16,7 @@ class TranslationViewSpeechPartWrapper extends StatelessWidget {
     required this.items,
     required this.maxItemsToShow,
     required this.expanded,
+    this.padding,
     required this.itemBuilder,
   }) : super(key: key);
 
@@ -50,7 +52,7 @@ class TranslationViewSpeechPartWrapper extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            padding: padding ?? const EdgeInsets.symmetric(horizontal: 10),
             child: categoryName,
           ),
           ListView.builder(
