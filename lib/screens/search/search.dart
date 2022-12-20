@@ -24,6 +24,7 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   late TextEditingController _textController;
+  late FocusNode _focusNode;
   late SearchCubit _searchCubit;
   bool _hasInternetConnection = false;
 
@@ -32,6 +33,7 @@ class _SearchState extends State<Search> {
     super.initState();
     _searchCubit = context.read<SearchCubit>();
     _textController = TextEditingController();
+    _focusNode = FocusNode();
     _getInternetConnectionStatus();
     subscribeToNetworkChange('search', (bool isConnected) {
       setState(() {
@@ -45,6 +47,7 @@ class _SearchState extends State<Search> {
   void dispose() {
     unsubscribeFromNetworkChange('search');
     _textController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -74,6 +77,9 @@ class _SearchState extends State<Search> {
           _searchCubit.updateTranslation(result);
         } else {
           _textController.clear();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _focusNode.unfocus();
+          });
           _searchCubit.fetchTranslations(searchText: null);
         }
       }
@@ -142,6 +148,7 @@ class _SearchState extends State<Search> {
           builder: (context, state) {
             return SearchInheritedState(
               textController: _textController,
+              focusNode: _focusNode,
               hasInternetConnection: _hasInternetConnection,
               submitHandler: _submitHandler,
               child: Column(

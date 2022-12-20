@@ -16,6 +16,7 @@ class SearchField extends StatelessWidget {
         final searchState = SearchInheritedState.of(context);
         return CustomTextField(
           controller: searchState?.textController,
+          focusNode: searchState?.focusNode,
           textInputAction: searchState?.hasInternetConnection == true
               ? TextInputAction.search
               : TextInputAction.done,

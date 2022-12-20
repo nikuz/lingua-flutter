@@ -11,6 +11,7 @@ class CustomTextField extends StatefulWidget {
   final Widget? suffix;
   final String? hintText;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
   final bool autofocus;
   final bool framed;
   final VoidCallback? onClearPressed;
@@ -26,6 +27,7 @@ class CustomTextField extends StatefulWidget {
     this.suffix,
     this.hintText,
     this.controller,
+    this.focusNode,
     this.textInputAction,
     this.autofocus = false,
     this.framed = false,
@@ -47,7 +49,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
   void initState() {
     super.initState();
     _textController = widget.controller ?? TextEditingController();
-    _focusNode = FocusNode();
+    print(widget.focusNode);
+    _focusNode = widget.focusNode ?? FocusNode();
     if (widget.defaultValue != null) {
       _textController.text = widget.defaultValue!;
       _textValue = widget.defaultValue!;
@@ -59,7 +62,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
     if (widget.controller == null) {
       _textController.dispose();
     }
-    _focusNode.dispose();
+    if (widget.focusNode == null) {
+      _focusNode.dispose();
+    }
     super.dispose();
   }
 

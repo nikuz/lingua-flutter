@@ -4,6 +4,7 @@ import 'package:lingua_flutter/models/translation.dart';
 
 class SearchInheritedState extends InheritedWidget {
   final TextEditingController textController;
+  final FocusNode focusNode;
   final bool hasInternetConnection;
   final Function(String word, {
     TranslationContainer? quickTranslation,
@@ -14,6 +15,7 @@ class SearchInheritedState extends InheritedWidget {
   const SearchInheritedState({
     Key? key,
     required this.textController,
+    required this.focusNode,
     required this.hasInternetConnection,
     required this.submitHandler,
     required Widget child,
