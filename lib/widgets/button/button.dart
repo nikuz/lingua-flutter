@@ -33,7 +33,7 @@ class Button extends StatelessWidget {
   final VoidCallback? onPressed;
 
   const Button({
-    Key? key,
+    super.key,
     this.text,
     this.icon,
     this.iconSize,
@@ -53,7 +53,7 @@ class Button extends StatelessWidget {
     this.borderRadius = 4,
     this.disabled = false,
     this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -173,44 +173,29 @@ class Button extends StatelessWidget {
 
 class ButtonBlue extends Button {
   ButtonBlue({
-    Key? key,
-    text,
-    icon,
-    outlined = true,
-    elevated = false,
-    size = ButtonSize.regular,
-    shape = ButtonShape.rectangular,
-    width,
-    height,
-    margin,
-    padding,
-    borderColor,
+    super.key,
+    super.text,
+    super.icon,
+    super.outlined,
+    super.elevated,
+    super.size,
+    super.shape,
+    super.width,
+    super.height,
+    super.margin,
+    super.padding,
+    super.borderColor,
     backgroundColor,
     highlightColor,
     splashColor,
     textColor,
-    borderRadius = 4.0,
-    disabled = false,
-    onPressed,
+    super.borderRadius,
+    super.disabled,
+    super.onPressed,
   }): super(
-    key: key,
-    text: text,
-    icon: icon,
-    outlined: outlined,
-    elevated: elevated,
-    size: size,
-    shape: shape,
-    width: width,
-    height: height,
-    margin: margin,
-    padding: padding,
-    borderColor: borderColor,
     backgroundColor: Styles.colors.blue,
     highlightColor: Styles.colors.white.withOpacity(0.1),
     splashColor: Styles.colors.white.withOpacity(0.2),
     textColor: Styles.colors.white,
-    borderRadius: borderRadius,
-    disabled: disabled,
-    onPressed: onPressed,
   );
 }

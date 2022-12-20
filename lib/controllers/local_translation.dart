@@ -270,6 +270,8 @@ Future<void> update(TranslationContainer translation) async {
     );
   }
 
+  String fileId = generateFileIdFromWord(translationId, translation.word);
+
   String? imageUrl;
 
   if (translation.image != null) {
@@ -281,7 +283,6 @@ Future<void> update(TranslationContainer translation) async {
         image.deleteSync();
       }
 
-      String fileId = generateFileIdFromWord(translationId, translation.word);
       RegExpMatch? imageParts = base64ImageReg.firstMatch(translation.image!);
       String? extension = imageParts?.group(1);
       String? value = imageParts?.group(2);
@@ -303,15 +304,33 @@ Future<void> update(TranslationContainer translation) async {
   }
 
   String imageTransaction = '';
-  if (imageUrl is String) {
+  if (imageUrl != null) {
     imageTransaction = ', image=\'$imageUrl\'';
+  }
+
+  String? pronunciationToFilePath;
+
+  if (translation.pronunciationTo != null && translation.schema != null) {
+    final pronunciationSourceType = MediaSource.getType(translation.pronunciationTo!);
+    if (pronunciationSourceType == MediaSourceType.base64) {
+      pronunciationToFilePath = await _savePronunciationFile(
+        'to-$fileId',
+        translation.schema!,
+        translation.pronunciationTo,
+      );
+    }
+  }
+
+  String pronunciationToTransaction = '';
+  if (pronunciationToFilePath != null) {
+    pronunciationToTransaction = ', pronunciationTo=\'$pronunciationToFilePath\'';
   }
 
   // update db
   await DBProvider().rawQuery(
       '''
         UPDATE dictionary 
-        SET translation=?, updated_at=datetime("now") $imageTransaction
+        SET translation=?, updated_at=datetime("now") $imageTransaction $pronunciationToTransaction
         WHERE id=$translationId;
       ''',
       [translation.translation]

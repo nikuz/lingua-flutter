@@ -72,16 +72,21 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
           child: InkWell(
             borderRadius: borderRadius,
             onTap: () {
+              final cubit = context.read<TranslationViewCubit>();
+              final newTranslation = '${item.genre != null ? '${item.genre} ' : ''}${item.translation}';
+
+              cubit.setOwnTranslation(newTranslation);
               final alteredTranslation = translation.copyWith(
-                translation: '${item.genre != null ? '${item.genre} ' : ''}${item.translation}',
+                translation: newTranslation,
                 updatedAt: DateTime.now().toString(),
               );
+
               if (isNewWord) {
-                context.read<TranslationViewCubit>().save(alteredTranslation).then((dynamic) {
+                cubit.save(alteredTranslation).then((dynamic) {
                   AutoRouter.of(context).pop<TranslationContainer>(alteredTranslation);
                 });
               } else {
-                context.read<TranslationViewCubit>().update(alteredTranslation).then((dynamic) {
+                cubit.update(alteredTranslation).then((dynamic) {
                   AutoRouter.of(context).pop<TranslationContainer>(alteredTranslation);
                 });
               }

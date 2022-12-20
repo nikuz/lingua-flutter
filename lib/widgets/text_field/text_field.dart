@@ -49,7 +49,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
   void initState() {
     super.initState();
     _textController = widget.controller ?? TextEditingController();
-    print(widget.focusNode);
     _focusNode = widget.focusNode ?? FocusNode();
     if (widget.defaultValue != null) {
       _textController.text = widget.defaultValue!;

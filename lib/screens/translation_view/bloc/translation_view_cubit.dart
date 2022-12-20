@@ -118,6 +118,20 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         updateLoading: true,
       ));
 
+      String? newPronunciationTo;
+      if (state.translationIsUpdated && translation.schema != null) {
+        newPronunciationTo = await pronunciation_controller.retrieve(
+          word: translation.translation,
+          schema: translation.schema!,
+          language: translation.translateTo,
+        );
+      }
+      if (newPronunciationTo != null) {
+        translation = translation.copyWith(
+          pronunciationTo: newPronunciationTo,
+        );
+      }
+
       await local_translate_controller.save(translation);
 
       emit(state.copyWith(
@@ -140,6 +154,20 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
       emit(state.copyWith(
         updateLoading: true,
       ));
+
+      String? newPronunciationTo;
+      if (state.translationIsUpdated && translation.schema != null) {
+        newPronunciationTo = await pronunciation_controller.retrieve(
+          word: translation.translation,
+          schema: translation.schema!,
+          language: translation.translateTo,
+        );
+      }
+      if (newPronunciationTo != null) {
+        translation = translation.copyWith(
+          pronunciationTo: newPronunciationTo,
+        );
+      }
 
       await local_translate_controller.update(translation);
 
