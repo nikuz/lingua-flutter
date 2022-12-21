@@ -8,6 +8,7 @@ import './translation_view/translation_view.dart';
 import './translation_view/pages/images_picker.dart';
 import './games/games.dart';
 import './settings/settings.dart';
+import './terms/terms.dart';
 
 abstract class Routes {
   static const landing = '/landing';
@@ -17,6 +18,7 @@ abstract class Routes {
   static const translationViewImages = 'translation_view/images';
   static const games = 'games';
   static const settings = 'settings';
+  static const terms = 'terms';
 }
 
 @MaterialAutoRouter(
@@ -54,6 +56,10 @@ abstract class Routes {
     AutoRoute(
       path: Routes.translationViewImages,
       page: TranslationViewImagePicker,
+    ),
+    AutoRoute(
+      path: Routes.terms,
+      page: Terms,
     ),
   ],
 )

@@ -9,7 +9,6 @@ class TranslationViewSectionWrapper extends StatefulWidget {
   final String? word;
   final int itemsAmount;
   final int maxItemsToShow;
-  final bool withBottomMargin;
   final EdgeInsets? padding;
   final Function childBuilder;
 
@@ -19,7 +18,6 @@ class TranslationViewSectionWrapper extends StatefulWidget {
     this.word,
     required this.itemsAmount,
     required this.maxItemsToShow,
-    this.withBottomMargin = false,
     this.padding,
     required this.childBuilder,
   }) : super(key: key);
@@ -43,90 +41,93 @@ class _TranslationViewSectionWrapperState extends State<TranslationViewSectionWr
       }
     }
 
-    return Container(
-      margin: EdgeInsets.only(
-        top: 10,
-        left: 10,
-        right: 10,
-        bottom: widget.withBottomMargin ? 10 : 0,
-      ),
-      child: Stack(
-        children: [
-          Container(
-            margin: hiddenItemsAmount != null
-                ? const EdgeInsets.only(bottom: buttonHeight - 1)
-                : null,
-            padding: widget.padding,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Theme.of(context).dividerColor,
-                width: 1,
-                style: BorderStyle.solid,
-              ),
-              borderRadius: BorderRadius.vertical(
-                top: const Radius.circular(8),
-                bottom: Radius.circular(hiddenItemsAmount != null ? 0 : 8),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Wrap(
-                    direction: Axis.horizontal,
-                    children: [
-                      Text(
-                        '${widget.name.capitalize()} of ',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(context).hintColor,
-                        ),
-                      ),
-                      Text(
-                        widget.word ?? '',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(context).hintColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+    return Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 10),
+          child: Stack(
+            children: [
+              Container(
+                margin: hiddenItemsAmount != null
+                    ? const EdgeInsets.only(bottom: buttonHeight - 1)
+                    : null,
+                padding: widget.padding,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Theme.of(context).dividerColor,
+                    width: 1,
+                    style: BorderStyle.solid,
+                  ),
+                  borderRadius: BorderRadius.vertical(
+                    top: const Radius.circular(8),
+                    bottom: Radius.circular(hiddenItemsAmount != null ? 0 : 8),
                   ),
                 ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Wrap(
+                        direction: Axis.horizontal,
+                        children: [
+                          Text(
+                            '${widget.name.capitalize()} of ',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Theme.of(context).hintColor,
+                            ),
+                          ),
+                          Text(
+                            widget.word ?? '',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Theme.of(context).hintColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
 
-                widget.childBuilder(expanded),
-              ],
-            ),
-          ),
+                    widget.childBuilder(expanded),
+                  ],
+                ),
+              ),
 
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: TranslationViewSectionWrapperExpandButton(
-              key: buttonKey,
-              amount: hiddenItemsAmount,
-              name: widget.name,
-              expanded: expanded,
-              onPressed: () {
-                setState(() {
-                  expanded = !expanded;
-                });
-                if (buttonKey.currentContext != null) {
-                  WidgetsBinding.instance.addPostFrameCallback((dynamic) {
-                    Scrollable.ensureVisible(
-                      buttonKey.currentContext!,
-                      duration: const Duration(milliseconds: 500),
-                      alignment: 1,
-                    );
-                  });
-                }
-              },
-            ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: TranslationViewSectionWrapperExpandButton(
+                  amount: hiddenItemsAmount,
+                  name: widget.name,
+                  expanded: expanded,
+                  onPressed: () {
+                    setState(() {
+                      expanded = !expanded;
+                    });
+                    if (buttonKey.currentContext != null) {
+                      WidgetsBinding.instance.addPostFrameCallback((dynamic) {
+                        Scrollable.ensureVisible(
+                          buttonKey.currentContext!,
+                          duration: const Duration(milliseconds: 500),
+                          alignment: 1,
+                        );
+                      });
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+
+        SizedBox(
+          key: buttonKey,
+          height: 10,
+        ),
+      ],
     );
   }
 }

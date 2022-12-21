@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lingua_flutter/models/language.dart';
+import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/widgets/text_field/text_field.dart';
 
 class LanguageList extends StatefulWidget {
@@ -59,7 +60,20 @@ class _LanguageListState extends State<LanguageList> {
             },
           ),
 
-          if (_filteredLanguages != null)
+          if (_filteredLanguages?.isEmpty == true)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: Text(
+                'No language found',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Styles.colors.grey,
+                ),
+              ),
+            ),
+
+          if (_filteredLanguages?.isNotEmpty == true)
             for (var id in _filteredLanguages!.keys)
               ListTile(
                 title: Text(_filteredLanguages![id] ?? ''),

@@ -51,6 +51,7 @@ class SettingsCategory extends StatelessWidget {
               children: [
                 for (var i = 0, l = children.length; i < l; i++)
                   children[i].copyWith(
+                    isFirst: i == 0,
                     isLast: i == l - 1,
                   ),
               ],

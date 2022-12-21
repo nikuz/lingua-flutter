@@ -18,7 +18,7 @@ class Menu {
 
 List<Widget> translationViewMenuConstructor({
   required BuildContext context,
-  required bool isDisabled,
+  required bool isNewWord,
   required bool hasInternetConnection,
 }) {
   final translationViewCubit = context.read<TranslationViewCubit>();
@@ -27,8 +27,6 @@ List<Widget> translationViewMenuConstructor({
   return [
     PopupMenuButton<Menu>(
       icon: const Icon(Icons.more_vert),
-      enabled: !isDisabled,
-
       onSelected: (Menu item) async {
         final state = translationViewCubit.state;
         final word = state.word;
@@ -83,17 +81,16 @@ List<Widget> translationViewMenuConstructor({
       },
 
       itemBuilder: (BuildContext context) {
-        if (isDisabled) {
-          return [];
-        }
-
         List<Menu> menuList = <Menu>[
           const Menu(id: 'translation', title: 'Change Translation'),
-          const Menu(id: 'remove', title: 'Remove'),
         ];
 
         if (hasInternetConnection) {
           menuList.insert(0, const Menu(id: 'image', title: 'Change Image'));
+        }
+
+        if (!isNewWord) {
+          menuList.add(const Menu(id: 'remove', title: 'Remove'));
         }
 
         return menuList.map((Menu item) => (

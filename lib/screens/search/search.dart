@@ -22,7 +22,7 @@ class Search extends StatefulWidget {
   State<Search> createState() => _SearchState();
 }
 
-class _SearchState extends State<Search> {
+class _SearchState extends State<Search> with WidgetsBindingObserver {
   late TextEditingController _textController;
   late FocusNode _focusNode;
   late SearchCubit _searchCubit;
@@ -31,6 +31,7 @@ class _SearchState extends State<Search> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _searchCubit = context.read<SearchCubit>();
     _textController = TextEditingController();
     _focusNode = FocusNode();
@@ -44,7 +45,15 @@ class _SearchState extends State<Search> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _getInternetConnectionStatus();
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     unsubscribeFromNetworkChange('search');
     _textController.dispose();
     _focusNode.dispose();
@@ -63,10 +72,10 @@ class _SearchState extends State<Search> {
     Language? translateFrom,
     Language? translateTo
   }) async {
-    if (word.isNotEmpty) {
+    if (word.trim().isNotEmpty) {
       final result = await AutoRouter.of(context).push<TranslationContainer>(
         TranslationViewRoute(
-          word: word,
+          word: word.trim(),
           quickTranslation: quickTranslation,
           translateFrom: translateFrom,
           translateTo: translateTo,

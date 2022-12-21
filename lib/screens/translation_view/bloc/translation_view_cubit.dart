@@ -41,7 +41,10 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
   }
 
   void setTranslation(TranslationContainer translation) {
-    emit(state.copyWith(translation: translation));
+    emit(state.copyWith(
+      word: translation.word,
+      translation: translation
+    ));
   }
 
   Future<String?> fetchImages(String word) async {

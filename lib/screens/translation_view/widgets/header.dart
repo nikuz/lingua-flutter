@@ -10,6 +10,7 @@ import 'package:lingua_flutter/screens/router.gr.dart';
 
 import '../bloc/translation_view_cubit.dart';
 import '../bloc/translation_view_state.dart';
+import './auto_spelling_fix.dart';
 
 class TranslationViewHeader extends StatelessWidget {
   final String word;
@@ -41,6 +42,10 @@ class TranslationViewHeader extends StatelessWidget {
     return Container(
       width: 80,
       padding: const EdgeInsets.only(top: 10),
+      margin: EdgeInsets.only(
+        left: from == true ? 10 : 0,
+        right: to == true ? 10 : 0,
+      ),
       child: Column(
         crossAxisAlignment: from == true ? CrossAxisAlignment.start : CrossAxisAlignment.end,
         children: [
@@ -142,10 +147,7 @@ class TranslationViewHeader extends StatelessWidget {
     }
 
     return Container(
-      margin: const EdgeInsets.only(
-        top: 10,
-        bottom: 10,
-      ),
+      margin: const EdgeInsets.all(10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -174,7 +176,6 @@ class TranslationViewHeader extends StatelessWidget {
                 ),
               ),
             ),
-            child: icon,
             onPressed: () {
               if (state.translation != null) {
                 if (isNewWord) {
@@ -190,6 +191,7 @@ class TranslationViewHeader extends StatelessWidget {
                 }
               }
             },
+            child: icon,
           )
         ],
       ),
@@ -210,13 +212,9 @@ class TranslationViewHeader extends StatelessWidget {
 
         return Container(
           color: theme.colors.focusBackground,
-          padding: const EdgeInsets.only(
-            left: 10,
-            right: 10,
-          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,6 +264,7 @@ class TranslationViewHeader extends StatelessWidget {
                 ),
               ),
               _buildFooter(context, state),
+              const TranslationViewAutoSpellingFix(),
             ],
           ),
         );

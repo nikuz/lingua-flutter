@@ -31,7 +31,6 @@ class TranslationViewExamples extends StatelessWidget {
           word: state.word,
           itemsAmount: examples.length,
           maxItemsToShow: TranslationViewExamplesConstants.minTranslationsToShow,
-          withBottomMargin: true,
           childBuilder: (bool expanded) => ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),

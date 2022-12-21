@@ -22,12 +22,16 @@ class SearchField extends StatelessWidget {
               : TextInputAction.done,
           hintText: 'Search...',
           onChanged: (text) {
-            context.read<SearchCubit?>()?.fetchTranslations(searchText: text.isNotEmpty ? text : null);
+            final trimmedText = text.trim();
+            final newSearchText = trimmedText.isNotEmpty ? trimmedText : null;
+            if (state.searchText != newSearchText) {
+              context.read<SearchCubit?>()?.fetchTranslations(searchText: newSearchText);
+            }
           },
           onSubmitted: (_) {
             if (searchState?.hasInternetConnection == true) {
               searchState?.submitHandler(
-                searchState.textController.text,
+                searchState.textController.text.trim(),
                 quickTranslation: state.quickTranslation,
               );
             }

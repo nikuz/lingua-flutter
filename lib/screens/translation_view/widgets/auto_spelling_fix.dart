@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:auto_route/auto_route.dart';
+import 'package:lingua_flutter/screens/router.gr.dart';
 import 'package:lingua_flutter/styles/styles.dart';
+
 import '../bloc/translation_view_cubit.dart';
 import '../bloc/translation_view_state.dart';
 
@@ -14,35 +16,43 @@ class TranslationViewAutoSpellingFix extends StatelessWidget {
       builder: (context, state) {
         final translation = state.translation;
 
-        if (translation == null) {
+        if (translation == null || translation.autoSpellingFix == null) {
           return Container();
         }
 
-        final MyTheme theme = Styles.theme(context);
-
-        if (translation.autoSpellingFix == null) {
-          return Container();
-        }
-
-        return Container(
-          padding: const EdgeInsets.only(
-            left: 10,
-            top: 4,
-            right: 10,
-            bottom: 6,
-          ),
-          color: theme.colors.focus,
-          child: RichText(
-            text: TextSpan(
-              style: const TextStyle(color: Colors.white),
-              children: [
-                const TextSpan(text: 'Did you mean '),
-                TextSpan(
-                  text: '"${translation.autoSpellingFix}"',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+        return Material(
+          type: MaterialType.transparency,
+          child: InkWell(
+            highlightColor: Styles.colors.white.withOpacity(0.1),
+            splashColor: Styles.colors.white.withOpacity(0.2),
+            onTap: () {
+              context.read<TranslationViewCubit>().reset();
+              AutoRouter.of(context).replace(TranslationViewRoute(
+                word: translation.autoSpellingFix!,
+                translateFrom: translation.translateFrom,
+                translateTo: translation.translateTo,
+              ));
+            },
+            child: Container(
+              padding: const EdgeInsets.only(
+                left: 10,
+                top: 4,
+                right: 10,
+                bottom: 6,
+              ),
+              child: RichText(
+                text: TextSpan(
+                  style: const TextStyle(color: Colors.white),
+                  children: [
+                    const TextSpan(text: 'Did you mean '),
+                    TextSpan(
+                      text: '"${translation.autoSpellingFix}"',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const TextSpan(text: '?'),
+                  ],
                 ),
-                const TextSpan(text: '?'),
-              ],
+              ),
             ),
           ),
         );

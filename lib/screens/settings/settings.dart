@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:lingua_flutter/widgets/language_selector/language_selector.dart';
+import 'package:lingua_flutter/screens/router.dart';
+import 'package:lingua_flutter/app_config.dart' as config;
 
 import './bloc/settings_cubit.dart';
 import './bloc/settings_state.dart';
@@ -39,6 +43,7 @@ class _SettingsState extends State<Settings> {
           builder: (context, state) {
             return SingleChildScrollView(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
                     margin: const EdgeInsets.only(bottom: 20),
@@ -53,6 +58,7 @@ class _SettingsState extends State<Settings> {
                       onToChanged: _settingsCubit.setTranslateTo,
                     ),
                   ),
+
                   SettingsCategory(
                     title: 'Search Results',
                     children: [
@@ -87,6 +93,7 @@ class _SettingsState extends State<Settings> {
                       ),
                     ],
                   ),
+
                   SettingsCategory(
                     // title: 'Dark mode',
                     children: [
@@ -109,6 +116,34 @@ class _SettingsState extends State<Settings> {
                               _settingsCubit.setDarkMode(false);
                             }
                           },
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  SettingsCategory(
+                    title: 'Help',
+                    children: [
+                      SettingsRow(
+                        title: 'Terms & Conditions',
+                        type: SettingsRowType.link,
+                        onPressed: () {
+                          AutoRouter.of(context).pushNamed(Routes.terms);
+                        },
+                        child: const Icon(
+                          Icons.arrow_forward_ios_outlined,
+                          size: 20,
+                        ),
+                      ),
+                      SettingsRow(
+                        title: 'Privacy Policy',
+                        type: SettingsRowType.link,
+                        onPressed: () {
+                          launchUrl(Uri.parse(config.privacyPolicyUrl));
+                        },
+                        child: const Icon(
+                          Icons.arrow_forward_ios_outlined,
+                          size: 20,
                         ),
                       ),
                     ],

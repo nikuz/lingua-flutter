@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
-import 'package:lingua_flutter/app_config.dart';
+import 'package:lingua_flutter/app_config.dart' as config;
 
 export 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
 
@@ -55,7 +55,7 @@ Future<StoredParsingSchema?> get(String versionName, { bool? forceUpdate }) asyn
     int versionNumber = int.parse(parsingSchemas[versionName]!.version);
 
     // check that version of "current" schema is more or equal minimum acceptable
-    if (versionName != 'current' || versionNumber >= minCurrentParsingSchema) {
+    if (versionName != 'current' || versionNumber >= config.minCurrentParsingSchema) {
       return parsingSchemas[versionName];
     }
   }

@@ -11,7 +11,6 @@ import './bloc/translation_view_state.dart';
 
 import './widgets/menu.dart';
 import './widgets/header.dart';
-import './widgets/auto_spelling_fix.dart';
 import './widgets/alternative_translations/alternative_translations.dart';
 import './widgets/definitions/definitions.dart';
 import './widgets/examples/examples.dart';
@@ -34,7 +33,7 @@ class TranslationView extends StatefulWidget {
   State<TranslationView> createState() => _TranslationViewState();
 }
 
-class _TranslationViewState extends State<TranslationView> {
+class _TranslationViewState extends State<TranslationView> with WidgetsBindingObserver {
   late TranslationViewCubit _translationViewCubit;
   late ScrollController _scrollController;
   ScrollPhysics _scrollPhysics = const ClampingScrollPhysics();
@@ -44,6 +43,7 @@ class _TranslationViewState extends State<TranslationView> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _translationViewCubit = context.read<TranslationViewCubit>();
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollHandler);
@@ -77,7 +77,15 @@ class _TranslationViewState extends State<TranslationView> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _getInternetConnectionStatus();
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _translationViewCubit.reset();
     _scrollController.removeListener(_scrollHandler);
     unsubscribeFromNetworkChange('translation_view');
@@ -141,7 +149,7 @@ class _TranslationViewState extends State<TranslationView> {
         elevation: 0,
         actions: translationViewMenuConstructor(
           context: context,
-          isDisabled: _translationId == null,
+          isNewWord: _translationId == null,
           hasInternetConnection: _hasInternetConnection,
         ),
       ),
@@ -193,7 +201,6 @@ class _TranslationViewState extends State<TranslationView> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       TranslationViewHeader(word: widget.word),
-                      const TranslationViewAutoSpellingFix(),
                       const TranslationViewAlternativeTranslations(),
                       const TranslationViewDefinitions(),
                       const TranslationViewExamples(),
