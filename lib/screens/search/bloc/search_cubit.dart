@@ -17,7 +17,7 @@ class SearchCubit extends Cubit<SearchState> {
     emit(state.copyWith(
       searchText: Wrapped.value(searchText),
       // show loading only on search list refresh, but not on every letter typed into the search field
-      loading: searchText == null ? true : false,
+      loading: state.translations.isEmpty,
     ));
 
     try {
@@ -140,5 +140,27 @@ class SearchCubit extends Cubit<SearchState> {
     emit(state.copyWith(
       translations: translationsClone,
     ));
+  }
+
+  void clearDatabase() async {
+    emit(state.copyWith(
+      loading: true,
+    ));
+    try {
+      await local_translate_controller.clearDatabase();
+      emit(state.copyWith(
+        loading: false,
+        error: const Wrapped.value(null),
+      ));
+    } catch (err) {
+      emit(state.copyWith(
+        error: Wrapped.value(CustomError(
+          code: err.hashCode,
+          message: err.toString(),
+        )),
+        loading: false,
+      ));
+      rethrow;
+    }
   }
 }
