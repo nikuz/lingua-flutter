@@ -32,7 +32,7 @@ class DefinitionsItem extends StatelessWidget {
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
+            children: [
               Container(
                 width: 20,
                 height: 20,
@@ -56,7 +56,7 @@ class DefinitionsItem extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
+                  children: [
                     Text(
                       item.text,
                       style: const TextStyle(fontSize: 17),

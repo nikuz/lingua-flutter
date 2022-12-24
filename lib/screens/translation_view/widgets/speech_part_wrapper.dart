@@ -50,7 +50,7 @@ class TranslationViewSpeechPartWrapper extends StatelessWidget {
       margin: const EdgeInsets.only(top: 15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
+        children: [
           Padding(
             padding: padding ?? const EdgeInsets.symmetric(horizontal: 10),
             child: categoryName,

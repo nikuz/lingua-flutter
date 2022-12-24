@@ -8,7 +8,7 @@ enum ButtonSize {
 
 enum ButtonShape {
   rectangular,
-  circular,
+  oval,
 }
 
 class Button extends StatelessWidget {
@@ -29,6 +29,7 @@ class Button extends StatelessWidget {
   final Color? splashColor;
   final Color? textColor;
   final double borderRadius;
+  final bool loading;
   final bool disabled;
   final VoidCallback? onPressed;
 
@@ -51,6 +52,7 @@ class Button extends StatelessWidget {
     this.splashColor,
     this.textColor,
     this.borderRadius = 4,
+    this.loading = false,
     this.disabled = false,
     this.onPressed,
   });
@@ -76,9 +78,6 @@ class Button extends StatelessWidget {
 
     if (outlined) {
       Color borderColor = this.borderColor ?? theme.colors.divider;
-      if (disabled) {
-        borderColor = borderColor.withOpacity(0.05);
-      }
       border = Border.all(
         width: 1,
         style: BorderStyle.solid,
@@ -90,7 +89,7 @@ class Button extends StatelessWidget {
       fontSize = 16;
     }
 
-    if (shape == ButtonShape.circular) {
+    if (shape == ButtonShape.oval) {
       inkWellBorder = const CircleBorder();
       widthConstraint = width ?? 50;
       heightConstraint = height ?? 50;
@@ -104,64 +103,65 @@ class Button extends StatelessWidget {
       splashColor = Styles.colors.white.withOpacity(0.2);
       elevation = 3;
       if (backgroundColor == Colors.transparent) {
-        backgroundColor = theme.colors.focus;
+        backgroundColor = theme.colors.focusBackground;
       }
-    }
-
-    if (disabled) {
-      if (backgroundColor != Colors.transparent) {
-        backgroundColor = backgroundColor.withOpacity(0.5);
-      }
-      textColor = textColor.withOpacity(0.5);
     }
 
     return Container(
       margin: margin,
-      child: Material(
-        type: MaterialType.button,
-        color: backgroundColor,
-        borderRadius: borderRadius,
-        clipBehavior: Clip.hardEdge,
-        elevation: elevation,
-        child: InkWell(
-          customBorder: inkWellBorder,
-          highlightColor: highlightColor,
-          splashColor: splashColor,
-          onTap: disabled ? null : onPressed,
-          child: Container(
-            width: widthConstraint,
-            height: heightConstraint,
-            padding: padding,
-            decoration: BoxDecoration(
-              border: border,
-              borderRadius: borderRadius,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (icon != null)
-                  Container(
-                    margin: EdgeInsets.only(right: text != null ? 5 : 0),
-                    child: Icon(
-                      icon,
-                      color: textColor,
-                      size: iconSize,
+      child: Opacity(
+        opacity: disabled ? 0.5 : 1,
+        child: Material(
+          type: MaterialType.button,
+          color: backgroundColor,
+          borderRadius: borderRadius,
+          clipBehavior: Clip.hardEdge,
+          elevation: elevation,
+          child: InkWell(
+            customBorder: inkWellBorder,
+            highlightColor: highlightColor,
+            splashColor: splashColor,
+            onTap: disabled ? null : onPressed,
+            child: Container(
+              width: widthConstraint,
+              height: heightConstraint,
+              padding: padding,
+              decoration: BoxDecoration(
+                border: border,
+                borderRadius: borderRadius,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (loading)
+                    CircularProgressIndicator(
+                      backgroundColor: textColor,
                     ),
-                  ),
 
-                if (text != null)
-                  Flexible(
-                    child: Text(
-                      text!,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: fontSize,
+                  if (!loading && icon != null)
+                    Container(
+                      margin: EdgeInsets.only(right: text != null ? 5 : 0),
+                      child: Icon(
+                        icon,
                         color: textColor,
+                        size: iconSize,
                       ),
                     ),
-                  ),
-              ],
+
+                  if (!loading && text != null)
+                    Flexible(
+                      child: Text(
+                        text!,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: fontSize,
+                          color: textColor,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ),

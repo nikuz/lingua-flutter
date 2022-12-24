@@ -16,7 +16,9 @@ class TranslationViewState extends Equatable {
   final bool translationIsUpdated;
   final bool translateLoading;
   final bool imageLoading;
+  final CustomError? imageError;
   final bool pronunciationLoading;
+  final CustomError? pronunciationError;
   final bool updateLoading;
   final CustomError? error;
 
@@ -29,7 +31,9 @@ class TranslationViewState extends Equatable {
     this.translationIsUpdated = false,
     this.translateLoading = false,
     this.imageLoading = false,
+    this.imageError,
     this.pronunciationLoading = false,
+    this.pronunciationError,
     this.updateLoading = false,
     this.error,
   });
@@ -43,7 +47,9 @@ class TranslationViewState extends Equatable {
     bool? translationIsUpdated,
     bool? translateLoading,
     bool? imageLoading,
+    Wrapped<CustomError?>? imageError,
     bool? pronunciationLoading,
+    Wrapped<CustomError?>? pronunciationError,
     bool? updateLoading,
     Wrapped<CustomError?>? error,
   }) {
@@ -56,7 +62,9 @@ class TranslationViewState extends Equatable {
       translationIsUpdated: translationIsUpdated ?? this.translationIsUpdated,
       translateLoading: translateLoading ?? this.translateLoading,
       imageLoading: imageLoading ?? this.imageLoading,
+      imageError: imageError != null ? imageError.value : this.imageError,
       pronunciationLoading: pronunciationLoading ?? this.pronunciationLoading,
+      pronunciationError: pronunciationError != null ? pronunciationError.value : this.pronunciationError,
       updateLoading: updateLoading ?? this.updateLoading,
       error: error != null ? error.value : this.error,
     );
@@ -75,7 +83,9 @@ class TranslationViewState extends Equatable {
     translationIsUpdated,
     translateLoading,
     imageLoading,
+    imageError,
     pronunciationLoading,
+    pronunciationError,
     updateLoading,
     error,
   ];

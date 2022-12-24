@@ -27,6 +27,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         word: word,
         imageSearchWord: word,
         translation: translation,
+        translateLoading: false,
       ));
     } catch (err) {
       emit(state.copyWith(
@@ -63,7 +64,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
       return images?[0];
     } catch (err) {
       emit(state.copyWith(
-        error: Wrapped.value(CustomError(
+        imageError: Wrapped.value(CustomError(
           code: err.hashCode,
           message: err.toString(),
         )),
@@ -105,7 +106,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
       ));
     } catch (err) {
       emit(state.copyWith(
-        error: Wrapped.value(CustomError(
+        pronunciationError: Wrapped.value(CustomError(
           code: err.hashCode,
           message: err.toString(),
         )),

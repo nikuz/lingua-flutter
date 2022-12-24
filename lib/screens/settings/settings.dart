@@ -44,7 +44,7 @@ class _SettingsState extends State<Settings> {
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
+                children: [
                   Container(
                     margin: const EdgeInsets.only(bottom: 20),
                     child: LanguageSelector(
@@ -64,7 +64,6 @@ class _SettingsState extends State<Settings> {
                     children: [
                       SettingsRow(
                         title: 'Show translation languages',
-                        subtitle: 'Shows source and target languages on translation card',
                         margin: const EdgeInsets.only(top: 7),
                         child: Switch(
                           value: state.showLanguageSource,
@@ -75,9 +74,9 @@ class _SettingsState extends State<Settings> {
                       ),
                       SettingsRow(
                         title: 'Pronunciation',
-                        subtitle: 'Which pronunciation to play if a single "play" button is available',
                         child: DropdownButton<String>(
                           value: state.pronunciation,
+                          underline: Container(),
                           onChanged: (String? value) {
                             if (value != null) {
                               _settingsCubit.setPronunciation(value);
@@ -122,7 +121,7 @@ class _SettingsState extends State<Settings> {
                   ),
 
                   SettingsCategory(
-                    title: 'Help',
+                    title: 'About',
                     children: [
                       SettingsRow(
                         title: 'Terms & Conditions',
@@ -142,7 +141,7 @@ class _SettingsState extends State<Settings> {
                           launchUrl(Uri.parse(config.privacyPolicyUrl));
                         },
                         child: const Icon(
-                          Icons.arrow_forward_ios_outlined,
+                          Icons.open_in_new_rounded,
                           size: 20,
                         ),
                       ),

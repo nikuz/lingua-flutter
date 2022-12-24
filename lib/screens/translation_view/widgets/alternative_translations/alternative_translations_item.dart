@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/models/translation.dart';
+import 'package:lingua_flutter/styles/styles.dart';
 
 import '../../bloc/translation_view_cubit.dart';
 import '../../bloc/translation_view_state.dart';
@@ -32,13 +33,14 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
   }
 
   Widget _buildFrequencyBarItem(BuildContext context, bool active) {
+    final MyTheme theme = Styles.theme(context);
     return Container(
       width: 10,
       height: 3,
       margin: const EdgeInsets.only(top: 2, right: 1),
       decoration: BoxDecoration(
         color: active
-            ? Theme.of(context).buttonTheme.colorScheme?.secondaryContainer
+            ? theme.colors.focus
             : const Color.fromRGBO(218, 220, 224, 1),
         borderRadius: const BorderRadius.all(Radius.circular(1)),
       ),
@@ -55,6 +57,7 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
           return Container();
         }
 
+        final MyTheme theme = Styles.theme(context);
         final bool isNewWord = translation.id == null;
         final bool frequencySecondActive = item.frequency == 1 || item.frequency == 2;
         final bool frequencyThirdActive = item.frequency == 1;
@@ -105,26 +108,30 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
-                        child: Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            if (item.genre != null)
-                              Text(
-                                '${item.genre!} ',
+                        child: RichText(
+                          maxLines: 2,
+                          text: TextSpan(
+                            style: TextStyle(
+                              color: theme.colors.primary,
+                            ),
+                            children: [
+                              if (item.genre != null)
+                                TextSpan(
+                                  text: '${item.genre!} ',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                ),
+
+                              TextSpan(
+                                text: item.translation,
                                 style: const TextStyle(
-                                  fontSize: 14,
+                                  fontFamily: 'Montserrat',
+                                  fontSize: 18,
                                 ),
                               ),
-
-                            Text(
-                              item.translation,
-                              maxLines: 2,
-                              style: const TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontSize: 18,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
 
@@ -136,7 +143,7 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.end,
-                          children: <Widget>[
+                          children: [
                             _buildFrequencyBarItem(context, true),
                             _buildFrequencyBarItem(context, frequencySecondActive),
                             _buildFrequencyBarItem(context, frequencyThirdActive),

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:lingua_flutter/styles/styles.dart';
 
 import 'package:lingua_flutter/widgets/text_field/text_field.dart';
-import 'package:lingua_flutter/utils/convert.dart';
+import 'package:lingua_flutter/widgets/image_preview/image_preview.dart';
 
 import '../bloc/translation_view_cubit.dart';
 import '../bloc/translation_view_state.dart';
@@ -51,83 +50,76 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
 
   @override
   Widget build(BuildContext context) {
-    final MyTheme theme = Styles.theme(context);
-
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Theme.of(context).primaryColor,
-      body: SafeArea(
-        bottom: false,
-        child: BlocBuilder<TranslationViewCubit, TranslationViewState>(
-          builder: (context, state) {
-            final images = state.images;
-            Widget imagesList = const Center(
-              child: CircularProgressIndicator(
-                backgroundColor: Colors.white,
-              ),
-            );
-
-            if (!state.imageLoading && images != null) {
-              imagesList = SingleChildScrollView(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: images.length,
-                  itemBuilder: (context, index) {
-                    final String imageSource = images[index];
-                    final bool isActive = state.translation?.image == imageSource;
-                    return Container(
-                      key: isActive ? itemKey : Key(index.toString()),
-                      color: isActive ? Colors.greenAccent : Theme.of(context).scaffoldBackgroundColor,
-                      padding: const EdgeInsets.only(
-                        top: 10,
-                        bottom: 10,
-                      ),
-                      child: Center(
-                        child: InkWell(
-                          onTap: () {
-                            _translationViewCubit.setImage(imageSource);
-                            AutoRouter.of(context).pop();
-                          },
-                          child: Image.memory(getBytesFrom64String(imageSource)),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              );
-            }
-
-            return Column(
-              children: <Widget>[
-                CustomTextField(
-                  defaultValue: widget.word,
-                  hintText: 'Search for images...',
-                  textInputAction: TextInputAction.search,
-                  prefixIcon: const Icon(
-                    Icons.arrow_back,
-                    size: 25,
+    return BlocBuilder<TranslationViewCubit, TranslationViewState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            titleSpacing: 4,
+            title: CustomTextField(
+              defaultValue: widget.word,
+              hintText: 'Search for images',
+              textInputAction: TextInputAction.search,
+              prefixIcon: Icons.arrow_back,
+              prefixAction: () {
+                AutoRouter.of(context).pop();
+              },
+              onSubmitted: (String value) {
+                if (value.isNotEmpty && value != state.imageSearchWord) {
+                  _translationViewCubit.fetchImages(value);
+                }
+              },
+            ),
+          ),
+          body: SafeArea(
+            bottom: false,
+            child: Builder(
+              builder: (context) {
+                final images = state.images;
+                Widget imagesList = const Center(
+                  child: CircularProgressIndicator(
+                    backgroundColor: Colors.white,
                   ),
-                  prefixAction: () {
-                    AutoRouter.of(context).pop();
-                  },
-                  onSubmitted: (String value) {
-                    if (value.isNotEmpty && value != state.imageSearchWord) {
-                      _translationViewCubit.fetchImages(value);
-                    }
-                  },
-                ),
-                Expanded(
-                  child: Container(
-                    color: theme.colors.background,
-                    child: imagesList,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
+                );
+
+                if (!state.imageLoading && images != null) {
+                  imagesList = SingleChildScrollView(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: images.length,
+                      itemBuilder: (context, index) {
+                        final String imageSource = images[index];
+                        final bool isActive = state.translation?.image == imageSource;
+                        return Container(
+                          key: isActive ? itemKey : Key(index.toString()),
+                          color: isActive ? Colors.greenAccent : Theme.of(context).scaffoldBackgroundColor,
+                          padding: const EdgeInsets.only(
+                            top: 10,
+                            bottom: 10,
+                          ),
+                          child: Center(
+                            child: ImagePreview(
+                              imageSource: imageSource,
+                              withPreviewOverlay: false,
+                              onTap: () {
+                                _translationViewCubit.setImage(imageSource);
+                                AutoRouter.of(context).pop();
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                }
+
+                return imagesList;
+              },
+            ),
+          ),
+        );
+      }
     );
   }
 }

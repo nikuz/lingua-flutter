@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lingua_flutter/widgets/typography/typography.dart';
 import 'package:lingua_flutter/widgets/link/link.dart';
+import 'package:lingua_flutter/app_config.dart' as config;
 
 class Terms extends StatelessWidget {
   const Terms({Key? key}) : super(key: key);
@@ -67,10 +68,10 @@ class Terms extends StatelessWidget {
                     bottom: 10,
                   ),
                   child: Link(
-                    text: 'micurino@gmail.com',
+                    text: config.privacyEmail,
                     href: Uri(
                       scheme: 'mailto',
-                      path: 'micurino@gmail.com',
+                      path: config.privacyEmail,
                     ),
                   ),
                 ),

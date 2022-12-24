@@ -19,6 +19,7 @@ class Menu {
 List<Widget> translationViewMenuConstructor({
   required BuildContext context,
   required bool isNewWord,
+  required bool isDisabled,
   required bool hasInternetConnection,
 }) {
   final translationViewCubit = context.read<TranslationViewCubit>();
@@ -26,6 +27,7 @@ List<Widget> translationViewMenuConstructor({
 
   return [
     PopupMenuButton<Menu>(
+      enabled: !isDisabled,
       icon: const Icon(Icons.more_vert),
       onSelected: (Menu item) async {
         final state = translationViewCubit.state;
@@ -60,7 +62,7 @@ List<Widget> translationViewMenuConstructor({
                 defaultValue: state.translation?.translation,
                 autofocus: true,
                 textInputAction: TextInputAction.done,
-                framed: true,
+                outlined: true,
                 onChanged: (String value) {
                   newTranslation = value;
                 },

@@ -65,7 +65,7 @@ class _TranslationViewSectionWrapperState extends State<TranslationViewSectionWr
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
+                  children: [
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: Wrap(

@@ -8,7 +8,7 @@ import './firebase_options.dart';
 import './controllers/local_translation.dart' as local_translate_controller;
 import './controllers/parsing_schemas.dart' as parsing_schemas_controller;
 import './controllers/languages.dart' as languages_controller;
-import './controllers/audio.dart' as audio_controller;
+import './providers/audio.dart';
 import './app.dart';
 
 void main() async {
@@ -31,7 +31,7 @@ void main() async {
   await parsing_schemas_controller.preload();
   await languages_controller.preload();
 
-  audio_controller.setGlobalAudioContext();
+  setGlobalAudioContext();
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 

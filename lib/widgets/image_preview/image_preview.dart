@@ -5,21 +5,31 @@ import 'package:lingua_flutter/utils/convert.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/media_source.dart';
 import 'package:lingua_flutter/widgets/modal/modal.dart';
+import 'package:lingua_flutter/styles/styles.dart';
+
+enum ImagePreviewShape {
+  rectangular,
+  oval,
+}
 
 class ImagePreview extends StatefulWidget {
-  final double width;
-  final double height;
+  final double? width;
+  final double? height;
   final String? imageSource;
+  final Color? errorIconColor;
   final bool withPreviewOverlay;
+  final ImagePreviewShape shape;
   final Function? onTap;
   final Function? onPreviewClose;
 
   const ImagePreview({
     Key? key,
-    required this.width,
-    required this.height,
+    this.width,
+    this.height,
     this.imageSource,
+    this.errorIconColor,
     this.withPreviewOverlay = true,
+    this.shape = ImagePreviewShape.rectangular,
     this.onTap,
     this.onPreviewClose,
   }) : super(key: key);
@@ -66,6 +76,7 @@ class _ImagePreviewState extends State<ImagePreview> {
   }
 
   Widget _buildImage() {
+    final MyTheme theme = Styles.theme(context);
     Widget image = Container();
 
     if (widget.imageSource != null) {
@@ -91,7 +102,11 @@ class _ImagePreviewState extends State<ImagePreview> {
         default:
       }
     } else {
-      image = const Icon(Icons.broken_image);
+      image = Icon(
+        Icons.broken_image,
+        color: widget.errorIconColor ?? theme.colors.grey,
+        size: widget.width != null ? widget.width! / 1.5 : 20,
+      );
     }
 
     return image;
@@ -99,14 +114,22 @@ class _ImagePreviewState extends State<ImagePreview> {
 
   @override
   Widget build(BuildContext context) {
+    Widget image = _buildImage();
+
+    if (widget.shape == ImagePreviewShape.oval) {
+      image = ClipOval(
+        child: image,
+      );
+    }
+
     return Container(
       height: widget.height,
       constraints: BoxConstraints(
-        minWidth: widget.width,
+        minWidth: widget.width ?? 0,
       ),
       child: GestureDetector(
         onTap: () {
-          if (widget.withPreviewOverlay == true) {
+          if (widget.withPreviewOverlay == true && widget.imageSource != null) {
             Modal(
               context: context,
               isFramed: false,
@@ -118,7 +141,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    _buildImage()
+                    _buildImage(),
                   ],
                 ),
               ),
@@ -135,7 +158,7 @@ class _ImagePreviewState extends State<ImagePreview> {
         child: SizedBox(
           width: widget.width,
           height: widget.height,
-          child: _buildImage(),
+          child: image,
         ),
       ),
     );

@@ -90,7 +90,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
           Button(
             icon: Icons.swap_horiz,
             textColor: theme.colors.primaryPale,
-            shape: ButtonShape.circular,
+            shape: ButtonShape.oval,
             width: swapButtonSize,
             margin: swapButtonMargin,
             outlined: false,

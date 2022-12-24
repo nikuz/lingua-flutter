@@ -42,10 +42,12 @@ abstract class Routes {
         AutoRoute(
           path: Routes.games,
           page: Games,
+          maintainState : false,
         ),
         AutoRoute(
           path: Routes.settings,
           page: Settings,
+          maintainState : false,
         ),
       ],
     ),

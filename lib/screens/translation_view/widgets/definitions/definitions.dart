@@ -16,8 +16,7 @@ class TranslationViewDefinitions extends StatelessWidget {
     return BlocBuilder<TranslationViewCubit, TranslationViewState>(
       builder: (context, state) {
         final translation = state.translation;
-
-        if (translation == null) {
+        if (translation == null || state.error != null) {
           return Container();
         }
 

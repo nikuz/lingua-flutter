@@ -5,12 +5,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
-import 'package:lingua_flutter/widgets/image_preview/image_preview.dart';
+import 'package:lingua_flutter/widgets/button/button.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 
 import '../bloc/translation_view_cubit.dart';
 import '../bloc/translation_view_state.dart';
 import './auto_spelling_fix.dart';
+import './image.dart';
 
 class TranslationViewHeader extends StatelessWidget {
   final String word;
@@ -75,42 +76,6 @@ class TranslationViewHeader extends StatelessWidget {
     );
   }
 
-  Widget _buildImage(BuildContext context, TranslationViewState state) {
-    String? imageSource = state.translation?.image;
-    Widget imageWidget = const Center(
-      child: CircularProgressIndicator(
-        backgroundColor: Colors.white,
-      ),
-    );
-
-    if (!state.imageLoading && imageSource != null) {
-      imageWidget = ImagePreview(
-        width: 150,
-        height: 150,
-        imageSource: imageSource,
-        withPreviewOverlay: state.translation?.id != null && !state.imageIsUpdated,
-        onTap: () {
-          if ((state.translation?.id == null || state.imageIsUpdated) && state.imageSearchWord != null) {
-            AutoRouter.of(context).push(TranslationViewImagePickerRoute(word: state.imageSearchWord!));
-          }
-        },
-      );
-    }
-
-
-    return Center(
-      child: Container(
-        width: 150,
-        height: 150,
-        margin: const EdgeInsets.only(
-          top: 10,
-          bottom: 10,
-        ),
-        child: imageWidget,
-      ),
-    );
-  }
-
   Widget _buildFooter(BuildContext context, TranslationViewState state) {
     final translation = state.translation;
 
@@ -130,18 +95,6 @@ class TranslationViewHeader extends StatelessWidget {
       iconName = Icons.update;
     }
 
-    Widget icon = Icon(
-      iconName,
-      color: toSave ? Colors.green : Colors.white,
-      size: 35,
-    );
-
-    if (state.updateLoading == true) {
-      icon = const CircularProgressIndicator(
-        backgroundColor: Colors.white,
-      );
-    }
-
     if (transcription != null && transcription.length > 100) {
       transcription = transcription.substring(0, 100);
     }
@@ -150,7 +103,7 @@ class TranslationViewHeader extends StatelessWidget {
       margin: const EdgeInsets.all(10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
+        children: [
           Expanded(
             child: Container(
               margin: const EdgeInsets.only(left: 5),
@@ -163,19 +116,20 @@ class TranslationViewHeader extends StatelessWidget {
               ),
             ),
           ),
-          TextButton(
-            style: TextButton.styleFrom(
-              minimumSize: const Size(65, 65),
-              padding: EdgeInsets.zero,
-              backgroundColor: toSave
-                  ? Colors.white
-                  : theme.colors.focusBackground,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(45),
-                ),
-              ),
-            ),
+
+          Button(
+            width: 65,
+            height: 65,
+            icon: iconName,
+            iconSize: 35,
+            textColor: toSave && !state.updateLoading ? Colors.green : Colors.white,
+            backgroundColor: toSave && !state.updateLoading
+                ? Colors.white
+                : theme.colors.focusBackground,
+            disabled: state.translation == null || state.imageLoading,
+            loading: state.updateLoading,
+            outlined: false,
+            shape: ButtonShape.oval,
             onPressed: () {
               if (state.translation != null) {
                 if (isNewWord) {
@@ -191,8 +145,8 @@ class TranslationViewHeader extends StatelessWidget {
                 }
               }
             },
-            child: icon,
-          )
+            // child: icon,
+          ),
         ],
       ),
     );
@@ -212,6 +166,7 @@ class TranslationViewHeader extends StatelessWidget {
 
         return Container(
           color: theme.colors.focusBackground,
+          margin: const EdgeInsets.only(bottom: 10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -222,7 +177,7 @@ class TranslationViewHeader extends StatelessWidget {
                   _buildPronunciation(context, state, from: true),
 
                   Expanded(
-                    child: _buildImage(context, state),
+                    child: TranslationViewImage(),
                   ),
 
                   _buildPronunciation(context, state, to: true),
@@ -232,7 +187,7 @@ class TranslationViewHeader extends StatelessWidget {
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
+                  children: [
                     Container(
                       constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width * 0.85,

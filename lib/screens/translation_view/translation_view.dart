@@ -37,7 +37,6 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
   late TranslationViewCubit _translationViewCubit;
   late ScrollController _scrollController;
   ScrollPhysics _scrollPhysics = const ClampingScrollPhysics();
-  int? _translationId;
   bool _hasInternetConnection = false;
 
   @override
@@ -50,7 +49,6 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
 
     if (widget.quickTranslation != null) {
       _translationViewCubit.setTranslation(widget.quickTranslation!);
-      _fetchImages(widget.quickTranslation!.word);
       _translationViewCubit.fetchPronunciations(widget.quickTranslation!);
     } else {
       _fetchTranslation();
@@ -128,93 +126,89 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: true, // to automatically add Back Button when needed,
-        title: Text(
-          widget.word,
-          style: const TextStyle(
-            fontSize: 20,
-          ),
-        ),
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            size: 25,
-          ),
-          onPressed: () {
-            AutoRouter.of(context).pop();
-          },
-        ),
-        elevation: 0,
-        actions: translationViewMenuConstructor(
-          context: context,
-          isNewWord: _translationId == null,
-          hasInternetConnection: _hasInternetConnection,
-        ),
-      ),
-      body: SafeArea(
-        child: BlocListener<TranslationViewCubit, TranslationViewState>(
-          listener: (context, state) {
-            if (
-              state.translation != null
-              && state.translation!.image == null
-              && state.images == null
-              && !state.imageLoading
-            ) {
-              _fetchImages(state.translation!.word);
-            }
+    return BlocListener<TranslationViewCubit, TranslationViewState>(
+      listener: (context, state) {
+        if (
+          state.translation != null
+          && state.translation!.image == null
+          && state.images == null
+          && !state.imageLoading
+        ) {
+          _fetchImages(state.translation!.word);
+        }
 
-            if (
-              state.translation != null
-              && state.translation!.pronunciationFrom == null
-              && !state.pronunciationLoading
-            ) {
-              _translationViewCubit.fetchPronunciations(state.translation!);
-            }
+        if (
+          state.translation != null
+          && state.translation!.pronunciationFrom == null
+          && !state.pronunciationLoading
+        ) {
+          _translationViewCubit.fetchPronunciations(state.translation!);
+        }
+      },
+      child: BlocBuilder<TranslationViewCubit, TranslationViewState>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: true, // to automatically add Back Button when needed,
+              title: Text(
+                widget.word,
+                style: const TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+              leading: IconButton(
+                icon: const Icon(
+                  Icons.arrow_back,
+                  size: 25,
+                ),
+                onPressed: () {
+                  AutoRouter.of(context).pop();
+                },
+              ),
+              elevation: 0,
+              actions: translationViewMenuConstructor(
+                context: context,
+                isNewWord: state.translation?.id == null,
+                isDisabled: state.error != null,
+                hasInternetConnection: _hasInternetConnection,
+              ),
+            ),
+            body: SafeArea(
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                physics: _scrollPhysics,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    TranslationViewHeader(word: widget.word),
 
-            if (state.translation?.id != null && _translationId == null) {
-              setState(() {
-                _translationId = state.translation!.id;
-              });
-            }
-          },
-          child: BlocBuilder<TranslationViewCubit, TranslationViewState>(
-            builder: (context, state) {
-              if (state.error != null) {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(
-                      'Cannot translate at the moment, \nplease try again later.',
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                );
-              }
+                    if (state.translateLoading)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 70),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
 
-              if (state.translation != null) {
-                return SingleChildScrollView(
-                  controller: _scrollController,
-                  physics: _scrollPhysics,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      TranslationViewHeader(word: widget.word),
-                      const TranslationViewAlternativeTranslations(),
-                      const TranslationViewDefinitions(),
-                      const TranslationViewExamples(),
-                    ],
-                  ),
-                );
-              }
+                    if (state.error != null)
+                      const Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Text(
+                          'Cannot translate at the moment, \nplease try again later.',
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
 
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            },
-          ),
-        ),
+                    const TranslationViewAlternativeTranslations(),
+                    const TranslationViewDefinitions(),
+                    const TranslationViewExamples(),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

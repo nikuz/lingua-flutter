@@ -7,6 +7,7 @@ class MyColors {
   final Color black = const Color(0xFF000000);
   final Color fakeBlack = const Color(0xFF212121);
   final Color blue = const Color(0xFF2196F3);
+  final Color green = const Color(0xff64ffda);
   final Color paleGrey = const Color(0xFFFAFAFA);
   final Color grey = const Color(0xFF9E9E9E);
   final Color darkGrey = const Color(0xFF303030);

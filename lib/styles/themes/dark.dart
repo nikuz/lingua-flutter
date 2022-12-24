@@ -9,7 +9,7 @@ final myThemeDataDark = MyTheme(
     primaryPale: myColors.grey,
     secondary: myColors.black,
     secondaryPale: myColors.black.withOpacity(0.8),
-    focus: myColors.blue,
+    focus: myColors.green,
     background: myColors.darkGrey,
     focusBackground: myColors.fakeBlack,
     cardBackground: myColors.fakeBlack,
