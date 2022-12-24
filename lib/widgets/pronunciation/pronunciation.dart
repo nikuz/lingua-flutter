@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:lingua_flutter/providers/audio.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/convert.dart';
 import 'package:lingua_flutter/utils/media_source.dart';
@@ -33,10 +34,8 @@ class PronunciationWidget extends StatefulWidget {
 }
 
 class _PronunciationWidgetState extends State<PronunciationWidget> {
-  final AudioPlayer _audioPlayer = AudioPlayer();
   PlayerState _playerState = PlayerState.stopped;
   late StreamSubscription<PlayerState> _audioPlayerStateSubscription;
-  late StreamSubscription  _playerCompleteSubscription;
   MediaSourceType? _sourceType;
 
   @override
@@ -45,13 +44,10 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
     if (widget.pronunciationSource != null) {
       _sourceType = MediaSource.getType(widget.pronunciationSource!);
     }
-    _audioPlayerStateSubscription = _audioPlayer.onPlayerStateChanged.listen(
+    _audioPlayerStateSubscription = audioPlayer.onPlayerStateChanged.listen(
         _onPlayerStateChange,
         onError: _onPlayerStateChangeError
     );
-    _playerCompleteSubscription = _audioPlayer.onPlayerComplete.listen((event) {
-      setState(() => _playerState = PlayerState.completed);
-    });
     if (widget.autoPlay == true) {
       _playPronunciation();
     }
@@ -71,7 +67,6 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
   @override
   void dispose() {
     _audioPlayerStateSubscription.cancel();
-    _playerCompleteSubscription.cancel();
     super.dispose();
   }
 
@@ -88,16 +83,16 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
           final String filePath = '$dir/pronunciation.mp3';
           final File file = File(filePath);
           await file.writeAsBytes(fileBytes);
-          await _audioPlayer.play(DeviceFileSource(filePath));
+          await audioPlay(DeviceFileSource(filePath));
           break;
 
         case MediaSourceType.local:
           String dir = await getDocumentsPath();
-          await _audioPlayer.play(DeviceFileSource('$dir${widget.pronunciationSource}'));
+          await audioPlay(DeviceFileSource('$dir${widget.pronunciationSource}'));
           break;
 
         case MediaSourceType.network:
-          await _audioPlayer.play(UrlSource(widget.pronunciationSource!));
+          await audioPlay(UrlSource(widget.pronunciationSource!));
           break;
 
         default:
@@ -107,16 +102,23 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
   }
 
   Future<void> _stopPronunciation() async {
-    await _audioPlayer.stop();
+    await audioStop();
     setState(() => _playerState = PlayerState.stopped);
   }
 
   void _onPlayerStateChange(PlayerState state) {
-    setState(() => _playerState = state);
+    if (
+      (state == PlayerState.completed && _playerState != PlayerState.completed)
+      || (state == PlayerState.stopped && _playerState != PlayerState.stopped)
+    ) {
+      setState(() => _playerState = state);
+    }
   }
 
   void _onPlayerStateChangeError(msg) {
-    setState(() => _playerState = PlayerState.stopped);
+    if (_playerState != PlayerState.stopped) {
+      setState(() => _playerState = PlayerState.stopped);
+    }
   }
 
   @override
@@ -138,7 +140,7 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
       backgroundColor: backgroundColor,
       width: size,
       height: size,
-      shape: ButtonShape.circular,
+      shape: ButtonShape.oval,
       outlined: false,
       highlightColor: widget.highlightColor,
       splashColor: widget.splashColor,
