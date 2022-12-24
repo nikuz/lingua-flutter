@@ -103,13 +103,16 @@ class _QuickSearchState extends State<QuickSearch> {
                 height: 56,
                 outlined: false,
                 elevated: true,
-                shape: ButtonShape.circular,
+                shape: ButtonShape.oval,
                 icon: Icons.arrow_forward,
                 onPressed: () {
-                  if (searchState?.hasInternetConnection == true) {
+                  final text = searchState?.textController.text.trim();
+                  if (searchState?.hasInternetConnection == true && text != null && text != '') {
                     searchState?.submitHandler(
-                      searchState.textController.text,
-                      quickTranslation: state.quickTranslation,
+                      text,
+                      quickTranslation: text == state.quickTranslation?.word
+                          ? state.quickTranslation
+                          : null,
                       translateFrom: _settingsCubit.state.translateFrom,
                       translateTo: _settingsCubit.state.translateTo,
                     );
@@ -146,27 +149,34 @@ class _QuickSearchState extends State<QuickSearch> {
 
   @override
   Widget build(BuildContext context) {
+    final searchState = SearchInheritedState.of(context);
+
     return BlocBuilder<SearchCubit, SearchState>(
       builder: (context, state) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Card(
-              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                constraints: const BoxConstraints(
-                  minHeight: 75,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildContentBody(state),
-                  ],
+        return Container(
+          margin: EdgeInsets.only(
+            top: searchState?.getPaddingTop() ?? 0,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Card(
+                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  constraints: const BoxConstraints(
+                    minHeight: 75,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _buildContentBody(state),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );

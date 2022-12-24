@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/search_cubit.dart';
 import '../../bloc/search_state.dart';
 import '../../search_constants.dart';
+import '../../search_state.dart';
 import './search_list_item.dart';
 import './search_list_bottom_loader.dart';
 
@@ -47,19 +48,54 @@ class _SearchListState extends State<SearchList> {
     }
   }
 
+  bool _onScrollNotification(ScrollNotification notification) {
+    final searchState = SearchInheritedState.of(context);
+    final topPadding = searchState?.getPaddingTop() ?? 0;
+    searchState?.broadcastListScroll(notification);
+
+    if (notification is ScrollEndNotification) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final scrollPosition = _scrollController.position.pixels;
+        const halfSearchFieldHeight = SearchConstants.searchFieldHeight / 2;
+        double? autoScrollPosition;
+
+        if (scrollPosition < halfSearchFieldHeight) {
+          autoScrollPosition = 0;
+        } else if (scrollPosition > halfSearchFieldHeight && scrollPosition < SearchConstants.searchFieldHeight) {
+          autoScrollPosition = topPadding - (topPadding - SearchConstants.searchFieldHeight);
+          print('topPadding: $topPadding');
+          print('autoScrollPosition: $autoScrollPosition');
+        }
+
+        if (autoScrollPosition != null) {
+          _scrollController.animateTo(
+            autoScrollPosition,
+            duration: SearchConstants.appearanceAnimationDuration,
+            curve: Curves.easeOut,
+          );
+        }
+      });
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<SearchCubit, SearchState>(
       listener: (context, state) {
         if (!state.loading && _refreshCompleter.isCompleted == false) {
           _refreshCompleter.complete();
-          _refreshCompleter = Completer();
         }
       },
       child: BlocBuilder<SearchCubit, SearchState>(
         builder: (context, state) {
+          final searchState = SearchInheritedState.of(context);
+          final topPadding = searchState?.getPaddingTop() ?? 0;
+
           return RefreshIndicator(
+            edgeOffset: topPadding - 5, // minus shadow
             onRefresh: () {
+              _refreshCompleter = Completer();
               if (state.searchText != null) {
                 _searchCubit.fetchTranslations(searchText: state.searchText);
               } else {
@@ -67,48 +103,51 @@ class _SearchListState extends State<SearchList> {
               }
               return _refreshCompleter.future;
             },
-            child: ListView.builder(
-              controller: _scrollController,
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: state.translations.length + 2,
-              itemBuilder: (BuildContext context, int index) {
-                if (index == 0) {
-                  return Container(
-                    padding: const EdgeInsets.only(
-                      left: 15,
-                      top: 10,
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        const Text(
-                          'Total: ',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
+            child: NotificationListener<ScrollNotification>(
+              onNotification: _onScrollNotification,
+              child: ListView.builder(
+                controller: _scrollController,
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: EdgeInsets.only(
+                  top: topPadding,
+                ),
+                itemCount: state.translations.length + 2,
+                itemBuilder: (BuildContext context, int index) {
+                  if (index == 0) {
+                    return Container(
+                      padding: const EdgeInsets.only(
+                        left: 15,
+                        top: 10,
+                      ),
+                      child: Wrap(
+                        children: [
+                          Text(
+                            state.totalAmount.toString(),
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        Text(
-                          '${state.totalAmount}',
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
+                          Text(
+                            ' word${state.totalAmount > 1 ? 's' : ''}',
+                            style: const TextStyle(fontSize: 15),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  if (index - 1 == state.translations.length) {
+                    return const SearchListBottomLoader();
+                  }
+
+                  return SearchListItem(
+                    key: ValueKey('$index-${state.translations[index - 1].updatedAt}'),
+                    translationItem: state.translations[index - 1],
+                    withBorder: index < state.translations.length,
                   );
-                }
-
-                if (index - 1 == state.translations.length) {
-                  return const SearchListBottomLoader();
-                }
-
-                return SearchListItem(
-                  key: ValueKey('$index-${state.translations[index - 1].updatedAt}'),
-                  translationItem: state.translations[index - 1],
-                  withBorder: index < state.translations.length,
-                );
-              },
+                },
+              ),
             ),
           );
         },

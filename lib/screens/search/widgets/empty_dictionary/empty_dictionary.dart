@@ -9,14 +9,16 @@ class EmptyDictionary extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-          margin: const EdgeInsets.only(bottom: 20),
-          child: Icon(
-            Icons.menu_book_rounded,
-            size: 100,
-            color: Styles.colors.grey,
+        if (MediaQuery.of(context).size.height > 500)
+          Container(
+            margin: const EdgeInsets.only(bottom: 20),
+            child: Icon(
+              Icons.menu_book_rounded,
+              size: 100,
+              color: Styles.colors.grey,
+            ),
           ),
-        ),
+
         const Text(
           'Dictionary is empty yet',
           style: TextStyle(

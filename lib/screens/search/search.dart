@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lingua_flutter/providers/connectivity.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:lingua_flutter/providers/connectivity.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
+import 'package:lingua_flutter/styles/styles.dart';
 
 import './bloc/search_cubit.dart';
 import './bloc/search_state.dart';
@@ -13,7 +14,9 @@ import './widgets/search_list/search_list.dart';
 import './widgets/quick_search/quick_search.dart';
 import './widgets/empty_dictionary/empty_dictionary.dart';
 import './widgets/empty_search/empty_search.dart';
+import './widgets/error/search_error.dart';
 import './search_state.dart';
+import './search_constants.dart';
 
 class Search extends StatefulWidget {
   const Search({Key? key}) : super(key: key);
@@ -23,6 +26,7 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> with WidgetsBindingObserver {
+  final Map<String, Function> _scrollListeners = {};
   late TextEditingController _textController;
   late FocusNode _focusNode;
   late SearchCubit _searchCubit;
@@ -67,6 +71,11 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
     });
   }
 
+  double _getPaddingTop() {
+    final topPadding = MediaQuery.of(context).padding.top;
+    return SearchConstants.searchFieldHeight + topPadding;
+  }
+
   void _submitHandler(String word, {
     TranslationContainer? quickTranslation,
     Language? translateFrom,
@@ -95,13 +104,21 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
     }
   }
 
-  Widget _buildResultsBody(SearchState state) {
-    if (state.error?.message != null) {
-      return Center(
-        child: Text(state.error!.message),
-      );
-    }
+  void _subscribeToListScroll(String name, Function callback) {
+    _scrollListeners[name] = callback;
+  }
 
+  void _unsubscribeFromListScroll(String name) {
+    _scrollListeners.remove(name);
+  }
+
+  void _broadcastListScroll(ScrollNotification notification) {
+    _scrollListeners.forEach((String key, Function listener) {
+      listener(notification);
+    });
+  }
+
+  Widget _buildResultsBody(SearchState state) {
     if (
       state.translations.isEmpty
       && state.searchText?.isEmpty != false // show progress indicator only on first results load
@@ -110,6 +127,10 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
       return const Center(
         child: CircularProgressIndicator(),
       );
+    }
+
+    if (state.error != null) {
+      return const SearchError();
     }
 
     if (
@@ -143,34 +164,37 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final MyTheme theme = Styles.theme(context);
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text(
-          'My Dictionary',
-          style: TextStyle(
-            fontSize: 20,
-          ),
-        ),
+        backgroundColor: theme.colors.background.withOpacity(0.8),
+        elevation: 0,
+        toolbarHeight: 0,
       ),
-      body: SafeArea(
-        child: BlocBuilder<SearchCubit, SearchState>(
-          builder: (context, state) {
-            return SearchInheritedState(
+      body: BlocBuilder<SearchCubit, SearchState>(
+        builder: (context, state) {
+          return SafeArea(
+            top: false,
+            child: SearchInheritedState(
               textController: _textController,
               focusNode: _focusNode,
               hasInternetConnection: _hasInternetConnection,
               submitHandler: _submitHandler,
-              child: Column(
+              subscribeToListScroll: _subscribeToListScroll,
+              unsubscribeFromListScroll: _unsubscribeFromListScroll,
+              broadcastListScroll: _broadcastListScroll,
+              getPaddingTop: _getPaddingTop,
+              child: Stack(
+                fit: StackFit.expand,
                 children: [
+                  _buildResultsBody(state),
                   const SearchField(),
-                  Expanded(
-                    child: _buildResultsBody(state),
-                  ),
                 ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

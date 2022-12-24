@@ -11,6 +11,10 @@ class SearchInheritedState extends InheritedWidget {
     Language? translateFrom,
     Language? translateTo,
   }) submitHandler;
+  final Function(String name, Function callback) subscribeToListScroll;
+  final Function(String name) unsubscribeFromListScroll;
+  final Function(ScrollNotification notification) broadcastListScroll;
+  final double Function() getPaddingTop;
 
   const SearchInheritedState({
     Key? key,
@@ -18,6 +22,10 @@ class SearchInheritedState extends InheritedWidget {
     required this.focusNode,
     required this.hasInternetConnection,
     required this.submitHandler,
+    required this.subscribeToListScroll,
+    required this.unsubscribeFromListScroll,
+    required this.broadcastListScroll,
+    required this.getPaddingTop,
     required Widget child,
   }) : super(key: key, child: child);
 
@@ -26,7 +34,5 @@ class SearchInheritedState extends InheritedWidget {
   );
 
   @override
-  bool updateShouldNotify(SearchInheritedState oldWidget) => (
-      oldWidget.hasInternetConnection != hasInternetConnection
-  );
+  bool updateShouldNotify(SearchInheritedState oldWidget) => true;
 }

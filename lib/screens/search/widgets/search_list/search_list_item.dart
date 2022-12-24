@@ -95,7 +95,7 @@ class _SearchListItemState extends State<SearchListItem> {
                   ),
                 ),
                 child: Material(
-                  color: _isSelected ? theme.colors.secondaryPale : theme.colors.background,
+                  color: _isSelected ? Styles.colors.grey.withOpacity(0.3) : theme.colors.background,
                   child: InkWell(
                     onTap: () {
                       searchState?.submitHandler(widget.translationItem.word);
@@ -113,15 +113,20 @@ class _SearchListItemState extends State<SearchListItem> {
                               width: 50,
                               height: 50,
                               imageSource: widget.translationItem.image,
+                              shape: ImagePreviewShape.oval,
                               onTap: () {
-                                setState(() {
-                                  _isSelected = true;
-                                });
+                                if (widget.translationItem.image != null) {
+                                  setState(() {
+                                    _isSelected = true;
+                                  });
+                                }
                               },
                               onPreviewClose: () {
-                                setState(() {
-                                  _isSelected = false;
-                                });
+                                if (widget.translationItem.image != null) {
+                                  setState(() {
+                                    _isSelected = false;
+                                  });
+                                }
                               },
                             ),
                           ),
