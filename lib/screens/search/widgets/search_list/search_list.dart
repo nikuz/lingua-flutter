@@ -63,8 +63,6 @@ class _SearchListState extends State<SearchList> {
           autoScrollPosition = 0;
         } else if (scrollPosition > halfSearchFieldHeight && scrollPosition < SearchConstants.searchFieldHeight) {
           autoScrollPosition = topPadding - (topPadding - SearchConstants.searchFieldHeight);
-          print('topPadding: $topPadding');
-          print('autoScrollPosition: $autoScrollPosition');
         }
 
         if (autoScrollPosition != null) {

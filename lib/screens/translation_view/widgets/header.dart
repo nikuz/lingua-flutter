@@ -176,7 +176,7 @@ class TranslationViewHeader extends StatelessWidget {
                 children: [
                   _buildPronunciation(context, state, from: true),
 
-                  Expanded(
+                  const Expanded(
                     child: TranslationViewImage(),
                   ),
 
