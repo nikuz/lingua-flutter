@@ -37,6 +37,8 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
   PlayerState _playerState = PlayerState.stopped;
   late StreamSubscription<PlayerState> _audioPlayerStateSubscription;
   MediaSourceType? _sourceType;
+  File? _tempFile;
+  String? _tempFileName;
 
   @override
   void initState() {
@@ -67,6 +69,7 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
   @override
   void dispose() {
     _audioPlayerStateSubscription.cancel();
+    _tempFile?.delete();
     super.dispose();
   }
 
@@ -78,12 +81,14 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
     if (widget.pronunciationSource != null) {
       switch (_sourceType) {
         case MediaSourceType.base64:
-          final String dir = await getTempPath();
-          Uint8List fileBytes = getBytesFrom64String(widget.pronunciationSource!);
-          final String filePath = '$dir/pronunciation.mp3';
-          final File file = File(filePath);
-          await file.writeAsBytes(fileBytes);
-          await audioPlay(DeviceFileSource(filePath));
+          if (_tempFileName == null) {
+            final String dir = await getTempPath();
+            Uint8List fileBytes = getBytesFrom64String(widget.pronunciationSource!);
+            _tempFileName = '$dir/${DateTime.now().millisecondsSinceEpoch}.mp3';
+            _tempFile = File(_tempFileName!);
+            await _tempFile!.writeAsBytes(fileBytes);
+          }
+          await audioPlay(DeviceFileSource(_tempFileName!));
           break;
 
         case MediaSourceType.local:
