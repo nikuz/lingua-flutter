@@ -1,8 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:lingua_flutter/providers/error_logger.dart';
 import 'package:lingua_flutter/utils/files.dart';
+import 'package:lingua_flutter/models/error.dart';
 
 final Map<String, String> languages = {};
 
@@ -25,7 +26,7 @@ Future<void> preload() async {
       Map<String, dynamic> languagesRawData = jsonDecode(languagesFileContent);
       languagesData = jsonDecode(languagesRawData['raw']);
     } catch (err, stack) {
-      FirebaseCrashlytics.instance.recordError(err, stack);
+      recordError(err, stack);
     }
 
     if (languagesData != null) {
@@ -44,13 +45,13 @@ Future<Map<String, String>?> get({ bool? forceUpdate }) async {
 
   final languagesCollection = FirebaseFirestore.instance.collection('languages');
   final languagesDoc = await languagesCollection.doc('languages').get();
-
-  if (!languagesDoc.exists) {
-    return null;
-  }
-
   final languagesRawData = languagesDoc.data();
-  if (languagesRawData == null) {
+
+  if (!languagesDoc.exists || languagesRawData == null) {
+    recordError(
+      const CustomError(code: 404, message: 'Can\'t retrieve languages from FireStore'),
+      StackTrace.current,
+    );
     return null;
   }
 
@@ -58,7 +59,7 @@ Future<Map<String, String>?> get({ bool? forceUpdate }) async {
   try {
     languagesData = jsonDecode(languagesRawData['raw']);
   } catch (err, stack) {
-    FirebaseCrashlytics.instance.recordError(err, stack);
+    recordError(err, stack);
     return null;
   }
 

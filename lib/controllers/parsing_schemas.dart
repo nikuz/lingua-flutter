@@ -1,7 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:lingua_flutter/providers/error_logger.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
 import 'package:lingua_flutter/app_config.dart' as config;
@@ -28,7 +28,7 @@ Future<void> preload() async {
     try {
       schemaData = jsonDecode(schemaFileContent);
     } catch (err, stack) {
-      FirebaseCrashlytics.instance.recordError(err, stack);
+      recordError(err, stack);
     }
 
     // create schema class instance and store in parsingSchemas cache variable
@@ -37,8 +37,8 @@ Future<void> preload() async {
       // schemas can be outdated and trying to parse them with current StoredParsingSchema structure throws error
       try {
         schema = StoredParsingSchema.fromFirestore(schemaData);
-      } catch (e) {
-        //
+      } catch (err, stack) {
+        recordError(err, stack);
       }
       if (schema != null) {
         parsingSchemas[schema.version] = schema;
@@ -62,13 +62,9 @@ Future<StoredParsingSchema?> get(String versionName, { bool? forceUpdate }) asyn
 
   final schemas = FirebaseFirestore.instance.collection('schemas');
   final schemaDoc = await schemas.doc(versionName).get();
-
-  if (!schemaDoc.exists) {
-    return null;
-  }
-
   final schemaData = schemaDoc.data();
-  if (schemaData == null) {
+
+  if (!schemaDoc.exists || schemaData == null) {
     return null;
   }
 

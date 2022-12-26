@@ -46,25 +46,25 @@ Future<TranslationContainer> translate({
             updatedAt: existingTranslation.updatedAt,
           );
         } catch (e) {
-          //
+          // don't throw error here, but instead allow script to proceed into cloud translation phase if local translation failed
         }
       }
     }
   }
 
-  StoredParsingSchema? storedParsingSchema = await parsing_schemas_controller.get(
+  StoredParsingSchema? currentParsingSchema = await parsing_schemas_controller.get(
     'current',
     forceUpdate: forceCurrentSchemaDownload == true,
   );
 
-  if (storedParsingSchema == null) {
+  if (currentParsingSchema == null) {
     throw const CustomError(
       code: 404,
       message: 'Can\'t retrieve "current" parsing schema',
     );
   }
 
-  ParsingSchema? parsingSchema = storedParsingSchema.schema;
+  ParsingSchema? parsingSchema = currentParsingSchema.schema;
 
   List<dynamic>? translationResult;
   String? pronunciationFromResult;
@@ -91,9 +91,16 @@ Future<TranslationContainer> translate({
         forceCurrentSchemaDownload: true,
       );
     } else {
-      throw const CustomError(
+      throw CustomError(
         code: 500,
         message: 'Can\'t parse translation response with "current" schema',
+        information: [
+          word,
+          translationRaw,
+          parsingSchema,
+          translateFrom,
+          translateTo,
+        ],
       );
     }
   }
@@ -105,11 +112,11 @@ Future<TranslationContainer> translate({
       pronunciationTo: pronunciationToResult,
       raw: translationResult,
       schema: parsingSchema,
-      schemaVersion: storedParsingSchema.version,
+      schemaVersion: currentParsingSchema.version,
       translateFrom: translateFrom,
       translateTo: translateTo,
     );
-  } catch (error) {
+  } catch (err) {
     if (forceCurrentSchemaDownload == null) {
       return translate(
         word: word,
@@ -118,7 +125,19 @@ Future<TranslationContainer> translate({
         forceCurrentSchemaDownload: true,
       );
     } else {
-      rethrow;
+      throw CustomError(
+        code: 500,
+        message: 'Can\'t create TranslationContainer with new downloaded "current" schema',
+        information: [
+          err,
+          word,
+          translationResult,
+          parsingSchema,
+          currentParsingSchema.version,
+          translateFrom,
+          translateTo,
+        ],
+      );
     }
   }
 }
@@ -129,10 +148,11 @@ List<dynamic>? retrieveResponseRawData(String rawData, String marker) {
 
   // find the line with translation marker, decode it,
   // then find inner JSON data string and decode it also
-  // the inner decoded JSON is our translation data
+  // the inner decoded JSON is our RAW translation data
   for (var item in rawStrings) {
     if (item.contains(marker)) {
       final responseJson = jsonDecode(item);
+      // resulted list of lines is sorted so the longest line goes first
       List<String> dataStrings = findAllJsonStrings(responseJson);
       if (dataStrings.isNotEmpty) {
         return jsonDecode(dataStrings[0]);

@@ -55,6 +55,7 @@ class _LanguageListState extends State<LanguageList> {
             textInputAction: TextInputAction.search,
             hintText: 'Search language',
             autofocus: true,
+            underLined: true,
             onChanged: (value) {
               _filterLanguages(value);
             },

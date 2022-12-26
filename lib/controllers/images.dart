@@ -15,13 +15,26 @@ Future<List<String>?> search(String word) async {
   }
 
   ParsingSchema? parsingSchema = storedParsingSchema.schema;
+  String? imagesRaw;
 
-  final String imagesRaw = await apiGet(
-    url: parsingSchema.images.fields.url.replaceFirst('{word}', removeSlashFromString(word)),
-    headers: {
-      'user-agent': parsingSchema.images.fields.userAgent,
-    },
-  );
+  try {
+    imagesRaw = await apiGet(
+      url: parsingSchema.images.fields.url.replaceFirst('{word}', removeSlashFromString(word)),
+      headers: {
+        'user-agent': parsingSchema.images.fields.userAgent,
+      },
+    );
+  } catch(err) {
+    throw CustomError(
+      code: 500,
+      message: 'Can\'t retrieve images using "current" parsing schema',
+      information: [
+        err,
+        word,
+        parsingSchema,
+      ],
+    );
+  }
 
   final minImageSize = int.parse(parsingSchema.images.fields.minSize); // in base64 characters
   final imageReg = RegExp(parsingSchema.images.fields.regExp);

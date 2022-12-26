@@ -7,6 +7,7 @@ import 'package:lingua_flutter/controllers/cloud_translation.dart' as cloud_tran
 import 'package:lingua_flutter/controllers/images.dart' as images_controller;
 import 'package:lingua_flutter/controllers/pronunciation.dart' as pronunciation_controller;
 import 'package:lingua_flutter/utils/types.dart';
+import 'package:lingua_flutter/providers/error_logger.dart';
 
 import 'translation_view_state.dart';
 
@@ -29,7 +30,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         translation: translation,
         translateLoading: false,
       ));
-    } catch (err) {
+    } catch (err, stack) {
       emit(state.copyWith(
         error: Wrapped.value(CustomError(
           code: err.hashCode,
@@ -37,7 +38,12 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         )),
         translateLoading: false,
       ));
-      rethrow;
+
+      Iterable<Object>? information;
+      if (err is CustomError) {
+        information = err.information;
+      }
+      recordFatalError(err, stack, information: information);
     }
   }
 
@@ -62,7 +68,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         imageLoading: false,
       ));
       return images?[0];
-    } catch (err) {
+    } catch (err, stack) {
       emit(state.copyWith(
         imageError: Wrapped.value(CustomError(
           code: err.hashCode,
@@ -70,8 +76,14 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         )),
         imageLoading: false,
       ));
-      rethrow;
+
+      Iterable<Object>? information;
+      if (err is CustomError) {
+        information = err.information;
+      }
+      recordFatalError(err, stack, information: information);
     }
+    return null;
   }
 
   void fetchPronunciations(TranslationContainer translation) async {
@@ -104,7 +116,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         ),
         imageLoading: false,
       ));
-    } catch (err) {
+    } catch (err, stack) {
       emit(state.copyWith(
         pronunciationError: Wrapped.value(CustomError(
           code: err.hashCode,
@@ -112,7 +124,12 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         )),
         pronunciationLoading: false,
       ));
-      rethrow;
+
+      Iterable<Object>? information;
+      if (err is CustomError) {
+        information = err.information;
+      }
+      recordFatalError(err, stack, information: information);
     }
   }
 
@@ -141,7 +158,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
       emit(state.copyWith(
         updateLoading: false,
       ));
-    } catch (err) {
+    } catch (err, stack) {
       emit(state.copyWith(
         error: Wrapped.value(CustomError(
           code: err.hashCode,
@@ -149,7 +166,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         )),
         updateLoading: false,
       ));
-      rethrow;
+      recordFatalError(err, stack);
     }
   }
 
@@ -178,7 +195,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
       emit(state.copyWith(
         updateLoading: false,
       ));
-    } catch (err) {
+    } catch (err, stack) {
       emit(state.copyWith(
         error: Wrapped.value(CustomError(
           code: err.hashCode,
@@ -186,7 +203,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         )),
         updateLoading: false,
       ));
-      rethrow;
+      recordFatalError(err, stack);
     }
   }
 

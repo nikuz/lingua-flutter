@@ -36,7 +36,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 //}
 
 android {
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 33
     ndkVersion flutter.ndkVersion
 
     compileOptions {

@@ -6,6 +6,7 @@ import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/models/translation_list.dart';
 import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/utils/types.dart';
+import 'package:lingua_flutter/providers/error_logger.dart';
 
 import '../search_constants.dart';
 import 'search_state.dart';
@@ -44,7 +45,7 @@ class SearchCubit extends Cubit<SearchState> {
         totalAmount: translationList.totalAmount,
         translations: translations,
       ));
-    } catch (err) {
+    } catch (err, stack) {
       emit(state.copyWith(
         error: Wrapped.value(CustomError(
           code: err.hashCode,
@@ -52,7 +53,7 @@ class SearchCubit extends Cubit<SearchState> {
         )),
         loading: false,
       ));
-      rethrow;
+      recordFatalError(err, stack);
     }
   }
 
@@ -80,7 +81,7 @@ class SearchCubit extends Cubit<SearchState> {
           ));
         }
       }
-    } catch (err) {
+    } catch (err, stack) {
       emit(state.copyWith(
         quickTranslationError: Wrapped.value(CustomError(
           code: err.hashCode,
@@ -88,7 +89,12 @@ class SearchCubit extends Cubit<SearchState> {
         )),
         quickTranslationLoading: false,
       ));
-      rethrow;
+
+      Iterable<Object>? information;
+      if (err is CustomError) {
+        information = err.information;
+      }
+      recordFatalError(err, stack, information: information);
     }
   }
 
@@ -119,14 +125,14 @@ class SearchCubit extends Cubit<SearchState> {
         totalAmount: totalAmount,
         translations: translationsClone,
       ));
-    } catch (err) {
+    } catch (err, stack) {
       emit(state.copyWith(
         error: Wrapped.value(CustomError(
           code: err.hashCode,
           message: err.toString(),
         )),
       ));
-      rethrow;
+      recordFatalError(err, stack);
     }
   }
 
@@ -152,7 +158,7 @@ class SearchCubit extends Cubit<SearchState> {
         loading: false,
         error: const Wrapped.value(null),
       ));
-    } catch (err) {
+    } catch (err, stack) {
       emit(state.copyWith(
         error: Wrapped.value(CustomError(
           code: err.hashCode,
@@ -160,7 +166,7 @@ class SearchCubit extends Cubit<SearchState> {
         )),
         loading: false,
       ));
-      rethrow;
+      recordFatalError(err, stack);
     }
   }
 }
