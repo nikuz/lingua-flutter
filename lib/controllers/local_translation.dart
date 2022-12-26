@@ -73,6 +73,7 @@ Future<TranslationList> getList(int from, int to) async {
 }
 
 Future<TranslationList> search(String searchText, int from, int to) async {
+  searchText = searchText.replaceAll('\'', '');
   final searchPattern = '%$searchText%';
   final searchPatternStart = '%$searchText';
   final searchPatternEnd = '$searchText%';

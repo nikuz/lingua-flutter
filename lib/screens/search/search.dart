@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/providers/connectivity.dart';
+import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
@@ -81,10 +82,11 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
     Language? translateFrom,
     Language? translateTo
   }) async {
-    if (word.trim().isNotEmpty) {
+    final sanitizedWord = removeQuotesFromString(removeSlashFromString(word)).trim();
+    if (sanitizedWord.isNotEmpty) {
       final result = await AutoRouter.of(context).push<TranslationContainer>(
         TranslationViewRoute(
-          word: word.trim(),
+          word: sanitizedWord,
           quickTranslation: quickTranslation,
           translateFrom: translateFrom,
           translateTo: translateTo,

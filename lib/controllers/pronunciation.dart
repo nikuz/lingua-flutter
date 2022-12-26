@@ -12,7 +12,7 @@ Future<String?> retrieve({
   required String word,
   required Language language,
 }) async {
-  final encodedWord = removeSlashFromString(word);
+  final encodedWord = removeQuotesFromString(removeSlashFromString(word));
   String? pronunciationResult;
 
   String? pronunciationRaw;

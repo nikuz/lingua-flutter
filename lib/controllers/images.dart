@@ -5,6 +5,7 @@ import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/models/error.dart';
 
 Future<List<String>?> search(String word) async {
+  final encodedWord = removeQuotesFromString(removeSlashFromString(word));
   StoredParsingSchema? storedParsingSchema = await parsing_schemas_controller.get('current');
 
   if (storedParsingSchema == null) {
@@ -19,7 +20,7 @@ Future<List<String>?> search(String word) async {
 
   try {
     imagesRaw = await apiGet(
-      url: parsingSchema.images.fields.url.replaceFirst('{word}', removeSlashFromString(word)),
+      url: parsingSchema.images.fields.url.replaceFirst('{word}', encodedWord),
       headers: {
         'user-agent': parsingSchema.images.fields.userAgent,
       },

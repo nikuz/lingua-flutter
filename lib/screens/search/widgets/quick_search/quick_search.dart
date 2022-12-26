@@ -6,6 +6,7 @@ import 'package:lingua_flutter/widgets/language_selector/language_selector.dart'
 import 'package:lingua_flutter/widgets/button/button.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_state.dart';
+import 'package:lingua_flutter/utils/string.dart';
 
 import '../../bloc/search_cubit.dart';
 import '../../bloc/search_state.dart';
@@ -106,16 +107,19 @@ class _QuickSearchState extends State<QuickSearch> {
                 shape: ButtonShape.oval,
                 icon: Icons.arrow_forward,
                 onPressed: () {
-                  final text = searchState?.textController.text.trim();
-                  if (searchState?.hasInternetConnection == true && text != null && text != '') {
-                    searchState?.submitHandler(
-                      text,
-                      quickTranslation: text == state.quickTranslation?.word
-                          ? state.quickTranslation
-                          : null,
-                      translateFrom: _settingsCubit.state.translateFrom,
-                      translateTo: _settingsCubit.state.translateTo,
-                    );
+                  final text = searchState?.textController.text;
+                  if (searchState?.hasInternetConnection == true && text != null) {
+                    final sanitizedWord = removeQuotesFromString(removeSlashFromString(text)).trim();
+                    if (sanitizedWord.isNotEmpty) {
+                      searchState?.submitHandler(
+                        sanitizedWord,
+                        quickTranslation: sanitizedWord == state.quickTranslation?.word
+                            ? state.quickTranslation
+                            : null,
+                        translateFrom: _settingsCubit.state.translateFrom,
+                        translateTo: _settingsCubit.state.translateTo,
+                      );
+                    }
                   }
                 },
               ),

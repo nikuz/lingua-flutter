@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/widgets/text_field/text_field.dart';
 import 'package:lingua_flutter/utils/remap_value.dart';
+import 'package:lingua_flutter/utils/string.dart';
 
 import '../../bloc/search_cubit.dart';
 import '../../bloc/search_state.dart';
@@ -196,21 +197,23 @@ class _SearchFieldState extends State<SearchField> {
                     borderRadius: borderRadius,
                     elevation: 1,
                     onChanged: (text) {
-                      final trimmedText = text.trim();
-                      final newSearchText = trimmedText.isNotEmpty ? trimmedText : null;
-                      if (state.searchText != newSearchText) {
-                        context.read<SearchCubit?>()?.fetchTranslations(searchText: newSearchText);
+                      final sanitizedWord = removeQuotesFromString(removeSlashFromString(text)).trim();
+                      if (sanitizedWord.isNotEmpty && state.searchText != sanitizedWord) {
+                        context.read<SearchCubit?>()?.fetchTranslations(searchText: sanitizedWord);
                       }
                     },
                     onSubmitted: (_) {
-                      final text = searchState?.textController.text.trim();
-                      if (searchState?.hasInternetConnection == true && text != null && text != '') {
-                        searchState?.submitHandler(
-                          text,
-                          quickTranslation: text == state.quickTranslation?.word
-                              ? state.quickTranslation
-                              : null,
-                        );
+                      final text = searchState?.textController.text;
+                      if (searchState?.hasInternetConnection == true && text != null) {
+                        final sanitizedWord = removeQuotesFromString(removeSlashFromString(text)).trim();
+                        if (sanitizedWord.isNotEmpty) {
+                          searchState?.submitHandler(
+                            sanitizedWord,
+                            quickTranslation: sanitizedWord == state.quickTranslation?.word
+                                ? state.quickTranslation
+                                : null,
+                          );
+                        }
                       }
                     },
                   ),

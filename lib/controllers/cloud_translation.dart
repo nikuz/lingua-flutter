@@ -15,7 +15,7 @@ Future<TranslationContainer> translate({
   required Language translateTo,
   bool? forceCurrentSchemaDownload,
 }) async {
-  final encodedWord = removeSlashFromString(word);
+  final encodedWord = removeQuotesFromString(removeSlashFromString(word));
 
   // if "forceCurrentSchemaDownload" set to true, then local retrieving and parsing has already failed,
   // so we want to refresh the locally stored "current" parsing schema and translate this word from scratch
