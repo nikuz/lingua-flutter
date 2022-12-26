@@ -198,8 +198,9 @@ class _SearchFieldState extends State<SearchField> {
                     elevation: 1,
                     onChanged: (text) {
                       final sanitizedWord = removeQuotesFromString(removeSlashFromString(text)).trim();
-                      if (sanitizedWord.isNotEmpty && state.searchText != sanitizedWord) {
-                        context.read<SearchCubit?>()?.fetchTranslations(searchText: sanitizedWord);
+                      final newSearchText = sanitizedWord.isNotEmpty ? sanitizedWord : null;
+                      if (state.searchText != newSearchText) {
+                        context.read<SearchCubit?>()?.fetchTranslations(searchText: newSearchText);
                       }
                     },
                     onSubmitted: (_) {
