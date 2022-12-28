@@ -67,7 +67,10 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         images: images,
         imageLoading: false,
       ));
-      return images?[0];
+      if (images != null && images.isNotEmpty) {
+        return images[0];
+      }
+      return null;
     } catch (err, stack) {
       emit(state.copyWith(
         imageError: Wrapped.value(CustomError(

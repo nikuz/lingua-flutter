@@ -82,7 +82,18 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                   ),
                 );
 
-                if (!state.imageLoading && images != null) {
+                if (!state.imageLoading && images != null && images.isEmpty) {
+                  imagesList = const Center(
+                    child: Text(
+                      'No images found',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  );
+                }
+
+                if (!state.imageLoading && images != null && images.isNotEmpty) {
                   imagesList = SingleChildScrollView(
                     child: ListView.builder(
                       shrinkWrap: true,
