@@ -166,7 +166,6 @@ class _QuickSearchState extends State<QuickSearch> {
               _debounceRequest();
             },
             onToChanged: (language) {
-              print(_settingsCubit.state.languageSourcesAreSet);
               if (!_settingsCubit.state.languageSourcesAreSet) {
                 _settingsCubit.setTranslateTo(language);
               }

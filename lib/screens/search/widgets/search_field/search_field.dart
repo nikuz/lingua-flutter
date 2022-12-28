@@ -220,6 +220,8 @@ class _SearchFieldState extends State<SearchField> {
                               quickTranslation: sanitizedWord == state.quickTranslation?.word
                                   ? state.quickTranslation
                                   : null,
+                              translateFrom: state.quickTranslation?.translateFrom,
+                              translateTo: state.quickTranslation?.translateTo,
                             );
                           }
                         }
