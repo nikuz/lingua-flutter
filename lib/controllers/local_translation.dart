@@ -12,6 +12,7 @@ import 'package:lingua_flutter/providers/db.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/regexp.dart';
 import 'package:lingua_flutter/utils/media_source.dart';
+import 'package:lingua_flutter/utils/string.dart';
 
 Future<void> init() async {
   await DBProvider().rawQuery('''
@@ -73,7 +74,7 @@ Future<TranslationList> getList(int from, int to) async {
 }
 
 Future<TranslationList> search(String searchText, int from, int to) async {
-  searchText = searchText.replaceAll('\'', '');
+  searchText = removeQuotesFromString(removeSlashFromString(searchText));
   final searchPattern = '%$searchText%';
   final searchPatternStart = '%$searchText';
   final searchPatternEnd = '$searchText%';

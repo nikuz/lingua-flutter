@@ -6,11 +6,13 @@ class Modal {
   final BuildContext context;
   final Widget child;
   final bool isFramed;
+  final bool isZoomable;
 
   const Modal({
     required this.context,
     required this.child,
     this.isFramed = true,
+    this.isZoomable = false,
   });
 
   static dismiss(BuildContext context) {
@@ -26,10 +28,11 @@ class Modal {
       pageBuilder: (BuildContext context, Animation animation, Animation secondaryAnimation) {
         return ModalContent(
           isFramed: isFramed,
-          child: child,
+          isZoomable: isZoomable,
           close: () {
             Modal.dismiss(context);
-          }
+          },
+          child: child,
         );
       },
     );

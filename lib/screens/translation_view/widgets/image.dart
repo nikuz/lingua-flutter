@@ -99,7 +99,7 @@ class _TranslationViewImageState extends State<TranslationViewImage> {
                 Center(
                   child: AnimatedContainer(
                     duration: isNewWord ? const Duration(milliseconds: 150) : Duration.zero,
-                    curve: Curves.easeInOutQuad,
+                    curve: Styles.variables.easeInOut,
                     width: isNewWord ? _size.width : null,
                     height: isNewWord ? _size.height : null,
                     margin: const EdgeInsets.only(

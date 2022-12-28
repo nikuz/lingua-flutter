@@ -27,12 +27,6 @@ class _SearchFieldState extends State<SearchField> {
   double _opacity = 1;
 
   @override
-  void initState() {
-    super.initState();
-
-  }
-
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final topPadding = MediaQuery.of(context).padding.top;

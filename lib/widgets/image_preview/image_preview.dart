@@ -133,18 +133,8 @@ class _ImagePreviewState extends State<ImagePreview> {
             Modal(
               context: context,
               isFramed: false,
-              child: InkWell(
-                onTap: () {
-                  Modal.dismiss(context);
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _buildImage(),
-                  ],
-                ),
-              ),
+              isZoomable: true,
+              child: _buildImage(),
             ).show().then((dynamic) {
               if (widget.onPreviewClose is Function) {
                 widget.onPreviewClose!();
