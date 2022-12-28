@@ -10,7 +10,8 @@ part 'translation.g.dart';
 class TranslationContainer {
   final int? id;
   final String word;
-  final String? autoSpellingFix;
+  final String? autoSpelling;
+  final String? autoLanguage;
   final String? transcription;
   // plain translation string is always present, usually populated from database or on creation at "fromRaw"
   final String translation;
@@ -32,7 +33,8 @@ class TranslationContainer {
   const TranslationContainer({
     this.id,
     required this.word,
-    this.autoSpellingFix,
+    this.autoSpelling,
+    this.autoLanguage,
     this.transcription,
     required this.translation,
     this.translations,
@@ -197,11 +199,11 @@ class TranslationContainer {
     if (translations == null) {
       throw 'Can\'t parse raw data with current schema';
     }
-
     return TranslationContainer(
       id: id,
       word: word,
-      autoSpellingFix: getDynamicString(jmespath.search(schema.translation.autoSpellingFix.value, raw)),
+      autoSpelling: getDynamicString(jmespath.search(schema.translation.autoSpelling.value, raw)),
+      autoLanguage: getDynamicString(jmespath.search(schema.translation.autoLanguage.value, raw)),
       transcription: getDynamicString(jmespath.search(schema.translation.transcription.value, raw)),
       translation: translation ?? translations.join(', '),
       translations: translations,
@@ -238,7 +240,8 @@ class TranslationContainer {
   TranslationContainer copyWith({
     int? id,
     String? word,
-    String? autoSpellingFix,
+    String? autoSpelling,
+    String? autoLanguage,
     String? transcription,
     String? translation,
     List<Translation>? translations,
@@ -259,7 +262,8 @@ class TranslationContainer {
     return TranslationContainer(
       id: id ?? this.id,
       word: word ?? this.word,
-      autoSpellingFix: autoSpellingFix ?? this.autoSpellingFix,
+      autoSpelling: autoSpelling ?? this.autoSpelling,
+      autoLanguage: autoLanguage ?? this.autoLanguage,
       transcription: transcription ?? this.transcription,
       translation: translation ?? this.translation,
       translations: translations ?? this.translations,

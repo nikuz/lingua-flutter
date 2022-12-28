@@ -7,7 +7,8 @@ part 'translation_schema.g.dart';
 class TranslationSchema {
   final TranslationSchemaFields fields;
   final SchemaItem word;
-  final SchemaItem autoSpellingFix;
+  final SchemaItem autoSpelling;
+  final SchemaItem autoLanguage;
   final SchemaItem transcription;
   final TranslationSchemaTranslations translations;
   final TranslationSchemaAlternativeTranslations alternativeTranslations;
@@ -17,7 +18,8 @@ class TranslationSchema {
   const TranslationSchema({
     required this.fields,
     required this.word,
-    required this.autoSpellingFix,
+    required this.autoSpelling,
+    required this.autoLanguage,
     required this.transcription,
     required this.translations,
     required this.alternativeTranslations,

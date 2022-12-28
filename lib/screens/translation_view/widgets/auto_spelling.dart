@@ -7,8 +7,8 @@ import 'package:lingua_flutter/styles/styles.dart';
 import '../bloc/translation_view_cubit.dart';
 import '../bloc/translation_view_state.dart';
 
-class TranslationViewAutoSpellingFix extends StatelessWidget {
-  const TranslationViewAutoSpellingFix({Key? key}) : super(key: key);
+class TranslationViewAutoSpelling extends StatelessWidget {
+  const TranslationViewAutoSpelling({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class TranslationViewAutoSpellingFix extends StatelessWidget {
       builder: (context, state) {
         final translation = state.translation;
 
-        if (translation == null || translation.autoSpellingFix == null) {
+        if (translation == null || translation.autoSpelling == null) {
           return Container();
         }
 
@@ -28,7 +28,7 @@ class TranslationViewAutoSpellingFix extends StatelessWidget {
             onTap: () {
               context.read<TranslationViewCubit>().reset();
               AutoRouter.of(context).replace(TranslationViewRoute(
-                word: translation.autoSpellingFix!,
+                word: translation.autoSpelling!,
                 translateFrom: translation.translateFrom,
                 translateTo: translation.translateTo,
               ));
@@ -44,12 +44,12 @@ class TranslationViewAutoSpellingFix extends StatelessWidget {
                 text: TextSpan(
                   style: const TextStyle(color: Colors.white),
                   children: [
-                    const TextSpan(text: 'Did you mean '),
+                    const TextSpan(text: 'Did you mean "'),
                     TextSpan(
-                      text: '"${translation.autoSpellingFix}"',
+                      text: translation.autoSpelling,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    const TextSpan(text: '?'),
+                    const TextSpan(text: '"?'),
                   ],
                 ),
               ),

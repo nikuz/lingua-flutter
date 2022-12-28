@@ -39,7 +39,8 @@ class StoredParsingSchema {
 
           //
           word: SchemaItem(value: schemaJson['translation']['word']['value']),
-          autoSpellingFix: SchemaItem(value: schemaJson['translation']['auto_spelling_fix']['value']),
+          autoSpelling: SchemaItem(value: schemaJson['translation']['auto_spelling_fix']['value']),
+          autoLanguage: SchemaItem(value: schemaJson['translation']['auto_language_code']['value']),
           transcription: SchemaItem(value: schemaJson['translation']['transcription']['value']),
 
           // translation

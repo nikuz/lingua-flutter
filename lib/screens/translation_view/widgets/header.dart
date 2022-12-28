@@ -10,7 +10,8 @@ import 'package:lingua_flutter/screens/router.gr.dart';
 
 import '../bloc/translation_view_cubit.dart';
 import '../bloc/translation_view_state.dart';
-import './auto_spelling_fix.dart';
+import './auto_language.dart';
+import './auto_spelling.dart';
 import './image.dart';
 
 class TranslationViewHeader extends StatelessWidget {
@@ -219,7 +220,8 @@ class TranslationViewHeader extends StatelessWidget {
                 ),
               ),
               _buildFooter(context, state),
-              const TranslationViewAutoSpellingFix(),
+              const TranslationViewAutoLanguage(),
+              const TranslationViewAutoSpelling(),
             ],
           ),
         );
