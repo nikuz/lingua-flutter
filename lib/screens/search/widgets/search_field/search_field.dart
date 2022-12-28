@@ -25,6 +25,7 @@ class _SearchFieldState extends State<SearchField> {
   double? _defaultPosition;
   double? _scrollStartPosition;
   double _opacity = 1;
+  int _listLength = 0;
 
   @override
   void didChangeDependencies() {
@@ -35,6 +36,7 @@ class _SearchFieldState extends State<SearchField> {
       setState(() {
         _position = _position != null && _position! < 0 ? _position : topPadding;
         _defaultPosition = topPadding;
+        _opacity = 1;
       });
     }
 
@@ -70,7 +72,7 @@ class _SearchFieldState extends State<SearchField> {
       }
 
       // when scrolling position is less than the field height plus margin,
-      // then the absolute scrolling position pixels value is more stable than shift
+      // then the absolute scrolling position "pixels" value is more stable than "shift"
       if (!isFloat && pixels < defaultPosition + SearchConstants.searchFieldHeight) {
         position = defaultPosition - pixels;
         isAnimated = false;
@@ -123,11 +125,10 @@ class _SearchFieldState extends State<SearchField> {
     }
 
     // don't always update the state, check for changed values
-    if (
-      _position != position
-      || _isAnimated != isAnimated
-      || _isFloat != isFloat
-      || _scrollStartPosition != scrollStartPosition
+    if (_position != position
+        || _isAnimated != isAnimated
+        || _isFloat != isFloat
+        || _scrollStartPosition != scrollStartPosition
     ) {
       setState(() {
         _position = position;
@@ -150,74 +151,87 @@ class _SearchFieldState extends State<SearchField> {
     final MyTheme theme = Styles.theme(context);
     final borderRadius = BorderRadius.circular(8);
 
-    return BlocBuilder<SearchCubit, SearchState>(
-      builder: (context, state) {
-        final searchState = SearchInheritedState.of(context);
-        return AnimatedPositioned(
-          top: _position,
-          left: 0,
-          right: 0,
-          duration: _isAnimated ? SearchConstants.appearanceAnimationDuration : Duration.zero,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  height: SearchConstants.searchFieldHeight - 15,
-                  color: theme.colors.background.withOpacity(0.8),
-                ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 10,
-                  left: 15,
-                  right: 15,
-                ),
-                child: Opacity(
-                  opacity: _opacity,
-                  child: CustomTextField(
-                    controller: searchState?.textController,
-                    focusNode: searchState?.focusNode,
-                    textInputAction: searchState?.hasInternetConnection == true
-                        ? TextInputAction.search
-                        : TextInputAction.done,
-                    hintText: 'Search for new words',
-                    prefixIcon: Icons.search,
-                    prefixIconColor: theme.colors.grey,
-                    borderRadius: borderRadius,
-                    elevation: 1,
-                    onChanged: (text) {
-                      final sanitizedWord = removeQuotesFromString(removeSlashFromString(text)).trim();
-                      final newSearchText = sanitizedWord.isNotEmpty ? sanitizedWord : null;
-                      if (state.searchText != newSearchText) {
-                        context.read<SearchCubit?>()?.fetchTranslations(searchText: newSearchText);
-                      }
-                    },
-                    onSubmitted: (_) {
-                      final text = searchState?.textController.text;
-                      if (searchState?.hasInternetConnection == true && text != null) {
-                        final sanitizedWord = removeQuotesFromString(removeSlashFromString(text)).trim();
-                        if (sanitizedWord.isNotEmpty) {
-                          searchState?.submitHandler(
-                            sanitizedWord,
-                            quickTranslation: sanitizedWord == state.quickTranslation?.word
-                                ? state.quickTranslation
-                                : null,
-                          );
-                        }
-                      }
-                    },
+    return BlocListener<SearchCubit, SearchState>(
+      listener: (context, state) {
+        final listIsShrinked = _listLength > state.translations.length;
+        if (_listLength != state.translations.length) {
+          setState(() {
+            _listLength = state.translations.length;
+            _position = listIsShrinked ? _defaultPosition : _position;
+            _isAnimated = listIsShrinked ? true : _isAnimated;
+            _opacity = listIsShrinked ? 1 : _opacity;
+          });
+        }
+      },
+      child: BlocBuilder<SearchCubit, SearchState>(
+        builder: (context, state) {
+          final searchState = SearchInheritedState.of(context);
+          return AnimatedPositioned(
+            top: _position,
+            left: 0,
+            right: 0,
+            duration: _isAnimated ? SearchConstants.appearanceAnimationDuration : Duration.zero,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    height: SearchConstants.searchFieldHeight - 15,
+                    color: theme.colors.background.withOpacity(0.8),
                   ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 10,
+                    left: 15,
+                    right: 15,
+                  ),
+                  child: Opacity(
+                    opacity: _opacity,
+                    child: CustomTextField(
+                      controller: searchState?.textController,
+                      focusNode: searchState?.focusNode,
+                      textInputAction: searchState?.hasInternetConnection == true
+                          ? TextInputAction.search
+                          : TextInputAction.done,
+                      hintText: 'Search for new words',
+                      prefixIcon: Icons.search,
+                      prefixIconColor: theme.colors.grey,
+                      borderRadius: borderRadius,
+                      elevation: 1,
+                      onChanged: (text) {
+                        final sanitizedWord = removeQuotesFromString(removeSlashFromString(text)).trim();
+                        final newSearchText = sanitizedWord.isNotEmpty ? sanitizedWord : null;
+                        if (state.searchText != newSearchText) {
+                          context.read<SearchCubit?>()?.fetchTranslations(searchText: newSearchText);
+                        }
+                      },
+                      onSubmitted: (_) {
+                        final text = searchState?.textController.text;
+                        if (searchState?.hasInternetConnection == true && text != null) {
+                          final sanitizedWord = removeQuotesFromString(removeSlashFromString(text)).trim();
+                          if (sanitizedWord.isNotEmpty) {
+                            searchState?.submitHandler(
+                              sanitizedWord,
+                              quickTranslation: sanitizedWord == state.quickTranslation?.word
+                                  ? state.quickTranslation
+                                  : null,
+                            );
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

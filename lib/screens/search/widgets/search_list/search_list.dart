@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,6 +21,7 @@ class _SearchListState extends State<SearchList> {
   final _scrollController = ScrollController();
   late SearchCubit _searchCubit;
   late Completer<void> _refreshCompleter;
+  bool _scrollIsCorrected = false;
 
   @override
   void initState() {
@@ -36,6 +38,9 @@ class _SearchListState extends State<SearchList> {
   }
 
   void _onScroll() {
+    if (_scrollIsCorrected) {
+      _scrollIsCorrected = false;
+    }
     if (
       _scrollController.position.pixels > 0.0
       && _scrollController.position.pixels == _scrollController.position.maxScrollExtent
@@ -51,18 +56,23 @@ class _SearchListState extends State<SearchList> {
   bool _onScrollNotification(ScrollNotification notification) {
     final searchState = SearchInheritedState.of(context);
     final topPadding = searchState?.getPaddingTop() ?? 0;
-    searchState?.broadcastListScroll(notification);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      searchState?.broadcastListScroll(notification);
+    });
 
-    if (notification is ScrollEndNotification) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (notification is ScrollEndNotification && !_scrollIsCorrected) {
+      _scrollIsCorrected = true;
+      Future.delayed(Duration.zero, () {
         final scrollPosition = _scrollController.position.pixels;
         const halfSearchFieldHeight = SearchConstants.searchFieldHeight / 2;
+        final fieldHideScrollPosition = min(_scrollController.position.maxScrollExtent, SearchConstants.searchFieldHeight);
         double? autoScrollPosition;
 
-        if (scrollPosition < halfSearchFieldHeight) {
+        if (scrollPosition != 0 && scrollPosition <= halfSearchFieldHeight) {
           autoScrollPosition = 0;
-        } else if (scrollPosition > halfSearchFieldHeight && scrollPosition < SearchConstants.searchFieldHeight) {
-          autoScrollPosition = topPadding - (topPadding - SearchConstants.searchFieldHeight);
+        }
+        else if (scrollPosition > halfSearchFieldHeight && scrollPosition < fieldHideScrollPosition) {
+          autoScrollPosition = topPadding - (topPadding - fieldHideScrollPosition);
         }
 
         if (autoScrollPosition != null) {
@@ -106,9 +116,7 @@ class _SearchListState extends State<SearchList> {
               child: ListView.builder(
                 controller: _scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: EdgeInsets.only(
-                  top: topPadding,
-                ),
+                padding: EdgeInsets.only(top: topPadding),
                 itemCount: state.translations.length + 2,
                 itemBuilder: (BuildContext context, int index) {
                   if (index == 0) {
