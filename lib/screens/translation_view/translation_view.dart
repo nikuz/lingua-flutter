@@ -14,6 +14,7 @@ import './widgets/header.dart';
 import './widgets/alternative_translations/alternative_translations.dart';
 import './widgets/definitions/definitions.dart';
 import './widgets/examples/examples.dart';
+import './widgets/no_additional_data.dart';
 
 class TranslationView extends StatefulWidget {
   final String word;
@@ -200,6 +201,7 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
                         ),
                       ),
 
+                    const TranslationViewNoAdditionalData(),
                     const TranslationViewAlternativeTranslations(),
                     const TranslationViewDefinitions(),
                     const TranslationViewExamples(),
