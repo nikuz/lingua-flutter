@@ -18,13 +18,38 @@ class Settings extends StatefulWidget {
   State<Settings> createState() => _SettingsState();
 }
 
-class _SettingsState extends State<Settings> {
+class _SettingsState extends State<Settings> with WidgetsBindingObserver {
   late SettingsCubit _settingsCubit;
+  late Brightness _brightness;
 
   @override
   void initState() {
     super.initState();
     _settingsCubit = context.read<SettingsCubit>();
+    WidgetsBinding.instance.addObserver(this);
+    _brightness = WidgetsBinding.instance.window.platformBrightness;
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    final brightness = WidgetsBinding.instance.window.platformBrightness;
+    final state = _settingsCubit.state;
+    if (state.autoDarkMode) {
+      if (state.darkMode && brightness == Brightness.light) {
+        _settingsCubit.setDarkMode(false);
+      } else if (!state.darkMode && brightness == Brightness.dark) {
+        _settingsCubit.setDarkMode(true);
+      }
+    }
+    setState(() {
+      _brightness = brightness;
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
@@ -100,8 +125,11 @@ class _SettingsState extends State<Settings> {
                         title: 'Dark mode',
                         child: Switch(
                           value: state.darkMode,
-                          onChanged: state.autoDarkMode ? null : (value) {
+                          onChanged: (value) {
                             _settingsCubit.setDarkMode(value);
+                            if (state.autoDarkMode) {
+                              _settingsCubit.setAutoDarkMode(false);
+                            }
                           },
                         ),
                       ),
@@ -112,7 +140,7 @@ class _SettingsState extends State<Settings> {
                           onChanged: (value) {
                             _settingsCubit.setAutoDarkMode(value);
                             if (value) {
-                              _settingsCubit.setDarkMode(false);
+                              _settingsCubit.setDarkMode(_brightness != Brightness.light);
                             }
                           },
                         ),
