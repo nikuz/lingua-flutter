@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/providers/connectivity.dart';
 import 'package:lingua_flutter/utils/string.dart';
+import 'package:lingua_flutter/utils/regexp.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
@@ -17,6 +18,7 @@ import './widgets/quick_search/quick_search.dart';
 import './widgets/empty_dictionary/empty_dictionary.dart';
 import './widgets/empty_search/empty_search.dart';
 import './widgets/error/search_error.dart';
+import './widgets/url_translation/url_translation.dart';
 import './search_state.dart';
 import './search_constants.dart';
 
@@ -86,7 +88,7 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
     Language? translateTo
   }) async {
     final sanitizedWord = removeQuotesFromString(removeSlashFromString(word)).trim();
-    if (sanitizedWord.isNotEmpty) {
+    if (sanitizedWord.isNotEmpty && !_searchTextIsUrl(sanitizedWord)) {
       if (!_settingsCubit.state.languageSourcesAreSet) {
         _settingsCubit.setLanguageSourcesAreSet();
       }
@@ -126,6 +128,9 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
     });
   }
 
+  bool _searchTextIsUrl(String? searchText) =>
+      (searchText != null && (uriStartReg.hasMatch(searchText) || uriReg.hasMatch(searchText)));
+
   Widget _buildResultsBody(SearchState state) {
     if (
       state.translations.isEmpty
@@ -139,6 +144,10 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
 
     if (state.error != null) {
       return const SearchError();
+    }
+
+    if (_searchTextIsUrl(state.searchText)) {
+      return const UrlTranslation();
     }
 
     if (
