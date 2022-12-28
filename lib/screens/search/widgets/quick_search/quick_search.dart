@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/widgets/translation_word_view/translation_word_view.dart';
 import 'package:lingua_flutter/widgets/language_selector/language_selector.dart';
 import 'package:lingua_flutter/widgets/button/button.dart';
@@ -28,6 +29,8 @@ class QuickSearch extends StatefulWidget {
 class _QuickSearchState extends State<QuickSearch> {
   late SearchCubit _searchCubit;
   late SettingsCubit _settingsCubit;
+  late Language _translateFrom;
+  late Language _translateTo;
   Timer? _debounce;
 
   @override
@@ -35,6 +38,9 @@ class _QuickSearchState extends State<QuickSearch> {
     super.initState();
     _searchCubit = context.read<SearchCubit>();
     _settingsCubit = context.read<SettingsCubit>();
+    final settingsState = _settingsCubit.state;
+    _translateFrom = settingsState.translateFrom;
+    _translateTo = settingsState.translateTo;
     _debounceRequest();
   }
 
@@ -58,8 +64,8 @@ class _QuickSearchState extends State<QuickSearch> {
     _debounce = Timer(QuickSearchConstants.debouncePeriod, () {
       _searchCubit.quickTranslation(
         word: widget.searchText,
-        translateFrom: _settingsCubit.state.translateFrom,
-        translateTo: _settingsCubit.state.translateTo,
+        translateFrom: _translateFrom,
+        translateTo: _translateTo,
       );
     });
   }
@@ -116,8 +122,8 @@ class _QuickSearchState extends State<QuickSearch> {
                         quickTranslation: sanitizedWord == state.quickTranslation?.word
                             ? state.quickTranslation
                             : null,
-                        translateFrom: _settingsCubit.state.translateFrom,
-                        translateTo: _settingsCubit.state.translateTo,
+                        translateFrom: _translateFrom,
+                        translateTo: _translateTo,
                       );
                     }
                   }
@@ -127,25 +133,49 @@ class _QuickSearchState extends State<QuickSearch> {
           ),
         ),
 
-        BlocBuilder<SettingsCubit, SettingsState>(
-          builder: (context, settingsState) {
-            return LanguageSelector(
-              from: settingsState.translateFrom,
-              to: settingsState.translateTo,
-              onFromChanged: (language) {
-                _settingsCubit.setTranslateFrom(language);
-                _debounceRequest();
-              },
-              onSwapped: (from, to) {
-                _settingsCubit.swapTranslationLanguages(from, to);
-                _debounceRequest();
-              },
-              onToChanged: (language) {
-                _settingsCubit.setTranslateTo(language);
-                _debounceRequest();
-              },
-            );
+        BlocListener<SettingsCubit, SettingsState>(
+          listener: (context, state) {
+            if (state.translateFrom != _translateFrom || state.translateTo != _translateTo) {
+              setState(() {
+                _translateFrom = state.translateFrom;
+                _translateTo = state.translateTo;
+              });
+              _debounceRequest();
+            }
           },
+          child: LanguageSelector(
+            from: _translateFrom,
+            to: _translateTo,
+            onFromChanged: (language) {
+              if (!_settingsCubit.state.languageSourcesAreSet) {
+                _settingsCubit.setTranslateFrom(language);
+              }
+              setState(() {
+                _translateFrom = language;
+              });
+              _debounceRequest();
+            },
+            onSwapped: (from, to) {
+              if (!_settingsCubit.state.languageSourcesAreSet) {
+                _settingsCubit.swapTranslationLanguages(from, to);
+              }
+              setState(() {
+                _translateFrom = from;
+                _translateTo = to;
+              });
+              _debounceRequest();
+            },
+            onToChanged: (language) {
+              print(_settingsCubit.state.languageSourcesAreSet);
+              if (!_settingsCubit.state.languageSourcesAreSet) {
+                _settingsCubit.setTranslateTo(language);
+              }
+              setState(() {
+                _translateTo = language;
+              });
+              _debounceRequest();
+            },
+          ),
         ),
       ],
     );

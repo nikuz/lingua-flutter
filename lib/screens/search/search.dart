@@ -7,6 +7,7 @@ import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 import 'package:lingua_flutter/styles/styles.dart';
+import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 
 import './bloc/search_cubit.dart';
 import './bloc/search_state.dart';
@@ -31,6 +32,7 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
   late TextEditingController _textController;
   late FocusNode _focusNode;
   late SearchCubit _searchCubit;
+  late SettingsCubit _settingsCubit;
   bool _hasInternetConnection = false;
 
   @override
@@ -38,6 +40,7 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _searchCubit = context.read<SearchCubit>();
+    _settingsCubit = context.read<SettingsCubit>();
     _textController = TextEditingController();
     _focusNode = FocusNode();
     _getInternetConnectionStatus();
@@ -84,6 +87,9 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
   }) async {
     final sanitizedWord = removeQuotesFromString(removeSlashFromString(word)).trim();
     if (sanitizedWord.isNotEmpty) {
+      if (!_settingsCubit.state.languageSourcesAreSet) {
+        _settingsCubit.setLanguageSourcesAreSet();
+      }
       final result = await AutoRouter.of(context).push<TranslationContainer>(
         TranslationViewRoute(
           word: sanitizedWord,
