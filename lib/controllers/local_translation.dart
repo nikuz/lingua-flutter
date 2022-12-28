@@ -25,7 +25,9 @@ Future<void> init() async {
       raw TEXT NOT NULL,
       image VARCHAR,
       translate_from VARCHAR NOT NULL,
+      translate_from_code VARCHAR NOT NULL,
       translate_to VARCHAR NOT NULL,
+      translate_to_code VARCHAR NOT NULL,
       schema_version VARCHAR NOT NULL,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT DEFAULT CURRENT_TIMESTAMP
@@ -137,14 +139,10 @@ Future<TranslationList> search(String searchText, int from, int to) async {
   );
 }
 
-Future<TranslationContainer?> get(String? word) async {
-  if (word == null) {
-    return null;
-  }
-
+Future<TranslationContainer?> get(String word, String translateFrom, String translateTo) async {
   final dbResponse = await DBProvider().rawQuery(
-      'SELECT * FROM dictionary WHERE word=?;',
-      [word]
+      'SELECT * FROM dictionary WHERE word=? AND translate_from_code=? AND translate_to_code=?;',
+      [word, translateFrom, translateTo]
   );
 
   if (dbResponse.isEmpty) {
@@ -170,7 +168,11 @@ Future<TranslationContainer?> get(String? word) async {
 }
 
 Future<void> save(TranslationContainer translation) async {
-  final TranslationContainer? alreadyExists = await get(translation.word);
+  final TranslationContainer? alreadyExists = await get(
+    translation.word,
+    translation.translateFrom.id,
+    translation.translateTo.id,
+  );
 
   // update translation if it already exists
   // user can appear in this situation if their local parsing schema is corrupted
@@ -181,8 +183,18 @@ Future<void> save(TranslationContainer translation) async {
 
   // populate db with initial data
   await DBProvider().rawQuery('''
-      INSERT INTO dictionary (word, translation, raw, created_at, schema_version, translate_from, translate_to)
-      VALUES(?, ?, ?, datetime("now"), ?, ?, ?);
+      INSERT INTO dictionary (
+        word, 
+        translation, 
+        raw, 
+        created_at, 
+        schema_version, 
+        translate_from, 
+        translate_from_code, 
+        translate_to,
+        translate_to_code
+      )
+      VALUES(?, ?, ?, datetime("now"), ?, ?, ?, ?, ?);
       ''',
       [
         translation.word,
@@ -190,12 +202,18 @@ Future<void> save(TranslationContainer translation) async {
         jsonEncode(translation.raw),
         translation.schemaVersion,
         jsonEncode(translation.translateFrom.toJson()),
+        translation.translateFrom.id,
         jsonEncode(translation.translateTo.toJson()),
+        translation.translateTo.id,
       ]
   );
 
   // get saved in DB translation entry with row ID
-  final TranslationContainer? newTranslationData = await get(translation.word);
+  final TranslationContainer? newTranslationData = await get(
+    translation.word,
+    translation.translateFrom.id,
+    translation.translateTo.id,
+  );
   final newTranslationId = newTranslationData?.id;
 
   if (newTranslationId != null) {
@@ -262,7 +280,11 @@ Future<void> save(TranslationContainer translation) async {
 }
 
 Future<void> update(TranslationContainer translation) async {
-  final TranslationContainer? translationData = await get(translation.word);
+  final TranslationContainer? translationData = await get(
+    translation.word,
+    translation.translateFrom.id,
+    translation.translateTo.id,
+  );
   final translationId = translationData?.id;
 
   if (translationData == null || translationId == null) {

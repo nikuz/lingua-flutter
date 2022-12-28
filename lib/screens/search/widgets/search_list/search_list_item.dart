@@ -98,7 +98,11 @@ class _SearchListItemState extends State<SearchListItem> {
                   color: _isSelected ? Styles.colors.grey.withOpacity(0.3) : theme.colors.background,
                   child: InkWell(
                     onTap: () {
-                      searchState?.submitHandler(widget.translationItem.word);
+                      searchState?.submitHandler(
+                        widget.translationItem.word,
+                        translateFrom: widget.translationItem.translateFrom,
+                        translateTo: widget.translationItem.translateTo,
+                      );
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(

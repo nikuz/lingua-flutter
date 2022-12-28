@@ -20,7 +20,11 @@ Future<TranslationContainer> translate({
   // if "forceCurrentSchemaDownload" set to true, then local retrieving and parsing has already failed,
   // so we want to refresh the locally stored "current" parsing schema and translate this word from scratch
   if (forceCurrentSchemaDownload == null) {
-    final existingTranslation = await local_translate_controller.get(encodedWord);
+    final existingTranslation = await local_translate_controller.get(
+      encodedWord,
+      translateFrom.id,
+      translateTo.id,
+    );
     if (existingTranslation != null) {
       final schemaVersion = existingTranslation.schemaVersion;
       StoredParsingSchema? storedParsingSchema;
