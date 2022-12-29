@@ -16,7 +16,7 @@ class TranslationViewAutoSpelling extends StatelessWidget {
       builder: (context, state) {
         final translation = state.translation;
 
-        if (translation == null || translation.autoSpelling == null) {
+        if (translation == null || translation.id != null || translation.autoSpelling == null) {
           return Container();
         }
 

@@ -41,7 +41,7 @@ class _TranslationViewAutoLanguageState extends State<TranslationViewAutoLanguag
   Widget build(BuildContext context) {
     return BlocListener<TranslationViewCubit, TranslationViewState>(
       listener: (context, state) {
-        if (state.translation != null && _autoLanguage == null && _languages != null) {
+        if (state.translation != null && state.translation!.id == null &&  _autoLanguage == null && _languages != null) {
           Language? autoLanguage;
 
           for (var id in _languages!.keys) {
@@ -65,6 +65,7 @@ class _TranslationViewAutoLanguageState extends State<TranslationViewAutoLanguag
           final translation = state.translation;
 
           if (translation == null
+              || state.translation!.id != null
               || translation.autoLanguage == null
               || translation.translateFrom.id == translation.autoLanguage
               || _autoLanguage == null
