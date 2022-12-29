@@ -34,7 +34,7 @@ Future<String?> retrieve({
       information: [
         err,
         word,
-        language,
+        language.toJson(),
         schema,
       ],
     );

@@ -92,7 +92,6 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
     required Language translateTo,
     TranslationContainer? quickTranslation,
   }) async {
-    print(translateFrom.id);
     final sanitizedWord = removeQuotesFromString(removeSlashFromString(word)).trim();
     if (sanitizedWord.isNotEmpty && !_searchTextIsUrl(sanitizedWord)) {
       if (!_settingsCubit.state.languageSourcesAreSet) {

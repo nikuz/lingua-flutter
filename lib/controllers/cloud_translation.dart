@@ -101,9 +101,9 @@ Future<TranslationContainer> translate({
         information: [
           word,
           translationRaw,
-          parsingSchema,
-          translateFrom,
-          translateTo,
+          parsingSchema.toJson(),
+          translateFrom.toJson(),
+          translateTo.toJson(),
         ],
       );
     }
@@ -138,8 +138,8 @@ Future<TranslationContainer> translate({
           translationResult,
           parsingSchema,
           currentParsingSchema.version,
-          translateFrom,
-          translateTo,
+          translateFrom.toJson(),
+          translateTo.toJson(),
         ],
       );
     }
