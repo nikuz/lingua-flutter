@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
-import '../bloc/translation_view_cubit.dart';
-import '../bloc/translation_view_state.dart';
+import '../../bloc/translation_view_cubit.dart';
+import '../../bloc/translation_view_state.dart';
 
 class TranslationViewNoAdditionalData extends StatelessWidget {
   const TranslationViewNoAdditionalData({super.key});

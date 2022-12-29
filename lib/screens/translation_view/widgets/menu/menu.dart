@@ -7,7 +7,7 @@ import 'package:lingua_flutter/widgets/text_field/text_field.dart';
 import 'package:lingua_flutter/screens/search/bloc/search_cubit.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 
-import '../bloc/translation_view_cubit.dart';
+import '../../bloc/translation_view_cubit.dart';
 
 class Menu {
   final String? id;

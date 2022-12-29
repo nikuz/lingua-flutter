@@ -6,8 +6,8 @@ import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/widgets/image_preview/image_preview.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 
-import '../bloc/translation_view_cubit.dart';
-import '../bloc/translation_view_state.dart';
+import '../../bloc/translation_view_cubit.dart';
+import '../../bloc/translation_view_state.dart';
 
 class TranslationViewImage extends StatelessWidget {
   const TranslationViewImage({super.key});

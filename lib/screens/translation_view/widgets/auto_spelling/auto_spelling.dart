@@ -4,8 +4,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
-import '../bloc/translation_view_cubit.dart';
-import '../bloc/translation_view_state.dart';
+import '../../bloc/translation_view_cubit.dart';
+import '../../bloc/translation_view_state.dart';
 
 class TranslationViewAutoSpelling extends StatelessWidget {
   const TranslationViewAutoSpelling({Key? key}) : super(key: key);

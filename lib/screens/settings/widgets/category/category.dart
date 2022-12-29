@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
-import './settings_row.dart';
+import '../row/row.dart';
 
 class SettingsCategory extends StatelessWidget {
   final String? title;

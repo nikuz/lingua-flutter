@@ -8,11 +8,11 @@ import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
 import 'package:lingua_flutter/widgets/button/button.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 
-import '../bloc/translation_view_cubit.dart';
-import '../bloc/translation_view_state.dart';
-import './auto_language.dart';
-import './auto_spelling.dart';
-import './image.dart';
+import '../../bloc/translation_view_cubit.dart';
+import '../../bloc/translation_view_state.dart';
+import '../auto_language/auto_language.dart';
+import '../auto_spelling/auto_spelling.dart';
+import '../image/image.dart';
 
 class TranslationViewHeader extends StatelessWidget {
   final String word;

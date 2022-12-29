@@ -6,8 +6,8 @@ import 'package:lingua_flutter/controllers/languages.dart' as languages_controll
 import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
-import '../bloc/translation_view_cubit.dart';
-import '../bloc/translation_view_state.dart';
+import '../../bloc/translation_view_cubit.dart';
+import '../../bloc/translation_view_state.dart';
 
 class TranslationViewAutoLanguage extends StatefulWidget {
   const TranslationViewAutoLanguage({Key? key}) : super(key: key);

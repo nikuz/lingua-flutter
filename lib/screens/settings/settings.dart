@@ -8,8 +8,8 @@ import 'package:lingua_flutter/app_config.dart' as config;
 
 import './bloc/settings_cubit.dart';
 import './bloc/settings_state.dart';
-import './widgets/settings_category.dart';
-import './widgets/settings_row.dart';
+import './widgets/category/category.dart';
+import './widgets/row/row.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);

@@ -8,12 +8,12 @@ import 'package:lingua_flutter/providers/connectivity.dart';
 import './bloc/translation_view_cubit.dart';
 import './bloc/translation_view_state.dart';
 
-import './widgets/menu.dart';
-import './widgets/header.dart';
+import './widgets/menu/menu.dart';
+import './widgets/header/header.dart';
 import './widgets/alternative_translations/alternative_translations.dart';
 import './widgets/definitions/definitions.dart';
 import './widgets/examples/examples.dart';
-import './widgets/no_additional_data.dart';
+import './widgets/no_additional_data/no_additional_data.dart';
 
 class TranslationView extends StatefulWidget {
   final String word;

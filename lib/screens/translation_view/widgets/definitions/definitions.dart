@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc/translation_view_cubit.dart';
 import '../../bloc/translation_view_state.dart';
-import '../section_wrapper.dart';
-import '../speech_part_wrapper.dart';
+import '../section_wrapper/section_wrapper.dart';
+import '../speech_part_wrapper/speech_part_wrapper.dart';
 import './definitions_item.dart';
 import './constants.dart';
 
