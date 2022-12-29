@@ -29,7 +29,6 @@ class TranslationViewNoAdditionalData extends StatelessWidget {
             textAlign: TextAlign.center,
             text: TextSpan(
               style: TextStyle(
-                // fontSize: 16,
                 color: theme.colors.grey,
                 height: 1.4,
               ),

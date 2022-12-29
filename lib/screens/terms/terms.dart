@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lingua_flutter/widgets/typography/typography.dart';
 import 'package:lingua_flutter/widgets/link/link.dart';
+import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/app_config.dart' as config;
 
 class Terms extends StatelessWidget {
@@ -8,6 +9,8 @@ class Terms extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final MyTheme theme = Styles.theme(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -45,8 +48,12 @@ class Terms extends StatelessWidget {
                     ListTile(
                       title: RichText(
                         textAlign: TextAlign.justify,
-                        text: const TextSpan(
-                          children: [
+                        text: TextSpan(
+                          style: TextStyle(
+                            color: theme.colors.primary,
+                            height: 1.5,
+                          ),
+                          children: const [
                             TextSpan(text: 'Application ', style: TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(text: 'means the software program provided by the Company downloaded by You on any electronic device, named TranslateShow'),
                           ],
@@ -56,8 +63,12 @@ class Terms extends StatelessWidget {
                     ListTile(
                       title: RichText(
                         textAlign: TextAlign.justify,
-                        text: const TextSpan(
-                          children: [
+                        text: TextSpan(
+                          style: TextStyle(
+                            color: theme.colors.primary,
+                            height: 1.5,
+                          ),
+                          children: const [
                             TextSpan(text: 'Application Store ', style: TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(text: 'means the digital distribution service operated and developed by Apple Inc. (Apple App Store) or Google Inc. (Google Play Store) in which the Application has been downloaded.'),
                           ],
@@ -67,8 +78,12 @@ class Terms extends StatelessWidget {
                     ListTile(
                       title: RichText(
                         textAlign: TextAlign.justify,
-                        text: const TextSpan(
-                          children: [
+                        text: TextSpan(
+                          style: TextStyle(
+                            color: theme.colors.primary,
+                            height: 1.5,
+                          ),
+                          children: const [
                             TextSpan(text: 'Affiliate ', style: TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(text: 'means an entity that controls, is controlled by or is under common control with a party, where "control" means ownership of 50% or more of the shares, equity interest or other securities entitled to vote for election of directors or other managing authority.'),
                           ],
@@ -78,8 +93,12 @@ class Terms extends StatelessWidget {
                     ListTile(
                       title: RichText(
                         textAlign: TextAlign.justify,
-                        text: const TextSpan(
-                          children: [
+                        text: TextSpan(
+                          style: TextStyle(
+                            color: theme.colors.primary,
+                            height: 1.5,
+                          ),
+                          children: const [
                             TextSpan(text: 'Country ', style: TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(text: 'refers to: British Columbia, Canada'),
                           ],
@@ -89,8 +108,12 @@ class Terms extends StatelessWidget {
                     ListTile(
                       title: RichText(
                         textAlign: TextAlign.justify,
-                        text: const TextSpan(
-                          children: [
+                        text: TextSpan(
+                          style: TextStyle(
+                            color: theme.colors.primary,
+                            height: 1.5,
+                          ),
+                          children: const [
                             TextSpan(text: 'Company ', style: TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(text: '(referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to TranslateShow.'),
                           ],
@@ -100,8 +123,12 @@ class Terms extends StatelessWidget {
                     ListTile(
                       title: RichText(
                         textAlign: TextAlign.justify,
-                        text: const TextSpan(
-                          children: [
+                        text: TextSpan(
+                          style: TextStyle(
+                            color: theme.colors.primary,
+                            height: 1.5,
+                          ),
+                          children: const [
                             TextSpan(text: 'Device ', style: TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(text: 'means any device that can access the Service such as a computer, a cellphone or a digital tablet.'),
                           ],
@@ -111,8 +138,12 @@ class Terms extends StatelessWidget {
                     ListTile(
                       title: RichText(
                         textAlign: TextAlign.justify,
-                        text: const TextSpan(
-                          children: [
+                        text: TextSpan(
+                          style: TextStyle(
+                            color: theme.colors.primary,
+                            height: 1.5,
+                          ),
+                          children: const [
                             TextSpan(text: 'Service ', style: TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(text: 'refers to the Application.'),
                           ],
@@ -122,8 +153,12 @@ class Terms extends StatelessWidget {
                     ListTile(
                       title: RichText(
                         textAlign: TextAlign.justify,
-                        text: const TextSpan(
-                          children: [
+                        text: TextSpan(
+                          style: TextStyle(
+                            color: theme.colors.primary,
+                            height: 1.5,
+                          ),
+                          children: const [
                             TextSpan(text: 'Terms and Conditions ', style: TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(text: '(also referred as "Terms") mean these Terms and Conditions that form the entire agreement between You and the Company regarding the use of the Service. This Terms and Conditions agreement has been created with the help of the TermsFeed Terms and Conditions Generator.'),
                           ],
@@ -133,8 +168,12 @@ class Terms extends StatelessWidget {
                     ListTile(
                       title: RichText(
                         textAlign: TextAlign.justify,
-                        text: const TextSpan(
-                          children: [
+                        text: TextSpan(
+                          style: TextStyle(
+                            color: theme.colors.primary,
+                            height: 1.5,
+                          ),
+                          children: const [
                             TextSpan(text: 'Third-party Social Media Service ', style: TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(text: 'means any services or content (including data, information, products or services) provided by a third-party that may be displayed, included or made available by the Service.'),
                           ],
@@ -144,8 +183,12 @@ class Terms extends StatelessWidget {
                     ListTile(
                       title: RichText(
                         textAlign: TextAlign.justify,
-                        text: const TextSpan(
-                          children: [
+                        text: TextSpan(
+                          style: TextStyle(
+                            color: theme.colors.primary,
+                            height: 1.5,
+                          ),
+                          children: const [
                             TextSpan(text: 'You ', style: TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(text: 'means the individual accessing or using the Service, or the company, or other legal entity on behalf of which such individual is accessing or using the Service, as applicable.'),
                           ],
