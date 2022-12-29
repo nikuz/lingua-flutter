@@ -212,6 +212,7 @@ class _SearchFieldState extends State<SearchField> {
                       prefixIconColor: theme.colors.grey,
                       borderRadius: borderRadius,
                       elevation: 1,
+                      maxLength: 100,
                       onChanged: (text) {
                         final sanitizedWord = removeQuotesFromString(removeSlashFromString(text)).trim();
                         final newSearchText = sanitizedWord.isNotEmpty ? sanitizedWord : null;

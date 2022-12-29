@@ -56,6 +56,7 @@ class _LanguageListState extends State<LanguageList> {
             hintText: 'Search language',
             autofocus: true,
             underLined: true,
+            maxLength: 50,
             onChanged: (value) {
               _filterLanguages(value);
             },

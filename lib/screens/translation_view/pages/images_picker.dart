@@ -61,6 +61,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
               hintText: 'Search for images',
               textInputAction: TextInputAction.search,
               prefixIcon: Icons.arrow_back,
+              maxLength: 100,
               prefixAction: () {
                 AutoRouter.of(context).pop();
               },

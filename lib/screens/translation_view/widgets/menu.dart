@@ -63,6 +63,7 @@ List<Widget> translationViewMenuConstructor({
                 autofocus: true,
                 textInputAction: TextInputAction.done,
                 outlined: true,
+                maxLength: 100,
                 onChanged: (String value) {
                   newTranslation = value;
                 },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/widgets/button/button.dart';
 
@@ -23,6 +24,7 @@ class CustomTextField extends StatefulWidget {
   final BorderRadius? borderRadius;
   final double? elevation;
   final Color? shadowColor;
+  final int? maxLength;
   final VoidCallback? onClearPressed;
   final Function(String value)? onChanged;
   final Function(String value)? onSubmitted;
@@ -47,6 +49,7 @@ class CustomTextField extends StatefulWidget {
     this.borderRadius,
     this.elevation,
     this.shadowColor,
+    this.maxLength,
     this.onClearPressed,
     this.onChanged,
     this.onSubmitted,
@@ -215,6 +218,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
               vertical: 14,
             ),
           ),
+          inputFormatters: widget.maxLength != null
+              ? [
+                LengthLimitingTextInputFormatter(widget.maxLength),
+              ]
+              : null,
           style: const TextStyle(
             fontSize: 18,
           ),
