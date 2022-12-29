@@ -49,7 +49,7 @@ class TranslationViewNoAdditionalData extends StatelessWidget {
                   text: translation.translateTo.value,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                const TextSpan(text: '" has no alternative translations and examples.'),
+                const TextSpan(text: '" has no alternative translations or examples.'),
               ],
             ),
           ),

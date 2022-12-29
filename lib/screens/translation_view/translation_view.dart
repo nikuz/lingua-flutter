@@ -14,6 +14,7 @@ import './widgets/alternative_translations/alternative_translations.dart';
 import './widgets/definitions/definitions.dart';
 import './widgets/examples/examples.dart';
 import './widgets/no_additional_data/no_additional_data.dart';
+import './widgets/powered_by/powered_by.dart';
 
 class TranslationView extends StatefulWidget {
   final String word;
@@ -36,7 +37,6 @@ class TranslationView extends StatefulWidget {
 class _TranslationViewState extends State<TranslationView> with WidgetsBindingObserver {
   late TranslationViewCubit _translationViewCubit;
   late ScrollController _scrollController;
-  ScrollPhysics _scrollPhysics = const ClampingScrollPhysics();
   bool _hasInternetConnection = false;
 
   @override
@@ -91,13 +91,7 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
   }
 
   void _scrollHandler() {
-    final scrollPosition = _scrollController.position.pixels;
-    final threshold = MediaQuery.of(context).size.height;
-    if (scrollPosition < threshold && _scrollPhysics is! ClampingScrollPhysics) {
-      setState(() => _scrollPhysics = const ClampingScrollPhysics());
-    } else if (scrollPosition > threshold && _scrollPhysics is! BouncingScrollPhysics) {
-      setState(() => _scrollPhysics = const BouncingScrollPhysics());
-    }
+    if (_scrollController.position.pixels < 0) _scrollController.jumpTo(0);
   }
 
   void _getInternetConnectionStatus() async {
@@ -173,38 +167,42 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
               ),
             ),
             body: SafeArea(
-              child: SingleChildScrollView(
+              child: CustomScrollView(
                 controller: _scrollController,
-                physics: _scrollPhysics,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    TranslationViewHeader(word: widget.word),
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  SliverList(
+                    delegate: SliverChildListDelegate([
+                      TranslationViewHeader(word: widget.word),
 
-                    if (state.translateLoading)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 70),
-                        child: Center(
-                          child: CircularProgressIndicator(),
+                      if (state.translateLoading)
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 70),
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
                         ),
-                      ),
 
-                    if (state.error != null)
-                      const Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Text(
-                          'Cannot translate at the moment, \nplease try again later.',
-                          textAlign: TextAlign.center,
+                      if (state.error != null)
+                        const Padding(
+                          padding: EdgeInsets.all(20),
+                          child: Text(
+                            'Cannot translate at the moment, \nplease try again later.',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                      ),
 
-                    const TranslationViewNoAdditionalData(),
-                    const TranslationViewAlternativeTranslations(),
-                    const TranslationViewDefinitions(),
-                    const TranslationViewExamples(),
-                  ],
-                ),
+                      const TranslationViewNoAdditionalData(),
+                      const TranslationViewAlternativeTranslations(),
+                      const TranslationViewDefinitions(),
+                      const TranslationViewExamples(),
+                    ]),
+                  ),
+                  const SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: TranslationViewPoweredBy(),
+                  ),
+                ],
               ),
             ),
           );
