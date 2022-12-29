@@ -154,8 +154,8 @@ class TranslationViewRoute extends _i8.PageRouteInfo<TranslationViewRouteArgs> {
     _i9.Key? key,
     required String word,
     _i10.TranslationContainer? quickTranslation,
-    _i11.Language? translateFrom,
-    _i11.Language? translateTo,
+    required _i11.Language translateFrom,
+    required _i11.Language translateTo,
   }) : super(
           TranslationViewRoute.name,
           path: 'translation_view',
@@ -176,8 +176,8 @@ class TranslationViewRouteArgs {
     this.key,
     required this.word,
     this.quickTranslation,
-    this.translateFrom,
-    this.translateTo,
+    required this.translateFrom,
+    required this.translateTo,
   });
 
   final _i9.Key? key;
@@ -186,9 +186,9 @@ class TranslationViewRouteArgs {
 
   final _i10.TranslationContainer? quickTranslation;
 
-  final _i11.Language? translateFrom;
+  final _i11.Language translateFrom;
 
-  final _i11.Language? translateTo;
+  final _i11.Language translateTo;
 
   @override
   String toString() {

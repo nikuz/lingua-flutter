@@ -81,8 +81,11 @@ class _TranslationViewAutoLanguageState extends State<TranslationViewAutoLanguag
                 context.read<TranslationViewCubit>().reset();
                 AutoRouter.of(context).replace(TranslationViewRoute(
                   word: translation.word,
-                  translateFrom: _autoLanguage,
-                  translateTo: translation.translateFrom,
+                  translateFrom: _autoLanguage!,
+                  // flip target language only if auto language is the same as the target one
+                  translateTo: _autoLanguage!.id == translation.translateTo.id
+                      ? translation.translateFrom
+                      : translation.translateTo,
                 ));
               },
               child: Container(

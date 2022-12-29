@@ -2,11 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/models/language.dart';
+import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/widgets/translation_word_view/translation_word_view.dart';
 import 'package:lingua_flutter/widgets/language_selector/language_selector.dart';
 import 'package:lingua_flutter/widgets/button/button.dart';
-import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
-import 'package:lingua_flutter/screens/settings/bloc/settings_state.dart';
 import 'package:lingua_flutter/utils/string.dart';
 
 import '../../bloc/search_cubit.dart';
@@ -16,11 +15,21 @@ import './constants.dart';
 
 class QuickSearch extends StatefulWidget {
   final String searchText;
+  final Language translateFrom;
+  final Language translateTo;
+  final void Function(Language translateFrom) onTranslateFromChange;
+  final void Function(Language translateTo) onTranslateToChange;
+  final void Function(Language translateFrom, Language translateTo) onLanguageSourceSwap;
 
   const QuickSearch({
-    Key? key,
+    super.key,
     required this.searchText,
-  }) : super(key: key);
+    required this.translateFrom,
+    required this.translateTo,
+    required this.onTranslateFromChange,
+    required this.onTranslateToChange,
+    required this.onLanguageSourceSwap,
+  });
 
   @override
   State<QuickSearch> createState() => _QuickSearchState();
@@ -28,26 +37,22 @@ class QuickSearch extends StatefulWidget {
 
 class _QuickSearchState extends State<QuickSearch> {
   late SearchCubit _searchCubit;
-  late SettingsCubit _settingsCubit;
-  late Language _translateFrom;
-  late Language _translateTo;
   Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
     _searchCubit = context.read<SearchCubit>();
-    _settingsCubit = context.read<SettingsCubit>();
-    final settingsState = _settingsCubit.state;
-    _translateFrom = settingsState.translateFrom;
-    _translateTo = settingsState.translateTo;
     _debounceRequest();
   }
 
   @override
   void didUpdateWidget(covariant QuickSearch oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.searchText != widget.searchText) {
+    if (oldWidget.searchText != widget.searchText
+        || oldWidget.translateFrom != widget.translateFrom
+        || oldWidget.translateTo != widget.translateTo
+    ) {
       _debounceRequest();
     }
   }
@@ -64,8 +69,8 @@ class _QuickSearchState extends State<QuickSearch> {
     _debounce = Timer(QuickSearchConstants.debouncePeriod, () {
       _searchCubit.quickTranslation(
         word: widget.searchText,
-        translateFrom: _translateFrom,
-        translateTo: _translateTo,
+        translateFrom: widget.translateFrom,
+        translateTo: widget.translateTo,
       );
     });
   }
@@ -116,14 +121,21 @@ class _QuickSearchState extends State<QuickSearch> {
                   final text = searchState?.textController.text;
                   if (searchState?.hasInternetConnection == true && text != null) {
                     final sanitizedWord = removeQuotesFromString(removeSlashFromString(text)).trim();
+                    TranslationContainer? quickTranslation;
+
+                    if (sanitizedWord == state.quickTranslation?.word
+                        && widget.translateFrom == state.quickTranslation?.translateFrom
+                        && widget.translateTo == state.quickTranslation?.translateTo
+                    ) {
+                      quickTranslation = state.quickTranslation;
+                    }
+
                     if (sanitizedWord.isNotEmpty) {
                       searchState?.submitHandler(
                         sanitizedWord,
-                        quickTranslation: sanitizedWord == state.quickTranslation?.word
-                            ? state.quickTranslation
-                            : null,
-                        translateFrom: _translateFrom,
-                        translateTo: _translateTo,
+                        translateFrom: widget.translateFrom,
+                        translateTo: widget.translateTo,
+                        quickTranslation: quickTranslation,
                       );
                     }
                   }
@@ -133,48 +145,18 @@ class _QuickSearchState extends State<QuickSearch> {
           ),
         ),
 
-        BlocListener<SettingsCubit, SettingsState>(
-          listener: (context, state) {
-            if (state.translateFrom != _translateFrom || state.translateTo != _translateTo) {
-              setState(() {
-                _translateFrom = state.translateFrom;
-                _translateTo = state.translateTo;
-              });
-              _debounceRequest();
-            }
+        LanguageSelector(
+          from: widget.translateFrom,
+          to: widget.translateTo,
+          onFromChanged: (language) {
+            widget.onTranslateFromChange(language);
           },
-          child: LanguageSelector(
-            from: _translateFrom,
-            to: _translateTo,
-            onFromChanged: (language) {
-              if (!_settingsCubit.state.languageSourcesAreSet) {
-                _settingsCubit.setTranslateFrom(language);
-              }
-              setState(() {
-                _translateFrom = language;
-              });
-              _debounceRequest();
-            },
-            onSwapped: (from, to) {
-              if (!_settingsCubit.state.languageSourcesAreSet) {
-                _settingsCubit.swapTranslationLanguages(from, to);
-              }
-              setState(() {
-                _translateFrom = from;
-                _translateTo = to;
-              });
-              _debounceRequest();
-            },
-            onToChanged: (language) {
-              if (!_settingsCubit.state.languageSourcesAreSet) {
-                _settingsCubit.setTranslateTo(language);
-              }
-              setState(() {
-                _translateTo = language;
-              });
-              _debounceRequest();
-            },
-          ),
+          onSwapped: (from, to) {
+            widget.onLanguageSourceSwap(from, to);
+          },
+          onToChanged: (language) {
+            widget.onTranslateToChange(language);
+          },
         ),
       ],
     );

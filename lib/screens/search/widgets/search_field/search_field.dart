@@ -4,6 +4,8 @@ import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/widgets/text_field/text_field.dart';
 import 'package:lingua_flutter/utils/remap_value.dart';
 import 'package:lingua_flutter/utils/string.dart';
+import 'package:lingua_flutter/models/language.dart';
+import 'package:lingua_flutter/models/translation.dart';
 
 import '../../bloc/search_cubit.dart';
 import '../../bloc/search_state.dart';
@@ -11,7 +13,14 @@ import '../../search_state.dart';
 import '../../search_constants.dart';
 
 class SearchField extends StatefulWidget {
-  const SearchField({Key? key}) : super(key: key);
+  final Language translateFrom;
+  final Language translateTo;
+
+  const SearchField({
+    super.key,
+    required this.translateFrom,
+    required this.translateTo,
+  });
 
   @override
   State<SearchField> createState() => _SearchFieldState();
@@ -214,14 +223,21 @@ class _SearchFieldState extends State<SearchField> {
                         final text = searchState?.textController.text;
                         if (searchState?.hasInternetConnection == true && text != null) {
                           final sanitizedWord = removeQuotesFromString(removeSlashFromString(text)).trim();
+                          TranslationContainer? quickTranslation;
+
+                          if (sanitizedWord == state.quickTranslation?.word
+                              && widget.translateFrom == state.quickTranslation?.translateFrom
+                              && widget.translateTo == state.quickTranslation?.translateTo
+                          ) {
+                            quickTranslation = state.quickTranslation;
+                          }
+
                           if (sanitizedWord.isNotEmpty) {
                             searchState?.submitHandler(
                               sanitizedWord,
-                              quickTranslation: sanitizedWord == state.quickTranslation?.word
-                                  ? state.quickTranslation
-                                  : null,
-                              translateFrom: state.quickTranslation?.translateFrom,
-                              translateTo: state.quickTranslation?.translateTo,
+                              translateFrom: widget.translateFrom,
+                              translateTo: widget.translateTo,
+                              quickTranslation: quickTranslation,
                             );
                           }
                         }

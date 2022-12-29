@@ -9,6 +9,7 @@ import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
+import 'package:lingua_flutter/screens/settings/bloc/settings_state.dart';
 
 import './bloc/search_cubit.dart';
 import './bloc/search_state.dart';
@@ -36,6 +37,8 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
   late SearchCubit _searchCubit;
   late SettingsCubit _settingsCubit;
   bool _hasInternetConnection = false;
+  late Language _translateFrom;
+  late Language _translateTo;
 
   @override
   void initState() {
@@ -52,6 +55,8 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
       });
     });
     context.read<SearchCubit>().fetchTranslations();
+    _translateFrom = _settingsCubit.state.translateFrom;
+    _translateTo = _settingsCubit.state.translateTo;
   }
 
   @override
@@ -83,10 +88,11 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
   }
 
   void _submitHandler(String word, {
+    required Language translateFrom,
+    required Language translateTo,
     TranslationContainer? quickTranslation,
-    Language? translateFrom,
-    Language? translateTo
   }) async {
+    print(translateFrom.id);
     final sanitizedWord = removeQuotesFromString(removeSlashFromString(word)).trim();
     if (sanitizedWord.isNotEmpty && !_searchTextIsUrl(sanitizedWord)) {
       if (!_settingsCubit.state.languageSourcesAreSet) {
@@ -95,9 +101,9 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
       final result = await AutoRouter.of(context).push<TranslationContainer>(
         TranslationViewRoute(
           word: sanitizedWord,
-          quickTranslation: quickTranslation,
           translateFrom: translateFrom,
           translateTo: translateTo,
+          quickTranslation: quickTranslation,
         ),
       );
       if (result != null) {
@@ -110,6 +116,8 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
           });
           _searchCubit.fetchTranslations(searchText: null);
         }
+        _translateFrom = _settingsCubit.state.translateFrom;
+        _translateTo = _settingsCubit.state.translateTo;
       }
     }
   }
@@ -157,6 +165,33 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
     ) {
       return QuickSearch(
         searchText: state.searchText!,
+        translateFrom: _translateFrom,
+        translateTo: _translateTo,
+        onTranslateFromChange: (language) {
+          setState(() {
+            _translateFrom = language;
+          });
+          if (!_settingsCubit.state.languageSourcesAreSet) {
+            _settingsCubit.setTranslateFrom(language);
+          }
+        },
+        onTranslateToChange: (language) {
+          setState(() {
+            _translateTo = language;
+          });
+          if (!_settingsCubit.state.languageSourcesAreSet) {
+            _settingsCubit.setTranslateTo(language);
+          }
+        },
+        onLanguageSourceSwap: (from, to) {
+          setState(() {
+            _translateFrom = from;
+            _translateTo = to;
+          });
+          if (!_settingsCubit.state.languageSourcesAreSet) {
+            _settingsCubit.swapTranslationLanguages(from, to);
+          }
+        },
       );
     }
 
@@ -189,29 +224,42 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
         elevation: 0,
         toolbarHeight: 0,
       ),
-      body: BlocBuilder<SearchCubit, SearchState>(
-        builder: (context, state) {
-          return SafeArea(
-            top: false,
-            child: SearchInheritedState(
-              textController: _textController,
-              focusNode: _focusNode,
-              hasInternetConnection: _hasInternetConnection,
-              submitHandler: _submitHandler,
-              subscribeToListScroll: _subscribeToListScroll,
-              unsubscribeFromListScroll: _unsubscribeFromListScroll,
-              broadcastListScroll: _broadcastListScroll,
-              getPaddingTop: _getPaddingTop,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  _buildResultsBody(state),
-                  const SearchField(),
-                ],
-              ),
-            ),
-          );
+      body: BlocListener<SettingsCubit, SettingsState>(
+        listener: (context, state) {
+          if (state.translateFrom != _translateFrom || state.translateTo != _translateTo) {
+            setState(() {
+              _translateFrom = state.translateFrom;
+              _translateTo = state.translateTo;
+            });
+          }
         },
+        child: BlocBuilder<SearchCubit, SearchState>(
+          builder: (context, state) {
+            return SafeArea(
+              top: false,
+              child: SearchInheritedState(
+                textController: _textController,
+                focusNode: _focusNode,
+                hasInternetConnection: _hasInternetConnection,
+                submitHandler: _submitHandler,
+                subscribeToListScroll: _subscribeToListScroll,
+                unsubscribeFromListScroll: _unsubscribeFromListScroll,
+                broadcastListScroll: _broadcastListScroll,
+                getPaddingTop: _getPaddingTop,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    _buildResultsBody(state),
+                    SearchField(
+                      translateFrom: _translateFrom,
+                      translateTo: _translateTo,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

@@ -4,7 +4,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/providers/connectivity.dart';
-import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 
 import './bloc/translation_view_cubit.dart';
 import './bloc/translation_view_state.dart';
@@ -18,16 +17,16 @@ import './widgets/no_additional_data.dart';
 
 class TranslationView extends StatefulWidget {
   final String word;
+  final Language translateFrom;
+  final Language translateTo;
   final TranslationContainer? quickTranslation;
-  final Language? translateFrom;
-  final Language? translateTo;
 
   const TranslationView({
     Key? key,
     required this.word,
+    required this.translateFrom,
+    required this.translateTo,
     this.quickTranslation,
-    this.translateFrom,
-    this.translateTo,
   }) : super(key: key);
 
   @override
@@ -109,11 +108,10 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
   }
 
   void _fetchTranslation() {
-    final settingsCubit = context.read<SettingsCubit>();
     _translationViewCubit.translate(
       widget.word,
-      widget.translateFrom ?? settingsCubit.state.translateFrom,
-      widget.translateTo ?? settingsCubit.state.translateTo,
+      widget.translateFrom,
+      widget.translateTo,
     );
   }
 

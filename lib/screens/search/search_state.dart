@@ -7,9 +7,9 @@ class SearchInheritedState extends InheritedWidget {
   final FocusNode focusNode;
   final bool hasInternetConnection;
   final Function(String word, {
+    required Language translateFrom,
+    required Language translateTo,
     TranslationContainer? quickTranslation,
-    Language? translateFrom,
-    Language? translateTo,
   }) submitHandler;
   final Function(String name, Function callback) subscribeToListScroll;
   final Function(String name) unsubscribeFromListScroll;
