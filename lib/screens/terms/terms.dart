@@ -27,53 +27,202 @@ class Terms extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const TypographyText('Terms & Conditions', variant: TypographyVariant.h4),
-                const TypographyText('By downloading or using the app, these terms will automatically apply to you – you should make sure therefore that you read them carefully before using the app. You’re not allowed to copy or modify the app, any part of the app, or our trademarks in any way. You’re not allowed to attempt to extract the source code of the app, and you also shouldn’t try to translate the app into other languages or make derivative versions. The app itself, and all the trademarks, copyright, database rights, and other intellectual property rights related to it, still belong to Nikolay.Kuznetsov.', align: TextAlign.justify),
-                const TypographyText('Nikolay.Kuznetsov is committed to ensuring that the app is as useful and efficient as possible. For that reason, we reserve the right to make changes to the app or to charge for its services, at any time and for any reason. We will never charge you for the app or its services without making it very clear to you exactly what you’re paying for.', align: TextAlign.justify),
-                const TypographyText('The "My new words" app stores and processes personal data that you have provided to us, to provide my Service. It’s your responsibility to keep your phone and access to the app secure.', align: TextAlign.justify),
-                const TypographyText('The app does use third-party services that declare their Terms and Conditions.', align: TextAlign.justify),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 10,
-                    bottom: 10,
-                    left: 10,
-                  ),
-                  child: Link(
-                    text: 'Google Play Services',
-                    href: Uri.parse('https://policies.google.com/terms'),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 10,
-                    bottom: 10,
-                    left: 10,
-                  ),
-                  child: Link(
-                    text: 'Firebase Crashlytics',
-                    href: Uri.parse('https://firebase.google.com/terms/crashlytics'),
-                  ),
-                ),
-                const TypographyText('You should be aware that there are certain things that Nikolay.Kuznetsov will not take responsibility for. Certain functions of the app will require the app to have an active internet connection. The connection can be Wi-Fi or provided by your mobile network provider, but Nikolay.Kuznetsov cannot take responsibility for the app not working at full functionality if you don’t have access to Wi-Fi, and you don’t have any of your data allowance left.', align: TextAlign.justify),
-                const TypographyText('If you’re using the app outside of an area with Wi-Fi, you should remember that the terms of the agreement with your mobile network provider will still apply. As a result, you may be charged by your mobile provider for the cost of data for the duration of the connection while accessing the app, or other third-party charges. In using the app, you’re accepting responsibility for any such charges, including roaming data charges if you use the app outside of your home territory (i.e. region or country) without turning off data roaming. If you are not the bill payer for the device on which you’re using the app, please be aware that we assume that you have received permission from the bill payer for using the app.', align: TextAlign.justify),
-                const TypographyText('With respect to Nikolay.Kuznetsov’s responsibility for your use of the app, when you’re using the app, it’s important to bear in mind that although we endeavor to ensure that it is updated and correct at all times, we do rely on third parties to provide information to us so that we can make it available to you. Nikolay.Kuznetsov accepts no liability for any loss, direct or indirect, you experience as a result of relying wholly on this functionality of the app.', align: TextAlign.justify),
-                const TypographyText('At some point, we may wish to update the app. The app is currently available on Android & iOS – the requirements for the both systems (and for any additional systems we decide to extend the availability of the app to) may change, and you’ll need to download the updates if you want to keep using the app. Nikolay.Kuznetsov does not promise that it will always update the app so that it is relevant to you and/or works with the Android & iOS version that you have installed on your device. However, you promise to always accept updates to the application when offered to you, We may also wish to stop providing the app, and may terminate use of it at any time without giving notice of termination to you. Unless we tell you otherwise, upon any termination, (a) the rights and licenses granted to you in these terms will end; (b) you must stop using the app, and (if needed) delete it from your device.', align: TextAlign.justify),
-                const TypographyText('Changes to This Terms and Conditions', variant: TypographyVariant.h4),
-                const TypographyText('I may update our Terms and Conditions from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Terms and Conditions on this page.', align: TextAlign.justify),
-                const TypographyText('These terms and conditions are effective as of 2022-12-21', align: TextAlign.justify),
-                const TypographyText('Contact Us', variant: TypographyVariant.h4),
-                const TypographyText('If you have any questions or suggestions about my Terms and Conditions, do not hesitate to contact me at', align: TextAlign.justify),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: 10,
-                  ),
-                  child: Link(
-                    text: config.privacyEmail,
-                    href: Uri(
-                      scheme: 'mailto',
-                      path: config.privacyEmail,
+                const TypographyText('Terms and Conditions', variant: TypographyVariant.h4),
+                const TypographyText('Last updated: December 27, 2022'),
+                const TypographyText('Please read these terms and conditions carefully before using Our Service.', align: TextAlign.justify),
+
+                const TypographyText('Interpretation and Definitions', variant: TypographyVariant.h4),
+
+                const TypographyText('Interpretation', variant: TypographyVariant.h6),
+                const TypographyText('The words of which the initial letter is capitalized have meanings defined under the following conditions. The following definitions shall have the same meaning regardless of whether they appear in singular or in plural.', align: TextAlign.justify),
+
+                const TypographyText('Definitions', variant: TypographyVariant.h6),
+                const TypographyText('For the purposes of these Terms and Conditions:', align: TextAlign.justify),
+                ListView(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    ListTile(
+                      title: RichText(
+                        textAlign: TextAlign.justify,
+                        text: const TextSpan(
+                          children: [
+                            TextSpan(text: 'Application ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: 'means the software program provided by the Company downloaded by You on any electronic device, named TranslateShow'),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                    ListTile(
+                      title: RichText(
+                        textAlign: TextAlign.justify,
+                        text: const TextSpan(
+                          children: [
+                            TextSpan(text: 'Application Store ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: 'means the digital distribution service operated and developed by Apple Inc. (Apple App Store) or Google Inc. (Google Play Store) in which the Application has been downloaded.'),
+                          ],
+                        ),
+                      ),
+                    ),
+                    ListTile(
+                      title: RichText(
+                        textAlign: TextAlign.justify,
+                        text: const TextSpan(
+                          children: [
+                            TextSpan(text: 'Affiliate ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: 'means an entity that controls, is controlled by or is under common control with a party, where "control" means ownership of 50% or more of the shares, equity interest or other securities entitled to vote for election of directors or other managing authority.'),
+                          ],
+                        ),
+                      ),
+                    ),
+                    ListTile(
+                      title: RichText(
+                        textAlign: TextAlign.justify,
+                        text: const TextSpan(
+                          children: [
+                            TextSpan(text: 'Country ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: 'refers to: British Columbia, Canada'),
+                          ],
+                        ),
+                      ),
+                    ),
+                    ListTile(
+                      title: RichText(
+                        textAlign: TextAlign.justify,
+                        text: const TextSpan(
+                          children: [
+                            TextSpan(text: 'Company ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: '(referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to TranslateShow.'),
+                          ],
+                        ),
+                      ),
+                    ),
+                    ListTile(
+                      title: RichText(
+                        textAlign: TextAlign.justify,
+                        text: const TextSpan(
+                          children: [
+                            TextSpan(text: 'Device ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: 'means any device that can access the Service such as a computer, a cellphone or a digital tablet.'),
+                          ],
+                        ),
+                      ),
+                    ),
+                    ListTile(
+                      title: RichText(
+                        textAlign: TextAlign.justify,
+                        text: const TextSpan(
+                          children: [
+                            TextSpan(text: 'Service ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: 'refers to the Application.'),
+                          ],
+                        ),
+                      ),
+                    ),
+                    ListTile(
+                      title: RichText(
+                        textAlign: TextAlign.justify,
+                        text: const TextSpan(
+                          children: [
+                            TextSpan(text: 'Terms and Conditions ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: '(also referred as "Terms") mean these Terms and Conditions that form the entire agreement between You and the Company regarding the use of the Service. This Terms and Conditions agreement has been created with the help of the TermsFeed Terms and Conditions Generator.'),
+                          ],
+                        ),
+                      ),
+                    ),
+                    ListTile(
+                      title: RichText(
+                        textAlign: TextAlign.justify,
+                        text: const TextSpan(
+                          children: [
+                            TextSpan(text: 'Third-party Social Media Service ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: 'means any services or content (including data, information, products or services) provided by a third-party that may be displayed, included or made available by the Service.'),
+                          ],
+                        ),
+                      ),
+                    ),
+                    ListTile(
+                      title: RichText(
+                        textAlign: TextAlign.justify,
+                        text: const TextSpan(
+                          children: [
+                            TextSpan(text: 'You ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: 'means the individual accessing or using the Service, or the company, or other legal entity on behalf of which such individual is accessing or using the Service, as applicable.'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const TypographyText('Acknowledgment', variant: TypographyVariant.h4),
+                const TypographyText('These are the Terms and Conditions governing the use of this Service and the agreement that operates between You and the Company. These Terms and Conditions set out the rights and obligations of all users regarding the use of the Service.', align: TextAlign.justify),
+                const TypographyText('Your access to and use of the Service is conditioned on Your acceptance of and compliance with these Terms and Conditions. These Terms and Conditions apply to all visitors, users and others who access or use the Service.', align: TextAlign.justify),
+                const TypographyText('By accessing or using the Service You agree to be bound by these Terms and Conditions. If You disagree with any part of these Terms and Conditions then You may not access the Service.', align: TextAlign.justify),
+                const TypographyText('You represent that you are over the age of 18. The Company does not permit those under 18 to use the Service.', align: TextAlign.justify),
+                const TypographyText('Your access to and use of the Service is also conditioned on Your acceptance of and compliance with the Privacy Policy of the Company. Our Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your personal information when You use the Application or the Website and tells You about Your privacy rights and how the law protects You. Please read Our Privacy Policy carefully before using Our Service.', align: TextAlign.justify),
+
+                const TypographyText('Links to Other Websites', variant: TypographyVariant.h4),
+                const TypographyText('Our Service may contain links to third-party web sites or services that are not owned or controlled by the Company.', align: TextAlign.justify),
+                const TypographyText('The Company has no control over, and assumes no responsibility for, the content, privacy policies, or practices of any third party web sites or services. You further acknowledge and agree that the Company shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with the use of or reliance on any such content, goods or services available on or through any such web sites or services.', align: TextAlign.justify),
+                const TypographyText('We strongly advise You to read the terms and conditions and privacy policies of any third-party web sites or services that You visit.', align: TextAlign.justify),
+
+                const TypographyText('Termination', variant: TypographyVariant.h4),
+                const TypographyText('We may terminate or suspend Your access immediately, without prior notice or liability, for any reason whatsoever, including without limitation if You breach these Terms and Conditions.', align: TextAlign.justify),
+                const TypographyText('Upon termination, Your right to use the Service will cease immediately.', align: TextAlign.justify),
+
+                const TypographyText('Limitation of Liability', variant: TypographyVariant.h4),
+                const TypographyText('Notwithstanding any damages that You might incur, the entire liability of the Company and any of its suppliers under any provision of this Terms and Your exclusive remedy for all of the foregoing shall be limited to the amount actually paid by You through the Service or 100 USD if You have not purchased anything through the Service.', align: TextAlign.justify),
+                const TypographyText('To the maximum extent permitted by applicable law, in no event shall the Company or its suppliers be liable for any special, incidental, indirect, or consequential damages whatsoever (including, but not limited to, damages for loss of profits, loss of data or other information, for business interruption, for personal injury, loss of privacy arising out of or in any way related to the use of or inability to use the Service, third-party software and/or third-party hardware used with the Service, or otherwise in connection with any provision of this Terms), even if the Company or any supplier has been advised of the possibility of such damages and even if the remedy fails of its essential purpose.', align: TextAlign.justify),
+                const TypographyText('Some states do not allow the exclusion of implied warranties or limitation of liability for incidental or consequential damages, which means that some of the above limitations may not apply. In these states, each party\'s liability will be limited to the greatest extent permitted by law.', align: TextAlign.justify),
+
+                const TypographyText('"AS IS" and "AS AVAILABLE" Disclaimer', variant: TypographyVariant.h4),
+                const TypographyText('The Service is provided to You "AS IS" and "AS AVAILABLE" and with all faults and defects without warranty of any kind. To the maximum extent permitted under applicable law, the Company, on its own behalf and on behalf of its Affiliates and its and their respective licensors and service providers, expressly disclaims all warranties, whether express, implied, statutory or otherwise, with respect to the Service, including all implied warranties of merchantability, fitness for a particular purpose, title and non-infringement, and warranties that may arise out of course of dealing, course of performance, usage or trade practice. Without limitation to the foregoing, the Company provides no warranty or undertaking, and makes no representation of any kind that the Service will meet Your requirements, achieve any intended results, be compatible or work with any other software, applications, systems or services, operate without interruption, meet any performance or reliability standards or be error free or that any errors or defects can or will be corrected.', align: TextAlign.justify),
+                const TypographyText('Without limiting the foregoing, neither the Company nor any of the company\'s provider makes any representation or warranty of any kind, express or implied: (i) as to the operation or availability of the Service, or the information, content, and materials or products included thereon; (ii) that the Service will be uninterrupted or error-free; (iii) as to the accuracy, reliability, or currency of any information or content provided through the Service; or (iv) that the Service, its servers, the content, or e-mails sent from or on behalf of the Company are free of viruses, scripts, trojan horses, worms, malware, timebombs or other harmful components.', align: TextAlign.justify),
+                const TypographyText('Some jurisdictions do not allow the exclusion of certain types of warranties or limitations on applicable statutory rights of a consumer, so some or all of the above exclusions and limitations may not apply to You. But in such a case the exclusions and limitations set forth in this section shall be applied to the greatest extent enforceable under applicable law.', align: TextAlign.justify),
+
+                const TypographyText('Governing Law', variant: TypographyVariant.h4),
+                const TypographyText('The laws of the Country, excluding its conflicts of law rules, shall govern this Terms and Your use of the Service. Your use of the Application may also be subject to other local, state, national, or international laws.', align: TextAlign.justify),
+
+                const TypographyText('Disputes Resolution', variant: TypographyVariant.h4),
+                const TypographyText('If You have any concern or dispute about the Service, You agree to first try to resolve the dispute informally by contacting the Company.', align: TextAlign.justify),
+
+                const TypographyText('For European Union (EU) Users', variant: TypographyVariant.h4),
+                const TypographyText('If You are a European Union consumer, you will benefit from any mandatory provisions of the law of the country in which you are resident in.', align: TextAlign.justify),
+
+                const TypographyText('United States Legal Compliance', variant: TypographyVariant.h4),
+                const TypographyText('You represent and warrant that (i) You are not located in a country that is subject to the United States government embargo, or that has been designated by the United States government as a "terrorist supporting" country, and (ii) You are not listed on any United States government list of prohibited or restricted parties.', align: TextAlign.justify),
+
+                const TypographyText('Severability and Waiver', variant: TypographyVariant.h4),
+                const TypographyText('Severability', variant: TypographyVariant.h6),
+                const TypographyText('If any provision of these Terms is held to be unenforceable or invalid, such provision will be changed and interpreted to accomplish the objectives of such provision to the greatest extent possible under applicable law and the remaining provisions will continue in full force and effect.', align: TextAlign.justify),
+                const TypographyText('Waiver', variant: TypographyVariant.h6),
+                const TypographyText('Except as provided herein, the failure to exercise a right or to require performance of an obligation under these Terms shall not effect a party\'s ability to exercise such right or require such performance at any time thereafter nor shall the waiver of a breach constitute a waiver of any subsequent breach.', align: TextAlign.justify),
+
+                const TypographyText('Translation Interpretation', variant: TypographyVariant.h4),
+                const TypographyText('These Terms and Conditions may have been translated if We have made them available to You on our Service. You agree that the original English text shall prevail in the case of a dispute.', align: TextAlign.justify),
+
+                const TypographyText('Changes to These Terms and Conditions', variant: TypographyVariant.h4),
+                const TypographyText('We reserve the right, at Our sole discretion, to modify or replace these Terms at any time. If a revision is material We will make reasonable efforts to provide at least 30 days\' notice prior to any new terms taking effect. What constitutes a material change will be determined at Our sole discretion.', align: TextAlign.justify),
+                const TypographyText('By continuing to access or use Our Service after those revisions become effective, You agree to be bound by the revised terms. If You do not agree to the new terms, in whole or in part, please stop using the website and the Service.', align: TextAlign.justify),
+
+                const TypographyText('Contact Us', variant: TypographyVariant.h4),
+                const TypographyText('If you have any questions about these Terms and Conditions, You can contact us:', align: TextAlign.justify),
+
+                ListView(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    ListTile(
+                      title: Link(
+                        text: config.privacyEmail,
+                        href: Uri(
+                          scheme: 'mailto',
+                          path: config.privacyEmail,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
