@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
-
 import 'package:lingua_flutter/widgets/prompt/prompt.dart';
-import 'package:lingua_flutter/widgets/text_field/text_field.dart';
 import 'package:lingua_flutter/screens/search/bloc/search_cubit.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 
 import '../../bloc/translation_view_cubit.dart';
+import '../change_translation/change_translation.dart';
 
 class Menu {
   final String? id;
@@ -23,7 +22,6 @@ List<Widget> translationViewMenuConstructor({
   required bool hasInternetConnection,
 }) {
   final translationViewCubit = context.read<TranslationViewCubit>();
-  String? newTranslation = translationViewCubit.state.translation?.translation;
 
   return [
     PopupMenuButton<Menu>(
@@ -52,33 +50,10 @@ List<Widget> translationViewMenuConstructor({
           AutoRouter.of(context).push(TranslationViewImagePickerRoute(word: imageSearchWord));
         }
 
-        if (item.id == 'translation' && word != null) {
-          Prompt(
+        if (item.id == 'translation' && state.translation?.translation != null) {
+          TranslationViewChangeTranslationModal(
             context: context,
-            title: 'Custom translation for "$word"',
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-              child: CustomTextField(
-                defaultValue: state.translation?.translation,
-                autofocus: true,
-                textInputAction: TextInputAction.done,
-                outlined: true,
-                maxLength: 100,
-                onChanged: (String value) {
-                  newTranslation = value;
-                },
-                onSubmitted: (String value) {
-                  if (newTranslation != null) {
-                    translationViewCubit.setOwnTranslation(newTranslation!);
-                  }
-                },
-              ),
-            ),
-            acceptCallback: () {
-              if (newTranslation != null && newTranslation != '' && translationViewCubit.state.translation?.translation != newTranslation) {
-                translationViewCubit.setOwnTranslation(newTranslation!);
-              }
-            },
+            word: state.translation!.translation,
           ).show();
         }
       },

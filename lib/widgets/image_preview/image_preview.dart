@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:lingua_flutter/utils/convert.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/media_source.dart';
-import 'package:lingua_flutter/widgets/modal/modal.dart';
 import 'package:lingua_flutter/styles/styles.dart';
+
+import './image_preview_modal.dart';
 
 enum ImagePreviewShape {
   rectangular,
@@ -130,10 +131,9 @@ class _ImagePreviewState extends State<ImagePreview> {
       child: GestureDetector(
         onTap: () {
           if (widget.withPreviewOverlay == true && widget.imageSource != null) {
-            Modal(
+            ImagePreviewModal(
               context: context,
               isFramed: false,
-              isZoomable: true,
               child: _buildImage(),
             ).show().then((dynamic) {
               if (widget.onPreviewClose is Function) {

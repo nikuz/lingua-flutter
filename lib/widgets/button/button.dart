@@ -101,7 +101,7 @@ class Button extends StatelessWidget {
       textColor = Styles.colors.white;
       highlightColor = Styles.colors.white.withOpacity(0.1);
       splashColor = Styles.colors.white.withOpacity(0.2);
-      elevation = 3;
+      elevation = !disabled ? 3 : 0;
       if (backgroundColor == Colors.transparent) {
         backgroundColor = theme.colors.focusBackground;
       }
@@ -115,7 +115,6 @@ class Button extends StatelessWidget {
           type: MaterialType.button,
           color: backgroundColor,
           borderRadius: borderRadius,
-          clipBehavior: Clip.hardEdge,
           elevation: elevation,
           child: InkWell(
             customBorder: inkWellBorder,
