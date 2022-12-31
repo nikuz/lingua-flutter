@@ -69,25 +69,18 @@ class _TranslationViewSectionWrapperState extends State<TranslationViewSectionWr
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(10),
-                      child: Wrap(
-                        direction: Axis.horizontal,
-                        children: [
-                          Text(
-                            '${widget.name.capitalize()} of ',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Theme.of(context).hintColor,
-                            ),
+                      child: RichText(
+                        textAlign: TextAlign.justify,
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: theme.colors.primary.withOpacity(0.6),
                           ),
-                          Text(
-                            widget.word ?? '',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Theme.of(context).hintColor,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+                          children: [
+                            TextSpan(text: '${widget.name.capitalize()} of '),
+                            TextSpan(text: widget.word ?? '', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        ),
                       ),
                     ),
 
@@ -174,7 +167,7 @@ class TranslationViewSectionWrapperExpandButton extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 10),
                 child: Icon(
                   expanded ? Icons.expand_less : Icons.expand_more,
-                  color: Theme.of(context).selectedRowColor,
+                  color: Styles.colors.white.withOpacity(0.9),
                   size: 25,
                 ),
               ),
@@ -183,7 +176,7 @@ class TranslationViewSectionWrapperExpandButton extends StatelessWidget {
                     ? 'Show less $name'
                     : 'Show more $amount $name',
                 style: TextStyle(
-                  color: Theme.of(context).selectedRowColor,
+                  color: Styles.colors.white.withOpacity(0.9),
                   fontSize: 15,
                 ),
               )

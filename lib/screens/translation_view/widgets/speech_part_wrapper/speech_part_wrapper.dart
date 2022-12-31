@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lingua_flutter/utils/string.dart';
+import 'package:lingua_flutter/styles/styles.dart';
 
 // wrapper class to represent speech parts, such as: noun, pronoun, verb, adjective, etc.
 class TranslationViewSpeechPartWrapper extends StatelessWidget {
@@ -22,6 +23,7 @@ class TranslationViewSpeechPartWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final MyTheme theme = Styles.theme(context);
     Widget categoryName;
     int itemsLength = items?.length ?? 0;
 
@@ -34,7 +36,7 @@ class TranslationViewSpeechPartWrapper extends StatelessWidget {
           name!.capitalize(),
           style: TextStyle(
             fontSize: 16,
-            color: Theme.of(context).buttonTheme.colorScheme?.secondaryContainer,
+            color: theme.colors.focus,
           ),
         ),
       );

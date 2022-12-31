@@ -131,7 +131,6 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
     final double size = widget.size ?? 36;
     IconData icon = _isPlayerStopped(_playerState) ? Icons.volume_up : Icons.stop;
     Color iconColor = widget.iconColor ?? Colors.blueGrey;
-    Color backgroundColor = widget.backgroundColor ?? Theme.of(context).cardColor;
 
     if (widget.pronunciationSource == null) {
       icon = Icons.volume_off;
@@ -142,7 +141,7 @@ class _PronunciationWidgetState extends State<PronunciationWidget> {
       icon: icon,
       iconSize: size - 15,
       textColor: iconColor,
-      backgroundColor: backgroundColor,
+      backgroundColor: widget.backgroundColor,
       width: size,
       height: size,
       shape: ButtonShape.oval,

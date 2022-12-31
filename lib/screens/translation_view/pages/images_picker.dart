@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
-
 import 'package:lingua_flutter/widgets/text_field/text_field.dart';
 import 'package:lingua_flutter/widgets/image_preview/image_preview.dart';
+import 'package:lingua_flutter/styles/styles.dart';
 
 import '../bloc/translation_view_cubit.dart';
 import '../bloc/translation_view_state.dart';
@@ -105,7 +105,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                         final bool isActive = state.translation?.image == imageSource;
                         return Container(
                           key: isActive ? itemKey : Key(index.toString()),
-                          color: isActive ? Colors.greenAccent : Theme.of(context).scaffoldBackgroundColor,
+                          color: isActive ? Styles.colors.grey.withOpacity(0.3) : Colors.transparent,
                           padding: const EdgeInsets.only(
                             top: 10,
                             bottom: 10,
