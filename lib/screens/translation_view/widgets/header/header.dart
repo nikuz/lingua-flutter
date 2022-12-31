@@ -202,7 +202,6 @@ class TranslationViewHeader extends StatelessWidget {
                         child: Text(
                           translation.translation.split(', ').join('\n'),
                           style: const TextStyle(
-                            fontFamily: 'Merriweather',
                             fontSize: 20,
                             letterSpacing: 1,
                             color: Colors.blue,

@@ -17,15 +17,17 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
     required this.isLast,
   }) : super(key: key);
 
-  Widget _buildWordsList(List<String> words) {
+  Widget _buildWordsList(BuildContext context, List<String> words) {
+    final MyTheme theme = Styles.theme(context);
     return Wrap(
       direction: Axis.horizontal,
       runSpacing: 7,
       children: [
         Text(
           [...words, 'man'].join(', '),
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
+            color: theme.colors.primary.withOpacity(0.6),
           ),
         ),
       ],
@@ -125,10 +127,7 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
 
                               TextSpan(
                                 text: item.translation,
-                                style: const TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontSize: 18,
-                                ),
+                                style: const TextStyle(fontSize: 18),
                               ),
                             ],
                           ),
@@ -155,7 +154,7 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
 
                   Container(
                     padding: const EdgeInsets.only(top: 4),
-                    child: _buildWordsList(item.words),
+                    child: _buildWordsList(context, item.words),
                   ),
                 ],
               ),

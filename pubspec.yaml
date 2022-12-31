@@ -78,21 +78,15 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  fonts:
-    - family: Montserrat
-      fonts:
-        - asset: fonts/Montserrat-latin.ttf
-    - family: Montserrat
-      fonts:
-        - asset: fonts/Montserrat-bold-latin.ttf
-          weight: 700
-    - family: Merriweather
-      fonts:
-        - asset: fonts/Merriweather-cyrillic.ttf
-    - family: Merriweather
-      fonts:
-        - asset: fonts/Merriweather-bold-cyrillic.ttf
-          weight: 700
+#  fonts:
+#    - family: Montserrat
+#      fonts:
+#        - asset: fonts/Montserrat-latin.ttf
+#        - asset: fonts/Montserrat-bold-latin.ttf
+#    - family: Merriweather
+#      fonts:
+#        - asset: fonts/Merriweather-cyrillic.ttf
+#        - asset: fonts/Merriweather-bold-cyrillic.ttf
 
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

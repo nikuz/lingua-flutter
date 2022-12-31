@@ -5,9 +5,6 @@ const double _defaultFontSize = 16;
 class MyVariables {
   const MyVariables();
 
-  // Font family
-  final String defaultFontFamily = 'Montserrat';
-
   // Font size
   final double defaultFontSize = _defaultFontSize;
   final double bodyFontSizeLarge = _defaultFontSize * 1.125;  // 18

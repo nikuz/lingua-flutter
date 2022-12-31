@@ -73,7 +73,6 @@ class _AppState extends State<App> with WidgetsBindingObserver {
 
           return MaterialApp.router(
             title: 'Lingua',
-            theme: ThemeData(fontFamily: 'Montserrat'),
             darkTheme: ThemeData.dark(),
             themeMode: themeMode,
             routerDelegate: _appRouter.delegate(),

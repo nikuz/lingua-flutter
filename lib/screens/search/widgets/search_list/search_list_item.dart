@@ -155,8 +155,9 @@ class _SearchListItemState extends State<SearchListItem> {
                                     widget.translationItem.translation,
                                     maxLines: showLanguageSource ? 1 : 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 16,
+                                      color: theme.colors.primary.withOpacity(0.5),
                                     ),
                                   ),
                                 ),
