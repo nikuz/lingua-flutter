@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
-
 import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
 import 'package:lingua_flutter/widgets/button/button.dart';
+import 'package:lingua_flutter/widgets/snack_bar/snack_bar.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 
 import '../../bloc/translation_view_cubit.dart';
@@ -89,6 +89,7 @@ class TranslationViewHeader extends StatelessWidget {
     bool toSave = isNewWord || state.imageIsUpdated || state.translationIsUpdated;
     IconData iconName = Icons.check;
     String? transcription = translation.transcription;
+    final alreadySaved = !isNewWord && !state.imageIsUpdated && !state.translationIsUpdated;
 
     if (isNewWord) {
       iconName = Icons.save_alt;
@@ -131,22 +132,23 @@ class TranslationViewHeader extends StatelessWidget {
             loading: state.updateLoading,
             outlined: false,
             shape: ButtonShape.oval,
-            onPressed: () {
+            onPressed: alreadySaved ? null : () {
               if (state.translation != null) {
                 if (isNewWord) {
                   context.read<TranslationViewCubit>().save(state.translation!).then((dynamic) {
                     AutoRouter.of(context).pop<TranslationContainer>(state.translation);
                   });
+                  CustomSnackBar(context: context, message: 'Word is saved successfully').show();
                 } else if (state.imageIsUpdated || state.translationIsUpdated) {
                   context.read<TranslationViewCubit>().update(state.translation!).then((dynamic) {
                     AutoRouter.of(context).pop<TranslationContainer>(state.translation!.copyWith(
                       updatedAt: DateTime.now().toString(),
                     ));
+                    CustomSnackBar(context: context, message: 'Word is updated successfully').show();
                   });
                 }
               }
             },
-            // child: icon,
           ),
         ],
       ),

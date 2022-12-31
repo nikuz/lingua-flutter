@@ -1,9 +1,11 @@
-import '../colors.dart';
+import 'dart:ui';
 
+import '../colors.dart';
 import './theme.dart';
 import './theme_colors.dart';
 
 final myThemeDataDark = MyTheme(
+  brightness: Brightness.dark,
   colors: MyThemeColors(
     primary: myColors.white,
     primaryPale: myColors.grey,

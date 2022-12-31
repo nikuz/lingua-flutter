@@ -32,6 +32,7 @@ class _TranslationViewSectionWrapperState extends State<TranslationViewSectionWr
 
   @override
   Widget build(BuildContext context) {
+    final MyTheme theme = Styles.theme(context);
     int? hiddenItemsAmount;
 
     if (widget.itemsAmount > widget.maxItemsToShow) {
@@ -54,7 +55,7 @@ class _TranslationViewSectionWrapperState extends State<TranslationViewSectionWr
                 padding: widget.padding,
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Theme.of(context).dividerColor,
+                    color: theme.colors.divider,
                     width: 1,
                     style: BorderStyle.solid,
                   ),

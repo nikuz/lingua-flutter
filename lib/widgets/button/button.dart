@@ -98,12 +98,12 @@ class Button extends StatelessWidget {
     }
 
     if (elevated) {
-      textColor = Styles.colors.white;
+      textColor = theme.brightness == Brightness.light ? Styles.colors.white : Styles.colors.fakeBlack;
       highlightColor = Styles.colors.white.withOpacity(0.1);
       splashColor = Styles.colors.white.withOpacity(0.2);
       elevation = !disabled ? 3 : 0;
       if (backgroundColor == Colors.transparent) {
-        backgroundColor = theme.colors.focusBackground;
+        backgroundColor = theme.colors.focus;
       }
     }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/models/translation.dart';
+import 'package:lingua_flutter/styles/styles.dart';
 
 import '../../bloc/translation_view_cubit.dart';
 import '../../bloc/translation_view_state.dart';
@@ -25,6 +26,7 @@ class DefinitionsItem extends StatelessWidget {
           return Container();
         }
 
+        final MyTheme theme = Styles.theme(context);
         return Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: 10,
@@ -39,7 +41,7 @@ class DefinitionsItem extends StatelessWidget {
                 margin: const EdgeInsets.only(right: 20),
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Theme.of(context).textTheme.headline2!.color!,
+                    color: theme.colors.primary.withOpacity(0.6),
                     width: 1,
                     style: BorderStyle.solid,
                   ),
@@ -68,7 +70,7 @@ class DefinitionsItem extends StatelessWidget {
                         child: Text(
                           item.example!,
                           style: TextStyle(
-                            color: Theme.of(context).textTheme.headline1!.color,
+                            color: theme.colors.grey,
                             fontSize: 15,
                           ),
                         ),
