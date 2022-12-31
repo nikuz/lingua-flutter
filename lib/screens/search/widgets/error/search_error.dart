@@ -38,7 +38,7 @@ class SearchError extends StatelessWidget {
                   ),
 
                 const TypographyText(
-                  'Cannot retrieve data from local database. We are probably already aware of the issue, however do not hesitate contacting us using an email below.',
+                  text: 'Cannot retrieve data from local database. We are probably already aware of the issue, however do not hesitate contacting us using an email below.',
                   variant: TypographyVariant.h6,
                   align: TextAlign.center,
                 ),

@@ -25,7 +25,7 @@ class Link extends StatelessWidget {
           onPressed!();
         }
       },
-      child: Text(
+      child: SelectableText(
         text,
         style: TextStyle(
           color: Styles.colors.blue,
