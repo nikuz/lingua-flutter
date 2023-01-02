@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
 import '../../bloc/translation_view_cubit.dart';
 import '../../bloc/translation_view_state.dart';
+import '../../translation_view_state.dart';
 
 class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
   final TranslationAlternativeTranslationItem item;
@@ -60,7 +60,7 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
         }
 
         final MyTheme theme = Styles.theme(context);
-        final bool isNewWord = translation.id == null;
+        final translationViewState = TranslationViewInheritedState.of(context);
         final bool frequencySecondActive = item.frequency == 1 || item.frequency == 2;
         final bool frequencyThirdActive = item.frequency == 1;
         BorderRadius? borderRadius;
@@ -77,22 +77,16 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
           child: InkWell(
             borderRadius: borderRadius,
             onTap: () {
-              final cubit = context.read<TranslationViewCubit>();
               final newTranslation = '${item.genre != null ? '${item.genre} ' : ''}${item.translation}';
+              context.read<TranslationViewCubit>().setOwnTranslation(newTranslation);
 
-              cubit.setOwnTranslation(newTranslation);
-              final alteredTranslation = translation.copyWith(
-                translation: newTranslation,
-                updatedAt: DateTime.now().toString(),
-              );
-
-              if (isNewWord) {
-                cubit.save(alteredTranslation).then((dynamic) {
-                  AutoRouter.of(context).pop<TranslationContainer>(alteredTranslation);
-                });
-              } else {
-                cubit.update(alteredTranslation).then((dynamic) {
-                  AutoRouter.of(context).pop<TranslationContainer>(alteredTranslation);
+              if (translationViewState != null && translationViewState.headerKey.currentContext != null) {
+                WidgetsBinding.instance.addPostFrameCallback((dynamic) {
+                  Scrollable.ensureVisible(
+                    translationViewState.headerKey.currentContext!,
+                    duration: const Duration(milliseconds: 500),
+                    alignment: 1,
+                  );
                 });
               }
             },

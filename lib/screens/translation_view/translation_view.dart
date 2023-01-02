@@ -15,6 +15,7 @@ import './widgets/definitions/definitions.dart';
 import './widgets/examples/examples.dart';
 import './widgets/no_additional_data/no_additional_data.dart';
 import './widgets/powered_by/powered_by.dart';
+import './translation_view_state.dart';
 
 class TranslationView extends StatefulWidget {
   final String word;
@@ -35,6 +36,7 @@ class TranslationView extends StatefulWidget {
 }
 
 class _TranslationViewState extends State<TranslationView> with WidgetsBindingObserver {
+  final headerKey = GlobalKey();
   late TranslationViewCubit _translationViewCubit;
   late ScrollController _scrollController;
   bool _hasInternetConnection = false;
@@ -167,42 +169,48 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
               ),
             ),
             body: SafeArea(
-              child: CustomScrollView(
-                controller: _scrollController,
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  SliverList(
-                    delegate: SliverChildListDelegate([
-                      TranslationViewHeader(word: widget.word),
-
-                      if (state.translateLoading)
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 70),
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
+              child: TranslationViewInheritedState(
+                headerKey: headerKey,
+                child: CustomScrollView(
+                  controller: _scrollController,
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    SliverList(
+                      delegate: SliverChildListDelegate([
+                        TranslationViewHeader(
+                          key: headerKey,
+                          word: widget.word,
                         ),
 
-                      if (state.error != null)
-                        const Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Text(
-                            'Cannot translate at the moment, \nplease try again later.',
-                            textAlign: TextAlign.center,
+                        if (state.translateLoading)
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 70),
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
                           ),
-                        ),
 
-                      const TranslationViewNoAdditionalData(),
-                      const TranslationViewAlternativeTranslations(),
-                      const TranslationViewDefinitions(),
-                      const TranslationViewExamples(),
-                    ]),
-                  ),
-                  const SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: TranslationViewPoweredBy(),
-                  ),
-                ],
+                        if (state.error != null)
+                          const Padding(
+                            padding: EdgeInsets.all(20),
+                            child: Text(
+                              'Cannot translate at the moment, \nplease try again later.',
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+
+                        const TranslationViewNoAdditionalData(),
+                        const TranslationViewAlternativeTranslations(),
+                        const TranslationViewDefinitions(),
+                        const TranslationViewExamples(),
+                      ]),
+                    ),
+                    const SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: TranslationViewPoweredBy(),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
