@@ -188,36 +188,32 @@ class TranslationViewHeader extends StatelessWidget {
               ),
 
               Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.85,
-                      ),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.white,
-                        ),
-                        child: Text(
-                          translation.translation.split(', ').join('\n'),
-                          style: const TextStyle(
-                            fontSize: 20,
-                            letterSpacing: 1,
-                            color: Colors.blue,
-                          ),
-                        ),
-                        onPressed: () {
-                          context.read<TranslationViewCubit>().reset();
-                          AutoRouter.of(context).replace(TranslationViewRoute(
-                            word: translation.mostRelevantTranslation,
-                            translateFrom: translation.translateTo,
-                            translateTo: translation.translateFrom,
-                          ));
-                        },
+                child: Container(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.85,
+                  ),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.white,
+                    ),
+                    child: Text(
+                      // split by gender specific translations
+                      translation.translation.split(', ').join('\n'),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        letterSpacing: 1,
+                        color: Colors.blue,
                       ),
                     ),
-                  ],
+                    onPressed: () {
+                      context.read<TranslationViewCubit>().reset();
+                      AutoRouter.of(context).replace(TranslationViewRoute(
+                        word: translation.mostRelevantTranslation,
+                        translateFrom: translation.translateTo,
+                        translateTo: translation.translateFrom,
+                      ));
+                    },
+                  ),
                 ),
               ),
               _buildFooter(context, state),
