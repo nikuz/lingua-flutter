@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/styles/styles.dart';
+import 'package:lingua_flutter/widgets/bottom_drawer/bottom_drawer.dart';
 import 'package:lingua_flutter/widgets/text_field/text_field.dart';
 
 class LanguageList extends StatefulWidget {
@@ -22,12 +23,49 @@ class LanguageList extends StatefulWidget {
 }
 
 class _LanguageListState extends State<LanguageList> {
+  BottomDrawerInheritedState? bottomDrawerState;
   late Map<String, String>? _filteredLanguages;
+  late FocusNode _focusNode;
+  bool fullyVisible = false;
 
   @override
   void initState() {
     super.initState();
+    _focusNode = FocusNode();
+    _focusNode.requestFocus();
     _filteredLanguages = widget.languages;
+    widget.scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    bottomDrawerState = BottomDrawerInheritedState.of(context);
+    bottomDrawerState?.subscribeToDrag('language_selector_list', _onDragScroll);
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    bottomDrawerState?.unsubscribeFromDrag('language_selector_list');
+    super.dispose();
+  }
+
+  void _onDragScroll(DraggableScrollableNotification notification) {
+    if (notification.extent == notification.maxExtent) {
+      if (_focusNode.hasFocus) {
+        _focusNode.unfocus();
+      }
+      if (!fullyVisible) {
+        fullyVisible = true;
+      }
+    }
+  }
+
+  void _onScroll() {
+    if (fullyVisible && _focusNode.hasFocus) {
+      _focusNode.unfocus();
+    }
   }
 
   void _filterLanguages(String value) {
@@ -52,9 +90,10 @@ class _LanguageListState extends State<LanguageList> {
         controller: widget.scrollController,
         children: [
           CustomTextField(
+            focusNode: _focusNode,
             textInputAction: TextInputAction.search,
             hintText: 'Search language',
-            autofocus: true,
+            // autofocus: true,
             underLined: true,
             maxLength: 50,
             onChanged: (value) {

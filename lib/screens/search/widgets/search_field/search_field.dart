@@ -27,6 +27,7 @@ class SearchField extends StatefulWidget {
 }
 
 class _SearchFieldState extends State<SearchField> {
+  SearchInheritedState? searchState;
   final String _scrollSubscriptionName = 'search-field';
   bool _isAnimated = false;
   bool _isFloat = false;
@@ -49,20 +50,18 @@ class _SearchFieldState extends State<SearchField> {
       });
     }
 
-    final searchState = SearchInheritedState.of(context);
+    searchState = SearchInheritedState.of(context);
     searchState?.unsubscribeFromListScroll(_scrollSubscriptionName);
     searchState?.subscribeToListScroll(_scrollSubscriptionName, _onListScroll);
   }
 
   @override
   void dispose() {
-    final searchState = SearchInheritedState.of(context);
     searchState?.unsubscribeFromListScroll(_scrollSubscriptionName);
     super.dispose();
   }
 
   void _onListScroll(ScrollNotification notification) {
-    final searchState = SearchInheritedState.of(context);
     final pixels = notification.metrics.pixels;
     bool isFloat = _isFloat;
     double? scrollStartPosition = _scrollStartPosition;
@@ -174,7 +173,6 @@ class _SearchFieldState extends State<SearchField> {
       },
       child: BlocBuilder<SearchCubit, SearchState>(
         builder: (context, state) {
-          final searchState = SearchInheritedState.of(context);
           return AnimatedPositioned(
             top: _position,
             left: 0,
