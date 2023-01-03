@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
 import './bottom_drawer_state.dart';
+import './constants.dart';
 
 export './bottom_drawer_state.dart';
 
@@ -63,9 +64,9 @@ class BottomDrawer {
             NotificationListener<DraggableScrollableNotification>(
               onNotification: _onDragNotification,
               child: DraggableScrollableSheet(
-                initialChildSize: 0.9,
-                minChildSize: 0.5,
-                maxChildSize: 0.95,
+                initialChildSize: BottomDrawerConstants.initialSize,
+                minChildSize: BottomDrawerConstants.minSize,
+                maxChildSize: BottomDrawerConstants.maxSize,
                 builder: (BuildContext context, ScrollController scrollController) {
                   return BottomDrawerInheritedState(
                     subscribeToDrag: _subscribeToDrag,
