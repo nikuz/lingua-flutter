@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.translateshow.dictionary">
+    package="com.wisual.dictionary">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -9,7 +9,7 @@
          additional functionality it is fine to subclass or reimplement
          FlutterApplication and put your custom class here. -->
     <application
-        android:label="TranslateShow"
+        android:label="Wisual"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

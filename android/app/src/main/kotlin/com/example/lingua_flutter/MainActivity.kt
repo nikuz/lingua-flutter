@@ -1,4 +1,4 @@
-package com.translateshow.dictionary
+package com.wisual.dictionary
 
 import io.flutter.embedding.android.FlutterActivity
 

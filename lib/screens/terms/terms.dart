@@ -47,7 +47,7 @@ class Terms extends StatelessWidget {
                         align: TextAlign.justify,
                         children: [
                           TextSpan(text: 'Application ', style: TextStyle(fontWeight: FontWeight.bold)),
-                          TextSpan(text: 'means the software program provided by the Company downloaded by You on any electronic device, named TranslateShow'),
+                          TextSpan(text: 'means the software program provided by the Company downloaded by You on any electronic device, named Wisual'),
                         ],
                       ),
                     ),
@@ -83,7 +83,7 @@ class Terms extends StatelessWidget {
                         align: TextAlign.justify,
                         children: [
                           TextSpan(text: 'Company ', style: TextStyle(fontWeight: FontWeight.bold)),
-                          TextSpan(text: '(referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to TranslateShow.'),
+                          TextSpan(text: '(referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to Wisual.'),
                         ],
                       ),
                     ),
