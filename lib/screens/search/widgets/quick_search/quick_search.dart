@@ -146,7 +146,9 @@ class _QuickSearchState extends State<QuickSearch> {
         ),
 
         LanguageSelector(
+          selectorFromTitle: 'Translate from',
           from: widget.translateFrom,
+          selectorToTitle: 'Translate to',
           to: widget.translateTo,
           onFromChanged: (language) {
             widget.onTranslateFromChange(language);

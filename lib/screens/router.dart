@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/models/translation.dart';
 
 import './root.dart';
-// import './landing/landing.dart';
+import './landing/landing.dart';
 import './search/search.dart';
 import './translation_view/translation_view.dart';
 import './translation_view/pages/images_picker.dart';
@@ -23,17 +23,14 @@ abstract class Routes {
 
 @MaterialAutoRouter(
   routes: <AutoRoute>[
-    // CustomRoute(
-    //   path: Routes.landing,
-    //   page: Landing,
-    //   initial: true,
-    //   transitionsBuilder: TransitionsBuilders.noTransition,
-    // ),
-    CustomRoute(
+    AutoRoute(
+      path: Routes.landing,
+      page: Landing,
+      initial: true,
+    ),
+    AutoRoute(
       path: Routes.home,
       page: Root,
-      initial: true,
-      transitionsBuilder: TransitionsBuilders.noTransition,
       children: [
         AutoRoute(
           path: Routes.search,

@@ -60,11 +60,4 @@ class SettingsCubit extends Cubit<SettingsState> {
       showLanguageSource: value,
     ));
   }
-
-  void setLanguageSourcesAreSet() async {
-    await prefs.setBool('languageSourcesAreSet', true);
-    emit(state.copyWith(
-      languageSourcesAreSet: true,
-    ));
-  }
 }

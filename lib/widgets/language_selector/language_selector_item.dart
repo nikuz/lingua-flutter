@@ -8,6 +8,8 @@ import './language_selector_size.dart';
 
 class LanguageSelectorItem extends StatelessWidget {
   final String? title;
+  final String? selectorTitle;
+  final TextStyle? titleStyle;
   final Map<String, String>? languages;
   final Language? language;
   final LanguageSelectorSize size;
@@ -16,6 +18,8 @@ class LanguageSelectorItem extends StatelessWidget {
   const LanguageSelectorItem({
     Key? key,
     this.title,
+    this.selectorTitle,
+    this.titleStyle,
     this.languages,
     this.language,
     required this.size,
@@ -30,41 +34,40 @@ class LanguageSelectorItem extends StatelessWidget {
       buttonHeight = 60;
     }
 
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (title != null)
-            Container(
-              margin: const EdgeInsets.only(bottom: 5),
-              child: Center(
-                child: Text(title!),
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (title != null)
+          Container(
+            margin: const EdgeInsets.only(bottom: 5),
+            child: Center(
+              child: Text(title!, style: titleStyle),
             ),
-
-          Button(
-            text: language?.value ?? '---',
-            size: size == LanguageSelectorSize.large ? ButtonSize.large : ButtonSize.regular,
-            height: buttonHeight,
-            onPressed: () {
-              BottomDrawer(
-                context: context,
-                builder: (BuildContext drawerContext, ScrollController scrollController) {
-                  return LanguageList(
-                    language: language,
-                    languages: languages,
-                    scrollController: scrollController,
-                    onSelected: (Language language) {
-                      BottomDrawer.dismiss(context);
-                      onChanged(language);
-                    },
-                  );
-                },
-              ).show();
-            },
           ),
-        ],
-      ),
+
+        Button(
+          text: language?.value ?? '---',
+          size: size == LanguageSelectorSize.large ? ButtonSize.large : ButtonSize.regular,
+          height: buttonHeight,
+          onPressed: () {
+            BottomDrawer(
+              context: context,
+              builder: (BuildContext drawerContext, ScrollController scrollController) {
+                return LanguageList(
+                  title: title ?? selectorTitle ?? '',
+                  language: language,
+                  languages: languages,
+                  scrollController: scrollController,
+                  onSelected: (Language language) {
+                    BottomDrawer.dismiss(context);
+                    onChanged(language);
+                  },
+                );
+              },
+            ).show();
+          },
+        ),
+      ],
     );
   }
 }

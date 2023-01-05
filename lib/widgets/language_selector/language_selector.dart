@@ -7,13 +7,16 @@ import 'package:lingua_flutter/widgets/button/button.dart';
 import './language_selector_item.dart';
 import './language_selector_size.dart';
 
+export './language_selector_item.dart';
 export './language_selector_size.dart';
 
 class LanguageSelector extends StatefulWidget {
   final Language? from;
   final String? fromTitle;
+  final String? selectorFromTitle;
   final Language? to;
   final String? toTitle;
+  final String? selectorToTitle;
   final LanguageSelectorSize size;
   final Function(Language) onFromChanged;
   final Function(Language, Language) onSwapped;
@@ -23,8 +26,10 @@ class LanguageSelector extends StatefulWidget {
     Key? key,
     this.from,
     this.fromTitle,
+    this.selectorFromTitle,
     this.to,
     this.toTitle,
+    this.selectorToTitle,
     this.size = LanguageSelectorSize.regular,
     required this.onFromChanged,
     required this.onSwapped,
@@ -78,14 +83,18 @@ class _LanguageSelectorState extends State<LanguageSelector> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: verticalAlignment,
         children: [
-          LanguageSelectorItem(
-            title: widget.fromTitle,
-            languages: _languages,
-            language: widget.from,
-            size: widget.size,
-            onChanged: (Language language) {
-              widget.onFromChanged(language);
-            },
+          // expanded wrappers have to be used here since LanguageSelectorItem available to use outside of the Flex containers
+          Expanded(
+            child: LanguageSelectorItem(
+              title: widget.fromTitle,
+              selectorTitle: widget.selectorFromTitle,
+              languages: _languages,
+              language: widget.from,
+              size: widget.size,
+              onChanged: (Language language) {
+                widget.onFromChanged(language);
+              },
+            ),
           ),
           Button(
             icon: Icons.swap_horiz,
@@ -100,14 +109,18 @@ class _LanguageSelectorState extends State<LanguageSelector> {
               }
             },
           ),
-          LanguageSelectorItem(
-            title: widget.toTitle,
-            languages: _languages,
-            language: widget.to,
-            size: widget.size,
-            onChanged: (Language language) {
-              widget.onToChanged(language);
-            },
+          // expanded wrappers have to be used here since LanguageSelectorItem available to use outside of the Flex containers
+          Expanded(
+            child: LanguageSelectorItem(
+              title: widget.toTitle,
+              selectorTitle: widget.selectorToTitle,
+              languages: _languages,
+              language: widget.to,
+              size: widget.size,
+              onChanged: (Language language) {
+                widget.onToChanged(language);
+              },
+            ),
           ),
         ],
       ),

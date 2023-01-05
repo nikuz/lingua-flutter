@@ -7,33 +7,36 @@ class Root extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AutoTabsScaffold(
-      routes: const [
-        SearchRoute(),
-        // GamesRoute(),
-        SettingsRoute(),
-      ],
-      animationDuration: Duration.zero,
-      bottomNavigationBuilder: (_, tabsRouter) {
-        return BottomNavigationBar(
-          currentIndex: tabsRouter.activeIndex,
-          onTap: tabsRouter.setActiveIndex,
-          items: const [
-            BottomNavigationBarItem(
-              label: 'Search',
-              icon: Icon(Icons.search),
-            ),
-            // BottomNavigationBarItem(
-            //   label: 'Play',
-            //   icon: Icon(Icons.games),
-            // ),
-            BottomNavigationBarItem(
-              label: 'Settings',
-              icon: Icon(Icons.settings),
-            ),
-          ],
-        );
-      },
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: AutoTabsScaffold(
+        routes: const [
+          SearchRoute(),
+          // GamesRoute(),
+          SettingsRoute(),
+        ],
+        animationDuration: Duration.zero,
+        bottomNavigationBuilder: (_, tabsRouter) {
+          return BottomNavigationBar(
+            currentIndex: tabsRouter.activeIndex,
+            onTap: tabsRouter.setActiveIndex,
+            items: const [
+              BottomNavigationBarItem(
+                label: 'Search',
+                icon: Icon(Icons.search),
+              ),
+              // BottomNavigationBarItem(
+              //   label: 'Play',
+              //   icon: Icon(Icons.games),
+              // ),
+              BottomNavigationBarItem(
+                label: 'Settings',
+                icon: Icon(Icons.settings),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

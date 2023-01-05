@@ -94,9 +94,6 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
   }) async {
     final sanitizedWord = removeQuotesFromString(removeSlashFromString(word)).trim();
     if (sanitizedWord.isNotEmpty && !_searchTextIsUrl(sanitizedWord)) {
-      if (!_settingsCubit.state.languageSourcesAreSet) {
-        _settingsCubit.setLanguageSourcesAreSet();
-      }
       final result = await AutoRouter.of(context).push<TranslationContainer>(
         TranslationViewRoute(
           word: sanitizedWord,
@@ -170,26 +167,17 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
           setState(() {
             _translateFrom = language;
           });
-          if (!_settingsCubit.state.languageSourcesAreSet) {
-            _settingsCubit.setTranslateFrom(language);
-          }
         },
         onTranslateToChange: (language) {
           setState(() {
             _translateTo = language;
           });
-          if (!_settingsCubit.state.languageSourcesAreSet) {
-            _settingsCubit.setTranslateTo(language);
-          }
         },
         onLanguageSourceSwap: (from, to) {
           setState(() {
             _translateFrom = from;
             _translateTo = to;
           });
-          if (!_settingsCubit.state.languageSourcesAreSet) {
-            _settingsCubit.swapTranslationLanguages(from, to);
-          }
         },
       );
     }

@@ -3,8 +3,10 @@ import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/widgets/bottom_drawer/bottom_drawer.dart';
 import 'package:lingua_flutter/widgets/text_field/text_field.dart';
+import 'package:lingua_flutter/widgets/button/button.dart';
 
 class LanguageList extends StatefulWidget {
+  final String title;
   final Language? language;
   final ScrollController scrollController;
   final Map<String, String>? languages;
@@ -12,6 +14,7 @@ class LanguageList extends StatefulWidget {
 
   const LanguageList({
     Key? key,
+    required this.title,
     this.language,
     required this.scrollController,
     required this.languages,
@@ -85,47 +88,92 @@ class _LanguageListState extends State<LanguageList> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: ListView(
-        controller: widget.scrollController,
-        children: [
-          CustomTextField(
-            focusNode: _focusNode,
-            textInputAction: TextInputAction.search,
-            hintText: 'Search language',
-            // autofocus: true,
-            underLined: true,
-            maxLength: 50,
-            onChanged: (value) {
-              _filterLanguages(value);
-            },
-          ),
+    final MyTheme theme = Styles.theme(context);
 
-          if (_filteredLanguages?.isEmpty == true)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: Text(
-                'No language found',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Styles.colors.grey,
+    return Material(
+      child: CustomScrollView(
+        controller: widget.scrollController,
+        slivers: [
+          if (widget.title != '')
+            SliverAppBar(
+              automaticallyImplyLeading: false,
+              elevation: 2,
+              pinned: true,
+              backgroundColor: theme.colors.background,
+              titleTextStyle: TextStyle(
+                color: theme.colors.primary,
+                fontSize: 20,
+              ),
+              titleSpacing: 0,
+              title: Container(
+                padding: const EdgeInsets.only(left: 10, right: 3),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(widget.title),
+
+                    Button(
+                      width: 40,
+                      height: 40,
+                      outlined: false,
+                      shape: ButtonShape.oval,
+                      icon: Icons.close,
+                      onPressed: () {
+                        BottomDrawer.dismiss(context);
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
 
-          if (_filteredLanguages?.isNotEmpty == true)
-            for (var id in _filteredLanguages!.keys)
-              ListTile(
-                title: Text(_filteredLanguages![id] ?? ''),
-                trailing: id == widget.language?.id ? const Icon(Icons.check) : null,
-                onTap: () {
-                  String? value = _filteredLanguages![id];
-                  if (value != null) {
-                    widget.onSelected(Language(id: id, value: value));
-                  }
-                },
-              ),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Column(
+              children: [
+                CustomTextField(
+                  focusNode: _focusNode,
+                  textInputAction: TextInputAction.search,
+                  hintText: 'Search language',
+                  prefixIcon: Icons.search,
+                  border: Border(
+                    top: BorderSide(color: theme.colors.divider),
+                    bottom: BorderSide(color: theme.colors.divider),
+                  ),
+                  maxLength: 50,
+                  onChanged: (value) {
+                    _filterLanguages(value);
+                  },
+                ),
+
+                if (_filteredLanguages?.isEmpty == true)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                    child: Text(
+                      'No language found',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Styles.colors.grey,
+                      ),
+                    ),
+                  ),
+
+                if (_filteredLanguages?.isNotEmpty == true)
+                  for (var id in _filteredLanguages!.keys)
+                    ListTile(
+                      title: Text(_filteredLanguages![id] ?? ''),
+                      trailing: id == widget.language?.id ? const Icon(Icons.check) : null,
+                      onTap: () {
+                        String? value = _filteredLanguages![id];
+                        if (value != null) {
+                          widget.onSelected(Language(id: id, value: value));
+                        }
+                      },
+                    ),
+              ],
+            ),
+          ),
         ],
       ),
     );

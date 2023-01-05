@@ -72,11 +72,12 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           }
 
           return MaterialApp.router(
-            title: 'Lingua',
+            title: 'Wisual',
             darkTheme: ThemeData.dark(),
             themeMode: themeMode,
             routerDelegate: _appRouter.delegate(),
             routeInformationParser: _appRouter.defaultRouteParser(),
+            debugShowCheckedModeBanner: false,
           );
         },
       ),

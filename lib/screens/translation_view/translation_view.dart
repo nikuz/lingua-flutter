@@ -128,6 +128,7 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
           && state.translation!.image == null
           && state.images == null
           && !state.imageLoading
+          && state.imageError == null
         ) {
           _fetchImages(state.translation!.word);
         }

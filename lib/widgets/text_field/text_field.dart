@@ -22,6 +22,7 @@ class CustomTextField extends StatefulWidget {
   final EdgeInsets? padding;
   final EdgeInsets? margin;
   final BorderRadius? borderRadius;
+  final Border? border;
   final double? elevation;
   final Color? shadowColor;
   final int? maxLength;
@@ -47,6 +48,7 @@ class CustomTextField extends StatefulWidget {
     this.padding,
     this.margin,
     this.borderRadius,
+    this.border,
     this.elevation,
     this.shadowColor,
     this.maxLength,
@@ -104,11 +106,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     final MyTheme theme = Styles.theme(context);
-    final borderRadius = widget.borderRadius ?? BorderRadius.circular(4);
     final List<BoxShadow> boxShadow = [];
+    BorderRadius? borderRadius = widget.borderRadius;
     Widget? prefixIcon;
     Widget? suffixIcon;
-    InputBorder? border;
+    Border? border = widget.border;
 
     if (widget.prefixIcon != null) {
       prefixIcon = _buildIcon(
@@ -141,16 +143,16 @@ class _CustomTextFieldState extends State<CustomTextField> {
     }
 
     if (widget.underLined) {
-      border = UnderlineInputBorder(
-        borderSide: BorderSide(color: theme.colors.divider),
+      border = Border(
+        bottom: BorderSide(color: theme.colors.divider),
       );
     }
 
     if (widget.outlined) {
-      border = OutlineInputBorder(
-        borderSide: BorderSide(color: theme.colors.divider),
-        borderRadius: borderRadius,
+      border = Border.all(
+        color: theme.colors.divider,
       );
+      borderRadius ??= BorderRadius.circular(4);
     }
 
     if (widget.elevation != null) {
@@ -167,11 +169,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Container(
       margin: widget.margin,
       decoration: BoxDecoration(
+        border: border,
         borderRadius: borderRadius,
         boxShadow: boxShadow,
       ),
       child: ClipRRect(
-        borderRadius: borderRadius,
+        borderRadius: borderRadius ?? BorderRadius.circular(0),
         child: TextField(
           controller: _textController,
           focusNode: _focusNode,
@@ -211,8 +214,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
               fontSize: 16,
             ),
             border: InputBorder.none,
-            enabledBorder: border,
-            focusedBorder: border,
             contentPadding: widget.padding ?? const EdgeInsets.symmetric(
               horizontal: 10,
               vertical: 14,

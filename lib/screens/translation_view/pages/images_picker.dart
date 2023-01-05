@@ -62,6 +62,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
               textInputAction: TextInputAction.search,
               prefixIcon: Icons.arrow_back,
               maxLength: 100,
+              borderRadius: BorderRadius.circular(4),
               prefixAction: () {
                 AutoRouter.of(context).pop();
               },

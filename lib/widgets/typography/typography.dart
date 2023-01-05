@@ -15,6 +15,7 @@ enum TypographyVariant {
 class TypographyText extends StatelessWidget {
   final String? text;
   final TypographyVariant variant;
+  final TextStyle? style;
   final TextAlign? align;
   final EdgeInsets? margin;
   final EdgeInsets? padding;
@@ -24,6 +25,7 @@ class TypographyText extends StatelessWidget {
     super.key,
     this.text,
     this.variant = TypographyVariant.body1,
+    this.style,
     this.align,
     this.margin,
     this.padding,
@@ -64,7 +66,7 @@ class TypographyText extends StatelessWidget {
       margin: margin ?? const EdgeInsets.symmetric(vertical: 10),
       child: SelectableText.rich(
         textAlign: align,
-        style: TextStyle(
+        style: style ?? TextStyle(
           color: theme.colors.primary,
           fontSize: fontSize,
           height: 1.5,

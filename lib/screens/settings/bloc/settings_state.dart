@@ -11,7 +11,6 @@ part 'settings_state.g.dart';
 class SettingsState extends Equatable {
   final Language translateFrom;
   final Language translateTo;
-  final bool languageSourcesAreSet;
   final String pronunciation;
   final bool darkMode;
   final bool autoDarkMode;
@@ -25,7 +24,6 @@ class SettingsState extends Equatable {
   const SettingsState({
     required this.translateFrom,
     required this.translateTo,
-    required this.languageSourcesAreSet,
     required this.pronunciation,
     this.darkMode = false,
     this.autoDarkMode = true,
@@ -40,7 +38,6 @@ class SettingsState extends Equatable {
   SettingsState copyWith({
     Language? translateFrom,
     Language? translateTo,
-    bool? languageSourcesAreSet,
     String? pronunciation,
     bool? darkMode,
     bool? autoDarkMode,
@@ -54,7 +51,6 @@ class SettingsState extends Equatable {
     return SettingsState(
       translateFrom: translateFrom ?? this.translateFrom,
       translateTo: translateTo ?? this.translateTo,
-      languageSourcesAreSet: languageSourcesAreSet ?? this.languageSourcesAreSet,
       pronunciation: pronunciation ?? this.pronunciation,
       darkMode: darkMode ?? this.darkMode,
       autoDarkMode: autoDarkMode ?? this.autoDarkMode,
@@ -90,7 +86,6 @@ class SettingsState extends Equatable {
       }
     }
 
-    final bool? languageSourcesAreSet = prefs.getBool('languageSourcesAreSet');
     final String? pronunciation = prefs.getString('pronunciation');
     final bool? darkMode = prefs.getBool('darkMode');
     final bool? autoDarkMode = prefs.getBool('autoDarkMode');
@@ -101,7 +96,6 @@ class SettingsState extends Equatable {
     return SettingsState(
       translateFrom: translateFrom,
       translateTo: translateTo,
-      languageSourcesAreSet: languageSourcesAreSet ?? false,
       pronunciation: pronunciation ?? 'from',
       darkMode: darkMode ?? false,
       autoDarkMode: autoDarkMode ?? true,
@@ -118,7 +112,6 @@ class SettingsState extends Equatable {
   List<Object?> get props => [
     translateFrom,
     translateTo,
-    languageSourcesAreSet,
     pronunciation,
     darkMode,
     autoDarkMode,

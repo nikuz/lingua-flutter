@@ -56,6 +56,7 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Settings',
           style: TextStyle(
@@ -89,7 +90,6 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
                     children: [
                       SettingsRow(
                         title: 'Show translation languages',
-                        margin: const EdgeInsets.only(top: 7),
                         child: Switch(
                           value: state.showLanguageSource,
                           onChanged: (value) {
