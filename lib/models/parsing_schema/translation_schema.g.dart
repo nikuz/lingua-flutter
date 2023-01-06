@@ -11,8 +11,10 @@ TranslationSchema _$TranslationSchemaFromJson(Map<String, dynamic> json) =>
       fields: TranslationSchemaFields.fromJson(
           json['fields'] as Map<String, dynamic>),
       word: SchemaItem.fromJson(json['word'] as Map<String, dynamic>),
-      autoSpellingFix:
-          SchemaItem.fromJson(json['autoSpellingFix'] as Map<String, dynamic>),
+      autoSpelling:
+          SchemaItem.fromJson(json['autoSpelling'] as Map<String, dynamic>),
+      autoLanguage:
+          SchemaItem.fromJson(json['autoLanguage'] as Map<String, dynamic>),
       transcription:
           SchemaItem.fromJson(json['transcription'] as Map<String, dynamic>),
       translations: TranslationSchemaTranslations.fromJson(
@@ -30,7 +32,8 @@ Map<String, dynamic> _$TranslationSchemaToJson(TranslationSchema instance) =>
     <String, dynamic>{
       'fields': instance.fields.toJson(),
       'word': instance.word.toJson(),
-      'autoSpellingFix': instance.autoSpellingFix.toJson(),
+      'autoSpelling': instance.autoSpelling.toJson(),
+      'autoLanguage': instance.autoLanguage.toJson(),
       'transcription': instance.transcription.toJson(),
       'translations': instance.translations.toJson(),
       'alternativeTranslations': instance.alternativeTranslations.toJson(),

@@ -11,7 +11,8 @@ TranslationContainer _$TranslationContainerFromJson(
     TranslationContainer(
       id: json['id'] as int?,
       word: json['word'] as String,
-      autoSpellingFix: json['autoSpellingFix'] as String?,
+      autoSpelling: json['autoSpelling'] as String?,
+      autoLanguage: json['autoLanguage'] as String?,
       transcription: json['transcription'] as String?,
       translation: json['translation'] as String,
       translations: (json['translations'] as List<dynamic>?)
@@ -29,7 +30,8 @@ TranslationContainer _$TranslationContainerFromJson(
       examples: (json['examples'] as List<dynamic>?)
           ?.map((e) => TranslationExample.fromJson(e as Map<String, dynamic>))
           .toList(),
-      pronunciation: json['pronunciation'] as String?,
+      pronunciationFrom: json['pronunciationFrom'] as String?,
+      pronunciationTo: json['pronunciationTo'] as String?,
       image: json['image'] as String?,
       raw: json['raw'] as List<dynamic>?,
       schema: json['schema'] == null
@@ -49,7 +51,8 @@ Map<String, dynamic> _$TranslationContainerToJson(
     <String, dynamic>{
       'id': instance.id,
       'word': instance.word,
-      'autoSpellingFix': instance.autoSpellingFix,
+      'autoSpelling': instance.autoSpelling,
+      'autoLanguage': instance.autoLanguage,
       'transcription': instance.transcription,
       'translation': instance.translation,
       'translations': instance.translations?.map((e) => e.toJson()).toList(),
@@ -57,7 +60,8 @@ Map<String, dynamic> _$TranslationContainerToJson(
           instance.alternativeTranslations?.map((e) => e.toJson()).toList(),
       'definitions': instance.definitions?.map((e) => e.toJson()).toList(),
       'examples': instance.examples?.map((e) => e.toJson()).toList(),
-      'pronunciation': instance.pronunciation,
+      'pronunciationFrom': instance.pronunciationFrom,
+      'pronunciationTo': instance.pronunciationTo,
       'image': instance.image,
       'raw': instance.raw,
       'schema': instance.schema?.toJson(),

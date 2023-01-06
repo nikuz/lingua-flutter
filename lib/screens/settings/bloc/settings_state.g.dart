@@ -12,21 +12,22 @@ SettingsState _$SettingsStateFromJson(Map<String, dynamic> json) =>
           Language.fromJson(json['translateFrom'] as Map<String, dynamic>),
       translateTo:
           Language.fromJson(json['translateTo'] as Map<String, dynamic>),
-      pronunciationAutoPlay: json['pronunciationAutoPlay'] as bool,
-      darkMode: json['darkMode'] as bool,
-      autoDarkMode: json['autoDarkMode'] as bool,
-      backupLoading: json['backupLoading'] as bool,
-      backupError: json['backupError'] as bool,
+      pronunciation: json['pronunciation'] as String,
+      darkMode: json['darkMode'] as bool? ?? false,
+      autoDarkMode: json['autoDarkMode'] as bool? ?? true,
+      backupLoading: json['backupLoading'] as bool? ?? false,
+      backupError: json['backupError'] as bool? ?? false,
       backupTime: json['backupTime'] as int?,
       backupSize: json['backupSize'] as int?,
       backupPreloadSize: json['backupPreloadSize'] as int?,
+      showLanguageSource: json['showLanguageSource'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$SettingsStateToJson(SettingsState instance) =>
     <String, dynamic>{
       'translateFrom': instance.translateFrom,
       'translateTo': instance.translateTo,
-      'pronunciationAutoPlay': instance.pronunciationAutoPlay,
+      'pronunciation': instance.pronunciation,
       'darkMode': instance.darkMode,
       'autoDarkMode': instance.autoDarkMode,
       'backupLoading': instance.backupLoading,
@@ -34,4 +35,5 @@ Map<String, dynamic> _$SettingsStateToJson(SettingsState instance) =>
       'backupTime': instance.backupTime,
       'backupSize': instance.backupSize,
       'backupPreloadSize': instance.backupPreloadSize,
+      'showLanguageSource': instance.showLanguageSource,
     };

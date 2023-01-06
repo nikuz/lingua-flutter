@@ -21,6 +21,14 @@ TranslationViewState _$TranslationViewStateFromJson(
       translationIsUpdated: json['translationIsUpdated'] as bool? ?? false,
       translateLoading: json['translateLoading'] as bool? ?? false,
       imageLoading: json['imageLoading'] as bool? ?? false,
+      imageError: json['imageError'] == null
+          ? null
+          : CustomError.fromJson(json['imageError'] as Map<String, dynamic>),
+      pronunciationLoading: json['pronunciationLoading'] as bool? ?? false,
+      pronunciationError: json['pronunciationError'] == null
+          ? null
+          : CustomError.fromJson(
+              json['pronunciationError'] as Map<String, dynamic>),
       updateLoading: json['updateLoading'] as bool? ?? false,
       error: json['error'] == null
           ? null
@@ -38,6 +46,9 @@ Map<String, dynamic> _$TranslationViewStateToJson(
       'translationIsUpdated': instance.translationIsUpdated,
       'translateLoading': instance.translateLoading,
       'imageLoading': instance.imageLoading,
+      'imageError': instance.imageError,
+      'pronunciationLoading': instance.pronunciationLoading,
+      'pronunciationError': instance.pronunciationError,
       'updateLoading': instance.updateLoading,
       'error': instance.error,
     };
