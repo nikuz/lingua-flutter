@@ -11,8 +11,9 @@ import 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
 import 'package:lingua_flutter/providers/db.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/regexp.dart';
-import 'package:lingua_flutter/utils/media_source.dart';
+import 'package:lingua_flutter/models/media_source.dart';
 import 'package:lingua_flutter/utils/string.dart';
+import 'package:lingua_flutter/utils/json.dart';
 
 Future<void> init() async {
   await DBProvider().rawQuery('''
@@ -150,6 +151,7 @@ Future<TranslationContainer?> get(String word, String translateFrom, String tran
   }
 
   final item = dbResponse[0];
+  final rawData = await jsonDecodeIsolate(item['raw']);
 
   return TranslationContainer(
     id: item['id'],
@@ -158,7 +160,7 @@ Future<TranslationContainer?> get(String word, String translateFrom, String tran
     pronunciationFrom: item['pronunciationFrom'],
     pronunciationTo: item['pronunciationTo'],
     image: item['image'],
-    raw: jsonDecode(item['raw']),
+    raw: rawData,
     schemaVersion: item['schema_version'],
     translateFrom: Language.fromJson(jsonDecode(item['translate_from'])),
     translateTo: Language.fromJson(jsonDecode(item['translate_to'])),
@@ -199,7 +201,7 @@ Future<void> save(TranslationContainer translation) async {
       [
         translation.word,
         translation.translation,
-        jsonEncode(translation.raw),
+        await jsonEncodeIsolate(translation.raw),
         translation.schemaVersion,
         jsonEncode(translation.translateFrom.toJson()),
         translation.translateFrom.id,

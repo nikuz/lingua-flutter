@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
 import './schema.dart';
 
@@ -22,9 +21,7 @@ class StoredParsingSchema {
     this.updatedAt,
   });
 
-  factory StoredParsingSchema.fromFirestore(Map<String, dynamic> snapshot) {
-    Map<String, dynamic> schemaJson = jsonDecode(snapshot['schema']);
-
+  factory StoredParsingSchema.fromFirestore(Map<String, dynamic> snapshot, Map<String, dynamic> schemaJson) {
     return StoredParsingSchema(
       version: snapshot['version'],
       schema: ParsingSchema(

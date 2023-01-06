@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lingua_flutter/providers/error_logger.dart';
 import 'package:lingua_flutter/utils/files.dart';
+import 'package:lingua_flutter/utils/json.dart';
 import 'package:lingua_flutter/models/error.dart';
 
 final Map<String, String> languages = {};
@@ -23,8 +23,8 @@ Future<void> preload() async {
     // decode file JSON content
     Map<String, dynamic>? languagesData;
     try {
-      Map<String, dynamic> languagesRawData = jsonDecode(languagesFileContent);
-      languagesData = jsonDecode(languagesRawData['raw']);
+      Map<String, dynamic> languagesRawData = await jsonDecodeIsolate(languagesFileContent);
+      languagesData = await jsonDecodeIsolate(languagesRawData['raw']);
     } catch (err, stack) {
       recordError(err, stack);
     }
@@ -57,7 +57,7 @@ Future<Map<String, String>?> get({ bool? forceUpdate }) async {
 
   Map<String, dynamic>? languagesData;
   try {
-    languagesData = jsonDecode(languagesRawData['raw']);
+    languagesData = await jsonDecodeIsolate(languagesRawData['raw']);
   } catch (err, stack) {
     recordError(err, stack);
     return null;
@@ -69,7 +69,7 @@ Future<Map<String, String>?> get({ bool? forceUpdate }) async {
 
   final languagesPath = await _getLanguagesPath();
   final file = File('$languagesPath/languages');
-  await file.writeAsString(jsonEncode(languagesRawData));
+  await file.writeAsString(await jsonEncodeIsolate(languagesRawData));
 
   languages.clear();
   for (var id in languagesData.keys) {

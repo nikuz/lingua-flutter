@@ -40,7 +40,7 @@ Future<String?> retrieve({
     );
   }
 
-  final pronunciationRawData = cloud_translate_controller.retrieveResponseRawData(
+  final pronunciationRawData = await cloud_translate_controller.retrieveResponseRawData(
     pronunciationRaw,
     schema.pronunciation.fields.marker,
   );

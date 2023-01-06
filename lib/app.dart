@@ -77,7 +77,6 @@ class _AppState extends State<App> with WidgetsBindingObserver {
             themeMode: themeMode,
             routerDelegate: _appRouter.delegate(),
             routeInformationParser: _appRouter.defaultRouteParser(),
-            debugShowCheckedModeBanner: false,
           );
         },
       ),

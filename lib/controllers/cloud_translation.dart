@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:lingua_flutter/providers/api.dart';
 import 'package:lingua_flutter/controllers/parsing_schemas.dart' as parsing_schemas_controller;
 import 'package:lingua_flutter/controllers/local_translation.dart' as local_translate_controller;
@@ -85,7 +84,7 @@ Future<TranslationContainer> translate({
     },
   );
 
-  translationResult = retrieveResponseRawData(translationRaw, parsingSchema.translation.fields.marker);
+  translationResult = await retrieveResponseRawData(translationRaw, parsingSchema.translation.fields.marker);
   if (translationResult == null) {
     if (forceCurrentSchemaDownload == null) {
       return translate(
@@ -146,7 +145,7 @@ Future<TranslationContainer> translate({
   }
 }
 
-List<dynamic>? retrieveResponseRawData(String rawData, String marker) {
+Future<List<dynamic>?>? retrieveResponseRawData(String rawData, String marker) async {
   // retrieve individual lines from translate response
   final rawStrings = rawData.split('\n');
 
@@ -155,11 +154,11 @@ List<dynamic>? retrieveResponseRawData(String rawData, String marker) {
   // the inner decoded JSON is our RAW translation data
   for (var item in rawStrings) {
     if (item.contains(marker)) {
-      final responseJson = jsonDecode(item);
+      final responseJson = await jsonDecodeIsolate(item);
       // resulted list of lines is sorted so the longest line goes first
       List<String> dataStrings = findAllJsonStrings(responseJson);
       if (dataStrings.isNotEmpty) {
-        return jsonDecode(dataStrings[0]);
+        return await jsonDecodeIsolate(dataStrings[0]);
       }
       break;
     }

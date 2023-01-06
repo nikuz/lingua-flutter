@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lingua_flutter/providers/error_logger.dart';
 import 'package:lingua_flutter/utils/files.dart';
+import 'package:lingua_flutter/utils/json.dart';
 import 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
 import 'package:lingua_flutter/app_config.dart' as config;
 
@@ -26,7 +26,7 @@ Future<void> preload() async {
     // decode file JSON content
     Map<String, dynamic>? schemaData;
     try {
-      schemaData = jsonDecode(schemaFileContent);
+      schemaData = await jsonDecodeIsolate(schemaFileContent);
     } catch (err, stack) {
       recordError(err, stack);
     }
@@ -36,7 +36,8 @@ Future<void> preload() async {
       StoredParsingSchema? schema;
       // schemas can be outdated and trying to parse them with current StoredParsingSchema structure throws error
       try {
-        schema = StoredParsingSchema.fromFirestore(schemaData);
+        final schemaJson = await jsonDecodeIsolate(schemaData['schema']);
+        schema = StoredParsingSchema.fromFirestore(schemaData, schemaJson);
       } catch (err, stack) {
         recordError(err, stack);
       }
@@ -68,21 +69,22 @@ Future<StoredParsingSchema?> get(String versionName, { bool? forceUpdate }) asyn
     return null;
   }
 
-  final schema = StoredParsingSchema.fromFirestore(schemaData);
+  final schemaJson = await jsonDecodeIsolate(schemaData['schema']);
+  final schema = StoredParsingSchema.fromFirestore(schemaData, schemaJson);
   final schemasPath = await _getSchemasPath();
-  final schemaJson = jsonEncode(schemaData);
+  final schemaDataJson = await jsonEncodeIsolate(schemaData);
 
   // store schema with "schema.version" name
   parsingSchemas[schema.version] = schema;
   final file = File('$schemasPath/${schema.version}');
-  await file.writeAsString(schemaJson);
+  await file.writeAsString(schemaDataJson);
 
   // if "current" schema was retrieved, then it's version will not match the "versionName" variable it was requested with,
   // so we also store file with "versionName" file name
   if (versionName != schema.version) {
     parsingSchemas[versionName] = schema;
     final file = File('$schemasPath/$versionName');
-    await file.writeAsString(schemaJson);
+    await file.writeAsString(schemaDataJson);
   }
 
   return schema;

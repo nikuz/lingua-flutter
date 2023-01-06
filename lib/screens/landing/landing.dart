@@ -95,8 +95,8 @@ class _LandingState extends State<Landing> {
                       padding: EdgeInsets.only(top: 10),
                       child: Image(
                         image: AssetImage('assets/images/logo.png'),
-                        width: 200,
-                        height: 200,
+                        width: 150,
+                        height: 150,
                       ),
                     ),
 

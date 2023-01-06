@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
+
 List<String> findAllJsonStrings(dynamic json, [List<String>? buffer]) {
   final strings = buffer ?? [];
   List<dynamic> values = [];
@@ -22,4 +25,12 @@ List<String> findAllJsonStrings(dynamic json, [List<String>? buffer]) {
   strings.sort((a, b) => b.length.compareTo(a.length));
 
   return strings;
+}
+
+Future<dynamic> jsonDecodeIsolate(String data) {
+  return compute((String data) => jsonDecode(data), data);
+}
+
+Future<String> jsonEncodeIsolate(dynamic data) {
+  return compute((dynamic data) => jsonEncode(data), data);
 }

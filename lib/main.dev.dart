@@ -8,7 +8,7 @@ import './controllers/local_translation.dart' as local_translate_controller;
 import './controllers/parsing_schemas.dart' as parsing_schemas_controller;
 import './controllers/languages.dart' as languages_controller;
 import './providers/audio.dart';
-import './providers/error_logger.dart';
+// import './providers/error_logger.dart';
 import './blocs/observer.dart';
 // import './utils/files.dart';
 import './app.dart';
@@ -20,7 +20,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   // Crashlytics
-  initiateErrorLogger();
+  // initiateErrorLogger();
 
   Bloc.observer = MyBlocObserver();
 

@@ -64,6 +64,15 @@ class _TranslationViewImageState extends State<TranslationViewImage> {
                     ),
                   ),
 
+                if (!state.imageLoading && !hasImage)
+                  Center(
+                    child: Icon(
+                      Icons.broken_image,
+                      color: Styles.colors.white,
+                      size: 75,
+                    ),
+                  ),
+
                 if (!state.imageLoading && hasImage)
                   Center(
                     child: ResizeContainer(

@@ -70,6 +70,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   void initState() {
     super.initState();
     _textController = widget.controller ?? TextEditingController();
+    _textController.addListener(_checkTextValueIntegrity);
     _focusNode = widget.focusNode ?? FocusNode();
     if (widget.defaultValue != null) {
       _textController.text = widget.defaultValue!;
@@ -86,6 +87,16 @@ class _CustomTextFieldState extends State<CustomTextField> {
       _focusNode.dispose();
     }
     super.dispose();
+  }
+
+  void _checkTextValueIntegrity() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _textValue != _textController.text) {
+        setState(() {
+          _textValue = _textController.text;
+        });
+      }
+    });
   }
 
   Widget _buildIcon({

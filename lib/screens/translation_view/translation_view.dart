@@ -51,6 +51,7 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
 
     if (widget.quickTranslation != null) {
       _translationViewCubit.setTranslation(widget.quickTranslation!);
+      _fetchImages(widget.word);
       _translationViewCubit.fetchPronunciations(widget.quickTranslation!);
     } else {
       _fetchTranslation();

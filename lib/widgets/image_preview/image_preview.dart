@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:lingua_flutter/utils/convert.dart';
 import 'package:lingua_flutter/utils/files.dart';
-import 'package:lingua_flutter/utils/media_source.dart';
+import 'package:lingua_flutter/models/media_source.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
 import './image_preview_modal.dart';
@@ -50,44 +50,61 @@ class _ImagePreviewState extends State<ImagePreview> {
     if (widget.imageSource != null) {
       _sourceType = MediaSource.getType(widget.imageSource!);
     }
-    if (_sourceType == MediaSourceType.local) {
-      _getLocalPath();
-    }
+    _getLocalPath();
+    _getSourceBytes();
   }
 
   @override
   void didUpdateWidget(ImagePreview oldWidget) {
+    super.didUpdateWidget(oldWidget);
     if (oldWidget.imageSource != widget.imageSource && widget.imageSource != null) {
       _sourceType = MediaSource.getType(widget.imageSource!);
-      if (_sourceType == MediaSourceType.local) {
-        _getLocalPath();
-      }
-      if (_sourceBytes != null) {
-        _sourceBytes = getBytesFrom64String(widget.imageSource!);
-      }
+      _getLocalPath();
+      _getSourceBytes();
     }
-    super.didUpdateWidget(oldWidget);
   }
 
   void _getLocalPath() async {
-    String imageLocalPath = await getDocumentsPath();
-    setState(() {
-      _imageLocalPath = imageLocalPath;
-    });
+    if (_sourceType == MediaSourceType.local) {
+      String imageLocalPath = await getDocumentsPath();
+      setState(() {
+        _imageLocalPath = imageLocalPath;
+      });
+    }
+  }
+
+  void _getSourceBytes() {
+    if (_sourceType == MediaSourceType.base64 && widget.imageSource != null) {
+      final sourceBytes = getBytesFrom64String(widget.imageSource!);
+      if (mounted) {
+        setState(() {
+          _sourceBytes = sourceBytes;
+        });
+      }
+    }
   }
 
   Widget _buildImage() {
     final MyTheme theme = Styles.theme(context);
-    Widget image = Container();
+    Widget image = Container(
+      constraints: const BoxConstraints(
+        minWidth: 50,
+        minHeight: 50,
+      ),
+      child: const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
 
     if (widget.imageSource != null) {
       switch (_sourceType) {
         case MediaSourceType.base64:
-          _sourceBytes ??= getBytesFrom64String(widget.imageSource!);
-          image = Image.memory(
-            _sourceBytes!,
-            fit: BoxFit.contain,
-          );
+          if (_sourceBytes != null) {
+            image = Image.memory(
+              _sourceBytes!,
+              fit: BoxFit.contain,
+            );
+          }
           break;
         case MediaSourceType.local:
           if (_imageLocalPath != null) {

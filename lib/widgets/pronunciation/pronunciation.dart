@@ -6,7 +6,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:lingua_flutter/providers/audio.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/convert.dart';
-import 'package:lingua_flutter/utils/media_source.dart';
+import 'package:lingua_flutter/models/media_source.dart';
 import 'package:lingua_flutter/widgets/button/button.dart';
 
 class PronunciationWidget extends StatefulWidget {
