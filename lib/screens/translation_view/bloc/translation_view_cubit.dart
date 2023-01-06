@@ -24,12 +24,14 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         translateTo: translateTo,
       );
 
-      emit(state.copyWith(
-        word: word,
-        imageSearchWord: word,
-        translation: translation,
-        translateLoading: false,
-      ));
+      if (state.translateLoading) {
+        emit(state.copyWith(
+          word: word,
+          imageSearchWord: word,
+          translation: translation,
+          translateLoading: false,
+        ));
+      }
     } catch (err, stack) {
       emit(state.copyWith(
         error: Wrapped.value(CustomError(
@@ -67,14 +69,16 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         image = images[0];
       }
 
-      emit(state.copyWith(
-        images: images,
-        imageLoading: false,
-        translation: setFirstImage
-            ? state.translation?.copyWith(image: image)
-            : state.translation,
-        imageIsUpdated: setFirstImage ? true : state.imageIsUpdated,
-      ));
+      if (state.translation != null && state.translation!.word == word) {
+        emit(state.copyWith(
+          images: images,
+          imageLoading: false,
+          translation: setFirstImage
+              ? state.translation?.copyWith(image: image)
+              : state.translation,
+          imageIsUpdated: setFirstImage ? true : state.imageIsUpdated,
+        ));
+      }
     } catch (err, stack) {
       emit(state.copyWith(
         imageError: Wrapped.value(CustomError(
@@ -115,13 +119,15 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         ),
       ]);
 
-      emit(state.copyWith(
-        translation: state.translation?.copyWith(
-          pronunciationFrom: results[0],
-          pronunciationTo: results[1],
-        ),
-        imageLoading: false,
-      ));
+      if (state.translation != null && state.translation!.word == translation.word) {
+        emit(state.copyWith(
+          translation: state.translation?.copyWith(
+            pronunciationFrom: results[0],
+            pronunciationTo: results[1],
+          ),
+          imageLoading: false,
+        ));
+      }
     } catch (err, stack) {
       emit(state.copyWith(
         pronunciationError: Wrapped.value(CustomError(
