@@ -54,7 +54,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
     ));
   }
 
-  Future<String?> fetchImages(String word) async {
+  void fetchImages(String word, { bool setFirstImage = false }) async {
     emit(state.copyWith(
       imageLoading: true,
       imageSearchWord: word,
@@ -62,15 +62,19 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
 
     try {
       final List<String>? images = await images_controller.search(word);
+      String? image;
+      if (images != null && images.isNotEmpty) {
+        image = images[0];
+      }
 
       emit(state.copyWith(
         images: images,
         imageLoading: false,
+        translation: setFirstImage
+            ? state.translation?.copyWith(image: image)
+            : state.translation,
+        imageIsUpdated: setFirstImage ? true : state.imageIsUpdated,
       ));
-      if (images != null && images.isNotEmpty) {
-        return images[0];
-      }
-      return null;
     } catch (err, stack) {
       emit(state.copyWith(
         imageError: Wrapped.value(CustomError(
@@ -86,7 +90,6 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
       }
       recordFatalError(err, stack, information: information);
     }
-    return null;
   }
 
   void fetchPronunciations(TranslationContainer translation) async {

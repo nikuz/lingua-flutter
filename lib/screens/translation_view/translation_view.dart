@@ -51,7 +51,7 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
 
     if (widget.quickTranslation != null) {
       _translationViewCubit.setTranslation(widget.quickTranslation!);
-      _fetchImages(widget.word);
+      _fetchImages(widget.quickTranslation!.word);
       _translationViewCubit.fetchPronunciations(widget.quickTranslation!);
     } else {
       _fetchTranslation();
@@ -113,11 +113,7 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
   }
 
   void _fetchImages(String word) {
-    _translationViewCubit.fetchImages(word).then((String? image) {
-      if (image != null) {
-        _translationViewCubit.setImage(image);
-      }
-    });
+    _translationViewCubit.fetchImages(word, setFirstImage: true);
   }
 
   @override
