@@ -18,6 +18,7 @@ class Root extends StatelessWidget {
         animationDuration: Duration.zero,
         bottomNavigationBuilder: (_, tabsRouter) {
           return BottomNavigationBar(
+            elevation: 15,
             currentIndex: tabsRouter.activeIndex,
             onTap: tabsRouter.setActiveIndex,
             items: const [

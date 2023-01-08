@@ -15,12 +15,12 @@ import '../../search_state.dart';
 
 class SearchListItem extends StatefulWidget {
   final TranslationContainer translationItem;
-  final bool withBorder;
+  final bool isLast;
 
   const SearchListItem({
     Key? key,
     required this.translationItem,
-    required this.withBorder,
+    required this.isLast,
   }) : super(key: key);
 
   @override
@@ -48,7 +48,7 @@ class _SearchListItemState extends State<SearchListItem> {
               pronunciationSource = widget.translationItem.pronunciationTo;
             }
 
-            if (widget.withBorder) {
+            if (!widget.isLast) {
               borderColor = theme.colors.divider;
             }
 
@@ -94,6 +94,7 @@ class _SearchListItemState extends State<SearchListItem> {
                     ),
                   ),
                 ),
+                padding: widget.isLast ? const EdgeInsets.only(bottom: 10) : EdgeInsets.zero,
                 child: Material(
                   color: _isSelected ? Styles.colors.grey.withOpacity(0.3) : theme.colors.background,
                   child: InkWell(

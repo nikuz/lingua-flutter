@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/providers/connectivity.dart';
@@ -210,13 +211,20 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final MyTheme theme = Styles.theme(context);
+    final isInDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: theme.colors.background,
       appBar: AppBar(
-        backgroundColor: theme.colors.background,
+        backgroundColor: theme.colors.background.withOpacity(0.8),
         elevation: 0,
         toolbarHeight: 0,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: theme.colors.background.withOpacity(0.8),
+          statusBarIconBrightness: isInDarkMode ? Brightness.light : Brightness.dark,
+          statusBarBrightness: isInDarkMode ? Brightness.dark : Brightness.light,
+        ),
       ),
       body: BlocListener<SettingsCubit, SettingsState>(
         listener: (context, state) {

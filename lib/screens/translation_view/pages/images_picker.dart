@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/widgets/text_field/text_field.dart';
@@ -53,13 +54,19 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
     return BlocBuilder<TranslationViewCubit, TranslationViewState>(
       builder: (context, state) {
         final MyTheme theme = Styles.theme(context);
+        final isInDarkMode = Theme.of(context).brightness == Brightness.dark;
+
         return Scaffold(
           backgroundColor: theme.colors.background,
           appBar: AppBar(
             automaticallyImplyLeading: false,
             titleSpacing: 4,
             backgroundColor: theme.colors.focusBackground,
-            // elevation: 0,
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: theme.colors.focusBackground,
+              statusBarIconBrightness: isInDarkMode ? Brightness.light : Brightness.dark,
+              statusBarBrightness: isInDarkMode ? Brightness.dark : Brightness.light,
+            ),
             title: CustomTextField(
               defaultValue: widget.word,
               hintText: 'Search for images',

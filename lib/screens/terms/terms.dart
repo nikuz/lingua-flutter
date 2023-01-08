@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lingua_flutter/widgets/typography/typography.dart';
 import 'package:lingua_flutter/widgets/link/link.dart';
 import 'package:lingua_flutter/styles/styles.dart';
@@ -10,11 +11,18 @@ class Terms extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MyTheme theme = Styles.theme(context);
+    final isInDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       backgroundColor: theme.colors.background,
       appBar: AppBar(
         backgroundColor: theme.colors.background,
         foregroundColor: theme.colors.primary,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: theme.colors.background,
+          statusBarIconBrightness: isInDarkMode ? Brightness.light : Brightness.dark,
+          statusBarBrightness: isInDarkMode ? Brightness.dark : Brightness.light,
+        ),
         elevation: 0,
         scrolledUnderElevation: 2,
         title: const Text(

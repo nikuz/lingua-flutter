@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/models/language.dart';
@@ -151,6 +152,11 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
             appBar: AppBar(
               automaticallyImplyLeading: true, // to automatically add Back Button when needed,
               backgroundColor: theme.colors.focusBackground,
+              systemOverlayStyle: SystemUiOverlayStyle(
+                statusBarColor: theme.colors.focusBackground,
+                statusBarIconBrightness: Brightness.light,
+                statusBarBrightness: Brightness.dark,
+              ),
               title: Text(
                 widget.word,
                 style: const TextStyle(

@@ -150,7 +150,7 @@ class _SearchListState extends State<SearchList> {
                   return SearchListItem(
                     key: ValueKey('$index-${state.translations[index - 1].updatedAt}'),
                     translationItem: state.translations[index - 1],
-                    withBorder: index < state.translations.length,
+                    isLast: index == state.translations.length,
                   );
                 },
               ),

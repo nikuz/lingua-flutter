@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/widgets/language_selector/language_selector.dart';
 import 'package:lingua_flutter/styles/styles.dart';
@@ -16,16 +17,19 @@ class Settings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MyTheme theme = Styles.theme(context);
+    final isInDarkMode = Theme.of(context).brightness == Brightness.dark;
+    Color appBarColor = isInDarkMode ? Styles.colors.fakeBlack : Styles.colors.paleGreyDark;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).brightness == Brightness.dark
-        ? Styles.colors.fakeBlack
-        : Styles.colors.paleGreyDark,
+      backgroundColor: appBarColor,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Theme.of(context).brightness == Brightness.dark
-            ? Styles.colors.fakeBlack
-            : Styles.colors.paleGreyDark,
-        // backgroundColor: theme.colors.cardBackground,
+        backgroundColor: appBarColor,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: appBarColor,
+          statusBarIconBrightness: isInDarkMode ? Brightness.light : Brightness.dark,
+          statusBarBrightness: isInDarkMode ? Brightness.dark : Brightness.light,
+        ),
         foregroundColor: theme.colors.primary,
         elevation: 0,
         scrolledUnderElevation: 2,
