@@ -27,17 +27,8 @@ class _SettingsDarkModeState extends State<SettingsDarkMode> with WidgetsBinding
 
   @override
   void didChangePlatformBrightness() {
-    final brightness = WidgetsBinding.instance.window.platformBrightness;
-    final state = _settingsCubit.state;
-    if (state.autoDarkMode) {
-      if (state.darkMode && brightness == Brightness.light) {
-        _settingsCubit.setDarkMode(false);
-      } else if (!state.darkMode && brightness == Brightness.dark) {
-        _settingsCubit.setDarkMode(true);
-      }
-    }
     setState(() {
-      _brightness = brightness;
+      _brightness = WidgetsBinding.instance.window.platformBrightness;
     });
   }
 
