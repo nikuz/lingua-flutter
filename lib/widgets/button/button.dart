@@ -24,7 +24,6 @@ class Button extends StatelessWidget {
   final Color? textColor;
   final double borderRadius;
   final bool loading;
-  final double? loadingSize;
   final bool disabled;
   final VoidCallback? onPressed;
 
@@ -48,7 +47,6 @@ class Button extends StatelessWidget {
     this.textColor,
     this.borderRadius = 4,
     this.loading = false,
-    this.loadingSize,
     this.disabled = false,
     this.onPressed,
   });
@@ -71,6 +69,7 @@ class Button extends StatelessWidget {
       horizontal: 10,
       vertical: 5,
     );
+    double loadingSize = heightConstraint;
 
     if (outlined) {
       Color borderColor = this.borderColor ?? theme.colors.divider;
@@ -89,6 +88,7 @@ class Button extends StatelessWidget {
       inkWellBorder = const CircleBorder();
       widthConstraint = width ?? ButtonConstants.minOvalSize;
       heightConstraint = height ?? ButtonConstants.minOvalSize;
+      loadingSize = widthConstraint / 2;
       borderRadius = BorderRadius.all(Radius.circular(widthConstraint));
       padding = EdgeInsets.zero;
     }
@@ -163,8 +163,8 @@ class Button extends StatelessWidget {
                     Positioned.fill(
                       child: Center(
                         child: Container(
-                          width: loadingSize ?? heightConstraint,
-                          height: loadingSize ?? heightConstraint,
+                          width: loadingSize,
+                          height: loadingSize,
                           padding: padding,
                           child: CircularProgressIndicator(
                             backgroundColor: elevated ? Styles.colors.white : textColor,

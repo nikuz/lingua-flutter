@@ -26,6 +26,7 @@ class CustomTextField extends StatefulWidget {
   final double? elevation;
   final Color? shadowColor;
   final int? maxLength;
+  final Color? backgroundColor;
   final VoidCallback? onClearPressed;
   final Function(String value)? onChanged;
   final Function(String value)? onSubmitted;
@@ -52,6 +53,7 @@ class CustomTextField extends StatefulWidget {
     this.elevation,
     this.shadowColor,
     this.maxLength,
+    this.backgroundColor,
     this.onClearPressed,
     this.onChanged,
     this.onSubmitted,
@@ -216,7 +218,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           },
           decoration: InputDecoration(
             filled: true,
-            fillColor: theme.colors.background,
+            fillColor: widget.backgroundColor ?? theme.colors.background,
             prefixIcon: prefixIcon,
             prefixIconConstraints: const BoxConstraints(
               minWidth: TextFieldConstants.iconSize,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lingua_flutter/widgets/typography/typography.dart';
 import 'package:lingua_flutter/widgets/link/link.dart';
+import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/app_config.dart' as config;
 
 class Terms extends StatelessWidget {
@@ -8,13 +9,17 @@ class Terms extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final MyTheme theme = Styles.theme(context);
     return Scaffold(
+      backgroundColor: theme.colors.background,
       appBar: AppBar(
+        backgroundColor: theme.colors.background,
+        foregroundColor: theme.colors.primary,
+        elevation: 0,
+        scrolledUnderElevation: 2,
         title: const Text(
           'Terms & Conditions',
-          style: TextStyle(
-            fontSize: 20,
-          ),
+          style: TextStyle(fontSize: 20),
         ),
       ),
       body: SafeArea(
@@ -27,7 +32,6 @@ class Terms extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const TypographyText(text: 'Terms and Conditions', variant: TypographyVariant.h4),
                 const TypographyText(text: 'Last updated: December 27, 2022'),
                 const TypographyText(text: 'Please read these terms and conditions carefully before using Our Service.', align: TextAlign.justify),
 

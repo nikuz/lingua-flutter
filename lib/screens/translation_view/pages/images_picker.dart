@@ -52,10 +52,14 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
   Widget build(BuildContext context) {
     return BlocBuilder<TranslationViewCubit, TranslationViewState>(
       builder: (context, state) {
+        final MyTheme theme = Styles.theme(context);
         return Scaffold(
+          backgroundColor: theme.colors.background,
           appBar: AppBar(
             automaticallyImplyLeading: false,
             titleSpacing: 4,
+            backgroundColor: theme.colors.focusBackground,
+            // elevation: 0,
             title: CustomTextField(
               defaultValue: widget.word,
               hintText: 'Search for images',
@@ -63,6 +67,8 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
               prefixIcon: Icons.arrow_back,
               maxLength: 100,
               borderRadius: BorderRadius.circular(4),
+              // backgroundColor: theme.colors.cardBackground,
+              margin: const EdgeInsets.only(left: 2, right: 2, bottom: 2),
               prefixAction: () {
                 AutoRouter.of(context).pop();
               },

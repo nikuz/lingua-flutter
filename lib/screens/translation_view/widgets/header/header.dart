@@ -14,13 +14,21 @@ import '../auto_language/auto_language.dart';
 import '../auto_spelling/auto_spelling.dart';
 import '../image/image.dart';
 
-class TranslationViewHeader extends StatelessWidget {
+class TranslationViewHeader extends StatefulWidget {
   final String word;
 
   const TranslationViewHeader({
     Key? key,
     required this.word,
   }) : super(key: key);
+
+  @override
+  State<TranslationViewHeader> createState() => _TranslationViewHeaderState();
+}
+
+class _TranslationViewHeaderState extends State<TranslationViewHeader> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
 
   Widget _buildPronunciation(BuildContext context, TranslationViewState state, { bool? from, bool? to }) {
     final translation = state.translation;
@@ -130,7 +138,6 @@ class TranslationViewHeader extends StatelessWidget {
                 : theme.colors.focusBackground,
             disabled: state.translation == null || state.imageLoading || state.pronunciationLoading,
             loading: state.updateLoading,
-            loadingSize: 35,
             outlined: false,
             shape: ButtonShape.oval,
             onPressed: alreadySaved ? null : () {

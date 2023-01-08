@@ -33,7 +33,7 @@ class LanguageSelectorItem extends StatelessWidget {
     double buttonHeight = 30;
 
     if (size == LanguageSelectorSize.large) {
-      buttonHeight = 60;
+      buttonHeight = 50;
     }
 
     return Column(

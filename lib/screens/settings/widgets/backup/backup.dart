@@ -10,7 +10,7 @@ import '../category/category.dart';
 import '../row/row.dart';
 
 class SettingsBackup extends StatelessWidget {
-  const SettingsBackup({Key? key}) : super(key: key);
+  const SettingsBackup({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,68 +22,80 @@ class SettingsBackup extends StatelessWidget {
           lastBackupElapsedTime = getElapsedTime(DateTime.fromMillisecondsSinceEpoch(state.lastBackupAt!));
         }
 
-        return SettingsCategory(
-          title: 'Backup',
+        return Column(
           children: [
-            SettingsRow(
-              title: 'Keep your words save',
-              subtitle: 'Last backup: $lastBackupElapsedTime',
-              child: Button(
-                text: 'Backup',
-                size: ButtonSize.large,
-                elevated: true,
-                loading: state.backupCreateLoading,
-                margin: const EdgeInsets.symmetric(vertical: 10),
-                onPressed: () {
-                  context.read<SettingsCubit>().createBackup().then((result) {
-                    if (result != null) {
-                      String message = 'Backup is saved successfully';
-                      CustomSnackBarType messageType = CustomSnackBarType.success;
+            SettingsCategory(
+              title: 'Backup',
+              children: [
+                SettingsRow(
+                  title: 'Backup your words',
+                  subtitle: 'Last backup: $lastBackupElapsedTime',
+                  child: Button(
+                    icon: Icons.backup,
+                    iconSize: 30,
+                    shape: ButtonShape.oval,
+                    // outlined: false,
+                    loading: state.backupCreateLoading,
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    onPressed: () {
+                      context.read<SettingsCubit>().createBackup().then((result) {
+                        if (result != null) {
+                          String message = 'Backup is saved successfully';
+                          CustomSnackBarType messageType = CustomSnackBarType.success;
 
-                      if (!result) {
-                        message = 'Cannot save the backup';
-                        messageType = CustomSnackBarType.error;
-                      }
+                          if (!result) {
+                            message = 'Cannot save a backup';
+                            messageType = CustomSnackBarType.error;
+                          }
 
-                      CustomSnackBar(
-                        context: context,
-                        message: message,
-                        type: messageType,
-                      ).show();
-                    }
-                  });
-                },
-              ),
+                          CustomSnackBar(
+                            context: context,
+                            message: message,
+                            type: messageType,
+                          ).show();
+                        }
+                      });
+                    },
+                  ),
+                ),
+              ],
             ),
-            SettingsRow(
-              title: 'Restore words from backup',
-              child: Button(
-                text: 'Restore',
-                size: ButtonSize.large,
-                elevated: true,
-                loading: state.backupRestoreLoading,
-                margin: const EdgeInsets.symmetric(vertical: 10),
-                onPressed: () {
-                  context.read<SettingsCubit>().restoreBackup().then((result) {
-                    if (result != null) {
-                      String message = 'Words are restored from the backup';
-                      CustomSnackBarType messageType = CustomSnackBarType.success;
 
-                      if (!result) {
-                        message = 'Cannot restore words from the backup';
-                        messageType = CustomSnackBarType.error;
-                      }
+            SettingsCategory(
+              title: 'Restore',
+              children: [
+                SettingsRow(
+                  title: 'Restore words from a backup',
+                  child: Button(
+                    icon: Icons.settings_backup_restore,
+                    iconSize: 30,
+                    shape: ButtonShape.oval,
+                    // outlined: false,
+                    loading: state.backupRestoreLoading,
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    onPressed: () {
+                      context.read<SettingsCubit>().restoreBackup().then((result) {
+                        if (result != null) {
+                          String message = 'Words are restored from a backup';
+                          CustomSnackBarType messageType = CustomSnackBarType.success;
 
-                      CustomSnackBar(
-                        context: context,
-                        message: message,
-                        type: messageType,
-                      ).show();
-                    }
-                  });
-                },
-              ),
-            ),
+                          if (!result) {
+                            message = 'Cannot restore words from a backup';
+                            messageType = CustomSnackBarType.error;
+                          }
+
+                          CustomSnackBar(
+                            context: context,
+                            message: message,
+                            type: messageType,
+                          ).show();
+                        }
+                      });
+                    },
+                  ),
+                ),
+              ],
+            )
           ],
         );
       },

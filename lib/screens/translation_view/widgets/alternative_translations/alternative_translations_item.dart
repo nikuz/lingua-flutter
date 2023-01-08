@@ -74,6 +74,7 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
 
         return Material(
           borderRadius: borderRadius,
+          type: MaterialType.transparency,
           child: InkWell(
             borderRadius: borderRadius,
             onTap: () {

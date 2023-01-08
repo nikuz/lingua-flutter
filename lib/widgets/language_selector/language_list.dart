@@ -99,7 +99,7 @@ class _LanguageListState extends State<LanguageList> {
               automaticallyImplyLeading: false,
               elevation: 2,
               pinned: true,
-              backgroundColor: theme.colors.background,
+              backgroundColor: theme.colors.cardBackground,
               titleTextStyle: TextStyle(
                 color: theme.colors.primary,
                 fontSize: 20,
@@ -164,6 +164,7 @@ class _LanguageListState extends State<LanguageList> {
                     ListTile(
                       title: Text(_filteredLanguages![id] ?? ''),
                       trailing: id == widget.language?.id ? const Icon(Icons.check) : null,
+                      tileColor: theme.colors.background,
                       onTap: () {
                         String? value = _filteredLanguages![id];
                         if (value != null) {

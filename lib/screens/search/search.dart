@@ -212,8 +212,9 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
     final MyTheme theme = Styles.theme(context);
     return Scaffold(
       extendBodyBehindAppBar: true,
+      backgroundColor: theme.colors.background,
       appBar: AppBar(
-        backgroundColor: theme.colors.background.withOpacity(0.8),
+        backgroundColor: theme.colors.background,
         elevation: 0,
         toolbarHeight: 0,
       ),

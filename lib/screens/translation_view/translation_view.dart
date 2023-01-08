@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/providers/connectivity.dart';
+import 'package:lingua_flutter/styles/styles.dart';
 
 import './bloc/translation_view_cubit.dart';
 import './bloc/translation_view_state.dart';
@@ -144,9 +145,12 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
       },
       child: BlocBuilder<TranslationViewCubit, TranslationViewState>(
         builder: (context, state) {
+          final MyTheme theme = Styles.theme(context);
           return Scaffold(
+            backgroundColor: theme.colors.background,
             appBar: AppBar(
               automaticallyImplyLeading: true, // to automatically add Back Button when needed,
+              backgroundColor: theme.colors.focusBackground,
               title: Text(
                 widget.word,
                 style: const TextStyle(
