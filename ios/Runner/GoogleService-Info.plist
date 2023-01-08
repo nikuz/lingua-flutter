@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>1047299217453-91g9a7fp8q4371jo7j9ocfhfpk8pgmfb.apps.googleusercontent.com</string>
+	<string>1047299217453-pjbjq90uuojsk087aor9udq1mih871pj.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1047299217453-91g9a7fp8q4371jo7j9ocfhfpk8pgmfb</string>
+	<string>com.googleusercontent.apps.1047299217453-pjbjq90uuojsk087aor9udq1mih871pj</string>
 	<key>API_KEY</key>
 	<string>AIzaSyASwiwQEx8DBWd24b97t9pZmZWnr5FN_cM</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>org.linguaFlutter.nikolaj</string>
+	<string>com.wisual.dictionary</string>
 	<key>PROJECT_ID</key>
 	<string>lingua-c5d6c</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,7 +29,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1047299217453:ios:9643d21eb92618729280a4</string>
+	<string>1:1047299217453:ios:0adf32d5a562b38b9280a4</string>
 	<key>DATABASE_URL</key>
 	<string>https://lingua-c5d6c-default-rtdb.firebaseio.com</string>
 </dict>
