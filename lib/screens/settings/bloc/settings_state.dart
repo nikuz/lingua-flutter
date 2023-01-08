@@ -149,5 +149,6 @@ class SettingsState extends Equatable {
     lastBackupAt,
     backupRestoreLoading,
     backupRestoreAt,
+    backupFileIdentifier,
   ];
 }

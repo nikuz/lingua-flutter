@@ -33,6 +33,7 @@ class Settings extends StatelessWidget {
         foregroundColor: theme.colors.primary,
         elevation: 0,
         scrolledUnderElevation: 2,
+        centerTitle: true,
         title: const Text(
           'Settings',
           style: TextStyle(fontSize: 20),

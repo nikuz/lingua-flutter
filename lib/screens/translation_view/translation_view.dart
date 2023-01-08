@@ -157,6 +157,7 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
                 statusBarIconBrightness: Brightness.light,
                 statusBarBrightness: Brightness.dark,
               ),
+              centerTitle: true,
               title: Text(
                 widget.word,
                 style: const TextStyle(

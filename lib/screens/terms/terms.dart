@@ -25,6 +25,7 @@ class Terms extends StatelessWidget {
         ),
         elevation: 0,
         scrolledUnderElevation: 2,
+        centerTitle: true,
         title: const Text(
           'Terms & Conditions',
           style: TextStyle(fontSize: 20),
