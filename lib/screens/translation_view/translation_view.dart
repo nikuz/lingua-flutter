@@ -113,7 +113,11 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
   }
 
   void _fetchImages(String word) {
-    _translationViewCubit.fetchImages(word, setFirstImage: true);
+    _translationViewCubit.fetchImages(
+      word,
+      selectFirstImage: true,
+      matchTranslationWord: true,
+    );
   }
 
   @override
