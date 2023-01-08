@@ -222,22 +222,24 @@ class _SearchFieldState extends State<SearchField> {
                         final text = searchState?.textController.text;
                         if (searchState?.hasInternetConnection == true && text != null) {
                           final sanitizedWord = removeQuotesFromString(removeSlashFromString(text)).trim();
-                          TranslationContainer? quickTranslation;
-
-                          if (sanitizedWord == state.quickTranslation?.word
-                              && widget.translateFrom == state.quickTranslation?.translateFrom
-                              && widget.translateTo == state.quickTranslation?.translateTo
-                          ) {
-                            quickTranslation = state.quickTranslation;
-                          }
-
                           if (sanitizedWord.isNotEmpty) {
+                            TranslationContainer? quickTranslation;
+
+                            if (sanitizedWord == state.quickTranslation?.word
+                                && widget.translateFrom == state.quickTranslation?.translateFrom
+                                && widget.translateTo == state.quickTranslation?.translateTo
+                            ) {
+                              quickTranslation = state.quickTranslation;
+                            }
+
                             searchState?.submitHandler(
                               sanitizedWord,
                               translateFrom: widget.translateFrom,
                               translateTo: widget.translateTo,
                               quickTranslation: quickTranslation,
                             );
+                          } else {
+                            searchState?.textController.clear();
                           }
                         }
                       },

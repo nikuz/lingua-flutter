@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/widgets/text_field/text_field.dart';
 import 'package:lingua_flutter/widgets/image_preview/image_preview.dart';
+import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
 import '../bloc/translation_view_cubit.dart';
@@ -24,11 +25,13 @@ class TranslationViewImagePicker extends StatefulWidget {
 class _TranslationViewImagePickerState extends State<TranslationViewImagePicker> {
   late TranslationViewCubit _translationViewCubit;
   final itemKey = GlobalKey();
+  late TextEditingController _textController;
 
   @override
   void initState() {
     super.initState();
     _translationViewCubit = context.read<TranslationViewCubit>();
+    _textController = TextEditingController();
     final images = _translationViewCubit.state.images;
     if (images == null || images.isEmpty) {
       _translationViewCubit.fetchImages(widget.word);
@@ -50,6 +53,12 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
   }
 
   @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<TranslationViewCubit, TranslationViewState>(
       builder: (context, state) {
@@ -68,20 +77,25 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
               statusBarBrightness: isInDarkMode ? Brightness.dark : Brightness.light,
             ),
             title: CustomTextField(
+              controller: _textController,
               defaultValue: widget.word,
               hintText: 'Search for images',
               textInputAction: TextInputAction.search,
               prefixIcon: Icons.arrow_back,
               maxLength: 100,
               borderRadius: BorderRadius.circular(4),
-              // backgroundColor: theme.colors.cardBackground,
               margin: const EdgeInsets.only(left: 2, right: 2, bottom: 2),
               prefixAction: () {
                 AutoRouter.of(context).pop();
               },
               onSubmitted: (String value) {
-                if (value.isNotEmpty && value != state.imageSearchWord) {
-                  _translationViewCubit.fetchImages(value);
+                final sanitizedWord = removeQuotesFromString(removeSlashFromString(value)).trim();
+                if (sanitizedWord.isNotEmpty) {
+                  if (sanitizedWord != state.imageSearchWord) {
+                    _translationViewCubit.fetchImages(sanitizedWord);
+                  }
+                } else {
+                  _textController.clear();
                 }
               },
             ),
