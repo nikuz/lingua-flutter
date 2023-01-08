@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/widgets/button/button.dart';
 import 'package:lingua_flutter/widgets/snack_bar/snack_bar.dart';
+import 'package:lingua_flutter/widgets/prompt/prompt.dart';
 import 'package:lingua_flutter/utils/time.dart';
 
 import '../../bloc/settings_cubit.dart';
@@ -11,6 +12,52 @@ import '../row/row.dart';
 
 class SettingsBackup extends StatelessWidget {
   const SettingsBackup({super.key});
+
+  void _backupHandler(BuildContext context) {
+    context.read<SettingsCubit>().createBackup().then((result) {
+      if (result != null) {
+        String message = 'Backup is saved successfully';
+        CustomSnackBarType messageType = CustomSnackBarType.success;
+
+        if (!result) {
+          message = 'Cannot save a backup';
+          messageType = CustomSnackBarType.error;
+        }
+
+        CustomSnackBar(
+          context: context,
+          message: message,
+          type: messageType,
+        ).show();
+      }
+    });
+  }
+
+  void _restoreHandler(BuildContext context) {
+    Prompt(
+      context: context,
+      title: 'Local database will be overwritten on backup restore. Do you wish to proceed?',
+      acceptCallback: () {
+        context.read<SettingsCubit>().restoreBackup().then((result) {
+          if (result != null) {
+            String message = 'Words are restored from a backup';
+            CustomSnackBarType messageType = CustomSnackBarType.success;
+
+            if (!result) {
+              message = 'Cannot restore words from a backup';
+              messageType = CustomSnackBarType.error;
+            }
+
+            CustomSnackBar(
+              context: context,
+              message: message,
+              type: messageType,
+            ).show();
+          }
+        });
+      },
+    ).show();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,25 +84,7 @@ class SettingsBackup extends StatelessWidget {
                     // outlined: false,
                     loading: state.backupCreateLoading,
                     margin: const EdgeInsets.symmetric(vertical: 10),
-                    onPressed: () {
-                      context.read<SettingsCubit>().createBackup().then((result) {
-                        if (result != null) {
-                          String message = 'Backup is saved successfully';
-                          CustomSnackBarType messageType = CustomSnackBarType.success;
-
-                          if (!result) {
-                            message = 'Cannot save a backup';
-                            messageType = CustomSnackBarType.error;
-                          }
-
-                          CustomSnackBar(
-                            context: context,
-                            message: message,
-                            type: messageType,
-                          ).show();
-                        }
-                      });
-                    },
+                    onPressed: () => _backupHandler(context),
                   ),
                 ),
               ],
@@ -73,25 +102,7 @@ class SettingsBackup extends StatelessWidget {
                     // outlined: false,
                     loading: state.backupRestoreLoading,
                     margin: const EdgeInsets.symmetric(vertical: 10),
-                    onPressed: () {
-                      context.read<SettingsCubit>().restoreBackup().then((result) {
-                        if (result != null) {
-                          String message = 'Words are restored from a backup';
-                          CustomSnackBarType messageType = CustomSnackBarType.success;
-
-                          if (!result) {
-                            message = 'Cannot restore words from a backup';
-                            messageType = CustomSnackBarType.error;
-                          }
-
-                          CustomSnackBar(
-                            context: context,
-                            message: message,
-                            type: messageType,
-                          ).show();
-                        }
-                      });
-                    },
+                    onPressed: () => _restoreHandler(context),
                   ),
                 ),
               ],
