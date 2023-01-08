@@ -39,6 +39,7 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
   bool _hasInternetConnection = false;
   late Language _translateFrom;
   late Language _translateTo;
+  late int? _backupRestoreAt;
 
   @override
   void initState() {
@@ -57,6 +58,7 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
     context.read<SearchCubit>().fetchTranslations();
     _translateFrom = _settingsCubit.state.translateFrom;
     _translateTo = _settingsCubit.state.translateTo;
+    _backupRestoreAt = _settingsCubit.state.backupRestoreAt;
   }
 
   @override
@@ -87,6 +89,14 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
     return SearchConstants.searchFieldHeight + topPadding;
   }
 
+  void _clearSearch() {
+    _textController.clear();
+    _searchCubit.fetchTranslations(searchText: null);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.unfocus();
+    });
+  }
+
   void _submitHandler(String word, {
     required Language translateFrom,
     required Language translateTo,
@@ -106,11 +116,7 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
         if (_searchCubit.state.translations.any((item) => item.id == result.id)) {
           _searchCubit.updateTranslation(result);
         } else {
-          _textController.clear();
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _focusNode.unfocus();
-          });
-          _searchCubit.fetchTranslations(searchText: null);
+          _clearSearch();
         }
         _translateFrom = _settingsCubit.state.translateFrom;
         _translateTo = _settingsCubit.state.translateTo;
@@ -213,10 +219,18 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
       ),
       body: BlocListener<SettingsCubit, SettingsState>(
         listener: (context, state) {
-          if (state.translateFrom != _translateFrom || state.translateTo != _translateTo) {
+          if (state.translateFrom != _translateFrom
+              || state.translateTo != _translateTo
+              || state.backupRestoreAt != _backupRestoreAt
+          ) {
+            // refresh search list after restore from backup
+            if (state.backupRestoreAt != _backupRestoreAt) {
+              Future.delayed(const Duration(seconds: 1), _clearSearch);
+            }
             setState(() {
               _translateFrom = state.translateFrom;
               _translateTo = state.translateTo;
+              _backupRestoreAt = state.backupRestoreAt;
             });
           }
         },

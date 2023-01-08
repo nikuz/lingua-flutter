@@ -125,7 +125,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
             pronunciationFrom: results[0],
             pronunciationTo: results[1],
           ),
-          imageLoading: false,
+          pronunciationLoading: false,
         ));
       }
     } catch (err, stack) {

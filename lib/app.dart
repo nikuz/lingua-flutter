@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lingua_flutter/app_config.dart' as config;
 import 'package:lingua_flutter/providers/connectivity.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
@@ -72,7 +73,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           }
 
           return MaterialApp.router(
-            title: 'Wisual',
+            title: config.appName,
             darkTheme: ThemeData.dark(),
             themeMode: themeMode,
             routerDelegate: _appRouter.delegate(),

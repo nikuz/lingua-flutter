@@ -89,3 +89,11 @@ class BatchQueryRequest {
     this.arguments,
   });
 }
+
+Future<String> getDbPath() async {
+  String dbPath = await getDatabasesPath();
+  if (!dbPath.endsWith('/')) {
+    dbPath += '/';
+  }
+  return dbPath;
+}

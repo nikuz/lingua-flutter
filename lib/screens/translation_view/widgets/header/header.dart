@@ -128,8 +128,9 @@ class TranslationViewHeader extends StatelessWidget {
             backgroundColor: toSave && !state.updateLoading
                 ? Colors.white
                 : theme.colors.focusBackground,
-            disabled: state.translation == null || state.imageLoading,
+            disabled: state.translation == null || state.imageLoading || state.pronunciationLoading,
             loading: state.updateLoading,
+            loadingSize: 35,
             outlined: false,
             shape: ButtonShape.oval,
             onPressed: alreadySaved ? null : () {

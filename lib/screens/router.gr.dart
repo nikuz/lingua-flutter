@@ -35,6 +35,7 @@ class AppRouter extends _i9.RootStackRouter {
       return _i9.MaterialPageX<dynamic>(
         routeData: routeData,
         child: const _i1.Landing(),
+        maintainState: false,
       );
     },
     RootRoute.name: (routeData) {

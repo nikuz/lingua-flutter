@@ -5,14 +5,12 @@ import '../row/row.dart';
 
 class SettingsCategory extends StatelessWidget {
   final String? title;
-  final String? subtitle;
   final EdgeInsets? margin;
   final List<SettingsRow> children;
 
   const SettingsCategory({
     Key? key,
     this.title,
-    this.subtitle,
     this.margin,
     required this.children,
   }) : super(key: key);

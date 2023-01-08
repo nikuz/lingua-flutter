@@ -104,13 +104,20 @@ class _CustomTextFieldState extends State<CustomTextField> {
     VoidCallback? callback,
   }) {
     final MyTheme theme = Styles.theme(context);
-    return Button(
-      icon: icon,
-      textColor: widget.prefixIconColor ?? theme.colors.primary,
-      shape: ButtonShape.oval,
-      width: 25,
-      outlined: false,
-      onPressed: callback,
+    return SizedBox(
+      width: TextFieldConstants.iconSize - 5,
+      height: TextFieldConstants.iconSize - 5,
+      child: Center(
+        child: Button(
+          icon: icon,
+          textColor: widget.prefixIconColor ?? theme.colors.primary,
+          shape: ButtonShape.oval,
+          width: TextFieldConstants.iconSize - 5,
+          height: TextFieldConstants.iconSize - 5,
+          outlined: false,
+          onPressed: callback,
+        ),
+      ),
     );
   }
 
@@ -132,6 +139,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
           }
         },
       );
+    } else if (widget.prefix != null) {
+      prefixIcon = widget.prefix;
     }
 
     if (_textValue != null && _textValue!.isNotEmpty) {
@@ -208,7 +217,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
           decoration: InputDecoration(
             filled: true,
             fillColor: theme.colors.background,
-            prefix: widget.prefix,
             prefixIcon: prefixIcon,
             prefixIconConstraints: const BoxConstraints(
               minWidth: TextFieldConstants.iconSize,
@@ -227,7 +235,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             border: InputBorder.none,
             contentPadding: widget.padding ?? const EdgeInsets.symmetric(
               horizontal: 10,
-              vertical: 14,
+              vertical: 14.5,
             ),
           ),
           inputFormatters: widget.maxLength != null

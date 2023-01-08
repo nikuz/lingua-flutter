@@ -99,7 +99,6 @@ class _TranslationViewChangeTranslationContentState extends State<TranslationVie
               Button(
                 text: 'Cancel',
                 size: ButtonSize.large,
-                height: 40.0,
                 outlined: false,
                 margin: const EdgeInsets.only(right: 20),
                 onPressed: () {

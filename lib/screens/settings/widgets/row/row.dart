@@ -54,17 +54,16 @@ class SettingsRow extends StatelessWidget {
     final MyTheme theme = Styles.theme(context);
 
     return Container(
-      padding: EdgeInsets.only(
+      padding: const EdgeInsets.only(
         right: 10,
-        bottom: subtitle != null ? 10 : 0,
         left: 10,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
@@ -74,21 +73,21 @@ class SettingsRow extends StatelessWidget {
                 ),
               ),
 
-              child,
+              if (subtitle != null)
+                Container(
+                  margin: const EdgeInsets.only(top: 5),
+                  child: Text(
+                    subtitle!,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: theme.colors.grey,
+                    ),
+                  ),
+                ),
             ],
           ),
 
-          if (subtitle != null)
-            Container(
-              margin: const EdgeInsets.only(top: 5),
-              child: Text(
-                subtitle!,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: theme.colors.grey,
-                ),
-              ),
-            ),
+          child,
         ],
       ),
     );

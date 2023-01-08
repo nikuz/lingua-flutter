@@ -20,6 +20,11 @@ class SettingsState extends Equatable {
   final int? backupSize;
   final int? backupPreloadSize;
   final bool showLanguageSource;
+  final bool backupCreateLoading;
+  final int? lastBackupAt;
+  final String? backupFileIdentifier;
+  final bool backupRestoreLoading;
+  final int? backupRestoreAt;
 
   const SettingsState({
     required this.translateFrom,
@@ -33,6 +38,11 @@ class SettingsState extends Equatable {
     this.backupSize,
     this.backupPreloadSize,
     this.showLanguageSource = false,
+    this.backupCreateLoading = false,
+    this.lastBackupAt,
+    this.backupFileIdentifier,
+    this.backupRestoreLoading = false,
+    this.backupRestoreAt,
   });
 
   SettingsState copyWith({
@@ -47,6 +57,11 @@ class SettingsState extends Equatable {
     int? backupSize,
     Wrapped<int?>? backupPreloadSize,
     bool? showLanguageSource,
+    bool? backupCreateLoading,
+    int? lastBackupAt,
+    String? backupFileIdentifier,
+    bool? backupRestoreLoading,
+    int? backupRestoreAt,
   }) {
     return SettingsState(
       translateFrom: translateFrom ?? this.translateFrom,
@@ -60,6 +75,11 @@ class SettingsState extends Equatable {
       backupSize: backupSize ?? this.backupSize,
       backupPreloadSize: backupPreloadSize != null ? backupPreloadSize.value : this.backupPreloadSize,
       showLanguageSource: showLanguageSource ?? this.showLanguageSource,
+      backupCreateLoading: backupCreateLoading ?? this.backupCreateLoading,
+      lastBackupAt: lastBackupAt ?? this.lastBackupAt,
+      backupFileIdentifier: backupFileIdentifier ?? this.backupFileIdentifier,
+      backupRestoreLoading: backupRestoreLoading ?? this.backupRestoreLoading,
+      backupRestoreAt: backupRestoreAt ?? this.backupRestoreAt,
     );
   }
 
@@ -92,6 +112,8 @@ class SettingsState extends Equatable {
     final int? backupTime = prefs.getInt('backupTime');
     final int? backupSize = prefs.getInt('backupSize');
     final bool? showLanguageSource = prefs.getBool('showLanguageSource');
+    final int? lastBackupAt = prefs.getInt('lastBackupAt');
+    final String? backupFileIdentifier = prefs.getString('backupFileIdentifier');
 
     return SettingsState(
       translateFrom: translateFrom,
@@ -102,6 +124,8 @@ class SettingsState extends Equatable {
       backupTime: backupTime,
       backupSize: backupSize,
       showLanguageSource: showLanguageSource ?? false,
+      lastBackupAt: lastBackupAt,
+      backupFileIdentifier: backupFileIdentifier,
     );
   }
 
@@ -121,5 +145,9 @@ class SettingsState extends Equatable {
     backupSize,
     backupPreloadSize,
     showLanguageSource,
+    backupCreateLoading,
+    lastBackupAt,
+    backupRestoreLoading,
+    backupRestoreAt,
   ];
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/widgets/button/button.dart';
 import 'package:lingua_flutter/widgets/bottom_drawer/bottom_drawer.dart';
+import 'package:lingua_flutter/styles/styles.dart';
 
 import './language_list.dart';
 import './language_selector_size.dart';
@@ -28,6 +29,7 @@ class LanguageSelectorItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final MyTheme theme = Styles.theme(context);
     double buttonHeight = 30;
 
     if (size == LanguageSelectorSize.large) {
@@ -49,6 +51,7 @@ class LanguageSelectorItem extends StatelessWidget {
           text: language?.value ?? '---',
           size: size == LanguageSelectorSize.large ? ButtonSize.large : ButtonSize.regular,
           height: buttonHeight,
+          backgroundColor: theme.colors.cardBackground,
           onPressed: () {
             BottomDrawer(
               context: context,

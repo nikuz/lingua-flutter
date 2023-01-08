@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
-enum ButtonSize {
-  regular,
-  large,
-}
+import './constants.dart';
 
-enum ButtonShape {
-  rectangular,
-  oval,
-}
+export './constants.dart';
 
 class Button extends StatelessWidget {
   final String? text;
@@ -30,6 +24,7 @@ class Button extends StatelessWidget {
   final Color? textColor;
   final double borderRadius;
   final bool loading;
+  final double? loadingSize;
   final bool disabled;
   final VoidCallback? onPressed;
 
@@ -53,6 +48,7 @@ class Button extends StatelessWidget {
     this.textColor,
     this.borderRadius = 4,
     this.loading = false,
+    this.loadingSize,
     this.disabled = false,
     this.onPressed,
   });
@@ -61,7 +57,7 @@ class Button extends StatelessWidget {
   Widget build(BuildContext context) {
     final MyTheme theme = Styles.theme(context);
     double? widthConstraint = width;
-    double? heightConstraint = height;
+    double? heightConstraint = height ?? ButtonConstants.minHeight;
     Border? border;
     BorderRadius borderRadius = BorderRadius.all(Radius.circular(this.borderRadius));
     OutlinedBorder inkWellBorder = RoundedRectangleBorder(borderRadius: BorderRadius.circular(this.borderRadius));
@@ -91,8 +87,8 @@ class Button extends StatelessWidget {
 
     if (shape == ButtonShape.oval) {
       inkWellBorder = const CircleBorder();
-      widthConstraint = width ?? 50;
-      heightConstraint = height ?? 50;
+      widthConstraint = width ?? ButtonConstants.minOvalSize;
+      heightConstraint = height ?? ButtonConstants.minOvalSize;
       borderRadius = BorderRadius.all(Radius.circular(widthConstraint));
       padding = EdgeInsets.zero;
     }
@@ -129,36 +125,54 @@ class Button extends StatelessWidget {
                 border: border,
                 borderRadius: borderRadius,
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
+              child: Stack(
                 children: [
-                  if (loading)
-                    CircularProgressIndicator(
-                      backgroundColor: textColor,
-                    ),
+                  Opacity(
+                    opacity: loading ? 0 : 1,
+                    child: SizedBox(
+                      width: widthConstraint,
+                      height: heightConstraint,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (icon != null)
+                            Container(
+                              margin: EdgeInsets.only(right: text != null ? 5 : 0),
+                              child: Icon(
+                                icon,
+                                color: textColor,
+                                size: iconSize,
+                              ),
+                            ),
 
-                  if (!loading && icon != null)
-                    Container(
-                      margin: EdgeInsets.only(right: text != null ? 5 : 0),
-                      child: Icon(
-                        icon,
-                        color: textColor,
-                        size: iconSize,
+                          if (text != null)
+                            Text(
+                              text!,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: fontSize,
+                                color: textColor,
+                              ),
+                            ),
+                        ],
                       ),
                     ),
+                  ),
 
-                  if (!loading && text != null)
-                    Flexible(
-                      child: Text(
-                        text!,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: fontSize,
-                          color: textColor,
+                  if (loading)
+                    Positioned.fill(
+                      child: Center(
+                        child: Container(
+                          width: loadingSize ?? heightConstraint,
+                          height: loadingSize ?? heightConstraint,
+                          padding: padding,
+                          child: CircularProgressIndicator(
+                            backgroundColor: elevated ? Styles.colors.white : textColor,
+                            strokeWidth: 3,
+                          ),
                         ),
                       ),
-                    ),
+                    )
                 ],
               ),
             ),

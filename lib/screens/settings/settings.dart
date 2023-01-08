@@ -5,11 +5,13 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:lingua_flutter/widgets/language_selector/language_selector.dart';
 import 'package:lingua_flutter/screens/router.dart';
 import 'package:lingua_flutter/app_config.dart' as config;
+import 'package:lingua_flutter/styles/styles.dart';
 
 import './bloc/settings_cubit.dart';
 import './bloc/settings_state.dart';
 import './widgets/category/category.dart';
 import './widgets/row/row.dart';
+import './widgets/backup/backup.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -55,6 +57,9 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+        ? Styles.colors.darkGrey
+        : Styles.colors.paleGreyDark,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text(
@@ -84,6 +89,8 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
                       onToChanged: _settingsCubit.setTranslateTo,
                     ),
                   ),
+
+                  const SettingsBackup(),
 
                   SettingsCategory(
                     title: 'Search Results',

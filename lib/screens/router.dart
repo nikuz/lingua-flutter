@@ -27,6 +27,7 @@ abstract class Routes {
       path: Routes.landing,
       page: Landing,
       initial: true,
+      maintainState: false,
     ),
     AutoRoute(
       path: Routes.home,
@@ -39,12 +40,12 @@ abstract class Routes {
         AutoRoute(
           path: Routes.games,
           page: Games,
-          maintainState : false,
+          maintainState: false,
         ),
         AutoRoute(
           path: Routes.settings,
           page: Settings,
-          maintainState : false,
+          maintainState: false,
         ),
       ],
     ),
