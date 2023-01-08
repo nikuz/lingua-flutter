@@ -173,6 +173,12 @@ class _SearchFieldState extends State<SearchField> {
       },
       child: BlocBuilder<SearchCubit, SearchState>(
         builder: (context, state) {
+          AssetImage searchIcon = const AssetImage('assets/icons/search.png');
+
+          if (Theme.of(context).brightness == Brightness.dark) {
+            searchIcon = const AssetImage('assets/icons/search_dark.png');
+          }
+
           return AnimatedPositioned(
             top: _position,
             left: 0,
@@ -206,11 +212,20 @@ class _SearchFieldState extends State<SearchField> {
                           ? TextInputAction.search
                           : TextInputAction.done,
                       hintText: 'Search for new words',
-                      prefixIcon: Icons.search,
-                      prefixIconColor: theme.colors.grey,
                       borderRadius: borderRadius,
                       elevation: 1,
                       maxLength: 100,
+                      prefix: SizedBox(
+                        width: 32,
+                        height: 32,
+                        child: Center(
+                          child: Image(
+                            image: searchIcon,
+                            width: 32,
+                            height: 32,
+                          ),
+                        ),
+                      ),
                       onChanged: (text) {
                         final sanitizedWord = removeQuotesFromString(removeSlashFromString(text)).trim();
                         final newSearchText = sanitizedWord.isNotEmpty ? sanitizedWord : null;
