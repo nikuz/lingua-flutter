@@ -99,8 +99,8 @@ class CreateBackupArchiveParams {
   });
 }
 
-Future<FileInfo> _onRestoreFileOpened(FileInfo fileInfo, backupFile) async {
-  if (fileInfo.fileName?.endsWith('.wisual') != true) {
+Future<FileInfo> _onRestoreFileOpened(FileInfo fileInfo, File backupFile) async {
+  if (fileInfo.fileName?.contains('.wisual') != true) {
     throw 'Not supported backup file';
   }
   final documentsPath = await getDocumentsPath();
