@@ -91,13 +91,15 @@ class _LanguageListState extends State<LanguageList> {
     final MyTheme theme = Styles.theme(context);
 
     return Material(
+      color: theme.colors.background,
       child: CustomScrollView(
         controller: widget.scrollController,
         slivers: [
           if (widget.title != '')
             SliverAppBar(
               automaticallyImplyLeading: false,
-              elevation: 2,
+              elevation: 1,
+              forceElevated: true,
               pinned: true,
               backgroundColor: theme.colors.cardBackground,
               titleTextStyle: TextStyle(
@@ -137,7 +139,6 @@ class _LanguageListState extends State<LanguageList> {
                   hintText: 'Search language',
                   prefixIcon: Icons.search,
                   border: Border(
-                    top: BorderSide(color: theme.colors.divider),
                     bottom: BorderSide(color: theme.colors.divider),
                   ),
                   maxLength: 50,
@@ -164,7 +165,7 @@ class _LanguageListState extends State<LanguageList> {
                     ListTile(
                       title: Text(_filteredLanguages![id] ?? ''),
                       trailing: id == widget.language?.id ? const Icon(Icons.check) : null,
-                      tileColor: theme.colors.background,
+                      // tileColor: theme.colors.background,
                       onTap: () {
                         String? value = _filteredLanguages![id];
                         if (value != null) {
