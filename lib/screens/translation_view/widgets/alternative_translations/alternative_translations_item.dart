@@ -79,16 +79,18 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
             borderRadius: borderRadius,
             onTap: () {
               final newTranslation = '${item.genre != null ? '${item.genre} ' : ''}${item.translation}';
-              context.read<TranslationViewCubit>().setOwnTranslation(newTranslation);
+              if (newTranslation != translation.translation) {
+                context.read<TranslationViewCubit>().setOwnTranslation(newTranslation);
 
-              if (translationViewState != null && translationViewState.headerKey.currentContext != null) {
-                WidgetsBinding.instance.addPostFrameCallback((dynamic) {
-                  Scrollable.ensureVisible(
-                    translationViewState.headerKey.currentContext!,
-                    duration: const Duration(milliseconds: 500),
-                    alignment: 1,
-                  );
-                });
+                if (translationViewState != null && translationViewState.headerKey.currentContext != null) {
+                  WidgetsBinding.instance.addPostFrameCallback((dynamic) {
+                    Scrollable.ensureVisible(
+                      translationViewState.headerKey.currentContext!,
+                      duration: const Duration(milliseconds: 500),
+                      alignment: 1,
+                    );
+                  });
+                }
               }
             },
             child: Padding(
