@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/widgets/prompt/prompt.dart';
+import 'package:lingua_flutter/widgets/sharing/sharing.dart';
 import 'package:lingua_flutter/screens/search/bloc/search_cubit.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 
@@ -9,10 +10,15 @@ import '../../bloc/translation_view_cubit.dart';
 import '../change_translation/change_translation.dart';
 
 class Menu {
-  final String? id;
-  final String? title;
+  final String id;
+  final String title;
+  final IconData? icon;
 
-  const Menu({this.id, this.title});
+  const Menu({
+    required this.id,
+    required this.title,
+    this.icon,
+  });
 }
 
 List<Widget> translationViewMenuConstructor({
@@ -33,48 +39,86 @@ List<Widget> translationViewMenuConstructor({
         final imageSearchWord = state.imageSearchWord;
         final translationId = state.translation?.id;
 
-        if (item.id == 'remove') {
-          Prompt(
-            context: context,
-            title: 'Delete "$word" word?',
-            acceptCallback: () {
-              if (translationId != null) {
-                context.read<SearchCubit>().removeTranslation(translationId);
-              }
-              AutoRouter.of(context).pop();
-            },
-          ).show();
-        }
+        switch (item.id) {
+          case 'remove':
+            Prompt(
+              context: context,
+              title: 'Delete "$word" word?',
+              acceptCallback: () {
+                if (translationId != null) {
+                  context.read<SearchCubit>().removeTranslation(translationId);
+                }
+                AutoRouter.of(context).pop();
+              },
+            ).show();
+            break;
 
-        if (item.id == 'image' && imageSearchWord != null) {
-          AutoRouter.of(context).push(TranslationViewImagePickerRoute(word: imageSearchWord));
-        }
+          case 'image':
+            if (imageSearchWord != null) {
+              AutoRouter.of(context).push(TranslationViewImagePickerRoute(word: imageSearchWord));
+            }
+            break;
 
-        if (item.id == 'translation' && state.translation?.translation != null) {
-          TranslationViewChangeTranslationModal(
-            context: context,
-            word: state.translation!.translation,
-          ).show();
+          case 'translation':
+            if (state.translation?.translation != null) {
+              TranslationViewChangeTranslationModal(
+                context: context,
+                word: state.translation!.translation,
+              ).show();
+            }
+            break;
+
+          case 'share':
+            if (state.translation != null) {
+              Sharing(
+                context: context,
+                translation: state.translation!,
+              ).share();
+            }
+            break;
         }
       },
 
       itemBuilder: (BuildContext context) {
         List<Menu> menuList = <Menu>[
-          const Menu(id: 'translation', title: 'Change Translation'),
+          const Menu(
+            id: 'translation',
+            icon: Icons.translate,
+            title: 'Change Translation',
+          ),
         ];
 
         if (hasInternetConnection) {
-          menuList.insert(0, const Menu(id: 'image', title: 'Change Image'));
+          menuList.insert(0, const Menu(
+            id: 'image',
+            title: 'Change Image',
+            icon: Icons.image,
+          ));
         }
 
+        menuList.add(const Menu(
+          id: 'share',
+          title: 'Share',
+          icon: Icons.ios_share,
+        ));
+
         if (!isNewWord) {
-          menuList.add(const Menu(id: 'remove', title: 'Remove'));
+          menuList.add(const Menu(
+            id: 'remove',
+            title: 'Remove',
+            icon: Icons.delete_forever,
+          ));
         }
 
         return menuList.map((Menu item) => (
           PopupMenuItem<Menu>(
             value: item,
-            child: Text(item.title!),
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
+              minLeadingWidth: 20,
+              leading: Icon(item.icon),
+              title: Text(item.title),
+            ),
           )
         )).toList();
       },

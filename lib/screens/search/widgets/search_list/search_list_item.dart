@@ -61,7 +61,7 @@ class _SearchListItemState extends State<SearchListItem> {
                   child: SizedBox(
                     width: 80,
                     child: Icon(
-                      Icons.delete,
+                      Icons.delete_forever,
                       color: Colors.white,
                       size: 30,
                     ),
