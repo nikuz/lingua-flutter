@@ -36,6 +36,17 @@ Future<void> init() async {
   ''');
 }
 
+Future<int> getListLength() async {
+  const countColumnName = 'COUNT(id)';
+  final results = await DBProvider().rawQuery('SELECT $countColumnName FROM dictionary');
+
+  if (results.isEmpty) {
+    return 0;
+  }
+
+  return results[0][countColumnName];
+}
+
 Future<TranslationList> getList(int from, int to) async {
   const countColumnName = 'COUNT(id)';
   final results = await DBProvider().batchQuery([

@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
 import 'package:lingua_flutter/widgets/button/button.dart';
 import 'package:lingua_flutter/widgets/snack_bar/snack_bar.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
+import 'package:lingua_flutter/controllers/local_translation.dart' as local_translate_controller;
+import 'package:lingua_flutter/app_config.dart' as config;
 
 import '../../bloc/translation_view_cubit.dart';
 import '../../bloc/translation_view_state.dart';
@@ -29,6 +33,57 @@ class TranslationViewHeader extends StatefulWidget {
 class _TranslationViewHeaderState extends State<TranslationViewHeader> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+
+  SharedPreferences? _prefs;
+
+  @override
+  void initState() {
+    super.initState();
+    _retrievePreference();
+  }
+
+  void _retrievePreference() async {
+    _prefs = await SharedPreferences.getInstance();
+  }
+
+  // request review only once when amount of saved words exceeded the threshold set in config.wordsAmountRateThreshold
+  void _showRateUsModal() async {
+    const settingName = 'askToRateUs';
+    if (_prefs != null && _prefs!.getBool(settingName) != true) {
+      final amountOfSavedWords = await local_translate_controller.getListLength();
+      if (amountOfSavedWords > config.wordsAmountRateThreshold) {
+        _prefs!.setBool(settingName, true);
+        final inAppReview = InAppReview.instance;
+        if (await inAppReview.isAvailable()) {
+          inAppReview.requestReview();
+        }
+      }
+    }
+  }
+
+  void _saveHandler(TranslationViewState state) {
+    final translation = state.translation;
+    if (translation == null) {
+      return;
+    }
+
+    final bool isNewWord = translation.id == null;
+
+    if (isNewWord) {
+      context.read<TranslationViewCubit>().save(translation).then((dynamic) {
+        AutoRouter.of(context).pop<TranslationContainer>(translation);
+        CustomSnackBar(context: context, message: 'Word is saved successfully').show();
+        _showRateUsModal();
+      });
+    } else if (state.imageIsUpdated || state.translationIsUpdated) {
+      context.read<TranslationViewCubit>().update(translation).then((dynamic) {
+        AutoRouter.of(context).pop<TranslationContainer>(translation.copyWith(
+          updatedAt: DateTime.now().toString(),
+        ));
+        CustomSnackBar(context: context, message: 'Word is updated successfully').show();
+      });
+    }
+  }
 
   Widget _buildPronunciation(BuildContext context, TranslationViewState state, { bool? from, bool? to }) {
     final translation = state.translation;
@@ -141,21 +196,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
             outlined: false,
             shape: ButtonShape.oval,
             onPressed: alreadySaved ? null : () {
-              if (state.translation != null) {
-                if (isNewWord) {
-                  context.read<TranslationViewCubit>().save(state.translation!).then((dynamic) {
-                    AutoRouter.of(context).pop<TranslationContainer>(state.translation);
-                  });
-                  CustomSnackBar(context: context, message: 'Word is saved successfully').show();
-                } else if (state.imageIsUpdated || state.translationIsUpdated) {
-                  context.read<TranslationViewCubit>().update(state.translation!).then((dynamic) {
-                    AutoRouter.of(context).pop<TranslationContainer>(state.translation!.copyWith(
-                      updatedAt: DateTime.now().toString(),
-                    ));
-                    CustomSnackBar(context: context, message: 'Word is updated successfully').show();
-                  });
-                }
-              }
+              _saveHandler(state);
             },
           ),
         ],
@@ -165,6 +206,8 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return BlocBuilder<TranslationViewCubit, TranslationViewState>(
       builder: (context, state) {
         final translation = state.translation;

@@ -33,11 +33,11 @@ class SettingsAbout extends StatelessWidget {
                   title: 'Rate us',
                   type: SettingsRowType.link,
                   onPressed: () async {
-                    final InAppReview inAppReview = InAppReview.instance;
-
-                    if (await inAppReview.isAvailable()) {
-                      inAppReview.requestReview();
-                    }
+                    final inAppReview = InAppReview.instance;
+                    inAppReview.openStoreListing(
+                      // TODO: provide real appStoreId
+                      appStoreId: '',
+                    );
                   },
                   child: Row(
                     children: [
