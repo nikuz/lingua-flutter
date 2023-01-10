@@ -174,9 +174,13 @@ class DecodeBackupArchiveParams {
 Future<void> _restoreFilesFromBackupArchive(DecodeBackupArchiveParams params) async {
   // remove local images and pronunciations
   final imagesDir = Directory('${params.documentsPath}images');
-  await imagesDir.delete(recursive: true);
+  if (imagesDir.existsSync()) {
+    imagesDir.deleteSync(recursive: true);
+  }
   final pronunciationsDir = Directory('${params.documentsPath}pronunciations');
-  await pronunciationsDir.delete(recursive: true);
+  if (pronunciationsDir.existsSync()) {
+    pronunciationsDir.deleteSync(recursive: true);
+  }
 
   InputFileStream input = InputFileStream(params.backupFilePath);
   final files = TarDecoder().decodeBuffer(input);
