@@ -29,9 +29,10 @@ abstract class Routes {
       initial: true,
       maintainState: false,
     ),
-    AutoRoute(
+    CustomRoute(
       path: Routes.home,
       page: Root,
+      transitionsBuilder: TransitionsBuilders.fadeIn,
       children: [
         AutoRoute(
           path: Routes.search,

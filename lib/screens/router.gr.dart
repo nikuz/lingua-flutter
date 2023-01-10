@@ -39,9 +39,12 @@ class AppRouter extends _i9.RootStackRouter {
       );
     },
     RootRoute.name: (routeData) {
-      return _i9.MaterialPageX<dynamic>(
+      return _i9.CustomPage<dynamic>(
         routeData: routeData,
         child: const _i2.Root(),
+        transitionsBuilder: _i9.TransitionsBuilders.fadeIn,
+        opaque: true,
+        barrierDismissible: false,
       );
     },
     TranslationViewRoute.name: (routeData) {
