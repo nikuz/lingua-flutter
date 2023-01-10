@@ -146,12 +146,17 @@ class Button extends StatelessWidget {
                             ),
 
                           if (text != null)
-                            Text(
-                              text!,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: fontSize,
-                                color: textColor,
+                            Flexible(
+                              child: Text(
+                                text!,
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.fade,
+                                softWrap: false,
+                                style: TextStyle(
+                                  fontSize: fontSize,
+                                  color: textColor,
+                                ),
                               ),
                             ),
                         ],
