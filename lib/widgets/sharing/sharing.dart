@@ -135,6 +135,7 @@ class _SharingImageViewState extends State<SharingImageView> {
   @override
   Widget build(BuildContext context) {
     final translation = widget.translation;
+    final double? size = translation.image == null ? 300 : null;
 
     return Material(
       type: MaterialType.transparency,
@@ -155,6 +156,8 @@ class _SharingImageViewState extends State<SharingImageView> {
                   children: [
                     ImagePreview(
                       imageSource: translation.image,
+                      width: size,
+                      height: size,
                     ),
 
                     Positioned(

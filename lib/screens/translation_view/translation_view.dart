@@ -177,7 +177,7 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
               actions: translationViewMenuConstructor(
                 context: context,
                 isNewWord: state.translation?.id == null,
-                isDisabled: state.error != null,
+                isDisabled: state.translation == null || state.error != null,
                 hasInternetConnection: _hasInternetConnection,
               ),
             ),
