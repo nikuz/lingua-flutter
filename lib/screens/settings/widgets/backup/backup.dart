@@ -4,6 +4,7 @@ import 'package:lingua_flutter/widgets/button/button.dart';
 import 'package:lingua_flutter/widgets/snack_bar/snack_bar.dart';
 import 'package:lingua_flutter/widgets/prompt/prompt.dart';
 import 'package:lingua_flutter/utils/time.dart';
+import 'package:lingua_flutter/controllers/backup.dart' as backup_controller;
 
 import '../../bloc/settings_cubit.dart';
 import '../../bloc/settings_state.dart';
@@ -20,7 +21,7 @@ class SettingsBackup extends StatelessWidget {
         CustomSnackBarType messageType = CustomSnackBarType.success;
 
         if (!result) {
-          message = 'Cannot save a backup';
+          message = 'Unable to save a backup';
           messageType = CustomSnackBarType.error;
         }
 
@@ -33,30 +34,47 @@ class SettingsBackup extends StatelessWidget {
     });
   }
 
-  void _restoreHandler(BuildContext context) {
-    Prompt(
-      context: context,
-      title: 'Local database will be overwritten on backup restore. Do you wish to proceed?',
-      acceptCallback: () {
-        context.read<SettingsCubit>().restoreBackup().then((result) {
-          if (result != null) {
-            String message = 'Words are restored from a backup';
-            CustomSnackBarType messageType = CustomSnackBarType.success;
+  void _restoreHandler(BuildContext context, String? backupFileIdentifier) async {
+    String? backupFilePath;
+    try {
+      backupFilePath = await backup_controller.getBackupFilePath(backupFileIdentifier);
+    } catch (err) {
+      CustomSnackBar(
+        context: context,
+        message: err.toString(),
+        type: CustomSnackBarType.error,
+      ).show();
+      return;
+    }
 
-            if (!result) {
-              message = 'Cannot restore words from a backup';
-              messageType = CustomSnackBarType.error;
+    if (backupFilePath != null) {
+      Prompt(
+        context: context,
+        title: 'Your current list of words will be replaced with the words from the backup. Is that okay?',
+        acceptCallback: () {
+          context.read<SettingsCubit>().restoreBackup(backupFilePath!).then((result) {
+            if (result != null) {
+              String message = 'Words are restored from the backup';
+              CustomSnackBarType messageType = CustomSnackBarType.success;
+
+              if (!result) {
+                message = 'Cannot restore words from the backup';
+                messageType = CustomSnackBarType.error;
+              }
+
+              CustomSnackBar(
+                context: context,
+                message: message,
+                type: messageType,
+              ).show();
             }
-
-            CustomSnackBar(
-              context: context,
-              message: message,
-              type: messageType,
-            ).show();
-          }
-        });
-      },
-    ).show();
+          });
+        },
+        cancelCallback: () async {
+          await backup_controller.removeTemporaryBackupFile(backupFilePath!);
+        }
+      ).show();
+    }
   }
 
   @override
@@ -102,7 +120,7 @@ class SettingsBackup extends StatelessWidget {
                     // outlined: false,
                     loading: state.backupRestoreLoading,
                     margin: const EdgeInsets.symmetric(vertical: 10),
-                    onPressed: () => _restoreHandler(context),
+                    onPressed: () => _restoreHandler(context, state.backupFileIdentifier),
                   ),
                 ),
               ],

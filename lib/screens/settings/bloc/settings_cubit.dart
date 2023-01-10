@@ -70,9 +70,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     ));
 
     try {
-      final String? backupFileIdentifier = await backup_controller.create(
-        fileIdentifier: state.backupFileIdentifier,
-      );
+      final String? backupFileIdentifier = await backup_controller.create(state.backupFileIdentifier);
 
       if (backupFileIdentifier != null) {
         final backupTime = DateTime.now().millisecondsSinceEpoch;
@@ -104,23 +102,18 @@ class SettingsCubit extends Cubit<SettingsState> {
     return null;
   }
 
-  Future<bool?> restoreBackup() async {
+  Future<bool?> restoreBackup(String backupFilePath) async {
     emit(state.copyWith(
       backupRestoreLoading: true,
     ));
 
     try {
-      final String? backupFileIdentifier = await backup_controller.restore(
-        fileIdentifier: state.backupFileIdentifier,
-      );
-      if (backupFileIdentifier != null) {
-        emit(state.copyWith(
-          backupRestoreLoading: false,
-          backupRestoreAt: DateTime.now().millisecondsSinceEpoch,
-          backupFileIdentifier: backupFileIdentifier,
-        ));
-        return true;
-      }
+      await backup_controller.restore(backupFilePath);
+      emit(state.copyWith(
+        backupRestoreLoading: false,
+        backupRestoreAt: DateTime.now().millisecondsSinceEpoch,
+      ));
+      return true;
     } catch (err, stack) {
       Iterable<Object>? information;
       if (err is CustomError) {
@@ -132,11 +125,5 @@ class SettingsCubit extends Cubit<SettingsState> {
       ));
       return false;
     }
-
-    emit(state.copyWith(
-      backupRestoreLoading: false,
-    ));
-
-    return null;
   }
 }

@@ -7,13 +7,14 @@ import 'package:lingua_flutter/providers/db.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/app_config.dart' as config;
 
-Future<String?> create({
-  String? fileIdentifier,
-}) async {
+Future<String?> create(String? fileIdentifier) async {
   final documentsPath = await getDocumentsPath();
   final dbPath = await getDbPath();
   const backupFileName = '${config.appName}-backup.wisual';
   final receivePort = ReceivePort();
+
+  // optimize local database
+  await DBProvider().rawQuery('VACUUM;');
 
   await Isolate.spawn(
     _createBackupArchive,
@@ -59,14 +60,12 @@ Future<String?> create({
   return backupDestinationFile?.identifier;
 }
 
-Future<String?> restore({
-  String? fileIdentifier,
-}) async {
-  FileInfo? backupFileInfo;
+Future<String?> getBackupFilePath(String? fileIdentifier) async {
+  String? backupFilePath;
   if (fileIdentifier != null) {
     // try to access previously saved backup
     try {
-      backupFileInfo = await FilePickerWritable().readFile(
+      backupFilePath = await FilePickerWritable().readFile(
         identifier: fileIdentifier,
         reader: _onRestoreFileOpened,
       );
@@ -76,13 +75,37 @@ Future<String?> restore({
   }
 
   // if previously saved backup is not available anymore
-  backupFileInfo ??= await FilePickerWritable().openFile(_onRestoreFileOpened);
+  backupFilePath ??= await FilePickerWritable().openFile(_onRestoreFileOpened);
 
-  if (backupFileInfo == null) {
-    developer.log('No backup file selected');
+  return backupFilePath;
+}
+
+Future<void> removeTemporaryBackupFile(String backupFilePath) async {
+  File(backupFilePath).delete();
+}
+
+Future<void> restore(String backupFilePath) async {
+  final documentsPath = await getDocumentsPath();
+  final dbPath = await getDbPath();
+  final receivePort = ReceivePort();
+  await Isolate.spawn(
+    _restoreFilesFromBackupArchive,
+    DecodeBackupArchiveParams(
+      documentsPath: documentsPath,
+      dbPath: dbPath,
+      backupFilePath: backupFilePath,
+      sendPort: receivePort.sendPort,
+    ),
+    onError: receivePort.sendPort,
+  );
+
+  final restoreIsSuccessful = await receivePort.first;
+
+  await removeTemporaryBackupFile(backupFilePath);
+
+  if (restoreIsSuccessful is! bool) {
+    throw 'Can\'t restore backup from provided file';
   }
-
-  return backupFileInfo?.identifier;
 }
 
 class CreateBackupArchiveParams {
@@ -99,30 +122,16 @@ class CreateBackupArchiveParams {
   });
 }
 
-Future<FileInfo> _onRestoreFileOpened(FileInfo fileInfo, File backupFile) async {
+Future<String> _onRestoreFileOpened(FileInfo fileInfo, File backupFile) async {
   if (fileInfo.fileName?.contains('.wisual') != true) {
-    throw 'Not supported backup file';
+    throw 'Selected backup file is not supported';
   }
+
   final documentsPath = await getDocumentsPath();
-  final dbPath = await getDbPath();
-  final receivePort = ReceivePort();
-  await Isolate.spawn(
-    _restoreFilesFromBackupArchive,
-    DecodeBackupArchiveParams(
-      documentsPath: documentsPath,
-      dbPath: dbPath,
-      backupFilePath: backupFile.path,
-      sendPort: receivePort.sendPort,
-    ),
-    onError: receivePort.sendPort,
-  );
+  final backupFilePath = '$documentsPath${fileInfo.fileName}';
+  backupFile.copy(backupFilePath);
 
-  final restoreIsSuccessful = await receivePort.first;
-  if (restoreIsSuccessful is! bool) {
-    throw 'Can\'t restore backup from provided file';
-  }
-
-  return fileInfo;
+  return backupFilePath;
 }
 
 Future<void> _createBackupArchive(CreateBackupArchiveParams params) async {
@@ -163,12 +172,19 @@ class DecodeBackupArchiveParams {
 }
 
 Future<void> _restoreFilesFromBackupArchive(DecodeBackupArchiveParams params) async {
+  // remove local images and pronunciations
+  final imagesDir = Directory('${params.documentsPath}images');
+  await imagesDir.delete(recursive: true);
+  final pronunciationsDir = Directory('${params.documentsPath}pronunciations');
+  await pronunciationsDir.delete(recursive: true);
+
   InputFileStream input = InputFileStream(params.backupFilePath);
   final files = TarDecoder().decodeBuffer(input);
   for (var file in files) {
     if (file.name.contains('database') || file.name.contains('images') || file.name.contains('pronunciations')) {
       String filePath = '${params.documentsPath}${file.name}';
-      if (file.name.contains('SQLITE3')) {
+      final isDatabaseFile = file.name.contains('SQLITE3');
+      if (isDatabaseFile) {
         filePath = '${params.dbPath}${file.name}';
       }
       if (file.isFile) {
