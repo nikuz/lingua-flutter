@@ -1,7 +1,10 @@
+import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:lingua_flutter/screens/router.dart';
 import 'package:lingua_flutter/widgets/typography/typography.dart';
 import 'package:lingua_flutter/styles/styles.dart';
@@ -26,6 +29,48 @@ class SettingsAbout extends StatelessWidget {
             SettingsCategory(
               title: 'About',
               children: [
+                SettingsRow(
+                  title: 'Rate us',
+                  type: SettingsRowType.link,
+                  onPressed: () async {
+                    final InAppReview inAppReview = InAppReview.instance;
+
+                    if (await inAppReview.isAvailable()) {
+                      inAppReview.requestReview();
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      for (var i = 0, l = 5; i < l; i++)
+                        const Icon(
+                          Icons.star,
+                          size: 20,
+                        ),
+                    ],
+                  ),
+                ),
+                SettingsRow(
+                  title: 'Send a feedback',
+                  type: SettingsRowType.link,
+                  onPressed: () {
+                    launchUrl(Uri.parse('mailto:${config.privacyEmail}'));
+                  },
+                  child: const Icon(
+                    Icons.email,
+                    size: 20,
+                  ),
+                ),
+                SettingsRow(
+                  title: 'Share the App',
+                  type: SettingsRowType.link,
+                  onPressed: () {
+                    Share.share(Platform.isAndroid ? config.playMarketUrl : config.appStoreUrl);
+                  },
+                  child: const Icon(
+                    Icons.ios_share,
+                    size: 20,
+                  ),
+                ),
                 SettingsRow(
                   title: 'Terms & Conditions',
                   type: SettingsRowType.link,
