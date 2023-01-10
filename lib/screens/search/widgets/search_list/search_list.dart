@@ -68,7 +68,7 @@ class _SearchListState extends State<SearchList> {
         final fieldHideScrollPosition = min(_scrollController.position.maxScrollExtent, SearchConstants.searchFieldHeight);
         double? autoScrollPosition;
 
-        if (scrollPosition != 0 && scrollPosition <= halfSearchFieldHeight) {
+        if (scrollPosition > 0 && scrollPosition <= halfSearchFieldHeight) {
           autoScrollPosition = 0;
         }
         else if (scrollPosition > halfSearchFieldHeight && scrollPosition < fieldHideScrollPosition) {
@@ -78,8 +78,8 @@ class _SearchListState extends State<SearchList> {
         if (autoScrollPosition != null) {
           _scrollController.animateTo(
             autoScrollPosition,
-            duration: SearchConstants.appearanceAnimationDuration,
-            curve: Curves.easeOut,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.linearToEaseOut,
           );
         }
       });
