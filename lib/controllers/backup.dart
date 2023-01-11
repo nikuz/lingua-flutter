@@ -81,7 +81,10 @@ Future<String?> getBackupFilePath(String? fileIdentifier) async {
 }
 
 Future<void> removeTemporaryBackupFile(String backupFilePath) async {
-  File(backupFilePath).delete();
+  final backupFile = File(backupFilePath);
+  if (backupFile.existsSync()) {
+    backupFile.deleteSync();
+  }
 }
 
 Future<void> restore(String backupFilePath) async {
@@ -129,7 +132,7 @@ Future<String> _onRestoreFileOpened(FileInfo fileInfo, File backupFile) async {
 
   final documentsPath = await getDocumentsPath();
   final backupFilePath = '$documentsPath${fileInfo.fileName}';
-  backupFile.copy(backupFilePath);
+  backupFile.copySync(backupFilePath);
 
   return backupFilePath;
 }
