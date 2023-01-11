@@ -35,10 +35,15 @@ class SettingsBackup extends StatelessWidget {
   }
 
   void _restoreHandler(BuildContext context, String? backupFileIdentifier) async {
+    final settingsState = context.read<SettingsCubit>();
     String? backupFilePath;
+
+    settingsState.setRestoreBackupLoading(true);
+
     try {
       backupFilePath = await backup_controller.getBackupFilePath(backupFileIdentifier);
     } catch (err) {
+      settingsState.setRestoreBackupLoading(false);
       CustomSnackBar(
         context: context,
         message: err.toString(),
@@ -52,7 +57,7 @@ class SettingsBackup extends StatelessWidget {
         context: context,
         title: 'Your current list of words will be replaced with the words from the backup. Is that okay?',
         acceptCallback: () {
-          context.read<SettingsCubit>().restoreBackup(backupFilePath!).then((result) {
+          settingsState.restoreBackup(backupFilePath!).then((result) {
             if (result != null) {
               String message = 'Words are restored from the backup';
               CustomSnackBarType messageType = CustomSnackBarType.success;
@@ -71,9 +76,12 @@ class SettingsBackup extends StatelessWidget {
           });
         },
         cancelCallback: () async {
+          settingsState.setRestoreBackupLoading(false);
           await backup_controller.removeTemporaryBackupFile(backupFilePath!);
         }
       ).show();
+    } else {
+      settingsState.setRestoreBackupLoading(false);
     }
   }
 

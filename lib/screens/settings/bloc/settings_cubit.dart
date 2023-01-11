@@ -126,4 +126,10 @@ class SettingsCubit extends Cubit<SettingsState> {
       return false;
     }
   }
+
+  void setRestoreBackupLoading(bool loadingState) {
+    emit(state.copyWith(
+      backupRestoreLoading: loadingState,
+    ));
+  }
 }
