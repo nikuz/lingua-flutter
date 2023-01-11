@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lingua_flutter/providers/error_logger.dart';
 import 'package:lingua_flutter/utils/files.dart';
@@ -43,8 +44,19 @@ Future<Map<String, String>?> get({ bool? forceUpdate }) async {
     return languages;
   }
 
-  final languagesCollection = FirebaseFirestore.instance.collection('languages');
-  final languagesDoc = await languagesCollection.doc('languages').get();
+  DocumentSnapshot<dynamic>? languagesDoc;
+  try {
+    final languagesCollection = FirebaseFirestore.instance.collection('languages');
+    languagesDoc = await languagesCollection.doc('languages').get();
+  } catch (err) {
+    final assetsLanguages = await rootBundle.loadString('assets/languages/languages.json');
+    Map<String, dynamic> languagesRawData = await jsonDecodeIsolate(assetsLanguages);
+    for (var id in languagesRawData.keys) {
+      languages[id] = languagesRawData[id];
+    }
+    return languages;
+  }
+
   final languagesRawData = languagesDoc.data();
 
   if (!languagesDoc.exists || languagesRawData == null) {
