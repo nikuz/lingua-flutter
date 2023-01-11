@@ -138,18 +138,28 @@ class _SearchFieldState extends State<SearchField> {
         || _isFloat != isFloat
         || _scrollStartPosition != scrollStartPosition
     ) {
+      double opacity = remapValue(
+        value: position,
+        inMin: 0,
+        inMax: defaultPosition,
+        outMin: 0,
+        outMax: 1,
+      );
+      if (defaultPosition == 0) {
+        opacity = remapValue(
+          value: position,
+          inMin: -SearchConstants.searchFieldHeight,
+          inMax: 0,
+          outMin: 0,
+          outMax: 1,
+        );
+      }
       setState(() {
         _position = position;
         _isAnimated = isAnimated;
         _isFloat = isFloat;
         _scrollStartPosition = scrollStartPosition;
-        _opacity = remapValue(
-          value: position,
-          inMin: 0,
-          inMax: defaultPosition,
-          outMin: 0,
-          outMax: 1,
-        );
+        _opacity = opacity;
       });
     }
   }
@@ -187,7 +197,7 @@ class _SearchFieldState extends State<SearchField> {
                   right: 0,
                   child: Container(
                     height: SearchConstants.searchFieldHeight - 15,
-                    color: theme.colors.background,
+                    color: theme.colors.background.withOpacity(0.8),
                   ),
                 ),
 

@@ -11,5 +11,11 @@ double remapValue({
     return outMax;
   }
 
-  return (((value - inMin) * (outMax - outMin)) / (inMax - inMin)) + outMin;
+  final result = (((value - inMin) * (outMax - outMin)) / (inMax - inMin)) + outMin;
+
+  if (result.isNaN) {
+    return outMin;
+  }
+
+  return result;
 }
