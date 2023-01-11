@@ -57,7 +57,9 @@ class _SharingImageViewState extends State<SharingImageView> {
       if (mounted) {
         try {
           final filePath = await _captureWidgetSnapshot();
-          Sharing.dismiss(context);
+          if (mounted) {
+            Sharing.dismiss(context);
+          }
           if (filePath != null) {
             _share(filePath);
           }
