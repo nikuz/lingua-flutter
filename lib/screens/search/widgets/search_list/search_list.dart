@@ -37,14 +37,16 @@ class _SearchListState extends State<SearchList> {
   }
 
   void _onScroll() {
+    final state = _searchCubit.state;
     if (
       _scrollController.position.pixels > 0.0
       && _scrollController.position.pixels == _scrollController.position.maxScrollExtent
-      && _searchCubit.state.totalAmount > _searchCubit.state.translations.length
+      && state.totalAmount > state.translations.length
     ) {
       _searchCubit.fetchTranslations(
-        from: _searchCubit.state.to,
-        to: _searchCubit.state.to + SearchConstants.itemsPerPage,
+        searchText: state.searchText,
+        from: state.to,
+        to: state.to + SearchConstants.itemsPerPage,
       );
     }
   }
