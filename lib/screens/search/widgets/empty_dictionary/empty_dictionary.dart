@@ -16,9 +16,9 @@ class EmptyDictionary extends StatelessWidget {
             children: [
               if (MediaQuery.of(context).size.height > 500)
                 const Image(
-                  image: AssetImage('assets/images/tree.png'),
+                  image: AssetImage('assets/images/empty_dictionary.png'),
                   width: 300,
-                  height: 300,
+                  height: 188,
                 ),
 
               const Text(

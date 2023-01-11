@@ -59,7 +59,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyA1Cwi-3zkfXoq4cIHafRbwDmmlVrQ5nbU',
-    appId: '1:1047299217453:android:63c02c37fe1b93b09280a4',
+    appId: '1:1047299217453:android:358b89dbd3cfa5d59280a4',
     messagingSenderId: '1047299217453',
     projectId: 'lingua-c5d6c',
     databaseURL: 'https://lingua-c5d6c-default-rtdb.firebaseio.com',
@@ -68,12 +68,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyASwiwQEx8DBWd24b97t9pZmZWnr5FN_cM',
-    appId: '1:1047299217453:ios:9643d21eb92618729280a4',
+    appId: '1:1047299217453:ios:0adf32d5a562b38b9280a4',
     messagingSenderId: '1047299217453',
     projectId: 'lingua-c5d6c',
     databaseURL: 'https://lingua-c5d6c-default-rtdb.firebaseio.com',
     storageBucket: 'lingua-c5d6c.appspot.com',
-    iosClientId: '1047299217453-91g9a7fp8q4371jo7j9ocfhfpk8pgmfb.apps.googleusercontent.com',
-    iosBundleId: 'org.linguaFlutter.nikolaj',
+    iosClientId: '1047299217453-pjbjq90uuojsk087aor9udq1mih871pj.apps.googleusercontent.com',
+    iosBundleId: 'com.wisual.dictionary',
   );
 }
