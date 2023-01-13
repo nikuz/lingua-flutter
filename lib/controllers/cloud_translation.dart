@@ -12,6 +12,7 @@ Future<TranslationContainer> translate({
   required String word,
   required Language translateFrom,
   required Language translateTo,
+  CancelToken? cancelToken,
   bool? forceCurrentSchemaDownload,
 }) async {
   final encodedWord = removeQuotesFromString(removeSlashFromString(word));
@@ -75,7 +76,15 @@ Future<TranslationContainer> translate({
 
   String translationRaw = await apiPost(
     url: parsingSchema.translation.fields.url,
-    params: {
+    options: Options(
+      contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+      responseType: ResponseType.plain,
+      headers: {
+        'accept-encoding': 'gzip, deflate',
+      },
+    ),
+    cancelToken: cancelToken,
+    data: {
       parsingSchema.translation.fields.parameter: parsingSchema.translation.fields.body
           .replaceAll('{marker}', parsingSchema.translation.fields.marker)
           .replaceAll('{word}', encodedWord)
@@ -91,6 +100,7 @@ Future<TranslationContainer> translate({
         word: word,
         translateFrom: translateFrom,
         translateTo: translateTo,
+        cancelToken: cancelToken,
         forceCurrentSchemaDownload: true,
       );
     } else {
@@ -125,6 +135,7 @@ Future<TranslationContainer> translate({
         word: word,
         translateFrom: translateFrom,
         translateTo: translateTo,
+        cancelToken: cancelToken,
         forceCurrentSchemaDownload: true,
       );
     } else {

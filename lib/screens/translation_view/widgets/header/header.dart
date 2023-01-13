@@ -14,6 +14,7 @@ import 'package:lingua_flutter/app_config.dart' as config;
 
 import '../../bloc/translation_view_cubit.dart';
 import '../../bloc/translation_view_state.dart';
+import '../../translation_view_state.dart';
 import '../auto_language/auto_language.dart';
 import '../auto_spelling/auto_spelling.dart';
 import '../image/image.dart';
@@ -68,15 +69,16 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
     }
 
     final bool isNewWord = translation.id == null;
+    final translationViewState = TranslationViewInheritedState.of(context);
 
     if (isNewWord) {
-      context.read<TranslationViewCubit>().save(translation).then((dynamic) {
+      context.read<TranslationViewCubit>().save(translation, translationViewState?.cancelToken).then((dynamic) {
         AutoRouter.of(context).pop<TranslationContainer>(translation);
         CustomSnackBar(context: context, message: 'Word is saved successfully').show();
         _showRateUsModal();
       });
     } else if (state.imageIsUpdated || state.translationIsUpdated) {
-      context.read<TranslationViewCubit>().update(translation).then((dynamic) {
+      context.read<TranslationViewCubit>().update(translation, translationViewState?.cancelToken).then((dynamic) {
         AutoRouter.of(context).pop<TranslationContainer>(translation.copyWith(
           updatedAt: DateTime.now().toString(),
         ));

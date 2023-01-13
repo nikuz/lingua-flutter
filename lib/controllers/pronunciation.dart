@@ -11,6 +11,7 @@ Future<String?> retrieve({
   required ParsingSchema schema,
   required String word,
   required Language language,
+  CancelToken? cancelToken,
 }) async {
   final encodedWord = removeQuotesFromString(removeSlashFromString(word));
   String? pronunciationResult;
@@ -20,7 +21,15 @@ Future<String?> retrieve({
   try {
     pronunciationRaw = await apiPost(
       url: schema.pronunciation.fields.url,
-      params: {
+      options: Options(
+        contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+        responseType: ResponseType.plain,
+        headers: {
+          'accept-encoding': 'gzip, deflate',
+        },
+      ),
+      cancelToken: cancelToken,
+      data: {
         schema.pronunciation.fields.parameter: schema.pronunciation.fields.body
             .replaceAll('{marker}', schema.pronunciation.fields.marker)
             .replaceAll('{word}', encodedWord)

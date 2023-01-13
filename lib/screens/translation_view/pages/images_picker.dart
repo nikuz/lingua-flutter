@@ -5,6 +5,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/widgets/text_field/text_field.dart';
 import 'package:lingua_flutter/widgets/image_preview/image_preview.dart';
 import 'package:lingua_flutter/utils/string.dart';
+import 'package:lingua_flutter/providers/api.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
 import '../bloc/translation_view_cubit.dart';
@@ -26,6 +27,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
   late TranslationViewCubit _translationViewCubit;
   final itemKey = GlobalKey();
   late TextEditingController _textController;
+  CancelToken _cancelToken = CancelToken();
 
   @override
   void initState() {
@@ -34,7 +36,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
     _textController = TextEditingController();
     final images = _translationViewCubit.state.images;
     if (images == null || images.isEmpty) {
-      _translationViewCubit.fetchImages(widget.word);
+      _translationViewCubit.fetchImages(widget.word, cancelToken: _cancelToken);
     }
 
     _scrollToSelectedItem();
@@ -55,6 +57,10 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
   @override
   void dispose() {
     _textController.dispose();
+    _cancelToken.cancel();
+    if (_translationViewCubit.state.imageLoading) {
+      _translationViewCubit.resetImageSearchWord();
+    }
     super.dispose();
   }
 
@@ -92,7 +98,11 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                 final sanitizedWord = removeQuotesFromString(removeSlashFromString(value)).trim();
                 if (sanitizedWord.isNotEmpty) {
                   if (sanitizedWord != state.imageSearchWord) {
-                    _translationViewCubit.fetchImages(sanitizedWord);
+                    if (!_cancelToken.isCancelled) {
+                      _cancelToken.cancel();
+                    }
+                    _cancelToken = CancelToken();
+                    _translationViewCubit.fetchImages(sanitizedWord, cancelToken: _cancelToken);
                   }
                 } else {
                   _textController.clear();

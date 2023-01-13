@@ -5,6 +5,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/providers/connectivity.dart';
+import 'package:lingua_flutter/providers/api.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
 import './bloc/translation_view_cubit.dart';
@@ -42,6 +43,7 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
   late TranslationViewCubit _translationViewCubit;
   late ScrollController _scrollController;
   bool _hasInternetConnection = false;
+  final CancelToken _cancelToken = CancelToken();
 
   @override
   void initState() {
@@ -54,7 +56,7 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
     if (widget.quickTranslation != null) {
       _translationViewCubit.setTranslation(widget.quickTranslation!);
       _fetchImages(widget.quickTranslation!.word);
-      _translationViewCubit.fetchPronunciations(widget.quickTranslation!);
+      _translationViewCubit.fetchPronunciations(widget.quickTranslation!, _cancelToken);
     } else {
       _fetchTranslation();
     }
@@ -89,9 +91,10 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _translationViewCubit.reset();
+    _cancelToken.cancel();
     _scrollController.removeListener(_scrollHandler);
     unsubscribeFromNetworkChange('translation_view');
+    _translationViewCubit.reset();
     super.dispose();
   }
 
@@ -108,9 +111,10 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
 
   void _fetchTranslation() {
     _translationViewCubit.translate(
-      widget.word,
-      widget.translateFrom,
-      widget.translateTo,
+      word: widget.word,
+      translateFrom: widget.translateFrom,
+      translateTo: widget.translateTo,
+      cancelToken: _cancelToken,
     );
   }
 
@@ -118,7 +122,7 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
     _translationViewCubit.fetchImages(
       word,
       selectFirstImage: true,
-      matchTranslationWord: true,
+      cancelToken: _cancelToken,
     );
   }
 
@@ -141,7 +145,7 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
           && state.translation!.pronunciationFrom == null
           && !state.pronunciationLoading
         ) {
-          _translationViewCubit.fetchPronunciations(state.translation!);
+          _translationViewCubit.fetchPronunciations(state.translation!, _cancelToken);
         }
       },
       child: BlocBuilder<TranslationViewCubit, TranslationViewState>(
@@ -184,6 +188,7 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
             body: SafeArea(
               child: TranslationViewInheritedState(
                 headerKey: headerKey,
+                cancelToken: _cancelToken,
                 child: CustomScrollView(
                   controller: _scrollController,
                   physics: const BouncingScrollPhysics(),

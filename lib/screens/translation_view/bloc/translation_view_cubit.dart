@@ -6,6 +6,7 @@ import 'package:lingua_flutter/controllers/local_translation.dart' as local_tran
 import 'package:lingua_flutter/controllers/cloud_translation.dart' as cloud_translate_controller;
 import 'package:lingua_flutter/controllers/images.dart' as images_controller;
 import 'package:lingua_flutter/controllers/pronunciation.dart' as pronunciation_controller;
+import 'package:lingua_flutter/providers/api.dart';
 import 'package:lingua_flutter/utils/types.dart';
 import 'package:lingua_flutter/providers/error_logger.dart';
 
@@ -14,7 +15,12 @@ import 'translation_view_state.dart';
 class TranslationViewCubit extends Cubit<TranslationViewState> {
   TranslationViewCubit() : super(const TranslationViewState());
 
-  void translate(String word, Language translateFrom, Language translateTo) async {
+  void translate({
+    required String word,
+    required Language translateFrom,
+    required Language translateTo,
+    CancelToken? cancelToken,
+  }) async {
     try {
       emit(state.copyWith(translateLoading: true));
 
@@ -22,6 +28,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         word: word,
         translateFrom: translateFrom,
         translateTo: translateTo,
+        cancelToken: cancelToken,
       );
 
       if (state.translateLoading) {
@@ -32,20 +39,24 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
           translateLoading: false,
         ));
       }
+    } on DioError catch (err, stack) {
+      if (!CancelToken.isCancel(err)) {
+        handleError(state.copyWith(
+          error: Wrapped.value(CustomError(
+            code: err.hashCode,
+            message: err.toString(),
+          )),
+          translateLoading: false,
+        ), err, stack);
+      }
     } catch (err, stack) {
-      emit(state.copyWith(
+      handleError(state.copyWith(
         error: Wrapped.value(CustomError(
           code: err.hashCode,
           message: err.toString(),
         )),
         translateLoading: false,
-      ));
-
-      Iterable<Object>? information;
-      if (err is CustomError) {
-        information = err.information;
-      }
-      recordFatalError(err, stack, information: information);
+      ), err, stack);
     }
   }
 
@@ -58,7 +69,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
 
   void fetchImages(String word, {
     bool selectFirstImage = false,
-    bool matchTranslationWord = false,
+    CancelToken? cancelToken,
   }) async {
     emit(state.copyWith(
       imageLoading: true,
@@ -66,13 +77,13 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
     ));
 
     try {
-      final List<String>? images = await images_controller.search(word);
+      final List<String>? images = await images_controller.search(word, cancelToken);
       String? image;
       if (images != null && images.isNotEmpty) {
         image = images[0];
       }
 
-      if (state.translation != null && (!matchTranslationWord || state.translation!.word == word)) {
+      if (state.translation != null) {
         emit(state.copyWith(
           images: images,
           imageLoading: false,
@@ -82,24 +93,28 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
           imageIsUpdated: selectFirstImage ? true : state.imageIsUpdated,
         ));
       }
+    } on DioError catch (err, stack) {
+      if (!CancelToken.isCancel(err)) {
+        handleError(state.copyWith(
+          imageError: Wrapped.value(CustomError(
+            code: err.hashCode,
+            message: err.toString(),
+          )),
+          imageLoading: false,
+        ), err, stack);
+      }
     } catch (err, stack) {
-      emit(state.copyWith(
+      handleError(state.copyWith(
         imageError: Wrapped.value(CustomError(
           code: err.hashCode,
           message: err.toString(),
         )),
         imageLoading: false,
-      ));
-
-      Iterable<Object>? information;
-      if (err is CustomError) {
-        information = err.information;
-      }
-      recordFatalError(err, stack, information: information);
+      ), err, stack);
     }
   }
 
-  void fetchPronunciations(TranslationContainer translation) async {
+  void fetchPronunciations(TranslationContainer translation, CancelToken cancelToken) async {
     if (translation.schema == null) {
       return null;
     }
@@ -114,11 +129,13 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
           word: translation.word,
           schema: translation.schema!,
           language: translation.translateFrom,
+          cancelToken: cancelToken,
         ),
         pronunciation_controller.retrieve(
           word: translation.mostRelevantTranslation,
           schema: translation.schema!,
           language: translation.translateTo,
+          cancelToken: cancelToken,
         ),
       ]);
 
@@ -131,24 +148,28 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
           pronunciationLoading: false,
         ));
       }
+    } on DioError catch (err, stack) {
+      if (!CancelToken.isCancel(err)) {
+        handleError(state.copyWith(
+          pronunciationError: Wrapped.value(CustomError(
+            code: err.hashCode,
+            message: err.toString(),
+          )),
+          pronunciationLoading: false,
+        ), err, stack);
+      }
     } catch (err, stack) {
-      emit(state.copyWith(
+      handleError(state.copyWith(
         pronunciationError: Wrapped.value(CustomError(
           code: err.hashCode,
           message: err.toString(),
         )),
         pronunciationLoading: false,
-      ));
-
-      Iterable<Object>? information;
-      if (err is CustomError) {
-        information = err.information;
-      }
-      recordFatalError(err, stack, information: information);
+      ), err, stack);
     }
   }
 
-  Future<void> save(TranslationContainer translation) async {
+  Future<void> save(TranslationContainer translation, CancelToken? cancelToken) async {
     try {
       emit(state.copyWith(
         updateLoading: true,
@@ -160,6 +181,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
           word: translation.translation,
           schema: translation.schema!,
           language: translation.translateTo,
+          cancelToken: cancelToken,
         );
       }
       if (newPronunciationTo != null) {
@@ -174,18 +196,17 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         updateLoading: false,
       ));
     } catch (err, stack) {
-      emit(state.copyWith(
+      handleError(state.copyWith(
         error: Wrapped.value(CustomError(
           code: err.hashCode,
           message: err.toString(),
         )),
         updateLoading: false,
-      ));
-      recordFatalError(err, stack);
+      ), err, stack);
     }
   }
 
-  Future<void> update(TranslationContainer translation) async {
+  Future<void> update(TranslationContainer translation, CancelToken? cancelToken) async {
     try {
       emit(state.copyWith(
         updateLoading: true,
@@ -197,6 +218,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
           word: translation.translation,
           schema: translation.schema!,
           language: translation.translateTo,
+          cancelToken: cancelToken,
         );
       }
       if (newPronunciationTo != null) {
@@ -211,14 +233,13 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         updateLoading: false,
       ));
     } catch (err, stack) {
-      emit(state.copyWith(
+      handleError(state.copyWith(
         error: Wrapped.value(CustomError(
           code: err.hashCode,
           message: err.toString(),
         )),
         updateLoading: false,
-      ));
-      recordFatalError(err, stack);
+      ), err, stack);
     }
   }
 
@@ -240,8 +261,24 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
     ));
   }
 
+  void resetImageSearchWord() {
+    emit(state.copyWith(
+      imageSearchWord: state.word,
+    ));
+  }
+
   void reset() {
     emit(const TranslationViewState());
+  }
+
+  void handleError(state, err, stack) {
+    emit(state);
+
+    Iterable<Object>? information;
+    if (err is CustomError) {
+      information = err.information;
+    }
+    recordFatalError(err, stack, information: information);
   }
 }
 

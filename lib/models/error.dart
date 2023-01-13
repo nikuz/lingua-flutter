@@ -4,13 +4,13 @@ part 'error.g.dart';
 
 @JsonSerializable()
 class CustomError implements Exception {
-  final int code;
   final String message;
+  final int? code;
   final Iterable<Object>? information;
 
   const CustomError({
-    required this.code,
     required this.message,
+    this.code,
     this.information,
   });
 

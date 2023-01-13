@@ -1,11 +1,14 @@
 import 'package:flutter/widgets.dart';
+import 'package:lingua_flutter/providers/api.dart';
 
 class TranslationViewInheritedState extends InheritedWidget {
   final GlobalKey headerKey;
+  final CancelToken cancelToken;
 
   const TranslationViewInheritedState({
     super.key,
     required this.headerKey,
+    required this.cancelToken,
     required Widget child,
   }) : super(child: child);
 

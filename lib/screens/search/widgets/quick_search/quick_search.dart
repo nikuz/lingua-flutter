@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/models/language.dart';
@@ -7,6 +6,7 @@ import 'package:lingua_flutter/widgets/translation_word_view/translation_word_vi
 import 'package:lingua_flutter/widgets/language_selector/language_selector.dart';
 import 'package:lingua_flutter/widgets/button/button.dart';
 import 'package:lingua_flutter/utils/string.dart';
+import 'package:lingua_flutter/providers/api.dart';
 
 import '../../bloc/search_cubit.dart';
 import '../../bloc/search_state.dart';
@@ -37,13 +37,13 @@ class QuickSearch extends StatefulWidget {
 
 class _QuickSearchState extends State<QuickSearch> {
   late SearchCubit _searchCubit;
-  Timer? _debounce;
+  CancelToken? _cancelToken;
 
   @override
   void initState() {
     super.initState();
     _searchCubit = context.read<SearchCubit>();
-    _debounceRequest();
+    _request();
   }
 
   @override
@@ -53,34 +53,41 @@ class _QuickSearchState extends State<QuickSearch> {
         || oldWidget.translateFrom != widget.translateFrom
         || oldWidget.translateTo != widget.translateTo
     ) {
-      _debounceRequest();
+      _request();
     }
   }
 
   @override
   void dispose() {
-    _debounce?.cancel();
     _searchCubit.clearQuickTranslation();
+    _cancelToken?.cancel();
     super.dispose();
   }
 
-  void _debounceRequest() {
-    _debounce?.cancel();
-    _debounce = Timer(QuickSearchConstants.debouncePeriod, () {
-      _searchCubit.quickTranslation(
-        word: widget.searchText,
-        translateFrom: widget.translateFrom,
-        translateTo: widget.translateTo,
-      );
-    });
+  void _request() {
+    if (_cancelToken?.isCancelled == false) {
+      _cancelToken?.cancel();
+    }
+    _cancelToken = CancelToken();
+    _searchCubit.quickTranslation(
+      word: widget.searchText,
+      translateFrom: widget.translateFrom,
+      translateTo: widget.translateTo,
+      cancelToken: _cancelToken,
+    );
   }
 
   Widget _buildContentBody(SearchState state) {
     if (state.quickTranslationError != null) {
-      return const Padding(
-        padding: EdgeInsets.all(10),
+      return const SizedBox(
+        height: QuickSearchConstants.minHeight - 20,
         child: Center(
-          child: Text('Can\'t translate at the moment. Please try again later.'),
+          child: Padding(
+            padding: EdgeInsets.all(10),
+            child: Center(
+              child: Text('Can\'t translate at the moment. Please try again later.'),
+            ),
+          ),
         ),
       );
     }
@@ -182,7 +189,7 @@ class _QuickSearchState extends State<QuickSearch> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   constraints: const BoxConstraints(
-                    minHeight: 75,
+                    minHeight: QuickSearchConstants.minHeight,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,

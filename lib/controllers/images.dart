@@ -6,7 +6,7 @@ import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/utils/convert.dart';
 import 'package:lingua_flutter/models/error.dart';
 
-Future<List<String>?> search(String word) async {
+Future<List<String>?> search(String word, CancelToken? cancelToken) async {
   final encodedWord = removeQuotesFromString(removeSlashFromString(word));
   StoredParsingSchema? storedParsingSchema = await parsing_schemas_controller.get('current');
 
@@ -23,20 +23,29 @@ Future<List<String>?> search(String word) async {
   try {
     imagesRaw = await apiGet(
       url: parsingSchema.images.fields.url.replaceFirst('{word}', encodedWord),
-      headers: {
-        'user-agent': parsingSchema.images.fields.userAgent,
-      },
+      options: Options(
+        contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+        responseType: ResponseType.plain,
+        headers: {
+          'user-agent': parsingSchema.images.fields.userAgent,
+          'accept-encoding': 'gzip, deflate',
+        },
+      ),
+      cancelToken: cancelToken,
     );
-  } catch(err) {
-    throw CustomError(
-      code: 500,
-      message: 'Can\'t retrieve images using "current" parsing schema',
-      information: [
-        err,
-        word,
-        parsingSchema,
-      ],
-    );
+  } on DioError catch (err) {
+    if (!CancelToken.isCancel(err)) {
+      throw CustomError(
+        code: 500,
+        message: 'Can\'t retrieve images using "current" parsing schema',
+        information: [
+          err,
+          word,
+          parsingSchema,
+        ],
+      );
+    }
+    return null;
   }
 
   final minBase64Length = int.parse(parsingSchema.images.fields.minSize); // in base64 characters

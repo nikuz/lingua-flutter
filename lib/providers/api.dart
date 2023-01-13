@@ -1,59 +1,81 @@
 import 'dart:core';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:lingua_flutter/models/error.dart';
 
-Future<String> apiRequest({
-  required String method,
-  required String url,
-  Map<String, String>? params,
-  Map<String, String>? headers,
-}) async {
-  late http.Response response;
+export 'package:dio/dio.dart' show Options, ResponseType, CancelToken, DioError;
 
-  if (method == 'get') {
-    response = await http.get(
-      Uri.parse(url),
-      headers: headers,
-    );
-  } else if (method == 'post') {
-    response = await http.post(
-      Uri.parse(url),
-      headers: headers,
-      body: params,
-    );
-  } else if (method == 'put') {
-    response = await http.put(
-      Uri.parse(url),
-      headers: headers,
-      body: params,
-    );
-  } else if (method == 'delete') {
-    response = await http.delete(
-      Uri.parse(url),
-      headers: headers,
-    );
+enum ApiRequestType {
+  get,
+  post,
+  put,
+  delete,
+}
+
+Future<String> apiRequest({
+  required ApiRequestType method,
+  required String url,
+  Options? options,
+  CancelToken? cancelToken,
+  Map<String, String>? data,
+}) async {
+  late Response response;
+
+  switch (method) {
+    case ApiRequestType.get:
+      response = await Dio().get(
+        url,
+        options: options,
+        cancelToken: cancelToken,
+      );
+      break;
+
+    case ApiRequestType.post:
+      response = await Dio().post(
+        url,
+        options: options,
+        cancelToken: cancelToken,
+        data: data,
+      );
+      break;
+
+    case ApiRequestType.put:
+      response = await Dio().put(
+        url,
+        options: options,
+        cancelToken: cancelToken,
+        data: data,
+      );
+      break;
+
+    case ApiRequestType.delete:
+      response = await Dio().delete(
+        url,
+        options: options,
+        cancelToken: cancelToken,
+      );
+      break;
   }
 
   if (response.statusCode == 200) {
-    return response.body;
+    return response.data;
   } else {
     throw CustomError(
-      code: response.statusCode,
-      message: response.body,
+      code: response.statusCode ?? 0,
+      message: response.data,
     );
   }
 }
 
 Future<String> apiGet({
   required String url,
-  Map<String, String>? params,
-  Map<String, String>? headers,
+  Options? options,
+  CancelToken? cancelToken,
 }) async {
   Future<String> response = apiRequest(
-    method: 'get',
+    method: ApiRequestType.get,
     url: url,
-    params: params,
-    headers: headers,
+    options: options,
+    cancelToken: cancelToken,
   );
 
   return response;
@@ -61,14 +83,16 @@ Future<String> apiGet({
 
 Future<String> apiPost({
   required String url,
-  Map<String, String>? params,
-  Map<String, String>? headers,
+  Options? options,
+  Map<String, String>? data,
+  CancelToken? cancelToken,
 }) async {
   Future<String> response = apiRequest(
-    method: 'post',
+    method: ApiRequestType.post,
     url: url,
-    params: params,
-    headers: headers,
+    options: options,
+    cancelToken: cancelToken,
+    data: data,
   );
 
   return response;
@@ -76,14 +100,17 @@ Future<String> apiPost({
 
 Future<String> apiPut({
   required String url,
-  Map<String, String>? params,
-  Map<String, String>? headers,
+  Map<String, dynamic>? params,
+  Options? options,
+  CancelToken? cancelToken,
+  Map<String, String>? data,
 }) async {
   Future<String> response = apiRequest(
-    method: 'put',
+    method: ApiRequestType.put,
     url: url,
-    params: params,
-    headers: headers,
+    options: options,
+    cancelToken: cancelToken,
+    data: data,
   );
 
   return response;
@@ -91,14 +118,14 @@ Future<String> apiPut({
 
 Future<String> apiDelete({
   required String url,
-  Map<String, String>? params,
-  Map<String, String>? headers,
+  Options? options,
+  CancelToken? cancelToken,
 }) async {
   Future<String> response = apiRequest(
-    method: 'delete',
+    method: ApiRequestType.delete,
     url: url,
-    params: params,
-    headers: headers,
+    options: options,
+    cancelToken: cancelToken,
   );
 
   return response;
