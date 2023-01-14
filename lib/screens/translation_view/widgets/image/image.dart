@@ -32,7 +32,7 @@ class _TranslationViewImageState extends State<TranslationViewImage> {
         }
 
         String? imageSource = translation.image;
-        final hasImage = imageSource != null || state.imageError != null;
+        final hasImage = imageSource != null && state.imageError == null;
         const double imageVerticalMargin = 10;
         const double editButtonMargin = 2;
         Widget imageWidget = Container();
