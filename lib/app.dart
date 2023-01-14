@@ -107,6 +107,7 @@ class _AppViewState extends State<AppView> with WidgetsBindingObserver {
           themeMode: themeMode,
           routerDelegate: _appRouter.delegate(),
           routeInformationParser: _appRouter.defaultRouteParser(),
+          // debugShowCheckedModeBanner: false,
         );
       },
     );

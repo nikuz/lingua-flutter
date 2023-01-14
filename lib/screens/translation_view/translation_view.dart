@@ -156,8 +156,8 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
             appBar: AppBar(
               automaticallyImplyLeading: true, // to automatically add Back Button when needed,
               backgroundColor: theme.colors.focusBackground,
-              systemOverlayStyle: SystemUiOverlayStyle(
-                statusBarColor: theme.colors.focusBackground,
+              systemOverlayStyle: const SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
                 statusBarIconBrightness: Brightness.light,
                 statusBarBrightness: Brightness.dark,
               ),

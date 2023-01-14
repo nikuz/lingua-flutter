@@ -78,7 +78,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
             titleSpacing: 4,
             backgroundColor: theme.colors.focusBackground,
             systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: theme.colors.focusBackground,
+              statusBarColor: Colors.transparent,
               statusBarIconBrightness: isInDarkMode ? Brightness.light : Brightness.dark,
               statusBarBrightness: isInDarkMode ? Brightness.dark : Brightness.light,
             ),

@@ -107,7 +107,6 @@ class SettingsBackup extends StatelessWidget {
                     icon: Icons.backup,
                     iconSize: 30,
                     shape: ButtonShape.oval,
-                    // outlined: false,
                     loading: state.backupCreateLoading,
                     margin: const EdgeInsets.symmetric(vertical: 10),
                     onPressed: () => _backupHandler(context),

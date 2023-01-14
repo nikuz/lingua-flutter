@@ -26,7 +26,7 @@ class Settings extends StatelessWidget {
         automaticallyImplyLeading: false,
         backgroundColor: appBarColor,
         systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: appBarColor,
+          statusBarColor: Colors.transparent,
           statusBarIconBrightness: isInDarkMode ? Brightness.light : Brightness.dark,
           statusBarBrightness: isInDarkMode ? Brightness.dark : Brightness.light,
         ),

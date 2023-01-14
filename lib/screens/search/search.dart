@@ -221,7 +221,7 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
         elevation: 0,
         toolbarHeight: 0,
         systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: theme.colors.background.withOpacity(0.8),
+          statusBarColor: Colors.transparent,
           statusBarIconBrightness: isInDarkMode ? Brightness.light : Brightness.dark,
           statusBarBrightness: isInDarkMode ? Brightness.dark : Brightness.light,
         ),

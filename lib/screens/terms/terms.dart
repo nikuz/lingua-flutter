@@ -19,7 +19,7 @@ class Terms extends StatelessWidget {
         backgroundColor: theme.colors.background,
         foregroundColor: theme.colors.primary,
         systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: theme.colors.background,
+          statusBarColor: Colors.transparent,
           statusBarIconBrightness: isInDarkMode ? Brightness.light : Brightness.dark,
           statusBarBrightness: isInDarkMode ? Brightness.dark : Brightness.light,
         ),
