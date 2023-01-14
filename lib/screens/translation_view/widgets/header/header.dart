@@ -8,6 +8,7 @@ import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
 import 'package:lingua_flutter/widgets/button/button.dart';
 import 'package:lingua_flutter/widgets/snack_bar/snack_bar.dart';
+import 'package:lingua_flutter/widgets/translation_word_view/translation_word_view.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 import 'package:lingua_flutter/controllers/local_translation.dart' as local_translate_controller;
 import 'package:lingua_flutter/app_config.dart' as config;
@@ -76,6 +77,12 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
         AutoRouter.of(context).pop<TranslationContainer>(translation);
         CustomSnackBar(context: context, message: 'Word is saved successfully').show();
         _showRateUsModal();
+      }).catchError((err) {
+        CustomSnackBar(
+          context: context,
+          message: 'Can\'t save the word at the moment',
+          type: CustomSnackBarType.error,
+        ).show();
       });
     } else if (state.imageIsUpdated || state.translationIsUpdated) {
       context.read<TranslationViewCubit>().update(translation, translationViewState?.cancelToken).then((dynamic) {
@@ -83,6 +90,12 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
           updatedAt: DateTime.now().toString(),
         ));
         CustomSnackBar(context: context, message: 'Word is updated successfully').show();
+      }).catchError((err) {
+        CustomSnackBar(
+          context: context,
+          message: 'Can\'t update the word at the moment',
+          type: CustomSnackBarType.error,
+        ).show();
       });
     }
   }
@@ -247,15 +260,13 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
                   ),
                   child: TextButton(
                     style: TextButton.styleFrom(
-                      backgroundColor: Colors.white,
+                      backgroundColor: Styles.colors.white,
                     ),
-                    child: Text(
-                      // split by gender specific translations
-                      translation.translation.split(', ').join('\n'),
-                      style: const TextStyle(
+                    child: TranslationWordView(
+                      translation: translation,
+                      textStyle: TextStyle(
                         fontSize: 20,
-                        letterSpacing: 1,
-                        color: Colors.blue,
+                        color: Styles.colors.blue,
                       ),
                     ),
                     onPressed: () {
