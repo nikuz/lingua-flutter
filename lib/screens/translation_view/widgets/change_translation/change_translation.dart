@@ -100,6 +100,8 @@ class _TranslationViewChangeTranslationContentState extends State<TranslationVie
                 text: 'Cancel',
                 size: ButtonSize.large,
                 outlined: false,
+                width: 100.0,
+                height: 40.0,
                 margin: const EdgeInsets.only(right: 20),
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop(false);
@@ -109,6 +111,7 @@ class _TranslationViewChangeTranslationContentState extends State<TranslationVie
               ButtonBlue(
                 text: 'Save',
                 size: ButtonSize.large,
+                width: 100.0,
                 height: 40.0,
                 disabled: _newTranslation.isEmpty,
                 onPressed: () {
