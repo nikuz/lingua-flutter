@@ -109,6 +109,9 @@ class _QuickSearchState extends State<QuickSearch> {
                     if (state.quickTranslation != null)
                       TranslationWordView(
                         translation: state.quickTranslation!,
+                        textStyle: const TextStyle(
+                          fontSize: 20,
+                        ),
                       ),
 
                     if (state.quickTranslationLoading || state.quickTranslation == null)
@@ -124,6 +127,7 @@ class _QuickSearchState extends State<QuickSearch> {
                 elevated: true,
                 shape: ButtonShape.oval,
                 icon: Icons.arrow_forward,
+                margin: const EdgeInsets.only(left: 10),
                 onPressed: () {
                   final text = searchState?.textController.text;
                   if (searchState?.hasInternetConnection == true && text != null) {
