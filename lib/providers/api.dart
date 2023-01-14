@@ -11,7 +11,7 @@ enum ApiRequestType {
   delete,
 }
 
-Future<String> apiRequest({
+Future<Response<dynamic>> apiRequest({
   required ApiRequestType method,
   required String url,
   Options? options,
@@ -56,8 +56,8 @@ Future<String> apiRequest({
       break;
   }
 
-  if (response.statusCode == 200) {
-    return response.data;
+  if (response.statusCode != null && response.statusCode! < 400) {
+    return response;
   } else {
     throw CustomError(
       code: response.statusCode ?? 0,
@@ -66,67 +66,51 @@ Future<String> apiRequest({
   }
 }
 
-Future<String> apiGet({
+Future<Response<dynamic>> apiGet({
   required String url,
   Options? options,
   CancelToken? cancelToken,
-}) async {
-  Future<String> response = apiRequest(
-    method: ApiRequestType.get,
-    url: url,
-    options: options,
-    cancelToken: cancelToken,
-  );
+}) => apiRequest(
+  method: ApiRequestType.get,
+  url: url,
+  options: options,
+  cancelToken: cancelToken,
+);
 
-  return response;
-}
-
-Future<String> apiPost({
+Future<Response<dynamic>> apiPost({
   required String url,
   Options? options,
   Map<String, String>? data,
   CancelToken? cancelToken,
-}) async {
-  Future<String> response = apiRequest(
-    method: ApiRequestType.post,
-    url: url,
-    options: options,
-    cancelToken: cancelToken,
-    data: data,
-  );
+}) => apiRequest(
+  method: ApiRequestType.post,
+  url: url,
+  options: options,
+  cancelToken: cancelToken,
+  data: data,
+);
 
-  return response;
-}
-
-Future<String> apiPut({
+Future<Response<dynamic>> apiPut({
   required String url,
   Map<String, dynamic>? params,
   Options? options,
   CancelToken? cancelToken,
   Map<String, String>? data,
-}) async {
-  Future<String> response = apiRequest(
-    method: ApiRequestType.put,
-    url: url,
-    options: options,
-    cancelToken: cancelToken,
-    data: data,
-  );
+}) => apiRequest(
+  method: ApiRequestType.put,
+  url: url,
+  options: options,
+  cancelToken: cancelToken,
+  data: data,
+);
 
-  return response;
-}
-
-Future<String> apiDelete({
+Future<Response<dynamic>> apiDelete({
   required String url,
   Options? options,
   CancelToken? cancelToken,
-}) async {
-  Future<String> response = apiRequest(
-    method: ApiRequestType.delete,
-    url: url,
-    options: options,
-    cancelToken: cancelToken,
-  );
-
-  return response;
-}
+}) => apiRequest(
+  method: ApiRequestType.delete,
+  url: url,
+  options: options,
+  cancelToken: cancelToken,
+);
