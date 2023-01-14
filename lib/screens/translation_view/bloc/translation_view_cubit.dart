@@ -197,12 +197,11 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
       ));
     } catch (err, stack) {
       handleError(state.copyWith(
-        error: Wrapped.value(CustomError(
-          code: err.hashCode,
-          message: err.toString(),
-        )),
         updateLoading: false,
       ), err, stack);
+      // we need to rethrow here because this "save" used as a bare Future
+      // and if we don't throw, the Future will complete without error
+      rethrow;
     }
   }
 
@@ -234,12 +233,11 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
       ));
     } catch (err, stack) {
       handleError(state.copyWith(
-        error: Wrapped.value(CustomError(
-          code: err.hashCode,
-          message: err.toString(),
-        )),
         updateLoading: false,
       ), err, stack);
+      // we need to rethrow here because this "update" used as a bare Future
+      // and if we don't throw, the Future will complete without error
+      rethrow;
     }
   }
 
