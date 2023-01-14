@@ -35,10 +35,14 @@ Future<void> preload() async {
     if (schemaData != null) {
       StoredParsingSchema? schema;
       // schemas can be outdated and trying to parse them with current StoredParsingSchema structure throws error
+      // TODO: avoid this situation by improving "fromFirestore" parsing method
       try {
         final schemaJson = await jsonDecodeIsolate(schemaData['schema']);
         schema = StoredParsingSchema.fromFirestore(schemaData, schemaJson);
       } catch (err, stack) {
+        // if we remove the file here, then the user won't be able to parse previously saved words
+        // and the words will be downloaded again and needed to be updated with a new parsing schema version
+        file.deleteSync();
         recordError(err, stack);
       }
       if (schema != null) {
