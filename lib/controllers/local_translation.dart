@@ -379,10 +379,10 @@ Future<void> update(TranslationContainer translation) async {
   await DBProvider().rawQuery(
       '''
         UPDATE dictionary 
-        SET translation=?, updated_at=datetime("now") $imageTransaction $pronunciationToTransaction
+        SET translation=?, updated_at=datetime("now"), schema_version=? $imageTransaction $pronunciationToTransaction
         WHERE id=$translationId;
       ''',
-      [translation.translation]
+      [translation.translation, translation.schemaVersion]
   );
 }
 
