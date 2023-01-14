@@ -98,6 +98,11 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
     });
   }
 
+  void _resetLanguages() {
+    _translateFrom = _settingsCubit.state.translateFrom;
+    _translateTo = _settingsCubit.state.translateTo;
+  }
+
   void _submitHandler(String word, {
     required Language translateFrom,
     required Language translateTo,
@@ -119,8 +124,7 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
         } else {
           _clearSearch();
         }
-        _translateFrom = _settingsCubit.state.translateFrom;
-        _translateTo = _settingsCubit.state.translateTo;
+        _resetLanguages();
       }
     }
   }
@@ -186,6 +190,7 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
             _translateTo = to;
           });
         },
+        onDispose: _resetLanguages,
       );
     }
 

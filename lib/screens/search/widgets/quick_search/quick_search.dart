@@ -4,6 +4,8 @@ import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/widgets/translation_word_view/translation_word_view.dart';
 import 'package:lingua_flutter/widgets/language_selector/language_selector.dart';
+import 'package:lingua_flutter/widgets/auto_language_detector/auto_language_detector.dart';
+import 'package:lingua_flutter/widgets/auto_spelling/auto_spelling.dart';
 import 'package:lingua_flutter/widgets/button/button.dart';
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/providers/api.dart';
@@ -20,6 +22,7 @@ class QuickSearch extends StatefulWidget {
   final void Function(Language translateFrom) onTranslateFromChange;
   final void Function(Language translateTo) onTranslateToChange;
   final void Function(Language translateFrom, Language translateTo) onLanguageSourceSwap;
+  final VoidCallback onDispose;
 
   const QuickSearch({
     super.key,
@@ -29,6 +32,7 @@ class QuickSearch extends StatefulWidget {
     required this.onTranslateFromChange,
     required this.onTranslateToChange,
     required this.onLanguageSourceSwap,
+    required this.onDispose,
   });
 
   @override
@@ -61,6 +65,7 @@ class _QuickSearchState extends State<QuickSearch> {
   void dispose() {
     _searchCubit.clearQuickTranslation();
     _cancelToken?.cancel();
+    widget.onDispose();
     super.dispose();
   }
 
@@ -94,6 +99,7 @@ class _QuickSearchState extends State<QuickSearch> {
 
     final searchState = SearchInheritedState.of(context);
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(
@@ -154,6 +160,32 @@ class _QuickSearchState extends State<QuickSearch> {
               ),
             ],
           ),
+        ),
+
+        AutoLanguageDetector(
+          translation: state.quickTranslation,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 15,
+            vertical: 10,
+          ),
+          onPressed: (language) {
+            widget.onTranslateFromChange(language);
+            if (state.quickTranslation != null) {
+              widget.onTranslateToChange(
+                  language.id == state.quickTranslation!.translateTo.id
+                      ? state.quickTranslation!.translateFrom
+                      : state.quickTranslation!.translateTo
+              );
+            }
+          },
+        ),
+
+        AutoSpelling(
+          translation: state.quickTranslation,
+          onPressed: (autoSpelling) {
+            searchState?.textController.text = autoSpelling;
+            _searchCubit.fetchTranslations(searchText: autoSpelling);
+          },
         ),
 
         LanguageSelector(

@@ -9,6 +9,8 @@ import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
 import 'package:lingua_flutter/widgets/button/button.dart';
 import 'package:lingua_flutter/widgets/snack_bar/snack_bar.dart';
 import 'package:lingua_flutter/widgets/translation_word_view/translation_word_view.dart';
+import 'package:lingua_flutter/widgets/auto_language_detector/auto_language_detector.dart';
+import 'package:lingua_flutter/widgets/auto_spelling/auto_spelling.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 import 'package:lingua_flutter/controllers/local_translation.dart' as local_translate_controller;
 import 'package:lingua_flutter/app_config.dart' as config;
@@ -16,8 +18,6 @@ import 'package:lingua_flutter/app_config.dart' as config;
 import '../../bloc/translation_view_cubit.dart';
 import '../../bloc/translation_view_state.dart';
 import '../../translation_view_state.dart';
-import '../auto_language/auto_language.dart';
-import '../auto_spelling/auto_spelling.dart';
 import '../image/image.dart';
 
 class TranslationViewHeader extends StatefulWidget {
@@ -281,8 +281,33 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
                 ),
               ),
               _buildFooter(context, state),
-              const TranslationViewAutoLanguage(),
-              const TranslationViewAutoSpelling(),
+              AutoLanguageDetector(
+                translation: translation,
+                color: Styles.colors.white,
+                onPressed: (language) {
+                  context.read<TranslationViewCubit>().reset();
+                  AutoRouter.of(context).replace(TranslationViewRoute(
+                    word: translation.word,
+                    translateFrom: language,
+                    // flip target language only if auto language is the same as the target one
+                    translateTo: language.id == translation.translateTo.id
+                        ? translation.translateFrom
+                        : translation.translateTo,
+                  ));
+                },
+              ),
+              AutoSpelling(
+                translation: translation,
+                color: Styles.colors.white,
+                onPressed: (autoSpelling) {
+                  context.read<TranslationViewCubit>().reset();
+                  AutoRouter.of(context).replace(TranslationViewRoute(
+                    word: autoSpelling,
+                    translateFrom: translation.translateFrom,
+                    translateTo: translation.translateTo,
+                  ));
+                },
+              ),
             ],
           ),
         );
