@@ -19,7 +19,7 @@ Future<String?> retrieve({
   String? pronunciationRaw;
 
   try {
-    pronunciationRaw = await apiPost(
+    final pronunciationResponse = await apiPost(
       url: schema.pronunciation.fields.url,
       options: Options(
         contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
@@ -36,6 +36,7 @@ Future<String?> retrieve({
             .replaceAll('{sourceLanguage}', language.id)
       },
     );
+    pronunciationRaw = pronunciationResponse.data;
   } catch (err) {
     throw CustomError(
       code: 500,
@@ -49,14 +50,16 @@ Future<String?> retrieve({
     );
   }
 
-  final pronunciationRawData = await cloud_translate_controller.retrieveResponseRawData(
-    pronunciationRaw,
-    schema.pronunciation.fields.marker,
-  );
-  if (pronunciationRawData != null) {
-    String? base64Value = getDynamicString(jmespath.search(schema.pronunciation.data.value, pronunciationRawData));
-    if (base64Value != null) {
-      pronunciationResult = schema.pronunciation.fields.base64Prefix + base64Value;
+  if (pronunciationRaw != null) {
+    final pronunciationRawData = await cloud_translate_controller.retrieveResponseRawData(
+      pronunciationRaw,
+      schema.pronunciation.fields.marker,
+    );
+    if (pronunciationRawData != null) {
+      String? base64Value = getDynamicString(jmespath.search(schema.pronunciation.data.value, pronunciationRawData));
+      if (base64Value != null) {
+        pronunciationResult = schema.pronunciation.fields.base64Prefix + base64Value;
+      }
     }
   }
 

@@ -20,12 +20,16 @@ class ImagesSchemaFields {
   final String userAgent;
   final String regExp;
   final String minSize;
+  final String safeSearchUrl;
+  final String safeSearchSignatureRegExp;
 
   const ImagesSchemaFields({
     required this.url,
     required this.userAgent,
     required this.regExp,
     required this.minSize,
+    required this.safeSearchUrl,
+    required this.safeSearchSignatureRegExp,
   });
 
   factory ImagesSchemaFields.fromJson(Map<String, dynamic> json) => _$ImagesSchemaFieldsFromJson(json);

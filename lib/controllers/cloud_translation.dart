@@ -74,7 +74,7 @@ Future<TranslationContainer> translate({
   String? pronunciationFromResult;
   String? pronunciationToResult;
 
-  String translationRaw = await apiPost(
+  final translationResponse = await apiPost(
     url: parsingSchema.translation.fields.url,
     options: Options(
       contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
@@ -93,7 +93,12 @@ Future<TranslationContainer> translate({
     },
   );
 
-  translationResult = await retrieveResponseRawData(translationRaw, parsingSchema.translation.fields.marker);
+  final String? translationRaw = translationResponse.data;
+
+  if (translationRaw != null) {
+    translationResult = await retrieveResponseRawData(translationRaw, parsingSchema.translation.fields.marker);
+  }
+
   if (translationResult == null) {
     if (forceCurrentSchemaDownload == null) {
       return translate(
@@ -109,7 +114,7 @@ Future<TranslationContainer> translate({
         message: 'Can\'t parse translation response with "current" schema',
         information: [
           word,
-          translationRaw,
+          translationRaw ?? '',
           parsingSchema.toJson(),
           translateFrom.toJson(),
           translateTo.toJson(),

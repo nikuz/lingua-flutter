@@ -111,6 +111,8 @@ class StoredParsingSchema {
             userAgent: schemaJson['images']['fields']['userAgent'],
             regExp: schemaJson['images']['fields']['regExp'],
             minSize: schemaJson['images']['fields']['minSize'],
+            safeSearchUrl: schemaJson['images']['fields']['safeSearchUrl'],
+            safeSearchSignatureRegExp: schemaJson['images']['fields']['safeSearchSignatureRegExp'],
           ),
         ),
       ),
