@@ -4,7 +4,7 @@ import 'package:lingua_flutter/models/error.dart';
 import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/controllers/local_translation.dart' as local_translate_controller;
 import 'package:lingua_flutter/controllers/cloud_translation.dart' as cloud_translate_controller;
-import 'package:lingua_flutter/controllers/images.dart' as images_controller;
+import 'package:lingua_flutter/controllers/images/images.dart' as images_controller;
 import 'package:lingua_flutter/controllers/pronunciation.dart' as pronunciation_controller;
 import 'package:lingua_flutter/providers/api.dart';
 import 'package:lingua_flutter/utils/types.dart';
