@@ -24,10 +24,16 @@ class TranslationWordView extends StatelessWidget {
     return Wrap(
       children: [
         if (item.word != null)
-          Text(item.word!),
+          Text(
+            item.word!,
+            style: textStyle,
+          ),
 
         if (item.gender != null)
-          Text(item.gender!),
+          Text(
+            item.gender!,
+            style: textStyle,
+          ),
 
         if (item.sentences != null)
           for (var i = 0, l = item.sentences!.length; i < l; i++)
