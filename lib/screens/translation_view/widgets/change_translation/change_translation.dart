@@ -62,9 +62,9 @@ class _TranslationViewChangeTranslationContentState extends State<TranslationVie
             bottom: 10,
             left: 5,
           ),
-          child: Text(
-            widget.word,
-            style: const TextStyle(
+          child: const Text(
+            'Custom translation',
+            style: TextStyle(
               fontSize: 18,
             ),
           ),

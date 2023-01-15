@@ -8,7 +8,6 @@ import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
 import 'package:lingua_flutter/widgets/button/button.dart';
 import 'package:lingua_flutter/widgets/snack_bar/snack_bar.dart';
-import 'package:lingua_flutter/widgets/translation_word_view/translation_word_view.dart';
 import 'package:lingua_flutter/widgets/auto_language_detector/auto_language_detector.dart';
 import 'package:lingua_flutter/widgets/auto_spelling/auto_spelling.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
@@ -232,6 +231,15 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
         }
 
         final MyTheme theme = Styles.theme(context);
+        String translationText = translation.translation;
+
+        if (translation.translations != null
+            && translation.translations!.isNotEmpty
+            && translation.translations![0].gender != null
+        ) {
+          // split by gender specific translations
+          translationText = translationText.split(', ').join('\n');
+        }
 
         return Container(
           color: theme.colors.focusBackground,
@@ -262,11 +270,15 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
                     style: TextButton.styleFrom(
                       backgroundColor: Styles.colors.white,
                     ),
-                    child: TranslationWordView(
-                      translation: translation,
-                      textStyle: TextStyle(
+                    // don't use TranslationWordView here, because it renders translation
+                    // from the "translations" property of the TranslationContainer,
+                    // which will not be changed when custom translation is set
+                    child: Text(
+                      translationText,
+                      style: const TextStyle(
                         fontSize: 20,
-                        color: Styles.colors.blue,
+                        letterSpacing: 1,
+                        color: Colors.blue,
                       ),
                     ),
                     onPressed: () {
@@ -283,7 +295,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
               _buildFooter(context, state),
               AutoLanguageDetector(
                 translation: translation,
-                color: Styles.colors.white,
+                color: theme.colors.focusForeground,
                 onPressed: (language) {
                   context.read<TranslationViewCubit>().reset();
                   AutoRouter.of(context).replace(TranslationViewRoute(
@@ -298,7 +310,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
               ),
               AutoSpelling(
                 translation: translation,
-                color: Styles.colors.white,
+                color: theme.colors.focusForeground,
                 onPressed: (autoSpelling) {
                   context.read<TranslationViewCubit>().reset();
                   AutoRouter.of(context).replace(TranslationViewRoute(
