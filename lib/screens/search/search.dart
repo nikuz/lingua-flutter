@@ -218,62 +218,67 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
     final MyTheme theme = Styles.theme(context);
     final isInDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      backgroundColor: theme.colors.background,
-      appBar: AppBar(
-        backgroundColor: theme.colors.background.withOpacity(0.8),
-        elevation: 0,
-        toolbarHeight: 0,
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: isInDarkMode ? Brightness.light : Brightness.dark,
-          statusBarBrightness: isInDarkMode ? Brightness.dark : Brightness.light,
+    return GestureDetector(
+      onTap: () {
+        _focusNode.unfocus();
+      },
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        backgroundColor: theme.colors.background,
+        appBar: AppBar(
+          backgroundColor: theme.colors.background.withOpacity(0.8),
+          elevation: 0,
+          toolbarHeight: 0,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: isInDarkMode ? Brightness.light : Brightness.dark,
+            statusBarBrightness: isInDarkMode ? Brightness.dark : Brightness.light,
+          ),
         ),
-      ),
-      body: BlocListener<SettingsCubit, SettingsState>(
-        listener: (context, state) {
-          if (state.translateFrom != _translateFrom
-              || state.translateTo != _translateTo
-              || state.backupRestoreAt != _backupRestoreAt
-          ) {
-            // refresh search list after restore from backup
-            if (state.backupRestoreAt != _backupRestoreAt) {
-              Future.delayed(const Duration(seconds: 1), _clearSearch);
+        body: BlocListener<SettingsCubit, SettingsState>(
+          listener: (context, state) {
+            if (state.translateFrom != _translateFrom
+                || state.translateTo != _translateTo
+                || state.backupRestoreAt != _backupRestoreAt
+            ) {
+              // refresh search list after restore from backup
+              if (state.backupRestoreAt != _backupRestoreAt) {
+                Future.delayed(const Duration(seconds: 1), _clearSearch);
+              }
+              setState(() {
+                _translateFrom = state.translateFrom;
+                _translateTo = state.translateTo;
+                _backupRestoreAt = state.backupRestoreAt;
+              });
             }
-            setState(() {
-              _translateFrom = state.translateFrom;
-              _translateTo = state.translateTo;
-              _backupRestoreAt = state.backupRestoreAt;
-            });
-          }
-        },
-        child: BlocBuilder<SearchCubit, SearchState>(
-          builder: (context, state) {
-            return SafeArea(
-              top: false,
-              child: SearchInheritedState(
-                textController: _textController,
-                focusNode: _focusNode,
-                hasInternetConnection: _hasInternetConnection,
-                submitHandler: _submitHandler,
-                subscribeToListScroll: _subscribeToListScroll,
-                unsubscribeFromListScroll: _unsubscribeFromListScroll,
-                broadcastListScroll: _broadcastListScroll,
-                getPaddingTop: _getPaddingTop,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    _buildResultsBody(state),
-                    SearchField(
-                      translateFrom: _translateFrom,
-                      translateTo: _translateTo,
-                    ),
-                  ],
-                ),
-              ),
-            );
           },
+          child: BlocBuilder<SearchCubit, SearchState>(
+            builder: (context, state) {
+              return SafeArea(
+                top: false,
+                child: SearchInheritedState(
+                  textController: _textController,
+                  focusNode: _focusNode,
+                  hasInternetConnection: _hasInternetConnection,
+                  submitHandler: _submitHandler,
+                  subscribeToListScroll: _subscribeToListScroll,
+                  unsubscribeFromListScroll: _unsubscribeFromListScroll,
+                  broadcastListScroll: _broadcastListScroll,
+                  getPaddingTop: _getPaddingTop,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      _buildResultsBody(state),
+                      SearchField(
+                        translateFrom: _translateFrom,
+                        translateTo: _translateTo,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

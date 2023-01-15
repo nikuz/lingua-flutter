@@ -82,6 +82,9 @@ class _AutoLanguageDetectorState extends State<AutoLanguageDetector> {
       return Container();
     }
 
+    final isInDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final color = isInDarkMode ? Styles.colors.orange : Styles.colors.pumpkin;
+
     return GestureDetector(
       onTap: () {
         if (widget.onPressed is Function && _autoLanguage != null) {
@@ -100,14 +103,14 @@ class _AutoLanguageDetectorState extends State<AutoLanguageDetector> {
               padding: const EdgeInsets.only(right: 10),
               child: Icon(
                 Icons.auto_awesome,
-                color: widget.color ?? Styles.colors.pumpkin,
+                color: widget.color ?? color,
               ),
             ),
             Expanded(
               child: RichText(
                 text: TextSpan(
                   style: TextStyle(
-                    color: widget.color ?? Styles.colors.pumpkin,
+                    color: widget.color ?? color,
                   ),
                   children: [
                     const TextSpan(text: 'Translate from '),

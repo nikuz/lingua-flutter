@@ -162,31 +162,36 @@ class _QuickSearchState extends State<QuickSearch> {
           ),
         ),
 
-        AutoLanguageDetector(
+        AutoSpelling(
           translation: state.quickTranslation,
           padding: const EdgeInsets.symmetric(
             horizontal: 15,
             vertical: 10,
           ),
-          onPressed: (language) {
-            widget.onTranslateFromChange(language);
-            if (state.quickTranslation != null) {
-              widget.onTranslateToChange(
-                  language.id == state.quickTranslation!.translateTo.id
-                      ? state.quickTranslation!.translateFrom
-                      : state.quickTranslation!.translateTo
-              );
-            }
-          },
-        ),
-
-        AutoSpelling(
-          translation: state.quickTranslation,
           onPressed: (autoSpelling) {
             searchState?.textController.text = autoSpelling;
             _searchCubit.fetchTranslations(searchText: autoSpelling);
           },
         ),
+
+        if (state.quickTranslation?.autoSpelling == null)
+          AutoLanguageDetector(
+            translation: state.quickTranslation,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 15,
+              vertical: 10,
+            ),
+            onPressed: (language) {
+              widget.onTranslateFromChange(language);
+              if (state.quickTranslation != null) {
+                widget.onTranslateToChange(
+                    language.id == state.quickTranslation!.translateTo.id
+                        ? state.quickTranslation!.translateFrom
+                        : state.quickTranslation!.translateTo
+                );
+              }
+            },
+          ),
 
         LanguageSelector(
           selectorFromTitle: 'Translate from',

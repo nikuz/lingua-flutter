@@ -17,7 +17,7 @@ class MyColors {
   final Color dividerDark = const Color(0x1f000000);
   final Color orange = const Color(0xFFFFB300);
   final Color springBud = const Color(0xFFEDF7B5);
-  final Color pumpkin = const Color(0xFFFD673A);
+  final Color pumpkin = const Color(0xFFF08A4B);
   final Color red = const Color(0xFFFF1744);
 }
 
