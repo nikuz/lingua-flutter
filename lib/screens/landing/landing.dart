@@ -79,7 +79,7 @@ class _LandingState extends State<Landing> {
   @override
   Widget build(BuildContext context) {
     final MyTheme theme = Styles.theme(context);
-    final isInDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final isInDarkMode = theme.brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: theme.colors.background,

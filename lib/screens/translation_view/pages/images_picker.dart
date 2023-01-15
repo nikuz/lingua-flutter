@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/widgets/text_field/text_field.dart';
 import 'package:lingua_flutter/widgets/image_preview/image_preview.dart';
+import 'package:lingua_flutter/widgets/tag/tag.dart';
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/providers/api.dart';
 import 'package:lingua_flutter/styles/styles.dart';
@@ -42,6 +43,16 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
     _scrollToSelectedItem();
   }
 
+  @override
+  void dispose() {
+    _textController.dispose();
+    _cancelToken.cancel();
+    if (_translationViewCubit.state.imageLoading) {
+      _translationViewCubit.resetImageSearchWord();
+    }
+    super.dispose();
+  }
+
   void _scrollToSelectedItem() {
     if (_translationViewCubit.state.imageLoading == false && itemKey.currentContext != null) {
       Scrollable.ensureVisible(
@@ -54,14 +65,12 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
     }
   }
 
-  @override
-  void dispose() {
-    _textController.dispose();
-    _cancelToken.cancel();
-    if (_translationViewCubit.state.imageLoading) {
-      _translationViewCubit.resetImageSearchWord();
+  void _submitNewSearch(String word) {
+    if (!_cancelToken.isCancelled) {
+      _cancelToken.cancel();
     }
-    super.dispose();
+    _cancelToken = CancelToken();
+    _translationViewCubit.fetchImages(word, cancelToken: _cancelToken);
   }
 
   @override
@@ -69,7 +78,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
     return BlocBuilder<TranslationViewCubit, TranslationViewState>(
       builder: (context, state) {
         final MyTheme theme = Styles.theme(context);
-        final isInDarkMode = Theme.of(context).brightness == Brightness.dark;
+        final isInDarkMode = theme.brightness == Brightness.dark;
 
         return Scaffold(
           backgroundColor: theme.colors.background,
@@ -98,11 +107,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                 final sanitizedWord = removeQuotesFromString(removeSlashFromString(value)).trim();
                 if (sanitizedWord.isNotEmpty) {
                   if (sanitizedWord != state.imageSearchWord) {
-                    if (!_cancelToken.isCancelled) {
-                      _cancelToken.cancel();
-                    }
-                    _cancelToken = CancelToken();
-                    _translationViewCubit.fetchImages(sanitizedWord, cancelToken: _cancelToken);
+                    _submitNewSearch(sanitizedWord);
                   }
                 } else {
                   _textController.clear();
@@ -137,12 +142,48 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                     child: ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: images.length,
+                      itemCount: images.length + 1,
                       itemBuilder: (context, index) {
-                        final String imageSource = images[index];
+                        final word = state.imageSearchWord;
+                        final List<String> tags = [
+                          'meme',
+                          'meaning',
+                        ];
+                        final List<String> shownTags = tags.where((item) => word?.contains(item) == false).toList();
+
+                        if (index == 0) {
+                          if (word != null && shownTags.isNotEmpty) {
+                            String wordWithoutTags = word;
+                            for (var tag in tags) {
+                              wordWithoutTags = wordWithoutTags.replaceAll(RegExp('\\s?$tag'), '');
+                            }
+
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                              child: Wrap(
+                                children: [
+                                  for (var tag in shownTags)
+                                    Tag(
+                                      text: wordWithoutTags,
+                                      suffix: tag,
+                                      margin: const EdgeInsets.all(3),
+                                      onPressed: (tagWord) {
+                                        _submitNewSearch(tagWord);
+                                        _textController.text = tagWord;
+                                      },
+                                    ),
+                                ],
+                              ),
+                            );
+                          } else {
+                            return Container();
+                          }
+                        }
+
+                        final String imageSource = images[index - 1];
                         final bool isActive = state.translation?.image == imageSource;
                         return Container(
-                          key: isActive ? itemKey : Key(index.toString()),
+                          key: isActive ? itemKey : Key((index - 1).toString()),
                           color: isActive ? Styles.colors.grey.withOpacity(0.3) : Colors.transparent,
                           padding: const EdgeInsets.only(
                             top: 10,

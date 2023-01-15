@@ -17,7 +17,7 @@ class Settings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MyTheme theme = Styles.theme(context);
-    final isInDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final isInDarkMode = theme.brightness == Brightness.dark;
     Color appBarColor = isInDarkMode ? Styles.colors.fakeBlack : Styles.colors.paleGreyDark;
 
     return Scaffold(

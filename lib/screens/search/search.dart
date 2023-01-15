@@ -216,7 +216,7 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final MyTheme theme = Styles.theme(context);
-    final isInDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final isInDarkMode = theme.brightness == Brightness.dark;
 
     return GestureDetector(
       onTap: () {
