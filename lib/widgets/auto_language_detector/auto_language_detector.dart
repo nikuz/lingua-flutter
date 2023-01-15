@@ -82,39 +82,45 @@ class _AutoLanguageDetectorState extends State<AutoLanguageDetector> {
       return Container();
     }
 
-    final MyTheme theme = Styles.theme(context);
-
-    return Material(
-      type: MaterialType.transparency,
-      child: InkWell(
-        highlightColor: Styles.colors.white.withOpacity(0.1),
-        splashColor: Styles.colors.white.withOpacity(0.2),
-        onTap: () {
-          if (widget.onPressed is Function && _autoLanguage != null) {
-            widget.onPressed!(_autoLanguage!);
-          }
-        },
-        child: Container(
-          padding: widget.padding ?? const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 6,
-          ),
-          child: RichText(
-            text: TextSpan(
-              style: TextStyle(
-                color: widget.color ?? theme.colors.focus,
-                decoration: TextDecoration.underline,
+    return GestureDetector(
+      onTap: () {
+        if (widget.onPressed is Function && _autoLanguage != null) {
+          widget.onPressed!(_autoLanguage!);
+        }
+      },
+      child: Padding(
+        padding: widget.padding ?? const EdgeInsets.symmetric(
+          horizontal: 10,
+          vertical: 6,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: Icon(
+                Icons.auto_awesome,
+                color: widget.color ?? Styles.colors.pumpkin,
               ),
-              children: [
-                const TextSpan(text: 'Translate from "'),
-                TextSpan(
-                  text: _autoLanguage!.value,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const TextSpan(text: '"?'),
-              ],
             ),
-          ),
+            Expanded(
+              child: RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                    color: widget.color ?? Styles.colors.pumpkin,
+                  ),
+                  children: [
+                    const TextSpan(text: 'Translate from '),
+                    TextSpan(
+                      text: _autoLanguage!.value,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const TextSpan(text: '?'),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

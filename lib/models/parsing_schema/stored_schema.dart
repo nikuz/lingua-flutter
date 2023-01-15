@@ -21,6 +21,7 @@ class StoredParsingSchema {
     this.updatedAt,
   });
 
+  // TODO: check individual properties for existence in the "schemaJson", otherwise accessing missing properties throws error
   factory StoredParsingSchema.fromFirestore(Map<String, dynamic> snapshot, Map<String, dynamic> schemaJson) {
     return StoredParsingSchema(
       version: snapshot['version'],

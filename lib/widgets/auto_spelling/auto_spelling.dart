@@ -34,26 +34,39 @@ class AutoSpelling extends StatelessWidget {
             onPressed!(translation!.autoSpelling!);
           }
         },
-        child: Container(
+        child: Padding(
           padding: padding ?? const EdgeInsets.symmetric(
             horizontal: 10,
             vertical: 6,
           ),
-          child: RichText(
-            text: TextSpan(
-              style: TextStyle(
-                color: color ?? theme.colors.focus,
-                decoration: TextDecoration.underline,
-              ),
-              children: [
-                const TextSpan(text: 'Did you mean "'),
-                TextSpan(
-                  text: translation!.autoSpelling,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: Icon(
+                  Icons.auto_awesome,
+                  color: color ?? Styles.colors.pumpkin,
                 ),
-                const TextSpan(text: '"?'),
-              ],
-            ),
+              ),
+              Expanded(
+                child: RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      color: color ?? Styles.colors.pumpkin,
+                    ),
+                    children: [
+                      const TextSpan(text: 'Did you mean '),
+                      TextSpan(
+                        text: translation!.autoSpelling,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const TextSpan(text: '?'),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

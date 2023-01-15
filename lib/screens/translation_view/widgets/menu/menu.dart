@@ -82,6 +82,11 @@ List<Widget> translationViewMenuConstructor({
       itemBuilder: (BuildContext context) {
         List<Menu> menuList = <Menu>[
           const Menu(
+            id: 'share',
+            title: 'Share',
+            icon: Icons.ios_share,
+          ),
+          const Menu(
             id: 'translation',
             icon: Icons.translate,
             title: 'Change Translation',
@@ -89,18 +94,12 @@ List<Widget> translationViewMenuConstructor({
         ];
 
         if (hasInternetConnection) {
-          menuList.insert(0, const Menu(
+          menuList.add(const Menu(
             id: 'image',
             title: 'Change Image',
             icon: Icons.image,
           ));
         }
-
-        menuList.add(const Menu(
-          id: 'share',
-          title: 'Share',
-          icon: Icons.ios_share,
-        ));
 
         if (!isNewWord) {
           menuList.add(const Menu(

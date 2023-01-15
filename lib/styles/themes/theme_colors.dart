@@ -8,6 +8,7 @@ class MyThemeColors {
   final Color focus;
   final Color background;
   final Color focusBackground;
+  final Color focusForeground;
   final Color cardBackground;
   final Color grey;
   final Color divider;
@@ -20,6 +21,7 @@ class MyThemeColors {
     required this.focus,
     required this.background,
     required this.focusBackground,
+    required this.focusForeground,
     required this.cardBackground,
     required this.grey,
     required this.divider,

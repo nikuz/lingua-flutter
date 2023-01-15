@@ -14,6 +14,7 @@ final myThemeDataDark = MyTheme(
     focus: myColors.green,
     background: myColors.fakeBlack,
     focusBackground: myColors.darkGrey,
+    focusForeground: myColors.pumpkin,
     cardBackground: myColors.darkGrey,
     grey: myColors.grey,
     divider: myColors.dividerLight,
