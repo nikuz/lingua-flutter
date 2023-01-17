@@ -24,30 +24,30 @@ Future<ImagesSession?> retrieveImagesSession({
 }) async {
   final sessionFile = await getImagesSessionFile();
 
-  // if (sessionFile.existsSync()) {
-  //   String? fileValue;
-  //   try {
-  //     fileValue = sessionFile.readAsStringSync();
-  //   } catch (err) {
-  //     sessionFile.deleteSync();
-  //   }
-  //
-  //   if (fileValue != null) {
-  //     final cookies = fileValue.split('\n');
-  //     bool cookiesExpired = false;
-  //
-  //     for (var item in cookies) {
-  //       final cookieItem = Cookie.fromSetCookieValue(item);
-  //       if (cookieItem.expires is! DateTime || DateTime.now().compareTo(cookieItem.expires!) >= 0) {
-  //         cookiesExpired = true;
-  //       }
-  //     }
-  //
-  //     if (!cookiesExpired) {
-  //       return ImagesSession(cookies: cookies);
-  //     }
-  //   }
-  // }
+  if (sessionFile.existsSync()) {
+    String? fileValue;
+    try {
+      fileValue = sessionFile.readAsStringSync();
+    } catch (err) {
+      sessionFile.deleteSync();
+    }
+
+    if (fileValue != null) {
+      final cookies = fileValue.split('\n');
+      bool cookiesExpired = false;
+
+      for (var item in cookies) {
+        final cookieItem = Cookie.fromSetCookieValue(item);
+        if (cookieItem.expires is! DateTime || DateTime.now().compareTo(cookieItem.expires!) >= 0) {
+          cookiesExpired = true;
+        }
+      }
+
+      if (!cookiesExpired) {
+        return ImagesSession(cookies: cookies);
+      }
+    }
+  }
 
   final RegExp signatureReg = RegExp(parsingSchema.images.fields.safeSearchSignatureRegExp);
   const requestIconModifier = '&tbs=isz:i';

@@ -29,12 +29,14 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
   final itemKey = GlobalKey();
   late TextEditingController _textController;
   CancelToken _cancelToken = CancelToken();
+  late String _text;
 
   @override
   void initState() {
     super.initState();
     _translationViewCubit = context.read<TranslationViewCubit>();
     _textController = TextEditingController();
+    _text = widget.word;
     final images = _translationViewCubit.state.images;
     if (images == null || images.isEmpty) {
       _translationViewCubit.fetchImages(widget.word, cancelToken: _cancelToken);
@@ -103,6 +105,11 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
               prefixAction: () {
                 AutoRouter.of(context).pop();
               },
+              onChanged: (text) {
+                setState(() {
+                  _text = text;
+                });
+              },
               onSubmitted: (String value) {
                 final sanitizedWord = removeQuotesFromString(removeSlashFromString(value)).trim();
                 if (sanitizedWord.isNotEmpty) {
@@ -149,7 +156,7 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                           'meme',
                           'meaning',
                         ];
-                        final List<String> shownTags = tags.where((item) => word?.contains(item) == false).toList();
+                        final List<String> shownTags = tags.where((item) => _text.contains(item) == false).toList();
 
                         if (index == 0) {
                           if (word != null && shownTags.isNotEmpty) {
@@ -170,6 +177,12 @@ class _TranslationViewImagePickerState extends State<TranslationViewImagePicker>
                                       onPressed: (tagWord) {
                                         _submitNewSearch(tagWord);
                                         _textController.text = tagWord;
+                                        _textController.selection = TextSelection.fromPosition(
+                                          TextPosition(offset: _textController.text.length),
+                                        );
+                                        setState(() {
+                                          _text = tagWord;
+                                        });
                                       },
                                     ),
                                 ],
