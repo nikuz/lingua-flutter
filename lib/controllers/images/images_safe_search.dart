@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lingua_flutter/providers/api.dart';
 import 'package:lingua_flutter/controllers/parsing_schemas.dart';
@@ -38,8 +39,11 @@ Future<bool> enableImagesSaveSearch({
     if (response.statusCode == 302) {
       sessionFile.writeAsStringSync(session.cookies.join('\n'));
       return true;
+    } else {
+      developer.log('-------- Error: Image safe search preference set returned non 302 response');
     }
   } on DioError catch (err) {
+    developer.log(err.toString());
     if (err.response?.statusCode == 302) {
       sessionFile.writeAsStringSync(session.cookies.join('\n'));
       return true;

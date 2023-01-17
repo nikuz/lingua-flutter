@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:developer' as developer;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lingua_flutter/providers/api.dart';
 import 'package:lingua_flutter/controllers/parsing_schemas.dart';
@@ -28,24 +29,25 @@ Future<ImagesSession?> retrieveImagesSession({
     String? fileValue;
     try {
       fileValue = sessionFile.readAsStringSync();
-    } catch (err) {
-      sessionFile.deleteSync();
-    }
-
-    if (fileValue != null) {
       final cookies = fileValue.split('\n');
       bool cookiesExpired = false;
 
-      for (var item in cookies) {
-        final cookieItem = Cookie.fromSetCookieValue(item);
-        if (cookieItem.expires is! DateTime || DateTime.now().compareTo(cookieItem.expires!) >= 0) {
-          cookiesExpired = true;
+      if (cookies.isEmpty) {
+        cookiesExpired = true;
+      } else {
+        for (var item in cookies) {
+          final cookieItem = Cookie.fromSetCookieValue(item);
+          if (cookieItem.expires is! DateTime || DateTime.now().compareTo(cookieItem.expires!) >= 0) {
+            cookiesExpired = true;
+          }
         }
       }
 
       if (!cookiesExpired) {
         return ImagesSession(cookies: cookies);
       }
+    } catch (err) {
+      sessionFile.deleteSync();
     }
   }
 
@@ -72,6 +74,7 @@ Future<ImagesSession?> retrieveImagesSession({
     responseData = response.data;
     responseCookies = response.headers['set-cookie'];
   } on DioError catch (err) {
+    developer.log(err.toString());
     if (!CancelToken.isCancel(err)) {
       throw CustomError(
         code: 500,
