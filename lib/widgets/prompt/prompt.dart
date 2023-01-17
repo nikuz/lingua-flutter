@@ -4,7 +4,7 @@ import 'package:lingua_flutter/widgets/modal/modal.dart';
 
 class Prompt {
   final BuildContext context;
-  final String title;
+  final String? title;
   final Widget? child;
   final bool withCancel;
   final VoidCallback acceptCallback;
@@ -12,7 +12,7 @@ class Prompt {
 
   const Prompt({
     required this.context,
-    required this.title,
+    this.title,
     this.child,
     this.withCancel = true,
     required this.acceptCallback,
@@ -20,26 +20,29 @@ class Prompt {
   });
 
   Future show() {
+    bool accepted = false;
+
     return Modal(
       context: context,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            margin: const EdgeInsets.only(
-              top: 5,
-              right: 5,
-              bottom: 10,
-              left: 5,
-            ),
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
+          if (title != null)
+            Container(
+              margin: const EdgeInsets.only(
+                top: 5,
+                right: 5,
+                bottom: 10,
+                left: 5,
+              ),
+              child: Text(
+                title!,
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
               ),
             ),
-          ),
 
           if (child != null)
             child!,
@@ -55,9 +58,6 @@ class Prompt {
                     child: TextButton(
                       onPressed: () {
                         Navigator.of(context, rootNavigator: true).pop(false);
-                        if (cancelCallback != null) {
-                          cancelCallback!();
-                        }
                       },
                       child: const Text('CANCEL'),
                     ),
@@ -65,6 +65,7 @@ class Prompt {
 
                 ElevatedButton(
                   onPressed: () {
+                    accepted = true;
                     Navigator.of(context, rootNavigator: true).pop(true);
                     acceptCallback();
                   },
@@ -75,6 +76,10 @@ class Prompt {
           ),
         ],
       ),
-    ).show();
+    ).show().then((value) {
+      if (cancelCallback != null && !accepted) {
+        cancelCallback!();
+      }
+    });
   }
 }

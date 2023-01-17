@@ -4,6 +4,8 @@ import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/providers/db.dart';
 
+import './constants.dart';
+
 Future<TranslationList> getList(int from, int to) async {
   const countColumnName = 'COUNT(id)';
   final results = await DBProvider().batchQuery([
@@ -11,7 +13,7 @@ Future<TranslationList> getList(int from, int to) async {
       type: 'rawQuery',
       query: '''
         SELECT id, word, pronunciationFrom, pronunciationTo, translation, image, translate_from, translate_to, created_at, updated_at
-        FROM dictionary
+        FROM ${DictionaryControllerConstants.databaseTableName}
         ORDER BY created_at DESC
         LIMIT ? OFFSET ?;
       ''',
@@ -19,7 +21,7 @@ Future<TranslationList> getList(int from, int to) async {
     ),
     const BatchQueryRequest(
       type: 'rawQuery',
-      query: 'SELECT $countColumnName FROM dictionary',
+      query: 'SELECT $countColumnName FROM ${DictionaryControllerConstants.databaseTableName}',
     )
   ]);
 
@@ -46,7 +48,7 @@ Future<TranslationList> getList(int from, int to) async {
 
 Future<int> getListLength() async {
   const countColumnName = 'COUNT(id)';
-  final results = await DBProvider().rawQuery('SELECT $countColumnName FROM dictionary');
+  final results = await DBProvider().rawQuery('SELECT $countColumnName FROM ${DictionaryControllerConstants.databaseTableName}');
 
   if (results.isEmpty) {
     return 0;

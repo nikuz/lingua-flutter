@@ -172,7 +172,7 @@ class Button extends StatelessWidget {
                           height: loadingSize,
                           padding: padding,
                           child: CircularProgressIndicator(
-                            backgroundColor: elevated ? Styles.colors.white : textColor,
+                            color: elevated ? Styles.colors.white : textColor,
                             strokeWidth: 3,
                           ),
                         ),

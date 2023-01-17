@@ -80,16 +80,9 @@ Future<StoredParsingSchema?> get(String versionName, { bool? forceUpdate }) asyn
 
   // store schema with "schema.version" name
   parsingSchemas[schema.version] = schema;
-  final file = File('$schemasPath/${schema.version}');
+  File file = File('$schemasPath/${schema.version}');
+  file = await file.create(recursive: true);
   await file.writeAsString(schemaDataJson);
-
-  // if "current" schema was retrieved, then it's version will not match the "versionName" variable it was requested with,
-  // so we also store file with "versionName" file name
-  if (versionName != schema.version) {
-    parsingSchemas[versionName] = schema;
-    final file = File('$schemasPath/$versionName');
-    await file.writeAsString(schemaDataJson);
-  }
 
   return schema;
 }

@@ -3,9 +3,11 @@ import 'package:lingua_flutter/models/error.dart';
 import 'package:lingua_flutter/providers/db.dart';
 import 'package:lingua_flutter/utils/files.dart';
 
+import './constants.dart';
+
 Future<void> removeItem(int id) async {
   final List<dynamic> dbResponse = await DBProvider().rawQuery(
-    'SELECT * FROM dictionary WHERE id=?;',
+    'SELECT * FROM ${DictionaryControllerConstants.databaseTableName} WHERE id=?;',
     [id],
   );
 
@@ -31,5 +33,5 @@ Future<void> removeItem(int id) async {
     pronunciationTo.deleteSync();
   }
 
-  await DBProvider().rawDelete('DELETE FROM dictionary WHERE id=?;', [id]);
+  await DBProvider().rawDelete('DELETE FROM ${DictionaryControllerConstants.databaseTableName} WHERE id=?;', [id]);
 }

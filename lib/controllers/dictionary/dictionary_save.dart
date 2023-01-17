@@ -11,6 +11,7 @@ import 'package:lingua_flutter/utils/json.dart';
 import './dictionary_get.dart';
 import './dictionary_update.dart';
 import './dictionary_utils.dart';
+import './constants.dart';
 
 Future<void> save(TranslationContainer translation) async {
   final TranslationContainer? alreadyExists = await get(
@@ -29,7 +30,7 @@ Future<void> save(TranslationContainer translation) async {
   // populate db with initial data
   await DBProvider().rawQuery(
     '''
-    INSERT INTO dictionary (
+    INSERT INTO ${DictionaryControllerConstants.databaseTableName} (
       word, 
       translation, 
       raw, 
@@ -104,7 +105,7 @@ Future<void> save(TranslationContainer translation) async {
       // update db
       await DBProvider().rawQuery(
         '''
-        UPDATE dictionary 
+        UPDATE ${DictionaryControllerConstants.databaseTableName} 
         SET image=?, pronunciationFrom=?, pronunciationTo=? 
         WHERE id=$newTranslationId;
         ''',
@@ -115,7 +116,7 @@ Future<void> save(TranslationContainer translation) async {
         ],
       );
     } catch (err) {
-      await DBProvider().rawDelete('DELETE FROM dictionary WHERE id=?;', [newTranslationId]);
+      await DBProvider().rawDelete('DELETE FROM ${DictionaryControllerConstants.databaseTableName} WHERE id=?;', [newTranslationId]);
       rethrow;
     }
   } else {

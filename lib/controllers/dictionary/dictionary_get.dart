@@ -4,9 +4,11 @@ import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/providers/db.dart';
 import 'package:lingua_flutter/utils/json.dart';
 
+import './constants.dart';
+
 Future<TranslationContainer?> get(String word, String translateFrom, String translateTo) async {
   final dbResponse = await DBProvider().rawQuery(
-    'SELECT * FROM dictionary WHERE word=? AND translate_from_code=? AND translate_to_code=?;',
+    'SELECT * FROM ${DictionaryControllerConstants.databaseTableName} WHERE word=? AND translate_from_code=? AND translate_to_code=?;',
     [word, translateFrom, translateTo],
   );
 

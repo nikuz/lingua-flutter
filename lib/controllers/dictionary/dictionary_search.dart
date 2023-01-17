@@ -5,6 +5,8 @@ import 'package:lingua_flutter/models/language.dart';
 import 'package:lingua_flutter/providers/db.dart';
 import 'package:lingua_flutter/utils/string.dart';
 
+import './constants.dart';
+
 Future<TranslationList> search(String searchText, int from, int to) async {
   searchText = removeQuotesFromString(removeSlashFromString(searchText));
   final searchPattern = '%$searchText%';
@@ -17,7 +19,7 @@ Future<TranslationList> search(String searchText, int from, int to) async {
       type: 'rawQuery',
       query: '''
         SELECT id, word, pronunciationFrom, pronunciationTo, translation, image, translate_from, translate_to, created_at, updated_at
-        FROM dictionary
+        FROM ${DictionaryControllerConstants.databaseTableName}
         WHERE
           word LIKE '$searchPattern'
           OR translation LIKE '$searchPattern'
@@ -40,7 +42,7 @@ Future<TranslationList> search(String searchText, int from, int to) async {
     BatchQueryRequest(
       type: 'rawQuery',
       query: '''
-        SELECT $countColumnName FROM dictionary
+        SELECT $countColumnName FROM ${DictionaryControllerConstants.databaseTableName}
         WHERE
           word LIKE '$searchPattern'
           OR translation LIKE '$searchPattern'

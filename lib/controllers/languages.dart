@@ -80,7 +80,8 @@ Future<Map<String, String>?> get({ bool? forceUpdate }) async {
   }
 
   final languagesPath = await _getLanguagesPath();
-  final file = File('$languagesPath/languages');
+  File file = File('$languagesPath/languages');
+  file = await file.create(recursive: true);
   await file.writeAsString(await jsonEncodeIsolate(languagesRawData));
 
   languages.clear();

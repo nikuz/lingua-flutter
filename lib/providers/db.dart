@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 
+export 'package:sqflite/sqflite.dart' show Database;
+
 class DBProvider {
   static Database? _db;
   static final DBProvider instance = DBProvider._privateConstructor();

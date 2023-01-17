@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'package:archive/archive_io.dart';
 import 'package:lingua_flutter/providers/db.dart';
 import 'package:lingua_flutter/utils/files.dart';
+import 'package:lingua_flutter/controllers/parsing_schemas.dart' as parsing_schemas_controller;
 
 import './constants.dart';
 import './utils.dart';
@@ -43,6 +44,8 @@ Future<void> restore(String backupFilePath) async {
   if (restoreIsSuccessful is! bool) {
     throw 'Can\'t restore backup from provided file';
   }
+
+  await parsing_schemas_controller.preload();
 }
 
 Future<void> _restoreFilesFromBackupArchive(DecodeBackupArchiveParams params) async {
@@ -57,15 +60,20 @@ Future<void> _restoreFilesFromBackupArchive(DecodeBackupArchiveParams params) as
   InputFileStream input = InputFileStream(params.backupFilePath);
   final files = TarDecoder().decodeBuffer(input);
   for (var file in files) {
-    bool isValid = true;
-    for (var dir in assetsDirectories) {
-      if (!file.name.contains(dir)) {
-        isValid = false;
+    final isDatabaseFile = file.name.contains('SQLITE3');
+    bool isValid = isDatabaseFile;
+
+    if (!isDatabaseFile) {
+      for (var dir in assetsDirectories) {
+        if (file.name.contains(dir)) {
+          isValid = true;
+          break;
+        }
       }
     }
+
     if (isValid && file.isFile) {
       String filePath = '${params.documentsPath}${file.name}';
-      final isDatabaseFile = file.name.contains('SQLITE3');
       if (isDatabaseFile) {
         filePath = '${params.dbPath}${file.name}';
       }

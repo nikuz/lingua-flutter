@@ -5,16 +5,23 @@ import 'package:lingua_flutter/widgets/snack_bar/snack_bar.dart';
 import 'package:lingua_flutter/widgets/prompt/prompt.dart';
 import 'package:lingua_flutter/utils/time.dart';
 import 'package:lingua_flutter/controllers/backup/backup.dart' as backup_controller;
+import 'package:lingua_flutter/controllers/dictionary/dictionary.dart' as dictionary_controller;
+import 'package:lingua_flutter/styles/styles.dart';
 
 import '../../bloc/settings_cubit.dart';
 import '../../bloc/settings_state.dart';
 import '../category/category.dart';
 import '../row/row.dart';
 
-class SettingsBackup extends StatelessWidget {
+class SettingsBackup extends StatefulWidget {
   const SettingsBackup({super.key});
 
-  void _backupHandler(BuildContext context) {
+  @override
+  State<SettingsBackup> createState() => _SettingsBackupState();
+}
+
+class _SettingsBackupState extends State<SettingsBackup> {
+  void _backupHandler() {
     context.read<SettingsCubit>().createBackup().then((result) {
       if (result != null) {
         String message = 'Backup is saved successfully';
@@ -34,54 +41,98 @@ class SettingsBackup extends StatelessWidget {
     });
   }
 
-  void _restoreHandler(BuildContext context, String? backupFileIdentifier) async {
+  void _restoreHandler(backup_controller.BackupInfo backupInfo) async {
     final settingsState = context.read<SettingsCubit>();
-    String? backupFilePath;
+    settingsState.setRestoreBackupLoading(true);
+
+    if (backupInfo.filePath != null) {
+      settingsState.restoreBackup(backupInfo.filePath!).then((result) {
+        settingsState.setRestoreBackupLoading(false);
+        if (result != null) {
+          String message = 'Words are restored from the backup';
+          CustomSnackBarType messageType = CustomSnackBarType.success;
+
+          if (!result) {
+            message = 'Cannot restore words from the backup';
+            messageType = CustomSnackBarType.error;
+          }
+
+          CustomSnackBar(
+            context: context,
+            message: message,
+            type: messageType,
+          ).show();
+        }
+      });
+    }
+  }
+
+  void _prepareRestore(String? backupFileIdentifier) async {
+    final settingsState = context.read<SettingsCubit>();
+    final MyTheme theme = Styles.theme(context);
+    backup_controller.BackupInfo? backupInfo;
 
     settingsState.setRestoreBackupLoading(true);
 
     try {
-      backupFilePath = await backup_controller.getBackupFilePath(backupFileIdentifier);
+      backupInfo = await backup_controller.getBackupFileInfo(backupFileIdentifier);
     } catch (err) {
-      settingsState.setRestoreBackupLoading(false);
       CustomSnackBar(
         context: context,
         message: err.toString(),
         type: CustomSnackBarType.error,
       ).show();
-      return;
     }
 
-    if (backupFilePath != null) {
-      Prompt(
-        context: context,
-        title: 'Your current list of words will be replaced with the words from the backup. Is that okay?',
-        acceptCallback: () {
-          settingsState.restoreBackup(backupFilePath!).then((result) {
-            if (result != null) {
-              String message = 'Words are restored from the backup';
-              CustomSnackBarType messageType = CustomSnackBarType.success;
+    settingsState.setRestoreBackupLoading(false);
 
-              if (!result) {
-                message = 'Cannot restore words from the backup';
-                messageType = CustomSnackBarType.error;
-              }
+    if (backupInfo != null && backupInfo.filePath != null) {
+      final amountOfSavedWords = await dictionary_controller.getListLength();
 
-              CustomSnackBar(
-                context: context,
-                message: message,
-                type: messageType,
-              ).show();
-            }
-          });
-        },
-        cancelCallback: () async {
-          settingsState.setRestoreBackupLoading(false);
-          await backup_controller.removeTemporaryBackupFile(backupFilePath!);
+      if (amountOfSavedWords > 0) {
+        Prompt(
+          context: context,
+          child: Container(
+            margin: const EdgeInsets.only(
+              top: 5,
+              right: 5,
+              bottom: 10,
+              left: 5,
+            ),
+            child: RichText(
+              text: TextSpan(
+                style: TextStyle(
+                  fontSize: 18,
+                  color: theme.colors.primary,
+                ),
+                children: [
+                  const TextSpan(text: 'Your current list of '),
+                  TextSpan(
+                    text: '$amountOfSavedWords',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(text: ' word${amountOfSavedWords > 1 ? 's' : ''} will be replaced with '),
+                  TextSpan(
+                    text: '${backupInfo.wordsAmount}',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(text: ' word${backupInfo.wordsAmount > 1 ? 's' : ''} from the backup. Is that okay?'),
+                ],
+              ),
+            ),
+          ),
+          acceptCallback: () {
+            _restoreHandler(backupInfo!);
+          },
+          cancelCallback: () async {
+            await backup_controller.removeTemporaryBackupFile(backupInfo!.filePath!);
+          },
+        ).show();
+      } else {
+        if (mounted) {
+          _restoreHandler(backupInfo);
         }
-      ).show();
-    } else {
-      settingsState.setRestoreBackupLoading(false);
+      }
     }
   }
 
@@ -109,7 +160,7 @@ class SettingsBackup extends StatelessWidget {
                     shape: ButtonShape.oval,
                     loading: state.backupCreateLoading,
                     margin: const EdgeInsets.symmetric(vertical: 10),
-                    onPressed: () => _backupHandler(context),
+                    onPressed: () => _backupHandler(),
                   ),
                 ),
               ],
@@ -124,10 +175,9 @@ class SettingsBackup extends StatelessWidget {
                     icon: Icons.settings_backup_restore,
                     iconSize: 30,
                     shape: ButtonShape.oval,
-                    // outlined: false,
                     loading: state.backupRestoreLoading,
                     margin: const EdgeInsets.symmetric(vertical: 10),
-                    onPressed: () => _restoreHandler(context, state.backupFileIdentifier),
+                    onPressed: () => _prepareRestore(state.backupFileIdentifier),
                   ),
                 ),
               ],

@@ -107,7 +107,8 @@ Future<ImagesSession?> retrieveImagesSession({
 
 Future<File> getImagesSessionFile() async {
   final documentsPath = await getDocumentsPath();
-  return File('${documentsPath}images_cookies.txt');
+  File file = File('${documentsPath}images_cookies.txt');
+  return await file.create(recursive: true);
 }
 
 void increaseImagesSessionRetrievalFailingAttemptsCounter() async {

@@ -1,11 +1,13 @@
 import 'package:lingua_flutter/providers/db.dart';
 
+import './constants.dart';
+
 Future<void> init() async {
   await DBProvider().batchQuery([
     const BatchQueryRequest(
       type: 'rawQuery',
       query: '''
-        CREATE TABLE IF NOT EXISTS dictionary (
+        CREATE TABLE IF NOT EXISTS ${DictionaryControllerConstants.databaseTableName} (
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         word VARCHAR NOT NULL COLLATE NOCASE,
         pronunciationFrom VARCHAR,
@@ -27,7 +29,7 @@ Future<void> init() async {
       type: 'rawQuery',
       query: '''
         CREATE INDEX IF NOT EXISTS dictionary_index
-        ON dictionary(word, translation)
+        ON ${DictionaryControllerConstants.databaseTableName}(word, translation)
       ''',
     )
   ]);

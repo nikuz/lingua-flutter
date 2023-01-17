@@ -12,6 +12,7 @@ import 'package:lingua_flutter/models/media_source.dart';
 
 import './dictionary_get.dart';
 import './dictionary_utils.dart';
+import './constants.dart';
 
 Future<void> update(TranslationContainer translation) async {
   final TranslationContainer? translationData = await get(
@@ -50,6 +51,7 @@ Future<void> update(TranslationContainer translation) async {
         imageUrl = '/images/$fileId.$extension';
 
         image = File('$dir$imageUrl');
+        image = await image.create(recursive: true);
         await image.writeAsBytes(imageBytes);
 
         // remove image from low level flutter imageCache
@@ -87,7 +89,7 @@ Future<void> update(TranslationContainer translation) async {
   // update db
   await DBProvider().rawQuery(
     '''
-      UPDATE dictionary 
+      UPDATE ${DictionaryControllerConstants.databaseTableName} 
       SET translation=?, updated_at=datetime("now"), schema_version=? $imageTransaction $pronunciationToTransaction
       WHERE id=$translationId;
     ''',
