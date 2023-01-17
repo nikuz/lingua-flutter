@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/models/translation.dart';
 import 'package:lingua_flutter/models/error.dart';
 import 'package:lingua_flutter/models/language.dart';
-import 'package:lingua_flutter/controllers/local_translation.dart' as local_translate_controller;
+import 'package:lingua_flutter/controllers/dictionary/dictionary.dart' as dictionary_controller;
 import 'package:lingua_flutter/controllers/cloud_translation.dart' as cloud_translate_controller;
 import 'package:lingua_flutter/controllers/images/images.dart' as images_controller;
 import 'package:lingua_flutter/controllers/pronunciation.dart' as pronunciation_controller;
@@ -190,7 +190,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         );
       }
 
-      await local_translate_controller.save(translation);
+      await dictionary_controller.save(translation);
 
       emit(state.copyWith(
         updateLoading: false,
@@ -226,7 +226,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         );
       }
 
-      await local_translate_controller.update(translation);
+      await dictionary_controller.update(translation);
 
       emit(state.copyWith(
         updateLoading: false,

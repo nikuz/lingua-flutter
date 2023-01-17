@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import './firebase_options.dart';
-import './controllers/local_translation.dart' as local_translate_controller;
+import './controllers/dictionary/dictionary.dart' as dictionary_controller;
 import './controllers/parsing_schemas.dart' as parsing_schemas_controller;
 import './controllers/languages.dart' as languages_controller;
 import './providers/audio.dart';
@@ -19,7 +19,7 @@ void main() async {
   initiateErrorLogger();
 
   // initiate controllers
-  local_translate_controller.init();
+  dictionary_controller.init();
 
   // preload parsing schemas and languages
   await parsing_schemas_controller.preload();

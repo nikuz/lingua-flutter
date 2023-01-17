@@ -11,7 +11,7 @@ import 'package:lingua_flutter/widgets/snack_bar/snack_bar.dart';
 import 'package:lingua_flutter/widgets/auto_language_detector/auto_language_detector.dart';
 import 'package:lingua_flutter/widgets/auto_spelling/auto_spelling.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
-import 'package:lingua_flutter/controllers/local_translation.dart' as local_translate_controller;
+import 'package:lingua_flutter/controllers/dictionary/dictionary.dart' as dictionary_controller;
 import 'package:lingua_flutter/app_config.dart' as config;
 
 import '../../bloc/translation_view_cubit.dart';
@@ -51,7 +51,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
   void _showRateUsModal() async {
     const settingName = 'askToRateUs';
     if (_prefs != null && _prefs!.getBool(settingName) != true) {
-      final amountOfSavedWords = await local_translate_controller.getListLength();
+      final amountOfSavedWords = await dictionary_controller.getListLength();
       if (amountOfSavedWords > config.wordsAmountRateThreshold) {
         _prefs!.setBool(settingName, true);
         final inAppReview = InAppReview.instance;

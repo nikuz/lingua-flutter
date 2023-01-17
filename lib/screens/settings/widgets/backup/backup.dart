@@ -4,7 +4,7 @@ import 'package:lingua_flutter/widgets/button/button.dart';
 import 'package:lingua_flutter/widgets/snack_bar/snack_bar.dart';
 import 'package:lingua_flutter/widgets/prompt/prompt.dart';
 import 'package:lingua_flutter/utils/time.dart';
-import 'package:lingua_flutter/controllers/backup.dart' as backup_controller;
+import 'package:lingua_flutter/controllers/backup/backup.dart' as backup_controller;
 
 import '../../bloc/settings_cubit.dart';
 import '../../bloc/settings_state.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lingua_flutter/controllers/local_translation.dart' as local_translate_controller;
+import 'package:lingua_flutter/controllers/dictionary/dictionary.dart' as dictionary_controller;
 import 'package:lingua_flutter/controllers/cloud_translation.dart' as cloud_translate_controller;
 import 'package:lingua_flutter/models/error.dart';
 import 'package:lingua_flutter/models/translation.dart';
@@ -26,9 +26,9 @@ class SearchCubit extends Cubit<SearchState> {
       TranslationList translationList;
 
       if (searchText != null) {
-        translationList = await local_translate_controller.search(searchText, from, to);
+        translationList = await dictionary_controller.search(searchText, from, to);
       } else {
-        translationList = await local_translate_controller.getList(from, to);
+        translationList = await dictionary_controller.getList(from, to);
       }
 
       List<TranslationContainer> translations = [];
@@ -111,7 +111,7 @@ class SearchCubit extends Cubit<SearchState> {
 
   void removeTranslation(int id) async {
     try {
-      await local_translate_controller.removeItem(id);
+      await dictionary_controller.removeItem(id);
       List<TranslationContainer> translationsClone = [...state.translations];
       int to = state.to;
       int totalAmount = state.totalAmount;
@@ -147,26 +147,6 @@ class SearchCubit extends Cubit<SearchState> {
     emit(state.copyWith(
       translations: translationsClone,
     ));
-  }
-
-  void clearDatabase() async {
-    emit(state.copyWith(
-      loading: true,
-    ));
-    try {
-      await local_translate_controller.clearDatabase();
-      emit(state.copyWith(
-        loading: false,
-        error: const Wrapped.value(null),
-      ));
-    } catch (err, stack) {
-      handleError(state.copyWith(
-        error: Wrapped.value(CustomError(
-          message: err.toString(),
-        )),
-        loading: false,
-      ), err, stack);
-    }
   }
 
   void handleError(state, err, stack) {

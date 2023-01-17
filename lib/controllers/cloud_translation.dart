@@ -1,6 +1,6 @@
 import 'package:lingua_flutter/providers/api.dart';
 import 'package:lingua_flutter/controllers/parsing_schemas.dart' as parsing_schemas_controller;
-import 'package:lingua_flutter/controllers/local_translation.dart' as local_translate_controller;
+import 'package:lingua_flutter/controllers/dictionary/dictionary.dart' as dictionary_controller;
 import 'package:lingua_flutter/utils/json.dart';
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
@@ -20,7 +20,7 @@ Future<TranslationContainer> translate({
   // if "forceCurrentSchemaDownload" set to true, then local retrieving and parsing has already failed,
   // so we want to refresh the locally stored "current" parsing schema and translate this word from scratch
   if (forceCurrentSchemaDownload == null) {
-    final existingTranslation = await local_translate_controller.get(
+    final existingTranslation = await dictionary_controller.get(
       encodedWord,
       translateFrom.id,
       translateTo.id,
