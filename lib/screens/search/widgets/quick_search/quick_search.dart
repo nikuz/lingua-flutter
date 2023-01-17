@@ -171,6 +171,11 @@ class _QuickSearchState extends State<QuickSearch> {
           onPressed: (autoSpelling) {
             searchState?.textController.text = autoSpelling;
             _searchCubit.fetchTranslations(searchText: autoSpelling);
+            if (searchState?.textController != null) {
+              searchState!.textController.selection = TextSelection.fromPosition(
+                TextPosition(offset: searchState.textController.text.length),
+              );
+            }
           },
         ),
 
