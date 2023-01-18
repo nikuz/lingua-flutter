@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:lingua_flutter/providers/api.dart';
+import 'package:lingua_flutter/controllers/api/api.dart';
 
 class TranslationViewInheritedState extends InheritedWidget {
   final GlobalKey headerKey;

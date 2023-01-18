@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lingua_flutter/styles/styles.dart';
-import 'package:lingua_flutter/models/language.dart';
-import 'package:lingua_flutter/controllers/languages.dart' as languages_controller;
+import 'package:lingua_flutter/models/language/language.dart';
+import 'package:lingua_flutter/controllers/language/language.dart' as languages_controller;
 import 'package:lingua_flutter/widgets/button/button.dart';
 
 import './language_selector_item.dart';

@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart' as painting;
-import 'package:lingua_flutter/models/translation.dart';
-import 'package:lingua_flutter/models/error.dart';
-import 'package:lingua_flutter/providers/db.dart';
+import 'package:lingua_flutter/models/translation_container/translation_container.dart';
+import 'package:lingua_flutter/models/error/error.dart';
+import 'package:lingua_flutter/controllers/database/database.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/regexp.dart';
-import 'package:lingua_flutter/models/media_source.dart';
+import 'package:lingua_flutter/models/media_source/media_source.dart';
 
 import './dictionary_get.dart';
 import './dictionary_utils.dart';

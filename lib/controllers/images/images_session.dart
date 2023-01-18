@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'dart:developer' as developer;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:lingua_flutter/providers/api.dart';
-import 'package:lingua_flutter/controllers/parsing_schemas.dart';
+import 'package:lingua_flutter/controllers/api/api.dart';
+import 'package:lingua_flutter/controllers/parsing_schema/parsing_schema.dart';
 import 'package:lingua_flutter/utils/files.dart';
-import 'package:lingua_flutter/models/error.dart';
+import 'package:lingua_flutter/models/error/error.dart';
 
 import './constants.dart';
 

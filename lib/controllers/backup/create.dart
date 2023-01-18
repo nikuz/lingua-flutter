@@ -3,7 +3,7 @@ import 'dart:isolate';
 import 'dart:developer' as developer;
 import 'package:archive/archive_io.dart';
 import 'package:file_picker_writable/file_picker_writable.dart';
-import 'package:lingua_flutter/providers/db.dart';
+import 'package:lingua_flutter/controllers/database/database.dart';
 import 'package:lingua_flutter/utils/files.dart';
 
 import './constants.dart';

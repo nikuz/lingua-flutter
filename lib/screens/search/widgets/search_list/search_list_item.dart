@@ -5,7 +5,7 @@ import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/widgets/prompt/prompt.dart';
 import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
 import 'package:lingua_flutter/widgets/image_preview/image_preview.dart';
-import 'package:lingua_flutter/models/translation.dart';
+import 'package:lingua_flutter/models/translation_container/translation_container.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_state.dart';
 

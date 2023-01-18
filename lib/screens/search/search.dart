@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:lingua_flutter/providers/connectivity.dart';
+import 'package:lingua_flutter/controllers/connectivity/connectivity.dart';
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/utils/regexp.dart';
-import 'package:lingua_flutter/models/translation.dart';
-import 'package:lingua_flutter/models/language.dart';
+import 'package:lingua_flutter/models/translation_container/translation_container.dart';
+import 'package:lingua_flutter/models/language/language.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_state.dart';
+import 'package:lingua_flutter/widgets/snack_bar/snack_bar.dart';
 
 import './bloc/search_cubit.dart';
 import './bloc/search_state.dart';
@@ -66,6 +67,8 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _getInternetConnectionStatus();
+    } else {
+      CustomSnackBar.dismiss(context);
     }
   }
 

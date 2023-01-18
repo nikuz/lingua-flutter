@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:lingua_flutter/providers/error_logger.dart';
+import 'package:lingua_flutter/controllers/error_logger/error_logger.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/json.dart';
 import 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';

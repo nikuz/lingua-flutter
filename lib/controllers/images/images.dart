@@ -1,18 +1,18 @@
 import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
-import 'package:lingua_flutter/providers/api.dart';
-import 'package:lingua_flutter/controllers/parsing_schemas.dart';
-import 'package:lingua_flutter/controllers/parsing_schemas.dart' as parsing_schemas_controller;
+import 'package:lingua_flutter/controllers/api/api.dart';
+import 'package:lingua_flutter/controllers/parsing_schema/parsing_schema.dart' show StoredParsingSchema, ParsingSchema;
+import 'package:lingua_flutter/controllers/parsing_schema/parsing_schema.dart' as parsing_schema_controller;
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/utils/convert.dart';
-import 'package:lingua_flutter/models/error.dart';
+import 'package:lingua_flutter/models/error/error.dart';
 
 import './images_session.dart';
 import './images_safe_search.dart';
 
 Future<List<String>?> search(String word, CancelToken? cancelToken) async {
   final encodedWord = removeQuotesFromString(removeSlashFromString(word));
-  StoredParsingSchema? storedParsingSchema = await parsing_schemas_controller.get('current');
+  StoredParsingSchema? storedParsingSchema = await parsing_schema_controller.get('current');
 
   if (storedParsingSchema == null) {
     throw const CustomError(

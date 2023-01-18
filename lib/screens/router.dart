@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:lingua_flutter/models/translation.dart';
+import 'package:lingua_flutter/models/translation_container/translation_container.dart';
 
 import './root.dart';
 import './landing/landing.dart';

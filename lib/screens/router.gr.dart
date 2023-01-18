@@ -14,8 +14,8 @@
 import 'package:auto_route/auto_route.dart' as _i9;
 import 'package:flutter/material.dart' as _i10;
 
-import '../models/language.dart' as _i12;
-import '../models/translation.dart' as _i11;
+import '../models/language/language.dart' as _i12;
+import '../models/translation_container/translation_container.dart' as _i11;
 import 'games/games.dart' as _i7;
 import 'landing/landing.dart' as _i1;
 import 'root.dart' as _i2;

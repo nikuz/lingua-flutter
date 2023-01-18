@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'package:lingua_flutter/providers/db.dart';
 import 'package:lingua_flutter/utils/files.dart';
+import 'package:lingua_flutter/controllers/database/database.dart';
 
 import './dictionary_init.dart';
 import './constants.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:lingua_flutter/models/language.dart';
-import 'package:lingua_flutter/models/translation.dart';
+import 'package:lingua_flutter/models/language/language.dart';
+import 'package:lingua_flutter/models/translation_container/translation_container.dart';
 
 class SearchInheritedState extends InheritedWidget {
   final TextEditingController textController;

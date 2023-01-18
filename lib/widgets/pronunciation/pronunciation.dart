@@ -3,10 +3,10 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:lingua_flutter/providers/audio.dart';
+import 'package:lingua_flutter/controllers/audio/audio.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/convert.dart';
-import 'package:lingua_flutter/models/media_source.dart';
+import 'package:lingua_flutter/models/media_source/media_source.dart';
 import 'package:lingua_flutter/widgets/button/button.dart';
 
 class PronunciationWidget extends StatefulWidget {

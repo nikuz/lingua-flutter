@@ -1,6 +1,6 @@
 import 'dart:core';
 import 'package:dio/dio.dart';
-import 'package:lingua_flutter/models/error.dart';
+import 'package:lingua_flutter/models/error/error.dart';
 
 export 'package:dio/dio.dart' show Options, ResponseType, CancelToken, DioError;
 

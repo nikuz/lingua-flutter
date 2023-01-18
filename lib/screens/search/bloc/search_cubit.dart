@@ -1,13 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/controllers/dictionary/dictionary.dart' as dictionary_controller;
-import 'package:lingua_flutter/controllers/cloud_translation.dart' as cloud_translate_controller;
-import 'package:lingua_flutter/models/error.dart';
-import 'package:lingua_flutter/models/translation.dart';
-import 'package:lingua_flutter/models/translation_list.dart';
-import 'package:lingua_flutter/models/language.dart';
+import 'package:lingua_flutter/controllers/cloud_translation/cloud_translation.dart' as cloud_translate_controller;
+import 'package:lingua_flutter/models/error/error.dart';
+import 'package:lingua_flutter/models/translation_container/translation_container.dart';
+import 'package:lingua_flutter/models/translation_container/translation_list.dart';
+import 'package:lingua_flutter/models/language/language.dart';
 import 'package:lingua_flutter/utils/types.dart';
-import 'package:lingua_flutter/providers/error_logger.dart';
-import 'package:lingua_flutter/providers/api.dart';
+import 'package:lingua_flutter/controllers/error_logger/error_logger.dart';
+import 'package:lingua_flutter/controllers/api/api.dart';
 
 import '../search_constants.dart';
 import 'search_state.dart';

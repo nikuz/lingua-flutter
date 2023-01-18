@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:lingua_flutter/providers/error_logger.dart';
+import 'package:lingua_flutter/controllers/error_logger/error_logger.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/json.dart';
-import 'package:lingua_flutter/models/error.dart';
+import 'package:lingua_flutter/models/error/error.dart';
 
 final Map<String, String> languages = {};
 

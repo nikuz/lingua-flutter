@@ -1,4 +1,4 @@
-import 'package:lingua_flutter/providers/db.dart';
+import 'package:lingua_flutter/controllers/database/database.dart';
 
 import './constants.dart';
 

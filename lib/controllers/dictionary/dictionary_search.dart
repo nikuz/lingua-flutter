@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:lingua_flutter/models/translation_list.dart';
-import 'package:lingua_flutter/models/translation.dart';
-import 'package:lingua_flutter/models/language.dart';
-import 'package:lingua_flutter/providers/db.dart';
+import 'package:lingua_flutter/models/translation_container/translation_container.dart';
+import 'package:lingua_flutter/models/translation_container/translation_list.dart';
+import 'package:lingua_flutter/models/language/language.dart';
+import 'package:lingua_flutter/controllers/database/database.dart';
 import 'package:lingua_flutter/utils/string.dart';
 
 import './constants.dart';

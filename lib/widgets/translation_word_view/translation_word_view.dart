@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lingua_flutter/models/translation.dart';
+import 'package:lingua_flutter/models/translation_container/translation_container.dart';
 
 class TranslationWordView extends StatelessWidget {
   final TranslationContainer translation;

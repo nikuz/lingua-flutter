@@ -1,12 +1,12 @@
-import 'package:lingua_flutter/providers/api.dart';
-import 'package:lingua_flutter/controllers/parsing_schemas.dart' as parsing_schemas_controller;
+import 'package:lingua_flutter/controllers/api/api.dart';
+import 'package:lingua_flutter/controllers/parsing_schema/parsing_schema.dart' as parsing_schema_controller;
 import 'package:lingua_flutter/controllers/dictionary/dictionary.dart' as dictionary_controller;
 import 'package:lingua_flutter/utils/json.dart';
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
-import 'package:lingua_flutter/models/translation.dart';
-import 'package:lingua_flutter/models/error.dart';
-import 'package:lingua_flutter/models/language.dart';
+import 'package:lingua_flutter/models/translation_container/translation_container.dart';
+import 'package:lingua_flutter/models/error/error.dart';
+import 'package:lingua_flutter/models/language/language.dart';
 
 Future<TranslationContainer> translate({
   required String word,
@@ -29,7 +29,7 @@ Future<TranslationContainer> translate({
       final schemaVersion = existingTranslation.schemaVersion;
       StoredParsingSchema? storedParsingSchema;
       if (schemaVersion != null) {
-        storedParsingSchema = await parsing_schemas_controller.get(schemaVersion);
+        storedParsingSchema = await parsing_schema_controller.get(schemaVersion);
       }
 
       if (existingTranslation.raw != null && storedParsingSchema != null) {
@@ -56,7 +56,7 @@ Future<TranslationContainer> translate({
     }
   }
 
-  StoredParsingSchema? currentParsingSchema = await parsing_schemas_controller.get(
+  StoredParsingSchema? currentParsingSchema = await parsing_schema_controller.get(
     'current',
     forceUpdate: forceCurrentSchemaDownload == true,
   );

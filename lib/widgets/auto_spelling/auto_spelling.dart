@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lingua_flutter/models/translation.dart';
+import 'package:lingua_flutter/models/translation_container/translation_container.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
 class AutoSpelling extends StatelessWidget {

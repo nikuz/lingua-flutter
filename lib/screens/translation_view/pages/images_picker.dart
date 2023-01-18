@@ -6,7 +6,7 @@ import 'package:lingua_flutter/widgets/text_field/text_field.dart';
 import 'package:lingua_flutter/widgets/image_preview/image_preview.dart';
 import 'package:lingua_flutter/widgets/tag/tag.dart';
 import 'package:lingua_flutter/utils/string.dart';
-import 'package:lingua_flutter/providers/api.dart';
+import 'package:lingua_flutter/controllers/api/api.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
 import '../bloc/translation_view_cubit.dart';

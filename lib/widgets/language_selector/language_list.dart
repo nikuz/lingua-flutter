@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lingua_flutter/models/language.dart';
+import 'package:lingua_flutter/models/language/language.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/widgets/bottom_drawer/bottom_drawer.dart';
 import 'package:lingua_flutter/widgets/text_field/text_field.dart';

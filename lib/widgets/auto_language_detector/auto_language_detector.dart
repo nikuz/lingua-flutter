@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lingua_flutter/controllers/languages.dart' as languages_controller;
-import 'package:lingua_flutter/models/translation.dart';
-import 'package:lingua_flutter/models/language.dart';
+import 'package:lingua_flutter/controllers/language/language.dart' as languages_controller;
+import 'package:lingua_flutter/models/translation_container/translation_container.dart';
+import 'package:lingua_flutter/models/language/language.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
 class AutoLanguageDetector extends StatefulWidget {

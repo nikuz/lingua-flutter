@@ -20,6 +20,10 @@ class CustomSnackBar {
     this.duration,
   });
 
+  static void dismiss(BuildContext context) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+  }
+
   void show() {
     Color? backgroundColor;
 

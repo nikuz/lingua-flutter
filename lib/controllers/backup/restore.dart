@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'dart:isolate';
 import 'package:archive/archive_io.dart';
-import 'package:lingua_flutter/providers/db.dart';
+import 'package:lingua_flutter/controllers/database/database.dart';
 import 'package:lingua_flutter/utils/files.dart';
-import 'package:lingua_flutter/controllers/parsing_schemas.dart' as parsing_schemas_controller;
+import 'package:lingua_flutter/controllers/parsing_schema/parsing_schema.dart' as parsing_schema_controller;
 
 import './constants.dart';
 import './utils.dart';
@@ -45,7 +45,7 @@ Future<void> restore(String backupFilePath) async {
     throw 'Can\'t restore backup from provided file';
   }
 
-  await parsing_schemas_controller.preload();
+  await parsing_schema_controller.preload();
 }
 
 Future<void> _restoreFilesFromBackupArchive(DecodeBackupArchiveParams params) async {

@@ -4,8 +4,8 @@ import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/widgets/text_field/text_field.dart';
 import 'package:lingua_flutter/utils/remap_value.dart';
 import 'package:lingua_flutter/utils/string.dart';
-import 'package:lingua_flutter/models/language.dart';
-import 'package:lingua_flutter/models/translation.dart';
+import 'package:lingua_flutter/models/language/language.dart';
+import 'package:lingua_flutter/models/translation_container/translation_container.dart';
 
 import '../../bloc/search_cubit.dart';
 import '../../bloc/search_state.dart';

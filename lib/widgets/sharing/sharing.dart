@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:lingua_flutter/models/translation.dart';
+import 'package:lingua_flutter/models/translation_container/translation_container.dart';
 import 'package:lingua_flutter/widgets/image_preview/image_preview.dart';
 import 'package:lingua_flutter/utils/files.dart';
 

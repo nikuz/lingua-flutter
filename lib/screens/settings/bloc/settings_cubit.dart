@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lingua_flutter/controllers/backup/backup.dart' as backup_controller;
+import 'package:lingua_flutter/controllers/error_logger/error_logger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lingua_flutter/models/language.dart';
-import 'package:lingua_flutter/providers/error_logger.dart';
-import 'package:lingua_flutter/models/error.dart';
+import 'package:lingua_flutter/models/language/language.dart';
+import 'package:lingua_flutter/models/error/error.dart';
 
 import './settings_state.dart';
 

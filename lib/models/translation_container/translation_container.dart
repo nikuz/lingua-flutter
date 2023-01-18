@@ -1,10 +1,20 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:jmespath/jmespath.dart' as jmespath;
+import 'package:lingua_flutter/models/parsing_schema/schema.dart';
+import 'package:lingua_flutter/models/language/language.dart';
 import 'package:lingua_flutter/utils/types.dart';
-import './parsing_schema/schema.dart';
-import './language.dart';
 
-part 'translation.g.dart';
+import './translation.dart';
+import './translation_example.dart';
+import './translation_definition.dart';
+import './translation_alternative.dart';
+
+export './translation.dart';
+export './translation_example.dart';
+export './translation_definition.dart';
+export './translation_alternative.dart';
+
+part 'translation_container.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class TranslationContainer {
@@ -285,124 +295,4 @@ class TranslationContainer {
 
   factory TranslationContainer.fromJson(Map<String, dynamic> json) => _$TranslationContainerFromJson(json);
   Map<String, dynamic> toJson() => _$TranslationContainerToJson(this);
-}
-
-// Translation
-@JsonSerializable(explicitToJson: true)
-class Translation {
-  final String? gender;
-  final String? word;
-  final List<TranslationSentence>? sentences;
-
-  const Translation({
-    required this.gender,
-    required this.word,
-    this.sentences,
-  });
-
-  factory Translation.fromJson(Map<String, dynamic> json) => _$TranslationFromJson(json);
-  Map<String, dynamic> toJson() => _$TranslationToJson(this);
-
-  @override
-  toString() {
-    if (gender != null && word != null) {
-      return '$word $gender';
-    }
-
-    return sentences?.join(' ') ?? '';
-  }
-}
-
-@JsonSerializable(explicitToJson: true)
-class TranslationSentence {
-  final String word;
-
-  const TranslationSentence({
-    required this.word,
-  });
-
-  factory TranslationSentence.fromJson(Map<String, dynamic> json) => _$TranslationSentenceFromJson(json);
-  Map<String, dynamic> toJson() => _$TranslationSentenceToJson(this);
-
-  @override
-  String toString() => word;
-}
-
-// Alternative translations
-@JsonSerializable(explicitToJson: true)
-class TranslationAlternativeTranslation {
-  final String speechPart;
-  final List<TranslationAlternativeTranslationItem> items;
-
-  const TranslationAlternativeTranslation({
-    required this.speechPart,
-    required this.items,
-  });
-
-  factory TranslationAlternativeTranslation.fromJson(Map<String, dynamic> json) => _$TranslationAlternativeTranslationFromJson(json);
-  Map<String, dynamic> toJson() => _$TranslationAlternativeTranslationToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class TranslationAlternativeTranslationItem {
-  final String? genre;
-  final String translation;
-  final int frequency;
-  final List<String> words;
-
-  const TranslationAlternativeTranslationItem({
-    this.genre,
-    required this.translation,
-    required this.frequency,
-    required this.words,
-  });
-
-  factory TranslationAlternativeTranslationItem.fromJson(Map<String, dynamic> json) => _$TranslationAlternativeTranslationItemFromJson(json);
-  Map<String, dynamic> toJson() => _$TranslationAlternativeTranslationItemToJson(this);
-}
-
-// Definitions
-@JsonSerializable(explicitToJson: true)
-class TranslationDefinition {
-  final String speechPart;
-  final List<TranslationDefinitionItem> items;
-  final String? type;
-
-  const TranslationDefinition({
-    required this.speechPart,
-    required this.items,
-    this.type,
-  });
-
-  factory TranslationDefinition.fromJson(Map<String, dynamic> json) => _$TranslationDefinitionFromJson(json);
-  Map<String, dynamic> toJson() => _$TranslationDefinitionToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class TranslationDefinitionItem {
-  final String text;
-  final String? example;
-  final String? type;
-
-  const TranslationDefinitionItem({
-    required this.text,
-    required this.example,
-    this.type,
-  });
-
-  factory TranslationDefinitionItem.fromJson(Map<String, dynamic> json) => _$TranslationDefinitionItemFromJson(json);
-  Map<String, dynamic> toJson() => _$TranslationDefinitionItemToJson(this);
-}
-
-// Example
-@JsonSerializable(explicitToJson: true)
-class TranslationExample {
-  final String text;
-
-  const TranslationExample({
-    required this.text,
-  });
-
-  factory TranslationExample.fromJson(Map<String, dynamic> json) => _$TranslationExampleFromJson(json);
-  Map<String, dynamic> toJson() => _$TranslationExampleToJson(this);
 }

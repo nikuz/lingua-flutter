@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'package:lingua_flutter/models/error.dart';
-import 'package:lingua_flutter/providers/db.dart';
+import 'package:lingua_flutter/models/error/error.dart';
+import 'package:lingua_flutter/controllers/database/database.dart';
 import 'package:lingua_flutter/utils/files.dart';
 
 import './constants.dart';

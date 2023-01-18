@@ -1,11 +1,11 @@
 import 'package:jmespath/jmespath.dart' as jmespath;
-import 'package:lingua_flutter/providers/api.dart';
+import 'package:lingua_flutter/controllers/api/api.dart';
 import 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
-import 'package:lingua_flutter/models/language.dart';
-import 'package:lingua_flutter/models/error.dart';
+import 'package:lingua_flutter/models/language/language.dart';
+import 'package:lingua_flutter/models/error/error.dart';
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/utils/types.dart';
-import 'package:lingua_flutter/controllers/cloud_translation.dart' as cloud_translate_controller;
+import 'package:lingua_flutter/controllers/cloud_translation/cloud_translation.dart' as cloud_translate_controller;
 
 Future<String?> retrieve({
   required ParsingSchema schema,

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:lingua_flutter/models/language.dart';
+import 'package:lingua_flutter/models/language/language.dart';
 import 'package:lingua_flutter/utils/types.dart';
 
 part 'settings_state.g.dart';

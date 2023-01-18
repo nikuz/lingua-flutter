@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:lingua_flutter/models/error.dart';
+import 'package:lingua_flutter/models/error/error.dart';
 import 'package:lingua_flutter/utils/types.dart';
-import 'package:lingua_flutter/models/translation.dart';
+import 'package:lingua_flutter/models/translation_container/translation_container.dart';
 
 part 'translation_view_state.g.dart';
 

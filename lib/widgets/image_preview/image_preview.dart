@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:lingua_flutter/utils/convert.dart';
 import 'package:lingua_flutter/utils/files.dart';
-import 'package:lingua_flutter/models/media_source.dart';
+import 'package:lingua_flutter/models/media_source/media_source.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
 import './image_preview_modal.dart';

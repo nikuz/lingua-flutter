@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:lingua_flutter/models/translation.dart';
-import 'package:lingua_flutter/models/error.dart';
-import 'package:lingua_flutter/providers/db.dart';
+import 'package:lingua_flutter/models/translation_container/translation_container.dart';
+import 'package:lingua_flutter/models/error/error.dart';
+import 'package:lingua_flutter/controllers/database/database.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/regexp.dart';
 import 'package:lingua_flutter/utils/json.dart';
