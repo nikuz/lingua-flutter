@@ -93,12 +93,15 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
     return SearchConstants.searchFieldHeight + topPadding;
   }
 
-  void _clearSearch() {
-    _textController.clear();
-    _searchCubit.fetchTranslations(searchText: null);
+  void _unfocusSearchField() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.unfocus();
     });
+  }
+
+  void _clearSearch() {
+    _textController.clear();
+    _searchCubit.fetchTranslations(searchText: null);
   }
 
   void _resetLanguages() {
@@ -113,6 +116,7 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
   }) async {
     final sanitizedWord = removeQuotesFromString(removeSlashFromString(word)).trim();
     if (sanitizedWord.isNotEmpty && !_searchTextIsUrl(sanitizedWord)) {
+      _unfocusSearchField();
       final result = await AutoRouter.of(context).push<TranslationContainer>(
         TranslationViewRoute(
           word: sanitizedWord,
