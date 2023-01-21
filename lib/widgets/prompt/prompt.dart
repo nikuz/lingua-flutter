@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:lingua_flutter/widgets/modal/modal.dart';
 
 class Prompt {

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:in_app_review/in_app_review.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/models/translation_container/translation_container.dart';
 import 'package:lingua_flutter/widgets/pronunciation/pronunciation.dart';
@@ -11,8 +9,6 @@ import 'package:lingua_flutter/widgets/snack_bar/snack_bar.dart';
 import 'package:lingua_flutter/widgets/auto_language_detector/auto_language_detector.dart';
 import 'package:lingua_flutter/widgets/auto_spelling/auto_spelling.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
-import 'package:lingua_flutter/controllers/dictionary/dictionary.dart' as dictionary_controller;
-import 'package:lingua_flutter/app_config.dart' as config;
 
 import '../../bloc/translation_view_cubit.dart';
 import '../../bloc/translation_view_state.dart';
@@ -35,33 +31,6 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
   @override
   bool get wantKeepAlive => true;
 
-  SharedPreferences? _prefs;
-
-  @override
-  void initState() {
-    super.initState();
-    _retrievePreference();
-  }
-
-  void _retrievePreference() async {
-    _prefs = await SharedPreferences.getInstance();
-  }
-
-  // request review only once when amount of saved words exceeded the threshold set in config.wordsAmountRateThreshold
-  void _showRateUsModal() async {
-    const settingName = 'askToRateUs';
-    if (_prefs != null && _prefs!.getBool(settingName) != true) {
-      final amountOfSavedWords = await dictionary_controller.getListLength();
-      if (amountOfSavedWords > config.wordsAmountRateThreshold) {
-        _prefs!.setBool(settingName, true);
-        final inAppReview = InAppReview.instance;
-        if (await inAppReview.isAvailable()) {
-          inAppReview.requestReview();
-        }
-      }
-    }
-  }
-
   void _saveHandler(TranslationViewState state) {
     final translation = state.translation;
     if (translation == null) {
@@ -75,7 +44,6 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
       context.read<TranslationViewCubit>().save(translation, translationViewState?.cancelToken).then((dynamic) {
         AutoRouter.of(context).pop<TranslationContainer>(translation);
         CustomSnackBar(context: context, message: 'Word is saved successfully').show();
-        _showRateUsModal();
       }).catchError((err) {
         CustomSnackBar(
           context: context,
