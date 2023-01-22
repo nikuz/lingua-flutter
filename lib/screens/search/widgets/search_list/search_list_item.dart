@@ -119,6 +119,7 @@ class _SearchListItemState extends State<SearchListItem> {
                               height: 50,
                               imageSource: widget.translationItem.image,
                               shape: ImagePreviewShape.oval,
+                              fit: BoxFit.cover,
                               onTap: () {
                                 if (widget.translationItem.image != null) {
                                   setState(() {

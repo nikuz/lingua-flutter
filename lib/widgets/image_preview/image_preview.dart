@@ -20,6 +20,7 @@ class ImagePreview extends StatefulWidget {
   final Color? errorIconColor;
   final bool withPreviewOverlay;
   final ImagePreviewShape shape;
+  final BoxFit fit;
   final Function? onTap;
   final Function? onPreviewClose;
 
@@ -31,6 +32,7 @@ class ImagePreview extends StatefulWidget {
     this.errorIconColor,
     this.withPreviewOverlay = true,
     this.shape = ImagePreviewShape.rectangular,
+    this.fit = BoxFit.contain,
     this.onTap,
     this.onPreviewClose,
   }) : super(key: key);
@@ -102,7 +104,7 @@ class _ImagePreviewState extends State<ImagePreview> {
           if (_sourceBytes != null) {
             image = Image.memory(
               _sourceBytes!,
-              fit: BoxFit.contain,
+              fit: widget.fit,
             );
           }
           break;
@@ -110,12 +112,15 @@ class _ImagePreviewState extends State<ImagePreview> {
           if (_imageLocalPath != null) {
             image = Image.file(
               File('$_imageLocalPath${widget.imageSource}'),
-              fit: BoxFit.contain,
+              fit: widget.fit,
             );
           }
           break;
         case MediaSourceType.network:
-          image = Image.network(widget.imageSource!);
+          image = Image.network(
+            widget.imageSource!,
+            fit: widget.fit,
+          );
           break;
         default:
       }
