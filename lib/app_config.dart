@@ -6,3 +6,5 @@ const privacyEmail = 'wisual.app@gmail.com';
 const playMarketUrl = 'https://google.com';
 const appStoreUrl = 'https://apple.com';
 const wordsAmountRateThreshold = 100; // how many words user should add to see "rate us" prompt
+const purchaseProductId = 'full_access';
+const wordsAmountPurchaseThreshold = 500; // how many words user should add to see "purchase" prompt

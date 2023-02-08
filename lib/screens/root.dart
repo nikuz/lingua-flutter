@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:lingua_flutter/listeners/rating.dart';
+import 'package:lingua_flutter/listeners/rating_listener.dart';
+import 'package:lingua_flutter/listeners/purchase_listener.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 
 class Root extends StatelessWidget {
@@ -42,6 +43,7 @@ class Root extends StatelessWidget {
             },
           ),
           const RatingListener(),
+          const PurchaseListener(),
         ],
       ),
     );

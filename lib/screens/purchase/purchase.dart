@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class Games extends StatelessWidget {
-  const Games({super.key});
+class Purchase extends StatelessWidget {
+  const Purchase({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Play a game'),
+        title: const Text('Pro version'),
       ),
       body: SafeArea(
         child: Column(
@@ -15,7 +15,7 @@ class Games extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: const [
             Center(
-              child: Text('Play a game'),
+              child: Text('Buy PRO version'),
             ),
           ],
         ),

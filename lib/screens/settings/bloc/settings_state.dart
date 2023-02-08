@@ -45,44 +45,6 @@ class SettingsState extends Equatable {
     this.backupRestoreAt,
   });
 
-  SettingsState copyWith({
-    Language? translateFrom,
-    Language? translateTo,
-    String? pronunciation,
-    bool? darkMode,
-    bool? autoDarkMode,
-    bool? backupLoading,
-    bool? backupError,
-    int? backupTime,
-    int? backupSize,
-    Wrapped<int?>? backupPreloadSize,
-    bool? showLanguageSource,
-    bool? backupCreateLoading,
-    int? lastBackupAt,
-    String? backupFileIdentifier,
-    bool? backupRestoreLoading,
-    int? backupRestoreAt,
-  }) {
-    return SettingsState(
-      translateFrom: translateFrom ?? this.translateFrom,
-      translateTo: translateTo ?? this.translateTo,
-      pronunciation: pronunciation ?? this.pronunciation,
-      darkMode: darkMode ?? this.darkMode,
-      autoDarkMode: autoDarkMode ?? this.autoDarkMode,
-      backupLoading: backupLoading ?? this.backupLoading,
-      backupError: backupError ?? this.backupError,
-      backupTime: backupTime ?? this.backupTime,
-      backupSize: backupSize ?? this.backupSize,
-      backupPreloadSize: backupPreloadSize != null ? backupPreloadSize.value : this.backupPreloadSize,
-      showLanguageSource: showLanguageSource ?? this.showLanguageSource,
-      backupCreateLoading: backupCreateLoading ?? this.backupCreateLoading,
-      lastBackupAt: lastBackupAt ?? this.lastBackupAt,
-      backupFileIdentifier: backupFileIdentifier ?? this.backupFileIdentifier,
-      backupRestoreLoading: backupRestoreLoading ?? this.backupRestoreLoading,
-      backupRestoreAt: backupRestoreAt ?? this.backupRestoreAt,
-    );
-  }
-
   factory SettingsState.initial(SharedPreferences prefs) {
     final String? translateFromString = prefs.getString('translateFrom');
     Language translateFrom = const Language(id: 'en', value: 'English');
@@ -126,6 +88,44 @@ class SettingsState extends Equatable {
       showLanguageSource: showLanguageSource ?? false,
       lastBackupAt: lastBackupAt,
       backupFileIdentifier: backupFileIdentifier,
+    );
+  }
+
+  SettingsState copyWith({
+    Language? translateFrom,
+    Language? translateTo,
+    String? pronunciation,
+    bool? darkMode,
+    bool? autoDarkMode,
+    bool? backupLoading,
+    bool? backupError,
+    int? backupTime,
+    int? backupSize,
+    Wrapped<int?>? backupPreloadSize,
+    bool? showLanguageSource,
+    bool? backupCreateLoading,
+    int? lastBackupAt,
+    String? backupFileIdentifier,
+    bool? backupRestoreLoading,
+    int? backupRestoreAt,
+  }) {
+    return SettingsState(
+      translateFrom: translateFrom ?? this.translateFrom,
+      translateTo: translateTo ?? this.translateTo,
+      pronunciation: pronunciation ?? this.pronunciation,
+      darkMode: darkMode ?? this.darkMode,
+      autoDarkMode: autoDarkMode ?? this.autoDarkMode,
+      backupLoading: backupLoading ?? this.backupLoading,
+      backupError: backupError ?? this.backupError,
+      backupTime: backupTime ?? this.backupTime,
+      backupSize: backupSize ?? this.backupSize,
+      backupPreloadSize: backupPreloadSize != null ? backupPreloadSize.value : this.backupPreloadSize,
+      showLanguageSource: showLanguageSource ?? this.showLanguageSource,
+      backupCreateLoading: backupCreateLoading ?? this.backupCreateLoading,
+      lastBackupAt: lastBackupAt ?? this.lastBackupAt,
+      backupFileIdentifier: backupFileIdentifier ?? this.backupFileIdentifier,
+      backupRestoreLoading: backupRestoreLoading ?? this.backupRestoreLoading,
+      backupRestoreAt: backupRestoreAt ?? this.backupRestoreAt,
     );
   }
 

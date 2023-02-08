@@ -9,6 +9,7 @@ import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_state.dart';
 import 'package:lingua_flutter/screens/search/bloc/search_cubit.dart';
 import 'package:lingua_flutter/screens/translation_view/bloc/translation_view_cubit.dart';
+import 'package:lingua_flutter/screens/purchase/bloc/purchase_cubit.dart';
 
 class App extends StatelessWidget {
   final SharedPreferences prefs;
@@ -27,6 +28,9 @@ class App extends StatelessWidget {
         ),
         BlocProvider<SettingsCubit>(
           create: (context) => SettingsCubit(prefs),
+        ),
+        BlocProvider<PurchaseCubit>(
+          create: (context) => PurchaseCubit(prefs),
         ),
       ],
       child: const AppView(),

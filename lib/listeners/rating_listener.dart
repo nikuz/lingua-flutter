@@ -29,18 +29,22 @@ class _RatingListenerState extends State<RatingListener> {
     _prefs = await SharedPreferences.getInstance();
   }
 
+  void _showRateUsRequest() async {
+    if (_prefs != null && _prefs!.getBool(prefName) != true) {
+      _prefs!.setBool(prefName, true);
+      if (await _inAppReview.isAvailable()) {
+        _inAppReview.requestReview();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<SearchCubit, SearchState>(
       listener: (context, state) async {
         // request review only once when amount of saved words exceeded the threshold set in config.wordsAmountRateThreshold
         if (state.totalAmount > config.wordsAmountRateThreshold) {
-          if (_prefs != null && _prefs!.getBool(prefName) != true) {
-            _prefs!.setBool(prefName, true);
-            if (await _inAppReview.isAvailable()) {
-              _inAppReview.requestReview();
-            }
-          }
+          _showRateUsRequest();
         }
       },
       child: Container(),

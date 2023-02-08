@@ -11,6 +11,8 @@ import 'package:lingua_flutter/screens/router.gr.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_state.dart';
+import 'package:lingua_flutter/screens/purchase/bloc/purchase_cubit.dart';
+import 'package:lingua_flutter/screens/purchase/bloc/purchase_state.dart';
 import 'package:lingua_flutter/widgets/snack_bar/snack_bar.dart';
 
 import './bloc/search_cubit.dart';
@@ -42,6 +44,7 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
   late Language _translateFrom;
   late Language _translateTo;
   late int? _backupRestoreAt;
+  late int? _purchaseUpdatedAt;
 
   @override
   void initState() {
@@ -61,6 +64,7 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
     _translateFrom = _settingsCubit.state.translateFrom;
     _translateTo = _settingsCubit.state.translateTo;
     _backupRestoreAt = _settingsCubit.state.backupRestoreAt;
+    _purchaseUpdatedAt = context.read<PurchaseCubit>().state.updatedAt;
   }
 
   @override
@@ -99,7 +103,7 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
     });
   }
 
-  void _clearSearch() {
+  void _updateList() {
     _textController.clear();
     _searchCubit.fetchTranslations(searchText: null);
   }
@@ -129,7 +133,7 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
         if (_searchCubit.state.translations.any((item) => item.id == result.id)) {
           _searchCubit.updateTranslation(result);
         } else {
-          _clearSearch();
+          _updateList();
         }
         _resetLanguages();
       }
@@ -242,23 +246,38 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
             statusBarBrightness: isInDarkMode ? Brightness.dark : Brightness.light,
           ),
         ),
-        body: BlocListener<SettingsCubit, SettingsState>(
-          listener: (context, state) {
-            if (state.translateFrom != _translateFrom
-                || state.translateTo != _translateTo
-                || state.backupRestoreAt != _backupRestoreAt
-            ) {
-              // refresh search list after restore from backup
-              if (state.backupRestoreAt != _backupRestoreAt) {
-                Future.delayed(const Duration(seconds: 1), _clearSearch);
-              }
-              setState(() {
-                _translateFrom = state.translateFrom;
-                _translateTo = state.translateTo;
-                _backupRestoreAt = state.backupRestoreAt;
-              });
-            }
-          },
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<SettingsCubit, SettingsState>(
+              listener: (context, state) {
+                if (state.translateFrom != _translateFrom
+                    || state.translateTo != _translateTo
+                    || state.backupRestoreAt != _backupRestoreAt
+                ) {
+                  // refresh search list after restore from backup
+                  if (state.backupRestoreAt != _backupRestoreAt) {
+                    Future.delayed(const Duration(seconds: 1), _updateList);
+                  }
+                  setState(() {
+                    _translateFrom = state.translateFrom;
+                    _translateTo = state.translateTo;
+                    _backupRestoreAt = state.backupRestoreAt;
+                  });
+                }
+              },
+            ),
+            BlocListener<PurchaseCubit, PurchaseState>(
+              listener: (context, state) {
+                if (state.updatedAt != _backupRestoreAt) {
+                  // refresh search list after purchase finished/canceled
+                  if (state.updatedAt != _purchaseUpdatedAt) {
+                    _purchaseUpdatedAt = state.updatedAt;
+                    _updateList();
+                  }
+                }
+              },
+            ),
+          ],
           child: BlocBuilder<SearchCubit, SearchState>(
             builder: (context, state) {
               return SafeArea(
