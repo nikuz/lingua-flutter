@@ -24,8 +24,7 @@ Future<void> preload() async {
     // decode file JSON content
     Map<String, dynamic>? languagesData;
     try {
-      Map<String, dynamic> languagesRawData = await jsonDecodeIsolate(languagesFileContent);
-      languagesData = await jsonDecodeIsolate(languagesRawData['raw']);
+      languagesData = await jsonDecodeIsolate(languagesFileContent);
     } catch (err, stack) {
       recordError(err, stack);
     }

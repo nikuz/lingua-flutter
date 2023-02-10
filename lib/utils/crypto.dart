@@ -6,18 +6,34 @@ import 'package:pointycastle/api.dart';
 import 'package:pointycastle/digests/sha256.dart';
 import 'package:pointycastle/macs/hmac.dart';
 import 'package:lingua_flutter/models/error/error.dart';
+import 'package:lingua_flutter/app_config.dart' as config;
 import 'package:lingua_flutter/app_config.secret.dart' as secret_config;
 
 const _algorithm = 'AES';
 const _mode = 'CBC';
 const _padding = 'PKCS7';
 const _numKeyBytes = 32;
-final _secret = _normalizeSecret(secret_config.cryptoSecret);
+final _secret = _normalizeSecret();
 final _random = Random.secure();
 final _iv = Uint8List.fromList(List<int>.generate(16, (i) => _random.nextInt(256)));
 
-String _normalizeSecret(String secret) {
-  final secretBytes = Uint8List.fromList(secret.codeUnits);
+String _normalizeSecret() {
+  final secretBits = secret_config.getCryptoSecret();
+  final normalisedSecretBits = [];
+  for (var i = 3, l = 11; i < l; i++) {
+    normalisedSecretBits.add(secretBits[i]);
+  }
+  for (var i = secretBits.length - 4, l = secretBits.length; i < l; i++) {
+    normalisedSecretBits.add(secretBits[i]);
+  }
+  normalisedSecretBits.add(config.appName[0]);
+  for (var i = 0, l = 3; i < l; i++) {
+    normalisedSecretBits.add(secretBits[i]);
+  }
+  for (var i = 11, l = secretBits.length - 4; i < l; i++) {
+    normalisedSecretBits.add(secretBits[i]);
+  }
+  final secretBytes = Uint8List.fromList(normalisedSecretBits.join('').codeUnits);
   final secretBase64 = base64Encode(SHA256Digest().process(secretBytes));
 
   return secretBase64.substring(0, _numKeyBytes);
@@ -56,7 +72,7 @@ String decrypt(String text) {
 }
 
 String hash(String text) {
-  final secretBytes = Uint8List.fromList(secret_config.cryptoSecret.codeUnits);
+  final secretBytes = Uint8List.fromList(_secret.codeUnits);
   final textBytes = Uint8List.fromList(text.codeUnits);
   final hmac = HMac(SHA256Digest(), 64)..init(KeyParameter(secretBytes));
 
