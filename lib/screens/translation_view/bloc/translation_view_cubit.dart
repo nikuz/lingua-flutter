@@ -3,7 +3,7 @@ import 'package:lingua_flutter/models/translation_container/translation_containe
 import 'package:lingua_flutter/models/error/error.dart';
 import 'package:lingua_flutter/models/language/language.dart';
 import 'package:lingua_flutter/controllers/dictionary/dictionary.dart' as dictionary_controller;
-import 'package:lingua_flutter/controllers/cloud_translation/cloud_translation.dart' as cloud_translate_controller;
+import 'package:lingua_flutter/controllers/translation/translation.dart' as translation_controller;
 import 'package:lingua_flutter/controllers/images/images.dart' as images_controller;
 import 'package:lingua_flutter/controllers/pronunciation/pronunciation.dart' as pronunciation_controller;
 import 'package:lingua_flutter/controllers/api/api.dart';
@@ -24,7 +24,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
     try {
       emit(state.copyWith(translateLoading: true));
 
-      final translation = await cloud_translate_controller.translate(
+      final translation = await translation_controller.translate(
         word: word,
         translateFrom: translateFrom,
         translateTo: translateTo,

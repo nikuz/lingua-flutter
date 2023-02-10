@@ -1,5 +1,4 @@
-import 'dart:ui';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 void initiateErrorLogger() {
@@ -15,11 +14,19 @@ void recordError(
   StackTrace stack,
   { Iterable<Object>? information }
 ) {
-  FirebaseCrashlytics.instance.recordError(
-    err,
-    stack,
-    information: information ?? [],
-  );
+  if (kDebugMode) {
+    print('--------- error logger ----------');
+    print(err);
+    print(stack);
+    print(information);
+    print('---------  ----------');
+  } else {
+    FirebaseCrashlytics.instance.recordError(
+      err,
+      stack,
+      information: information ?? [],
+    );
+  }
 }
 
 void recordFatalError(
@@ -27,10 +34,18 @@ void recordFatalError(
   StackTrace stack,
   { Iterable<Object>? information }
 ) {
-  FirebaseCrashlytics.instance.recordError(
-    err,
-    stack,
-    fatal: true,
-    information: information ?? [],
-  );
+  if (kDebugMode) {
+    print('--------- error logger ----------');
+    print(err);
+    print(stack);
+    print(information);
+    print('---------  ----------');
+  } else {
+    FirebaseCrashlytics.instance.recordError(
+      err,
+      stack,
+      fatal: true,
+      information: information ?? [],
+    );
+  }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/controllers/dictionary/dictionary.dart' as dictionary_controller;
-import 'package:lingua_flutter/controllers/cloud_translation/cloud_translation.dart' as cloud_translate_controller;
+import 'package:lingua_flutter/controllers/translation/translation.dart' as translation_controller;
 import 'package:lingua_flutter/models/error/error.dart';
 import 'package:lingua_flutter/models/translation_container/translation_container.dart';
 import 'package:lingua_flutter/models/translation_container/translation_list.dart';
@@ -68,7 +68,7 @@ class SearchCubit extends Cubit<SearchState> {
           quickTranslationLoading: true,
           quickTranslationError: const Wrapped.value(null),
         ));
-        final translation = await cloud_translate_controller.translate(
+        final translation = await translation_controller.translate(
           word: word,
           translateFrom: translateFrom,
           translateTo: translateTo,

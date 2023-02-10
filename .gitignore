@@ -79,3 +79,4 @@ lib/google-api-credentials.dart
 key.properties
 android/key.jks
 android/app/release/
+*.secret.dart

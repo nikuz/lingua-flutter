@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lingua_flutter/controllers/api/api.dart';
 import 'package:lingua_flutter/controllers/error_logger/error_logger.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/json.dart';
-import 'package:lingua_flutter/models/error/error.dart';
+import 'package:lingua_flutter/app_config.dart' as config;
 
 final Map<String, String> languages = {};
 
@@ -44,10 +44,18 @@ Future<Map<String, String>?> get({ bool? forceUpdate }) async {
     return languages;
   }
 
-  DocumentSnapshot<dynamic>? languagesDoc;
+  Map<String, dynamic>? languagesResponse;
   try {
-    final languagesCollection = FirebaseFirestore.instance.collection('languages');
-    languagesDoc = await languagesCollection.doc('languages').get();
+    final response = await apiGet(
+      url: '${config.getApiUrl()}/api/languages',
+      options: Options(
+        contentType: 'application/json',
+        headers: {
+          'accept-encoding': 'gzip, deflate',
+        },
+      ),
+    );
+    languagesResponse = response.data;
   } catch (err) {
     final assetsLanguages = await rootBundle.loadString('assets/languages/languages.json');
     Map<String, dynamic> languagesRawData = await jsonDecodeIsolate(assetsLanguages);
@@ -57,36 +65,18 @@ Future<Map<String, String>?> get({ bool? forceUpdate }) async {
     return languages;
   }
 
-  final languagesRawData = languagesDoc.data();
-
-  if (!languagesDoc.exists || languagesRawData == null) {
-    recordError(
-      const CustomError(code: 404, message: 'Can\'t retrieve languages from FireStore'),
-      StackTrace.current,
-    );
-    return null;
-  }
-
-  Map<String, dynamic>? languagesData;
-  try {
-    languagesData = await jsonDecodeIsolate(languagesRawData['raw']);
-  } catch (err, stack) {
-    recordError(err, stack);
-    return null;
-  }
-
-  if (languagesData == null) {
+  if (languagesResponse == null) {
     return null;
   }
 
   final languagesPath = await _getLanguagesPath();
   File file = File('$languagesPath/languages');
   file = await file.create(recursive: true);
-  await file.writeAsString(await jsonEncodeIsolate(languagesRawData));
+  await file.writeAsString(await jsonEncodeIsolate(languagesResponse));
 
   languages.clear();
-  for (var id in languagesData.keys) {
-    languages[id] = languagesData[id];
+  for (var id in languagesResponse.keys) {
+    languages[id] = languagesResponse[id];
   }
 
   return languages;

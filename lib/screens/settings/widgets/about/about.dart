@@ -86,7 +86,7 @@ class SettingsAbout extends StatelessWidget {
                   title: 'Privacy Policy',
                   type: SettingsRowType.link,
                   onPressed: () {
-                    launchUrl(Uri.parse(config.privacyPolicyUrl));
+                    launchUrl(Uri.parse('${config.getApiUrl()}/privacy-policy'));
                   },
                   child: const Icon(
                     Icons.open_in_new_rounded,

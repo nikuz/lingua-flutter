@@ -5,7 +5,7 @@ import 'package:lingua_flutter/models/language/language.dart';
 import 'package:lingua_flutter/models/error/error.dart';
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/utils/types.dart';
-import 'package:lingua_flutter/controllers/cloud_translation/cloud_translation.dart' as cloud_translate_controller;
+import 'package:lingua_flutter/controllers/translation/translation.dart' as translation_controller;
 
 Future<String?> retrieve({
   required ParsingSchema schema,
@@ -51,7 +51,7 @@ Future<String?> retrieve({
   }
 
   if (pronunciationRaw != null) {
-    final pronunciationRawData = await cloud_translate_controller.retrieveResponseRawData(
+    final pronunciationRawData = await translation_controller.retrieveResponseRawData(
       pronunciationRaw,
       schema.pronunciation.fields.marker,
     );

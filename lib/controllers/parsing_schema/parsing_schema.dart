@@ -1,7 +1,8 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lingua_flutter/controllers/api/api.dart';
 import 'package:lingua_flutter/controllers/error_logger/error_logger.dart';
 import 'package:lingua_flutter/utils/files.dart';
+import 'package:lingua_flutter/utils/crypto.dart';
 import 'package:lingua_flutter/utils/json.dart';
 import 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
 import 'package:lingua_flutter/app_config.dart' as config;
@@ -22,11 +23,12 @@ Future<void> preload() async {
     // read schema file
     final file = File(item.path);
     final schemaFileContent = await file.readAsString();
+    final decryptedFileContent = decrypt(schemaFileContent);
 
     // decode file JSON content
     Map<String, dynamic>? schemaData;
     try {
-      schemaData = await jsonDecodeIsolate(schemaFileContent);
+      schemaData = await jsonDecodeIsolate(decryptedFileContent);
     } catch (err, stack) {
       recordError(err, stack);
     }
@@ -35,10 +37,10 @@ Future<void> preload() async {
     if (schemaData != null) {
       StoredParsingSchema? schema;
       // schemas can be outdated and trying to parse them with current StoredParsingSchema structure throws error
-      // TODO: avoid this situation by improving "fromFirestore" parsing method
+      // TODO: avoid this situation by improving "fromCloud" parsing method
       try {
         final schemaJson = await jsonDecodeIsolate(schemaData['schema']);
-        schema = StoredParsingSchema.fromFirestore(schemaData, schemaJson);
+        schema = StoredParsingSchema.fromCloud(schemaData, schemaJson);
       } catch (err, stack) {
         // if we remove the file here, then the user won't be able to parse previously saved words
         // and the words will be downloaded again and needed to be updated with a new parsing schema version
@@ -65,24 +67,28 @@ Future<StoredParsingSchema?> get(String versionName, { bool? forceUpdate }) asyn
     }
   }
 
-  final schemas = FirebaseFirestore.instance.collection('schemas');
-  final schemaDoc = await schemas.doc(versionName).get();
-  final schemaData = schemaDoc.data();
+  final response = await apiGet(
+    url: '${config.getApiUrl()}/api/schema/current',
+    options: Options(
+      contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+      headers: {
+        'accept-encoding': 'gzip, deflate',
+      },
+    ),
+  );
 
-  if (!schemaDoc.exists || schemaData == null) {
-    return null;
-  }
+  final decryptedResult = decrypt(response.toString());
+  final responseJson = await jsonDecodeIsolate(decryptedResult);
 
-  final schemaJson = await jsonDecodeIsolate(schemaData['schema']);
-  final schema = StoredParsingSchema.fromFirestore(schemaData, schemaJson);
+  final schemaJson = await jsonDecodeIsolate(responseJson['schema']);
+  final schema = StoredParsingSchema.fromCloud(responseJson, schemaJson);
   final schemasPath = await _getSchemasPath();
-  final schemaDataJson = await jsonEncodeIsolate(schemaData);
 
   // store schema with "schema.version" name
   parsingSchemas[schema.version] = schema;
   File file = File('$schemasPath/${schema.version}');
   file = await file.create(recursive: true);
-  await file.writeAsString(schemaDataJson);
+  await file.writeAsString(response.toString());
 
   return schema;
 }
