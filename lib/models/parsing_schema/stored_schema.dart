@@ -26,6 +26,26 @@ class StoredParsingSchema {
     return StoredParsingSchema(
       version: snapshot['version'],
       schema: ParsingSchema(
+        // cookie consent
+        cookieConsent: CookieConsentSchema(
+          fields: CookieConsentSchemaFields(
+            marker: schemaJson['cookie_consent']['fields']['marker'],
+            formRegExp: schemaJson['cookie_consent']['fields']['formRegExp'],
+            inputRegExp: schemaJson['cookie_consent']['fields']['inputRegExp'],
+          ),
+        ),
+
+        // quick translation
+        quickTranslation: QuickTranslationSchema(
+          fields: QuickTranslationSchemaFields(
+            url: schemaJson['quick_translation']['fields']['url'],
+          ),
+          sentences: QuickTranslationSchemaSentences(
+            originalWord: schemaJson['quick_translation']['sentences']['original_word']['value'],
+            translation: schemaJson['quick_translation']['sentences']['translation']['value'],
+          ),
+        ),
+
         // translation
         translation: TranslationSchema(
           fields: TranslationSchemaFields(
