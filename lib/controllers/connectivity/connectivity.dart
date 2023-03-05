@@ -25,9 +25,4 @@ void unsubscribeFromNetworkChange(String name) {
   _listeners.remove(name);
 }
 
-bool _isConnected(ConnectivityResult result) => (
-    result == ConnectivityResult.mobile
-    || result == ConnectivityResult.wifi
-    || result == ConnectivityResult.ethernet
-    || result == ConnectivityResult.vpn
-);
+bool _isConnected(ConnectivityResult result) => result != ConnectivityResult.none;

@@ -44,7 +44,8 @@ Future<bool> enableImagesSaveSearch({
     }
   } on DioError catch (err) {
     developer.log(err.toString());
-    if (err.response?.statusCode == 302) {
+    final statusCode = err.response?.statusCode;
+    if (statusCode != null && statusCode >= 300 && statusCode < 400) {
       sessionFile.writeAsStringSync(session.cookies.join('\n'));
       return true;
     } else if (!CancelToken.isCancel(err)) {

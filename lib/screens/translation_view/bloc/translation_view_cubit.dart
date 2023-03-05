@@ -77,22 +77,20 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
     ));
 
     try {
-      final List<String>? images = await images_controller.search(word, cancelToken);
+      final List<String>? images = await images_controller.search(word: word, cancelToken: cancelToken);
       String? image;
       if (images != null && images.isNotEmpty) {
         image = images[0];
       }
 
-      if (state.translation != null) {
-        emit(state.copyWith(
-          images: images,
-          imageLoading: false,
-          translation: selectFirstImage
-              ? state.translation?.copyWith(image: image)
-              : state.translation,
-          imageIsUpdated: selectFirstImage ? true : state.imageIsUpdated,
-        ));
-      }
+      emit(state.copyWith(
+        images: images ?? [], // set empty list if image controller returns null instead of image list
+        imageLoading: false,
+        translation: selectFirstImage
+            ? state.translation?.copyWith(image: image)
+            : state.translation,
+        imageIsUpdated: selectFirstImage ? true : state.imageIsUpdated,
+      ));
     } on DioError catch (err, stack) {
       if (!CancelToken.isCancel(err)) {
         handleError(state.copyWith(

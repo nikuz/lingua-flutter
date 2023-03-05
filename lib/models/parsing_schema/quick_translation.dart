@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import './schema_item.dart';
 
 part 'quick_translation.g.dart';
 
@@ -31,8 +30,8 @@ class QuickTranslationSchemaFields {
 
 @JsonSerializable(explicitToJson: true)
 class QuickTranslationSchemaSentences {
-  final SchemaItem originalWord;
-  final SchemaItem translation;
+  final String originalWord;
+  final String translation;
 
   const QuickTranslationSchemaSentences({
     required this.originalWord,

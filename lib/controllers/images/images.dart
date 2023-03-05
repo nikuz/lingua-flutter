@@ -1,16 +1,25 @@
 import 'dart:developer' as developer;
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:lingua_flutter/controllers/api/api.dart';
 import 'package:lingua_flutter/controllers/parsing_schema/parsing_schema.dart' show StoredParsingSchema, ParsingSchema;
 import 'package:lingua_flutter/controllers/parsing_schema/parsing_schema.dart' as parsing_schema_controller;
+import 'package:lingua_flutter/controllers/cookie/cookie.dart' as cookie_controller;
+import 'package:lingua_flutter/controllers/consent/consent.dart' as consent_controller;
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/utils/convert.dart';
+import 'package:lingua_flutter/utils/headers.dart';
 import 'package:lingua_flutter/models/error/error.dart';
 
 import './images_session.dart';
 import './images_safe_search.dart';
 
-Future<List<String>?> search(String word, CancelToken? cancelToken) async {
+Future<List<String>?> search({
+  required String word,
+  CancelToken? cancelToken,
+  bool followToConsent = true,
+}) async {
+  final List<Cookie>? cookie = await cookie_controller.get();
   final encodedWord = removeQuotesFromString(removeSlashFromString(word));
   StoredParsingSchema? storedParsingSchema = await parsing_schema_controller.get('current');
 
@@ -63,27 +72,47 @@ Future<List<String>?> search(String word, CancelToken? cancelToken) async {
   }
 
   try {
-    final Map<String, dynamic> headers = {
-      'user-agent': parsingSchema.images.fields.userAgent,
-      'accept-encoding': 'gzip, deflate',
-    };
+    // final Map<String, dynamic> headers = {
+    //   'user-agent': parsingSchema.images.fields.userAgent,
+    //   'accept-encoding': 'gzip, deflate',
+    // };
 
-    if (saveSearchIsSet && session != null) {
-      headers['cookie'] = session.cookies.join('; ');
-    }
+    // if (saveSearchIsSet && session != null) {
+    //   headers['cookie'] = session.cookies.join('; ');
+    // }
 
     final imagesResponse = await apiGet(
       url: parsingSchema.images.fields.url.replaceFirst('{word}', encodedWord),
       options: Options(
         contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
         responseType: ResponseType.plain,
-        headers: headers,
+        headers: {
+          'user-agent': parsingSchema.images.fields.userAgent,
+          'accept-encoding': 'gzip, deflate',
+          'cookie': cookie?.join('; '),
+        },
+        followRedirects: false,
       ),
       cancelToken: cancelToken,
     );
-    imagesRaw = imagesResponse.data;
+
+    if (imagesResponse.statusCode == 200) {
+      await cookie_controller.set(imagesResponse.headers['set-cookie']);
+      imagesRaw = imagesResponse.data;
+    }
   } on DioError catch (err) {
-    if (!CancelToken.isCancel(err)) {
+    final statusCode = err.response?.statusCode;
+    if (statusCode != null && statusCode >= 300 && statusCode < 400) {
+      await cookie_controller.set(err.response?.headers['set-cookie']);
+      // try to acquire consent and request images again only for the first time
+      if (followToConsent) {
+        final location = getHeaderRedirectLocation(err.response?.headers);
+        if (location != null) {
+          await consent_controller.acquire(url: location, cancelToken: cancelToken);
+          return search(word: word, cancelToken: cancelToken, followToConsent: false);
+        }
+      }
+    } else if (!CancelToken.isCancel(err)) {
       throw CustomError(
         code: 500,
         message: 'Can\'t retrieve images using "current" parsing schema',
@@ -94,7 +123,6 @@ Future<List<String>?> search(String word, CancelToken? cancelToken) async {
         ],
       );
     }
-    return null;
   }
 
   if (imagesRaw == null) {

@@ -39,8 +39,7 @@ Future<void> preload() async {
       // schemas can be outdated and trying to parse them with current StoredParsingSchema structure throws error
       // TODO: avoid this situation by improving "fromCloud" parsing method
       try {
-        final schemaJson = await jsonDecodeIsolate(schemaData['schema']);
-        schema = StoredParsingSchema.fromCloud(schemaData, schemaJson);
+        schema = StoredParsingSchema.fromCloud(schemaData, schemaData['schema']);
       } catch (err, stack) {
         // if we remove the file here, then the user won't be able to parse previously saved words
         // and the words will be downloaded again and needed to be updated with a new parsing schema version
@@ -80,7 +79,7 @@ Future<StoredParsingSchema?> get(String versionName, { bool? forceUpdate }) asyn
   final decryptedResult = decrypt(response.toString());
   final responseJson = await jsonDecodeIsolate(decryptedResult);
 
-  final schemaJson = await jsonDecodeIsolate(responseJson['schema']);
+  final schemaJson = responseJson['schema'];
   final schema = StoredParsingSchema.fromCloud(responseJson, schemaJson);
   final schemasPath = await _getSchemasPath();
 

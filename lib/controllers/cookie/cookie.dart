@@ -1,15 +1,18 @@
 import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import './crypto.dart';
+import 'package:lingua_flutter/utils/crypto.dart';
 
 const _prefsKey = 'cookie';
 List<Cookie>? _cookieCache;
 
-void setCookie(String newCookie) async {
+Future<List<Cookie>?> set(List<String>? newCookie) async {
+  if (newCookie == null) {
+    return null;
+  }
   final prefs = await SharedPreferences.getInstance();
-  final newCookieList = newCookie.split('\n').map((item) => Cookie.fromSetCookieValue(item)).toList();
-  List<Cookie>? savedCookie = await getCookie();
+  final newCookieList = newCookie.map((item) => Cookie.fromSetCookieValue(item)).toList();
+  List<Cookie>? savedCookie = await get();
 
   if (savedCookie != null) {
     // merge saved cookie with new cookie
@@ -23,9 +26,10 @@ void setCookie(String newCookie) async {
 
   prefs.setString(_prefsKey, encrypt(newCookieList.join('\n')));
   _cookieCache = newCookieList;
+  return _cookieCache;
 }
 
-Future<List<Cookie>?> getCookie() async {
+Future<List<Cookie>?> get() async {
   if (_cookieCache != null) {
     return _cookieCache;
   }
@@ -42,7 +46,7 @@ Future<List<Cookie>?> getCookie() async {
   return null;
 }
 
-void clearCookie() async {
+void clear() async {
   final prefs = await SharedPreferences.getInstance();
   prefs.remove(_prefsKey);
   _cookieCache = null;
