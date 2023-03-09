@@ -3,7 +3,8 @@ import 'package:collection/collection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lingua_flutter/utils/crypto.dart';
 
-const _prefsKey = 'cookie';
+import './constants.dart';
+
 List<Cookie>? _cookieCache;
 
 Future<List<Cookie>?> set(List<String>? newCookie) async {
@@ -12,7 +13,7 @@ Future<List<Cookie>?> set(List<String>? newCookie) async {
   }
   final prefs = await SharedPreferences.getInstance();
   final newCookieList = newCookie.map((item) => Cookie.fromSetCookieValue(item)).toList();
-  List<Cookie>? savedCookie = await get();
+  List<Cookie>? savedCookie = await getList();
 
   if (savedCookie != null) {
     // merge saved cookie with new cookie
@@ -24,18 +25,18 @@ Future<List<Cookie>?> set(List<String>? newCookie) async {
     }
   }
 
-  prefs.setString(_prefsKey, encrypt(newCookieList.join('\n')));
+  await prefs.setString(CookieConstants.prefKey, encrypt(newCookieList.join('\n')));
   _cookieCache = newCookieList;
   return _cookieCache;
 }
 
-Future<List<Cookie>?> get() async {
+Future<List<Cookie>?> getList() async {
   if (_cookieCache != null) {
     return _cookieCache;
   }
 
   final prefs = await SharedPreferences.getInstance();
-  final String? cookie = prefs.getString(_prefsKey);
+  final String? cookie = prefs.getString(CookieConstants.prefKey);
 
   if (cookie != null) {
      final decryptedCookie = decrypt(cookie);
@@ -46,8 +47,18 @@ Future<List<Cookie>?> get() async {
   return null;
 }
 
+Future<String?> getString() async {
+  final List<Cookie>? cookie = await getList();
+
+  if (cookie != null) {
+    return cookie.map((item) => '${item.name}=${item.value}').join('; ');
+  }
+
+  return null;
+}
+
 void clear() async {
   final prefs = await SharedPreferences.getInstance();
-  prefs.remove(_prefsKey);
+  await prefs.remove(CookieConstants.prefKey);
   _cookieCache = null;
 }

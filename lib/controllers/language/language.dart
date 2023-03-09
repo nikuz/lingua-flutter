@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:lingua_flutter/controllers/api/api.dart';
+import 'package:lingua_flutter/controllers/request/request.dart' as request_controller;
+import 'package:lingua_flutter/controllers/request/request.dart' show Options;
 import 'package:lingua_flutter/controllers/error_logger/error_logger.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/json.dart';
@@ -45,7 +46,7 @@ Future<Map<String, String>?> get({ bool? forceUpdate }) async {
 
   Map<String, dynamic>? languagesResponse;
   try {
-    final response = await apiGet(
+    final response = await request_controller.get(
       url: '${config.getApiUrl()}/api/languages',
       options: Options(
         contentType: 'application/json',

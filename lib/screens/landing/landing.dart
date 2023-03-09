@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:lingua_flutter/controllers/language/language.dart' as languages_controller;
+import 'package:lingua_flutter/controllers/session/session.dart' as session_controller;
 import 'package:lingua_flutter/widgets/typography/typography.dart';
 import 'package:lingua_flutter/models/language/language.dart';
 import 'package:lingua_flutter/widgets/language_selector/language_selector.dart';
 import 'package:lingua_flutter/screens/router.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
-import 'package:lingua_flutter/controllers/language/language.dart' as languages_controller;
 import 'package:lingua_flutter/styles/styles.dart';
 
 class Landing extends StatefulWidget {
@@ -66,13 +67,17 @@ class _LandingState extends State<Landing> {
     }
   }
 
-  void _checkBothLanguagesAreChosen() {
+  void _checkBothLanguagesAreChosen() async {
     if (_translateFrom != null && _translateTo != null) {
+      setState(() {
+        _loading = true;
+      });
+      await session_controller.get(); // retrieve initial session
       _settingsCubit.setTranslateFrom(_translateFrom!);
       _settingsCubit.setTranslateTo(_translateTo!);
-      Future.delayed(const Duration(milliseconds: 200), () {
+      if (mounted) {
         AutoRouter.of(context).pushNamed(Routes.home);
-      });
+      }
     }
   }
 

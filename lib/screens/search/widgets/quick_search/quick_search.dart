@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lingua_flutter/controllers/request/request.dart' show CancelToken;
 import 'package:lingua_flutter/models/language/language.dart';
 import 'package:lingua_flutter/models/translation_container/translation_container.dart';
 import 'package:lingua_flutter/widgets/translation_word_view/translation_word_view.dart';
@@ -8,7 +9,6 @@ import 'package:lingua_flutter/widgets/auto_language_detector/auto_language_dete
 import 'package:lingua_flutter/widgets/auto_spelling/auto_spelling.dart';
 import 'package:lingua_flutter/widgets/button/button.dart';
 import 'package:lingua_flutter/utils/string.dart';
-import 'package:lingua_flutter/controllers/api/api.dart';
 
 import '../../bloc/search_cubit.dart';
 import '../../bloc/search_state.dart';

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:lingua_flutter/controllers/request/request.dart' show CancelToken;
 import 'package:lingua_flutter/models/language/language.dart';
 import 'package:lingua_flutter/models/translation_container/translation_container.dart';
 import 'package:lingua_flutter/controllers/connectivity/connectivity.dart';
-import 'package:lingua_flutter/controllers/api/api.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
 import './bloc/translation_view_cubit.dart';

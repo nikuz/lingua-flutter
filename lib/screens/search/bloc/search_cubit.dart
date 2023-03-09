@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lingua_flutter/controllers/request/request.dart' show CancelToken, DioError;
 import 'package:lingua_flutter/controllers/dictionary/dictionary.dart' as dictionary_controller;
 import 'package:lingua_flutter/controllers/translation/translation.dart' as translation_controller;
 import 'package:lingua_flutter/models/error/error.dart';
@@ -7,7 +8,6 @@ import 'package:lingua_flutter/models/translation_container/translation_list.dar
 import 'package:lingua_flutter/models/language/language.dart';
 import 'package:lingua_flutter/utils/types.dart';
 import 'package:lingua_flutter/controllers/error_logger/error_logger.dart';
-import 'package:lingua_flutter/controllers/api/api.dart';
 
 import '../search_constants.dart';
 import 'search_state.dart';
@@ -75,7 +75,7 @@ class SearchCubit extends Cubit<SearchState> {
           cancelToken: cancelToken,
         );
 
-        if (translation.word == state.searchText) {
+        if (translation?.word == state.searchText) {
           emit(state.copyWith(
             quickTranslation: Wrapped.value(translation),
             quickTranslationLoading: false,

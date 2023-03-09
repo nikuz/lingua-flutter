@@ -1,6 +1,7 @@
-import 'dart:developer' as developer;
 import 'dart:io';
-import 'package:lingua_flutter/controllers/api/api.dart';
+import 'dart:developer' as developer;
+import 'package:lingua_flutter/controllers/request/request.dart' as request_controller;
+import 'package:lingua_flutter/controllers/request/request.dart' show Response, Options, CancelToken, ResponseType, DioError;
 import 'package:lingua_flutter/controllers/parsing_schema/parsing_schema.dart' as parsing_schema_controller;
 import 'package:lingua_flutter/controllers/cookie/cookie.dart' as cookie_controller;
 import 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
@@ -11,7 +12,7 @@ Future<void> acquire({
   required String url,
   CancelToken? cancelToken,
 }) async {
-  List<Cookie>? cookie = await cookie_controller.get();
+  List<Cookie>? cookie = await cookie_controller.getList();
 
   if (cookie == null) {
     throw const CustomError(
@@ -20,7 +21,7 @@ Future<void> acquire({
     );
   }
 
-  Response<dynamic> consentPageResponse = await apiGet(
+  Response<dynamic> consentPageResponse = await request_controller.get(
     url: url,
     options: Options(
       contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
@@ -43,14 +44,11 @@ Future<void> acquire({
 
   StoredParsingSchema? storedParsingSchema = await parsing_schema_controller.get('current');
   if (storedParsingSchema == null) {
-    throw const CustomError(
-      code: 404,
-      message: 'Can\'t retrieve "current" parsing schema',
-    );
+    return;
   }
+  ParsingSchema parsingSchema = storedParsingSchema.schema;
 
   // retrieve form data from consent page response
-  ParsingSchema parsingSchema = storedParsingSchema.schema;
   final formReg = RegExp(parsingSchema.cookieConsent.fields.formRegExp);
   final inputReg = RegExp(parsingSchema.cookieConsent.fields.inputRegExp);
   final form = formReg.firstMatch(consentPageResponse.data.toString());
@@ -89,7 +87,7 @@ Future<void> acquire({
   // save cookie consent and update local cookie
   if (action != null && cookie != null) {
     try {
-      final consentSaveResponse = await apiPost(
+      final consentSaveResponse = await request_controller.post(
         url: action,
         options: Options(
           contentType: 'application/x-www-form-urlencoded;charset=UTF-8',

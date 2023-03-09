@@ -1,10 +1,11 @@
 import 'dart:io';
-import 'package:lingua_flutter/controllers/api/api.dart';
+import 'package:lingua_flutter/controllers/request/request.dart' as request_controller;
+import 'package:lingua_flutter/controllers/request/request.dart' show Options;
 import 'package:lingua_flutter/controllers/error_logger/error_logger.dart';
+import 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
 import 'package:lingua_flutter/utils/files.dart';
 import 'package:lingua_flutter/utils/crypto.dart';
 import 'package:lingua_flutter/utils/json.dart';
-import 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
 import 'package:lingua_flutter/app_config.dart' as config;
 
 export 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
@@ -66,30 +67,38 @@ Future<StoredParsingSchema?> get(String versionName, { bool? forceUpdate }) asyn
     }
   }
 
-  final response = await apiGet(
-    url: '${config.getApiUrl()}/api/schema/current',
-    options: Options(
-      contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
-      headers: {
-        'accept-encoding': 'gzip, deflate',
-      },
-    ),
-  );
+  try {
+    final response = await request_controller.get(
+      url: '${config.getApiUrl()}/api/schema/current',
+      options: Options(
+        contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+        headers: {
+          'accept-encoding': 'gzip, deflate',
+        },
+      ),
+    );
 
-  final decryptedResult = decrypt(response.toString());
-  final responseJson = await jsonDecodeIsolate(decryptedResult);
+    final decryptedResult = decrypt(response.toString());
+    final responseJson = await jsonDecodeIsolate(decryptedResult);
 
-  final schemaJson = responseJson['schema'];
-  final schema = StoredParsingSchema.fromCloud(responseJson, schemaJson);
-  final schemasPath = await _getSchemasPath();
+    final schemaJson = responseJson['schema'];
+    final schema = StoredParsingSchema.fromCloud(responseJson, schemaJson);
+    final schemasPath = await _getSchemasPath();
 
-  // store schema with "schema.version" name
-  parsingSchemas[schema.version] = schema;
-  File file = File('$schemasPath/${schema.version}');
-  file = await file.create(recursive: true);
-  await file.writeAsString(response.toString());
+    // store schema with "schema.version" name
+    parsingSchemas[schema.version] = schema;
+    File file = File('$schemasPath/${schema.version}');
+    file = await file.create(recursive: true);
+    await file.writeAsString(response.toString());
 
-  return schema;
+    return schema;
+  } catch (err, stack) {
+    recordFatalError(err, stack, information: [
+      'Can\'t retrieve "current" parsing schema'
+    ]);
+
+    return null;
+  }
 }
 
 Future<String> _getSchemasPath() async {

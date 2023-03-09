@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:lingua_flutter/controllers/api/api.dart';
+import 'package:lingua_flutter/controllers/request/request.dart' show CancelToken;
 
 class TranslationViewInheritedState extends InheritedWidget {
   final GlobalKey headerKey;

@@ -4,15 +4,15 @@ import 'package:lingua_flutter/models/error/error.dart';
 
 export 'package:dio/dio.dart' show Options, ResponseType, CancelToken, DioError, Response;
 
-enum ApiRequestType {
+enum RequestType {
   get,
   post,
   put,
   delete,
 }
 
-Future<Response<dynamic>> apiRequest({
-  required ApiRequestType method,
+Future<Response<dynamic>> request({
+  required RequestType method,
   required String url,
   Options? options,
   Map<String, dynamic>? queryParameters,
@@ -22,7 +22,7 @@ Future<Response<dynamic>> apiRequest({
   late Response response;
 
   switch (method) {
-    case ApiRequestType.get:
+    case RequestType.get:
       response = await Dio().get(
         url,
         options: options,
@@ -31,7 +31,7 @@ Future<Response<dynamic>> apiRequest({
       );
       break;
 
-    case ApiRequestType.post:
+    case RequestType.post:
       response = await Dio().post(
         url,
         options: options,
@@ -41,7 +41,7 @@ Future<Response<dynamic>> apiRequest({
       );
       break;
 
-    case ApiRequestType.put:
+    case RequestType.put:
       response = await Dio().put(
         url,
         options: options,
@@ -51,7 +51,7 @@ Future<Response<dynamic>> apiRequest({
       );
       break;
 
-    case ApiRequestType.delete:
+    case RequestType.delete:
       response = await Dio().delete(
         url,
         options: options,
@@ -71,27 +71,27 @@ Future<Response<dynamic>> apiRequest({
   }
 }
 
-Future<Response<dynamic>> apiGet({
+Future<Response<dynamic>> get({
   required String url,
   Options? options,
   Map<String, dynamic>? queryParameters,
   CancelToken? cancelToken,
-}) => apiRequest(
-  method: ApiRequestType.get,
+}) => request(
+  method: RequestType.get,
   url: url,
   options: options,
   queryParameters: queryParameters,
   cancelToken: cancelToken,
 );
 
-Future<Response<dynamic>> apiPost({
+Future<Response<dynamic>> post({
   required String url,
   Options? options,
   Map<String, dynamic>? queryParameters,
   Map<String, dynamic>? data,
   CancelToken? cancelToken,
-}) => apiRequest(
-  method: ApiRequestType.post,
+}) => request(
+  method: RequestType.post,
   url: url,
   options: options,
   queryParameters: queryParameters,
@@ -99,14 +99,14 @@ Future<Response<dynamic>> apiPost({
   data: data,
 );
 
-Future<Response<dynamic>> apiPut({
+Future<Response<dynamic>> put({
   required String url,
   Options? options,
   Map<String, dynamic>? queryParameters,
   Map<String, dynamic>? data,
   CancelToken? cancelToken,
-}) => apiRequest(
-  method: ApiRequestType.put,
+}) => request(
+  method: RequestType.put,
   url: url,
   options: options,
   queryParameters: queryParameters,
@@ -114,13 +114,13 @@ Future<Response<dynamic>> apiPut({
   data: data,
 );
 
-Future<Response<dynamic>> apiDelete({
+Future<Response<dynamic>> delete({
   required String url,
   Options? options,
   Map<String, dynamic>? queryParameters,
   CancelToken? cancelToken,
-}) => apiRequest(
-  method: ApiRequestType.delete,
+}) => request(
+  method: RequestType.delete,
   url: url,
   options: options,
   queryParameters: queryParameters,
