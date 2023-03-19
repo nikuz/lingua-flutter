@@ -7,9 +7,9 @@ import './constants.dart';
 
 List<Cookie>? _cookieCache;
 
-Future<List<Cookie>?> set(List<String>? newCookie) async {
+Future<void> set(List<String>? newCookie) async {
   if (newCookie == null) {
-    return null;
+    return;
   }
   final prefs = await SharedPreferences.getInstance();
   final newCookieList = newCookie.map((item) => Cookie.fromSetCookieValue(item)).toList();
@@ -27,7 +27,6 @@ Future<List<Cookie>?> set(List<String>? newCookie) async {
 
   await prefs.setString(CookieConstants.prefKey, encrypt(newCookieList.join('\n')));
   _cookieCache = newCookieList;
-  return _cookieCache;
 }
 
 Future<List<Cookie>?> getList() async {

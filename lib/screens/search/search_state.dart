@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:lingua_flutter/models/language/language.dart';
-import 'package:lingua_flutter/models/translation_container/translation_container.dart';
+import 'package:lingua_flutter/models/quick_translation/quick_translation.dart';
 
 class SearchInheritedState extends InheritedWidget {
   final TextEditingController textController;
@@ -9,7 +9,7 @@ class SearchInheritedState extends InheritedWidget {
   final Function(String word, {
     required Language translateFrom,
     required Language translateTo,
-    TranslationContainer? quickTranslation,
+    QuickTranslation? quickTranslation,
   }) submitHandler;
   final Function(String name, Function callback) subscribeToListScroll;
   final Function(String name) unsubscribeFromListScroll;

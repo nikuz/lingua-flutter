@@ -15,6 +15,7 @@ import 'package:auto_route/auto_route.dart' as _i9;
 import 'package:flutter/material.dart' as _i10;
 
 import '../models/language/language.dart' as _i12;
+import '../models/quick_translation/quick_translation.dart' as _i13;
 import '../models/translation_container/translation_container.dart' as _i11;
 import 'games/games.dart' as _i7;
 import 'landing/landing.dart' as _i1;
@@ -179,7 +180,7 @@ class TranslationViewRoute extends _i9.PageRouteInfo<TranslationViewRouteArgs> {
     required String word,
     required _i12.Language translateFrom,
     required _i12.Language translateTo,
-    _i11.TranslationContainer? quickTranslation,
+    _i13.QuickTranslation? quickTranslation,
   }) : super(
           TranslationViewRoute.name,
           path: 'translation_view',
@@ -212,7 +213,7 @@ class TranslationViewRouteArgs {
 
   final _i12.Language translateTo;
 
-  final _i11.TranslationContainer? quickTranslation;
+  final _i13.QuickTranslation? quickTranslation;
 
   @override
   String toString() {

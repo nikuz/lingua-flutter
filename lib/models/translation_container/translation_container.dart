@@ -2,6 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:jmespath/jmespath.dart' as jmespath;
 import 'package:lingua_flutter/models/parsing_schema/schema.dart';
 import 'package:lingua_flutter/models/language/language.dart';
+import 'package:lingua_flutter/models/quick_translation/quick_translation.dart';
 import 'package:lingua_flutter/utils/types.dart';
 
 import './translation.dart';
@@ -233,18 +234,13 @@ class TranslationContainer {
     );
   }
 
-  String get mostRelevantTranslation {
-    String translationWord = translation;
-
-    // if translation contains gender-specific variants, then take first word from alternative translations instead
-    if (translationWord.contains(',')) {
-      final firstRelativeTranslation = alternativeTranslations?[0].items[0];
-      if (firstRelativeTranslation != null) {
-        translationWord = firstRelativeTranslation.translation;
-      }
-    }
-
-    return translationWord;
+  factory TranslationContainer.fromQuickTranslation(QuickTranslation quickTranslation) {
+    return TranslationContainer(
+      word: quickTranslation.word,
+      translation: quickTranslation.translation,
+      translateFrom: quickTranslation.translateFrom,
+      translateTo: quickTranslation.translateTo,
+    );
   }
 
   TranslationContainer copyWith({

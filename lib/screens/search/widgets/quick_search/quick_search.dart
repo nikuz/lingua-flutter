@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/controllers/request/request.dart' show CancelToken;
 import 'package:lingua_flutter/models/language/language.dart';
-import 'package:lingua_flutter/models/translation_container/translation_container.dart';
-import 'package:lingua_flutter/widgets/translation_word_view/translation_word_view.dart';
+import 'package:lingua_flutter/models/quick_translation/quick_translation.dart';
 import 'package:lingua_flutter/widgets/language_selector/language_selector.dart';
 import 'package:lingua_flutter/widgets/auto_language_detector/auto_language_detector.dart';
-import 'package:lingua_flutter/widgets/auto_spelling/auto_spelling.dart';
 import 'package:lingua_flutter/widgets/button/button.dart';
 import 'package:lingua_flutter/utils/string.dart';
 
@@ -113,9 +111,9 @@ class _QuickSearchState extends State<QuickSearch> {
                   crossAxisAlignment: WrapCrossAlignment.end,
                   children: [
                     if (state.quickTranslation != null)
-                      TranslationWordView(
-                        translation: state.quickTranslation!,
-                        textStyle: const TextStyle(
+                      Text(
+                        state.quickTranslation!.translation,
+                        style: const TextStyle(
                           fontSize: 20,
                         ),
                       ),
@@ -138,7 +136,7 @@ class _QuickSearchState extends State<QuickSearch> {
                   final text = searchState?.textController.text;
                   if (searchState?.hasInternetConnection == true && text != null) {
                     final sanitizedWord = removeQuotesFromString(removeSlashFromString(text)).trim();
-                    TranslationContainer? quickTranslation;
+                    QuickTranslation? quickTranslation;
 
                     if (sanitizedWord == state.quickTranslation?.word
                         && widget.translateFrom == state.quickTranslation?.translateFrom
@@ -162,41 +160,23 @@ class _QuickSearchState extends State<QuickSearch> {
           ),
         ),
 
-        AutoSpelling(
-          translation: state.quickTranslation,
+        AutoLanguageDetector<QuickTranslation>(
+          translation: state.quickTranslationWithAutoLanguage,
           padding: const EdgeInsets.symmetric(
             horizontal: 15,
             vertical: 10,
           ),
-          onPressed: (autoSpelling) {
-            searchState?.textController.text = autoSpelling;
-            _searchCubit.fetchTranslations(searchText: autoSpelling);
-            if (searchState?.textController != null) {
-              searchState!.textController.selection = TextSelection.fromPosition(
-                TextPosition(offset: searchState.textController.text.length),
+          onPressed: (language) {
+            widget.onTranslateFromChange(language);
+            if (state.quickTranslation != null) {
+              widget.onTranslateToChange(
+                  language.id == state.quickTranslation!.translateTo.id
+                      ? state.quickTranslation!.translateFrom
+                      : state.quickTranslation!.translateTo
               );
             }
           },
         ),
-
-        if (state.quickTranslation?.autoSpelling == null)
-          AutoLanguageDetector(
-            translation: state.quickTranslation,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 15,
-              vertical: 10,
-            ),
-            onPressed: (language) {
-              widget.onTranslateFromChange(language);
-              if (state.quickTranslation != null) {
-                widget.onTranslateToChange(
-                    language.id == state.quickTranslation!.translateTo.id
-                        ? state.quickTranslation!.translateFrom
-                        : state.quickTranslation!.translateTo
-                );
-              }
-            },
-          ),
 
         LanguageSelector(
           selectorFromTitle: 'Translate from',

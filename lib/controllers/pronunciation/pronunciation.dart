@@ -4,6 +4,7 @@ import 'package:lingua_flutter/controllers/request/request.dart' show CancelToke
 import 'package:lingua_flutter/controllers/cookie/cookie.dart' as cookie_controller;
 import 'package:lingua_flutter/controllers/translation/translation.dart' as translation_controller;
 import 'package:lingua_flutter/controllers/session/session.dart' as session_controller;
+import 'package:lingua_flutter/controllers/parsing_schema/parsing_schema.dart' as parsing_schema_controller;
 import 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
 import 'package:lingua_flutter/models/language/language.dart';
 import 'package:lingua_flutter/models/error/error.dart';
@@ -11,7 +12,6 @@ import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/utils/types.dart';
 
 Future<String?> retrieve({
-  required ParsingSchema schema,
   required String word,
   required Language language,
   CancelToken? cancelToken,
@@ -19,10 +19,15 @@ Future<String?> retrieve({
 }) async {
   final encodedWord = removeQuotesFromString(removeSlashFromString(word));
   final session = await session_controller.get(word: word, cancelToken: cancelToken);
+  StoredParsingSchema? currentParsingSchema = await parsing_schema_controller.get('current');
+  if (currentParsingSchema == null) {
+    return null;
+  }
+  ParsingSchema? parsingSchema = currentParsingSchema.schema;
 
   try {
     final pronunciationResponse = await request_controller.post(
-      url: schema.pronunciation.fields.url,
+      url: parsingSchema.pronunciation.fields.url,
       options: Options(
         contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
         responseType: ResponseType.plain,
@@ -33,8 +38,8 @@ Future<String?> retrieve({
       ),
       cancelToken: cancelToken,
       data: {
-        schema.pronunciation.fields.parameter: schema.pronunciation.fields.body
-            .replaceAll('{marker}', schema.pronunciation.fields.marker)
+        parsingSchema.pronunciation.fields.parameter: parsingSchema.pronunciation.fields.body
+            .replaceAll('{marker}', parsingSchema.pronunciation.fields.marker)
             .replaceAll('{word}', encodedWord)
             .replaceAll('{sourceLanguage}', language.id)
       },
@@ -44,12 +49,12 @@ Future<String?> retrieve({
     if (pronunciationRaw != null) {
       final pronunciationRawData = await translation_controller.retrieveResponseRawData(
         pronunciationRaw,
-        schema.pronunciation.fields.marker,
+        parsingSchema.pronunciation.fields.marker,
       );
       if (pronunciationRawData != null) {
-        String? base64Value = getDynamicString(jmespath.search(schema.pronunciation.data.value, pronunciationRawData));
+        String? base64Value = getDynamicString(jmespath.search(parsingSchema.pronunciation.data.value, pronunciationRawData));
         if (base64Value != null) {
-          return schema.pronunciation.fields.base64Prefix + base64Value;
+          return parsingSchema.pronunciation.fields.base64Prefix + base64Value;
         }
       }
     }
@@ -61,7 +66,6 @@ Future<String?> retrieve({
       if (followRedirects) {
         await session_controller.invalidate();
         return retrieve(
-          schema: schema,
           word: word,
           language: language,
           cancelToken: cancelToken,
@@ -76,7 +80,7 @@ Future<String?> retrieve({
           err,
           word,
           language.toJson(),
-          schema,
+          parsingSchema,
         ],
       );
     }

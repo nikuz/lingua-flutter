@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/controllers/request/request.dart' show CancelToken, DioError;
+import 'package:lingua_flutter/models/quick_translation/quick_translation.dart';
 import 'package:lingua_flutter/models/translation_container/translation_container.dart';
 import 'package:lingua_flutter/models/error/error.dart';
 import 'package:lingua_flutter/models/language/language.dart';
@@ -24,18 +25,53 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
     try {
       emit(state.copyWith(translateLoading: true));
 
-      final translation = await translation_controller.translate(
+      TranslationContainer? translation;
+
+      translation = await translation_controller.localTranslate(
         word: word,
         translateFrom: translateFrom,
         translateTo: translateTo,
-        cancelToken: cancelToken,
       );
+
+      if (translation == null) {
+        List<Future<dynamic>> requestList = [translation_controller.cloudTranslate(
+          word: word,
+          translateFrom: translateFrom,
+          translateTo: translateTo,
+          cancelToken: cancelToken,
+        )];
+
+        String? quickTranslation = state.translation?.translation;
+        if (quickTranslation == null) {
+          requestList.add(translation_controller.quickTranslate(
+            word: word,
+            translateFrom: translateFrom,
+            translateTo: translateTo,
+            cancelToken: cancelToken,
+          ));
+        }
+        List<dynamic> results = await Future.wait(requestList);
+        translation = results[0] as TranslationContainer?;
+        if (results.length > 1) {
+          quickTranslation = (results[1] as QuickTranslation?)?.translation;
+        }
+
+        if (quickTranslation != null && translation != null) {
+          translation = translation.copyWith(
+            translation: quickTranslation,
+          );
+        }
+      }
 
       if (state.translateLoading) {
         emit(state.copyWith(
           word: word,
           imageSearchWord: word,
-          translation: translation,
+          translation: translation?.copyWith(
+            image: state.translation?.image,
+            pronunciationFrom: state.translation?.pronunciationFrom,
+            pronunciationTo: state.translation?.pronunciationTo,
+          ),
           translateLoading: false,
         ));
       }
@@ -112,11 +148,13 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
     }
   }
 
-  void fetchPronunciations(TranslationContainer translation, CancelToken cancelToken) async {
-    if (translation.schema == null) {
-      return null;
-    }
-
+  void fetchPronunciations({
+    required String word,
+    required Language translateFrom,
+    required String translation,
+    required Language translateTo,
+    CancelToken? cancelToken,
+  }) async {
     emit(state.copyWith(
       pronunciationLoading: true,
     ));
@@ -124,20 +162,18 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
     try {
       List<String?> results = await Future.wait([
         pronunciation_controller.retrieve(
-          word: translation.word,
-          schema: translation.schema!,
-          language: translation.translateFrom,
+          word: word,
+          language: translateFrom,
           cancelToken: cancelToken,
         ),
         pronunciation_controller.retrieve(
-          word: translation.mostRelevantTranslation,
-          schema: translation.schema!,
-          language: translation.translateTo,
+          word: translation,
+          language: translateTo,
           cancelToken: cancelToken,
         ),
       ]);
 
-      if (state.translation != null && state.translation!.word == translation.word) {
+      if (state.translation != null && state.translation!.word == word) {
         emit(state.copyWith(
           translation: state.translation?.copyWith(
             pronunciationFrom: results[0],
@@ -177,7 +213,6 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
       if (state.translationIsUpdated && translation.schema != null) {
         newPronunciationTo = await pronunciation_controller.retrieve(
           word: translation.translation,
-          schema: translation.schema!,
           language: translation.translateTo,
           cancelToken: cancelToken,
         );
@@ -213,7 +248,6 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
       if (state.translationIsUpdated && translation.schema != null) {
         newPronunciationTo = await pronunciation_controller.retrieve(
           word: translation.translation,
-          schema: translation.schema!,
           language: translation.translateTo,
           cancelToken: cancelToken,
         );

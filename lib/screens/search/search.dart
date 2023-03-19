@@ -6,6 +6,7 @@ import 'package:lingua_flutter/controllers/connectivity/connectivity.dart';
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/utils/regexp.dart';
 import 'package:lingua_flutter/models/translation_container/translation_container.dart';
+import 'package:lingua_flutter/models/quick_translation/quick_translation.dart';
 import 'package:lingua_flutter/models/language/language.dart';
 import 'package:lingua_flutter/screens/router.gr.dart';
 import 'package:lingua_flutter/styles/styles.dart';
@@ -116,7 +117,7 @@ class _SearchState extends State<Search> with WidgetsBindingObserver {
   void _submitHandler(String word, {
     required Language translateFrom,
     required Language translateTo,
-    TranslationContainer? quickTranslation,
+    QuickTranslation? quickTranslation,
   }) async {
     final sanitizedWord = removeQuotesFromString(removeSlashFromString(word)).trim();
     if (sanitizedWord.isNotEmpty && !_searchTextIsUrl(sanitizedWord)) {

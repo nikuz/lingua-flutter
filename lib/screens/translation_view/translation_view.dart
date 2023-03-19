@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/controllers/request/request.dart' show CancelToken;
 import 'package:lingua_flutter/models/language/language.dart';
+import 'package:lingua_flutter/models/quick_translation/quick_translation.dart';
 import 'package:lingua_flutter/models/translation_container/translation_container.dart';
 import 'package:lingua_flutter/controllers/connectivity/connectivity.dart';
 import 'package:lingua_flutter/styles/styles.dart';
@@ -24,7 +25,7 @@ class TranslationView extends StatefulWidget {
   final String word;
   final Language translateFrom;
   final Language translateTo;
-  final TranslationContainer? quickTranslation;
+  final QuickTranslation? quickTranslation;
 
   const TranslationView({
     Key? key,
@@ -53,12 +54,19 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollHandler);
 
-    if (widget.quickTranslation != null) {
-      _translationViewCubit.setTranslation(widget.quickTranslation!);
-      _fetchImages(widget.quickTranslation!.word);
-      _translationViewCubit.fetchPronunciations(widget.quickTranslation!, _cancelToken);
-    } else {
-      _fetchTranslation();
+    _fetchTranslation();
+    final quickTranslation = widget.quickTranslation;
+
+    if (quickTranslation != null) {
+      _translationViewCubit.setTranslation(TranslationContainer.fromQuickTranslation(quickTranslation));
+      _fetchImages(quickTranslation.word);
+      _translationViewCubit.fetchPronunciations(
+        word: quickTranslation.word,
+        translateFrom: quickTranslation.translateFrom,
+        translation: quickTranslation.translation,
+        translateTo: quickTranslation.translateTo,
+        cancelToken: _cancelToken,
+      );
     }
 
     _getInternetConnectionStatus();
@@ -145,7 +153,13 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
           && state.translation!.pronunciationFrom == null
           && !state.pronunciationLoading
         ) {
-          _translationViewCubit.fetchPronunciations(state.translation!, _cancelToken);
+          _translationViewCubit.fetchPronunciations(
+            word: state.translation!.word,
+            translateFrom: state.translation!.translateFrom,
+            translation: state.translation!.translation,
+            translateTo: state.translation!.translateTo,
+            cancelToken: _cancelToken,
+          );
         }
       },
       child: BlocBuilder<TranslationViewCubit, TranslationViewState>(

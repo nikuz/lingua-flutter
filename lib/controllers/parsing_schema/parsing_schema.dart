@@ -24,14 +24,22 @@ Future<void> preload() async {
     // read schema file
     final file = File(item.path);
     final schemaFileContent = await file.readAsString();
-    final decryptedFileContent = decrypt(schemaFileContent);
+    String? decryptedFileContent;
+    try {
+      decryptedFileContent = decrypt(schemaFileContent);
+    } catch (err, stack) {
+      file.deleteSync();
+      recordError(err, stack);
+    }
 
     // decode file JSON content
     Map<String, dynamic>? schemaData;
-    try {
-      schemaData = await jsonDecodeIsolate(decryptedFileContent);
-    } catch (err, stack) {
-      recordError(err, stack);
+    if (decryptedFileContent != null) {
+      try {
+        schemaData = await jsonDecodeIsolate(decryptedFileContent);
+      } catch (err, stack) {
+        recordError(err, stack);
+      }
     }
 
     // create schema class instance and store in parsingSchemas cache variable

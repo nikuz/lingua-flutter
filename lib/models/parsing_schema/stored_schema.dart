@@ -40,8 +40,10 @@ class StoredParsingSchema {
           fields: QuickTranslationSchemaFields(
             url: schemaJson['quick_translation']['fields']['url'],
           ),
+          autoLanguage: SchemaItem(value: schemaJson['quick_translation']['auto_language_code']['value']),
           sentences: QuickTranslationSchemaSentences(
-            originalWord: schemaJson['quick_translation']['sentences']['original_word']['value'],
+            value: schemaJson['quick_translation']['sentences']['value'],
+            word: schemaJson['quick_translation']['sentences']['original_word']['value'],
             translation: schemaJson['quick_translation']['sentences']['translation']['value'],
           ),
         ),

@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:lingua_flutter/models/error/error.dart';
 import 'package:lingua_flutter/utils/types.dart';
 import 'package:lingua_flutter/models/translation_container/translation_container.dart';
+import 'package:lingua_flutter/models/quick_translation/quick_translation.dart';
 
 import '../search_constants.dart';
 part 'search_state.g.dart';
@@ -14,7 +15,8 @@ class SearchState extends Equatable {
   final int totalAmount;
   final List<TranslationContainer> translations;
   final String? searchText;
-  final TranslationContainer? quickTranslation;
+  final QuickTranslation? quickTranslation;
+  final QuickTranslation? quickTranslationWithAutoLanguage;
   final CustomError? quickTranslationError;
   final bool quickTranslationLoading;
   final bool loading;
@@ -27,6 +29,7 @@ class SearchState extends Equatable {
     this.translations = const [],
     this.searchText,
     this.quickTranslation,
+    this.quickTranslationWithAutoLanguage,
     this.quickTranslationError,
     this.quickTranslationLoading = false,
     this.loading = true,
@@ -39,7 +42,8 @@ class SearchState extends Equatable {
     int? totalAmount,
     List<TranslationContainer>? translations,
     Wrapped<String?>? searchText,
-    Wrapped<TranslationContainer?>? quickTranslation,
+    Wrapped<QuickTranslation?>? quickTranslation,
+    Wrapped<QuickTranslation?>? quickTranslationWithAutoLanguage,
     Wrapped<CustomError?>? quickTranslationError,
     bool? quickTranslationLoading,
     bool? loading,
@@ -52,6 +56,9 @@ class SearchState extends Equatable {
       translations: translations ?? this.translations,
       searchText: searchText != null ? searchText.value : this.searchText,
       quickTranslation: quickTranslation != null ? quickTranslation.value : this.quickTranslation,
+      quickTranslationWithAutoLanguage: quickTranslationWithAutoLanguage != null
+          ? quickTranslationWithAutoLanguage.value
+          : this.quickTranslationWithAutoLanguage,
       quickTranslationError: quickTranslationError != null ? quickTranslationError.value : this.quickTranslationError,
       quickTranslationLoading: quickTranslationLoading ?? this.quickTranslationLoading,
       loading: loading ?? this.loading,

@@ -252,7 +252,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
                     onPressed: () {
                       context.read<TranslationViewCubit>().reset();
                       AutoRouter.of(context).replace(TranslationViewRoute(
-                        word: translation.mostRelevantTranslation,
+                        word: translation.translation,
                         translateFrom: translation.translateTo,
                         translateTo: translation.translateFrom,
                       ));
@@ -261,7 +261,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
                 ),
               ),
               _buildFooter(context, state),
-              AutoLanguageDetector(
+              AutoLanguageDetector<TranslationContainer>(
                 translation: translation,
                 color: theme.colors.focusForeground,
                 onPressed: (language) {

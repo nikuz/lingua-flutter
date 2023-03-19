@@ -5,7 +5,7 @@ import 'package:lingua_flutter/widgets/text_field/text_field.dart';
 import 'package:lingua_flutter/utils/remap_value.dart';
 import 'package:lingua_flutter/utils/string.dart';
 import 'package:lingua_flutter/models/language/language.dart';
-import 'package:lingua_flutter/models/translation_container/translation_container.dart';
+import 'package:lingua_flutter/models/quick_translation/quick_translation.dart';
 
 import '../../bloc/search_cubit.dart';
 import '../../bloc/search_state.dart';
@@ -233,7 +233,7 @@ class _SearchFieldState extends State<SearchField> {
                         if (searchState?.hasInternetConnection == true && text != null) {
                           final sanitizedWord = removeQuotesFromString(removeSlashFromString(text)).trim();
                           if (sanitizedWord.isNotEmpty) {
-                            TranslationContainer? quickTranslation;
+                            QuickTranslation? quickTranslation;
 
                             if (sanitizedWord == state.quickTranslation?.word
                                 && widget.translateFrom == state.quickTranslation?.translateFrom

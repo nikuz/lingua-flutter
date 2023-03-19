@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lingua_flutter/controllers/language/language.dart' as languages_controller;
-import 'package:lingua_flutter/models/translation_container/translation_container.dart';
 import 'package:lingua_flutter/models/language/language.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
-class AutoLanguageDetector extends StatefulWidget {
-  final TranslationContainer? translation;
+class AutoLanguageDetector<T> extends StatefulWidget {
+  final T? translation;
   final EdgeInsets? padding;
   final Color? color;
   final Function(Language)? onPressed;

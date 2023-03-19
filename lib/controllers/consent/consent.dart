@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:developer' as developer;
 import 'package:lingua_flutter/controllers/request/request.dart' as request_controller;
 import 'package:lingua_flutter/controllers/request/request.dart' show Response, Options, CancelToken, ResponseType, DioError;
@@ -12,9 +11,9 @@ Future<void> acquire({
   required String url,
   CancelToken? cancelToken,
 }) async {
-  List<Cookie>? cookie = await cookie_controller.getList();
+  String? cookieString = await cookie_controller.getString();
 
-  if (cookie == null) {
+  if (cookieString == null) {
     throw const CustomError(
       code: 0,
       message: 'Cookie should be acquired prior saving the consent',
@@ -31,7 +30,7 @@ Future<void> acquire({
         'origin': Uri
             .parse(url)
             .origin,
-        'cookie': cookie.join('; '),
+        'cookie': cookieString,
       },
     ),
     cancelToken: cancelToken,
@@ -39,7 +38,8 @@ Future<void> acquire({
 
   // if consent page sets new cookie, save them and proceed with new cookie list
   if (consentPageResponse.headers['set-cookie'] != null) {
-    cookie = await cookie_controller.set(consentPageResponse.headers['set-cookie']);
+    await cookie_controller.set(consentPageResponse.headers['set-cookie']);
+    cookieString = await cookie_controller.getString();
   }
 
   StoredParsingSchema? storedParsingSchema = await parsing_schema_controller.get('current');
@@ -85,7 +85,7 @@ Future<void> acquire({
   }
 
   // save cookie consent and update local cookie
-  if (action != null && cookie != null) {
+  if (action != null) {
     try {
       final consentSaveResponse = await request_controller.post(
         url: action,
@@ -95,7 +95,7 @@ Future<void> acquire({
           headers: {
             'accept-encoding': 'gzip, deflate',
             'origin': Uri.parse(url).origin,
-            'cookie': cookie.join('; '),
+            'cookie': cookieString,
           },
           followRedirects: false,
         ),
@@ -133,7 +133,7 @@ Future<void> acquire({
       information: [
         url,
         parsingSchema,
-        cookie?.join('; ') ?? '',
+        cookieString ?? '',
       ],
     );
   }

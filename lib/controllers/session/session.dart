@@ -70,7 +70,7 @@ Future<Session?> get({
         headers: {
           'user-agent': parsingSchema.images.fields.userAgent,
           'accept-encoding': 'gzip, deflate',
-          'cookie': cookie?.join('; '),
+          'cookie': cookieString,
         },
         followRedirects: false,
       ),

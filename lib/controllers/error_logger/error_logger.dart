@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+// import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 void initiateErrorLogger() {
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
+  // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  // PlatformDispatcher.instance.onError = (error, stack) {
+  //   FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+  //   return true;
+  // };
 }
 
 void recordError(
@@ -21,11 +21,11 @@ void recordError(
     print(information);
     print('---------  ----------');
   } else {
-    FirebaseCrashlytics.instance.recordError(
-      err,
-      stack,
-      information: information ?? [],
-    );
+    // FirebaseCrashlytics.instance.recordError(
+    //   err,
+    //   stack,
+    //   information: information ?? [],
+    // );
   }
 }
 
@@ -41,11 +41,11 @@ void recordFatalError(
     print(information);
     print('---------  ----------');
   } else {
-    FirebaseCrashlytics.instance.recordError(
-      err,
-      stack,
-      fatal: true,
-      information: information ?? [],
-    );
+    // FirebaseCrashlytics.instance.recordError(
+    //   err,
+    //   stack,
+    //   fatal: true,
+    //   information: information ?? [],
+    // );
   }
 }

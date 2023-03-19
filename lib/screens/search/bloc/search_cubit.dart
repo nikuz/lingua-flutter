@@ -4,6 +4,7 @@ import 'package:lingua_flutter/controllers/dictionary/dictionary.dart' as dictio
 import 'package:lingua_flutter/controllers/translation/translation.dart' as translation_controller;
 import 'package:lingua_flutter/models/error/error.dart';
 import 'package:lingua_flutter/models/translation_container/translation_container.dart';
+import 'package:lingua_flutter/models/quick_translation/quick_translation.dart';
 import 'package:lingua_flutter/models/translation_container/translation_list.dart';
 import 'package:lingua_flutter/models/language/language.dart';
 import 'package:lingua_flutter/utils/types.dart';
@@ -68,16 +69,41 @@ class SearchCubit extends Cubit<SearchState> {
           quickTranslationLoading: true,
           quickTranslationError: const Wrapped.value(null),
         ));
-        final translation = await translation_controller.translate(
-          word: word,
-          translateFrom: translateFrom,
-          translateTo: translateTo,
-          cancelToken: cancelToken,
+        final localTranslation = await translation_controller.localTranslate(
+            word: word,
+            translateFrom: translateFrom,
+            translateTo: translateTo
         );
 
-        if (translation?.word == state.searchText) {
+        QuickTranslation? quickTranslation;
+        QuickTranslation? quickTranslationWithAutoLanguage;
+
+        if (localTranslation != null) {
+          quickTranslation = QuickTranslation.fromTranslationContainer(localTranslation);
+        } else {
+          List<QuickTranslation?> results = await Future.wait([
+            translation_controller.quickTranslate(
+              word: word,
+              translateFrom: translateFrom,
+              translateTo: translateTo,
+              cancelToken: cancelToken,
+            ),
+            translation_controller.quickTranslate(
+              word: word,
+              translateFrom: translateFrom,
+              autoTranslateFrom: true,
+              translateTo: translateTo,
+              cancelToken: cancelToken,
+            ),
+          ]);
+          quickTranslation = results[0];
+          quickTranslationWithAutoLanguage = results[1];
+        }
+
+        if (quickTranslation?.word == state.searchText) {
           emit(state.copyWith(
-            quickTranslation: Wrapped.value(translation),
+            quickTranslation: Wrapped.value(quickTranslation),
+            quickTranslationWithAutoLanguage: Wrapped.value(quickTranslationWithAutoLanguage),
             quickTranslationLoading: false,
           ));
         }

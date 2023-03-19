@@ -1,4 +1,4 @@
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:lingua_flutter/controllers/error_logger/error_logger.dart';
 
 const undefined = Object();
 
@@ -14,7 +14,7 @@ List<dynamic>? getDynamicList(dynamic data) {
   try {
     result = data;
   } catch(error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack);
+    recordError(error, stack);
   }
   return result;
 }
@@ -24,7 +24,7 @@ String? getDynamicString(dynamic data) {
   try {
     result = data;
   } catch(error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack);
+    recordError(error, stack);
   }
   return result;
 }
@@ -34,7 +34,7 @@ int? getDynamicInt(dynamic data) {
   try {
     result = data;
   } catch(error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack);
+    recordError(error, stack);
   }
   return result;
 }

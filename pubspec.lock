@@ -9,14 +9,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "50.0.0"
-  _flutterfire_internals:
-    dependency: transitive
-    description:
-      name: _flutterfire_internals
-      sha256: "935316be721961664cc0dc11b4cbc7bb5e91e4d08ed8963daf84ef8322a20672"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.10"
   analyzer:
     dependency: transitive
     description:
@@ -241,22 +233,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
-  cloud_firestore_platform_interface:
-    dependency: transitive
-    description:
-      name: cloud_firestore_platform_interface
-      sha256: "5173fce24ad23e39944b3c9dd2e86cc4d8755fda0e21e7d98bb00ee84c3ae464"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.9.1"
-  cloud_firestore_web:
-    dependency: transitive
-    description:
-      name: cloud_firestore_web
-      sha256: b6a5712dc5d74473249b0777b93e6adf0ae68aeabae2699238d4647f3d5e1624
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.1"
   code_builder:
     dependency: transitive
     description:
@@ -386,46 +362,6 @@ packages:
       url: "https://github.com/nikuz/file_picker_writable"
     source: git
     version: "2.1.0"
-  firebase_core:
-    dependency: "direct main"
-    description:
-      name: firebase_core
-      sha256: "01962872df08437d9be593caeab8c700624c93b629f3d3d60f061612d6263666"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.4.0"
-  firebase_core_platform_interface:
-    dependency: transitive
-    description:
-      name: firebase_core_platform_interface
-      sha256: "5fab93f5b354648efa62e7cc829c90efb68c8796eecf87e0888cae2d5f3accd4"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.5.2"
-  firebase_core_web:
-    dependency: transitive
-    description:
-      name: firebase_core_web
-      sha256: b2917618cbe75196261621d676a992e05215ce6a70daca5f655794d5a008d369
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.2"
-  firebase_crashlytics:
-    dependency: "direct main"
-    description:
-      name: firebase_crashlytics
-      sha256: afaff0d67da21a0c2a916c438218188060e9eeeef22619e0a3e31994e9e366fb
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.7"
-  firebase_crashlytics_platform_interface:
-    dependency: transitive
-    description:
-      name: firebase_crashlytics_platform_interface
-      sha256: "3bbd82065006a133119b23d0123bf26f2f33fec3ad37f9561a01e35788c69106"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.3.8"
   fixnum:
     dependency: transitive
     description:
