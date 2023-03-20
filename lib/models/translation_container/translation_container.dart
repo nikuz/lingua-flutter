@@ -20,6 +20,7 @@ part 'translation_container.g.dart';
 @JsonSerializable(explicitToJson: true)
 class TranslationContainer {
   final int? id;
+  final int? cloudId;
   final String word;
   final String? autoSpelling;
   final String? autoLanguage;
@@ -43,6 +44,7 @@ class TranslationContainer {
 
   const TranslationContainer({
     this.id,
+    this.cloudId,
     required this.word,
     this.autoSpelling,
     this.autoLanguage,
@@ -66,6 +68,7 @@ class TranslationContainer {
 
   factory TranslationContainer.fromRaw({
     int? id,
+    int? cloudId,
     required String word,
     String? translation,
     String? pronunciationFrom,
@@ -212,6 +215,7 @@ class TranslationContainer {
     }
     return TranslationContainer(
       id: id,
+      cloudId: cloudId,
       word: word,
       autoSpelling: getDynamicString(jmespath.search(schema.translation.autoSpelling.value, raw)),
       autoLanguage: getDynamicString(jmespath.search(schema.translation.autoLanguage.value, raw)),
@@ -245,6 +249,7 @@ class TranslationContainer {
 
   TranslationContainer copyWith({
     int? id,
+    int? cloudId,
     String? word,
     String? autoSpelling,
     String? autoLanguage,
@@ -267,6 +272,7 @@ class TranslationContainer {
   }) {
     return TranslationContainer(
       id: id ?? this.id,
+      cloudId: cloudId ?? this.cloudId,
       word: word ?? this.word,
       autoSpelling: autoSpelling ?? this.autoSpelling,
       autoLanguage: autoLanguage ?? this.autoLanguage,

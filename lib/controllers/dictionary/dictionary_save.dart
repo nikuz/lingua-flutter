@@ -13,7 +13,7 @@ import './dictionary_update.dart';
 import './dictionary_utils.dart';
 import './constants.dart';
 
-Future<void> save(TranslationContainer translation) async {
+Future<int> save(TranslationContainer translation) async {
   final TranslationContainer? alreadyExists = await get(
     translation.word,
     translation.translateFrom.id,
@@ -107,18 +107,21 @@ Future<void> save(TranslationContainer translation) async {
         '''
         UPDATE ${DictionaryControllerConstants.databaseTableName} 
         SET image=?, pronunciationFrom=?, pronunciationTo=? 
-        WHERE id=$newTranslationId;
+        WHERE id=?;
         ''',
         [
           imageUrl,
           pronunciationFromFilePath,
           pronunciationToFilePath,
+          newTranslationId,
         ],
       );
     } catch (err) {
       await DBProvider().rawDelete('DELETE FROM ${DictionaryControllerConstants.databaseTableName} WHERE id=?;', [newTranslationId]);
       rethrow;
     }
+
+    return newTranslationId;
   } else {
     throw const CustomError(
       code: 500,

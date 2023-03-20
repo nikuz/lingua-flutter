@@ -28,6 +28,7 @@ Future<TranslationContainer?> localTranslate({
       try {
         return TranslationContainer.fromRaw(
           id: existingTranslation.id,
+          cloudId: existingTranslation.cloudId,
           word: word,
           translation: existingTranslation.translation,
           pronunciationFrom: existingTranslation.pronunciationFrom,

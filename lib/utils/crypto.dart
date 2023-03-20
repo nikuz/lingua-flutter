@@ -46,7 +46,7 @@ String encrypt(String text) {
 
   final secretBytes = Uint8List.fromList(_secret.codeUnits);
   final key = ParametersWithIV(KeyParameter(secretBytes), _iv);
-  final textBytes = Uint8List.fromList(text.codeUnits);
+  final textBytes = Uint8List.fromList(utf8.encode(text));
   final cipher = PaddedBlockCipher('$_algorithm/$_mode/$_padding')..init(true, PaddedBlockCipherParameters(key, null));
   final cipherText = cipher.process(textBytes);
 
@@ -68,7 +68,7 @@ String decrypt(String text) {
   final textBytes = Uint8List.fromList(hex.decode(parts[1]));
   final cipher = PaddedBlockCipher('$_algorithm/$_mode/$_padding')..init(false, PaddedBlockCipherParameters(key, null));
 
-  return String.fromCharCodes(cipher.process(textBytes));
+  return utf8.decode(cipher.process(textBytes));
 }
 
 String hash(String text) {

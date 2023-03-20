@@ -21,6 +21,7 @@ Future<TranslationContainer?> get(String word, String translateFrom, String tran
 
   return TranslationContainer(
     id: item['id'],
+    cloudId: item['cloudId'],
     word: word,
     translation: item['translation'],
     pronunciationFrom: item['pronunciationFrom'],

@@ -14,7 +14,7 @@ import './dictionary_get.dart';
 import './dictionary_utils.dart';
 import './constants.dart';
 
-Future<void> update(TranslationContainer translation) async {
+Future<int> update(TranslationContainer translation) async {
   final TranslationContainer? translationData = await get(
     translation.word,
     translation.translateFrom.id,
@@ -91,8 +91,10 @@ Future<void> update(TranslationContainer translation) async {
     '''
       UPDATE ${DictionaryControllerConstants.databaseTableName} 
       SET translation=?, updated_at=datetime("now"), schema_version=? $imageTransaction $pronunciationToTransaction
-      WHERE id=$translationId;
+      WHERE id=?;
     ''',
-    [translation.translation, translation.schemaVersion],
+    [translation.translation, translation.schemaVersion, translationId],
   );
+
+  return translationId;
 }

@@ -8,6 +8,7 @@ import 'package:lingua_flutter/controllers/dictionary/dictionary.dart' as dictio
 import 'package:lingua_flutter/controllers/translation/translation.dart' as translation_controller;
 import 'package:lingua_flutter/controllers/images/images.dart' as images_controller;
 import 'package:lingua_flutter/controllers/pronunciation/pronunciation.dart' as pronunciation_controller;
+import 'package:lingua_flutter/controllers/cloud/cloud.dart' as cloud_controller;
 import 'package:lingua_flutter/utils/types.dart';
 import 'package:lingua_flutter/controllers/error_logger/error_logger.dart';
 
@@ -223,7 +224,10 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
         );
       }
 
-      await dictionary_controller.save(translation);
+      final newTranslationId = await dictionary_controller.save(translation);
+
+      // do not wait saveWord response, cloud sync is not important for user experience
+      cloud_controller.saveWord(translation.copyWith(id: newTranslationId));
 
       emit(state.copyWith(
         updateLoading: false,
@@ -259,6 +263,9 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
       }
 
       await dictionary_controller.update(translation);
+
+      // do not wait updateWord response, cloud sync is not important for user experience
+      cloud_controller.updateWord(translation);
 
       emit(state.copyWith(
         updateLoading: false,

@@ -9,6 +9,7 @@ Future<void> init() async {
       query: '''
         CREATE TABLE IF NOT EXISTS ${DictionaryControllerConstants.databaseTableName} (
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        cloudId INTEGER,
         word VARCHAR NOT NULL COLLATE NOCASE,
         pronunciationFrom VARCHAR,
         pronunciationTo VARCHAR,
