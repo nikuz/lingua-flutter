@@ -40,9 +40,9 @@ Future<void> saveWord(TranslationContainer translation) async {
       }
     }
   } catch (err, stack) {
-    recordError(err, stack, information: [
-      translation,
-    ]);
+    recordError(err, stack, information: {
+      'translation': translation,
+    });
   }
 }
 
@@ -71,8 +71,8 @@ Future<void> updateWord(TranslationContainer translation) async {
       },
     );
   } catch (err, stack) {
-    recordError(err, stack, information: [
-      translation,
-    ]);
+    recordError(err, stack, information: {
+      'translation': translation,
+    });
   }
 }

@@ -101,9 +101,9 @@ Future<StoredParsingSchema?> get(String versionName, { bool? forceUpdate }) asyn
 
     return schema;
   } catch (err, stack) {
-    recordFatalError(err, stack, information: [
-      'Can\'t retrieve "current" parsing schema'
-    ]);
+    recordError(err, stack, information: {
+      'message': 'Can\'t retrieve "current" parsing schema',
+    });
 
     return null;
   }

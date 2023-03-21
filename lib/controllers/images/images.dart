@@ -111,11 +111,11 @@ Future<List<String>?> search({
       throw CustomError(
         code: 500,
         message: 'Can\'t retrieve images using "current" parsing schema',
-        information: [
-          err,
-          word,
-          parsingSchema,
-        ],
+        information: {
+          'err': err,
+          'word': word,
+          'parsingSchema': parsingSchema,
+        },
       );
     }
   }

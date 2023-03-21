@@ -1,18 +1,21 @@
 import 'package:flutter/foundation.dart';
-// import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:lingua_flutter/app_config.secret.dart';
 
-void initiateErrorLogger() {
-  // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-  // PlatformDispatcher.instance.onError = (error, stack) {
-  //   FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-  //   return true;
-  // };
+Future<void> initiateErrorLogger() {
+  return SentryFlutter.init((options) {
+      options.dsn = sentryDNS;
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+      // We recommend adjusting this value in production.
+      options.tracesSampleRate = 1.0;
+    }
+  );
 }
 
 void recordError(
   Object err,
   StackTrace stack,
-  { Iterable<Object>? information }
+  { Map<String, Object>? information }
 ) {
   if (kDebugMode) {
     print('--------- error logger ----------');
@@ -21,31 +24,10 @@ void recordError(
     print(information);
     print('---------  ----------');
   } else {
-    // FirebaseCrashlytics.instance.recordError(
-    //   err,
-    //   stack,
-    //   information: information ?? [],
-    // );
-  }
-}
-
-void recordFatalError(
-  Object err,
-  StackTrace stack,
-  { Iterable<Object>? information }
-) {
-  if (kDebugMode) {
-    print('--------- error logger ----------');
-    print(err);
-    print(stack);
-    print(information);
-    print('---------  ----------');
-  } else {
-    // FirebaseCrashlytics.instance.recordError(
-    //   err,
-    //   stack,
-    //   fatal: true,
-    //   information: information ?? [],
-    // );
+    Sentry.captureException(
+      err,
+      stackTrace: stack,
+      hint: information != null ? Hint.withMap(information) : null,
+    );
   }
 }

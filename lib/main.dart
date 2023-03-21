@@ -10,7 +10,7 @@ import './app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  initiateErrorLogger();
+  await initiateErrorLogger();
 
   // initiate controllers
   dictionary_controller.init();

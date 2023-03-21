@@ -84,11 +84,11 @@ class SettingsCubit extends Cubit<SettingsState> {
         return true;
       }
     } catch (err, stack) {
-      Iterable<Object>? information;
+      Map<String, Object>? information;
       if (err is CustomError) {
         information = err.information;
       }
-      recordFatalError(err, stack, information: information);
+      recordError(err, stack, information: information);
       emit(state.copyWith(
         backupCreateLoading: false,
       ));
@@ -115,11 +115,11 @@ class SettingsCubit extends Cubit<SettingsState> {
       ));
       return true;
     } catch (err, stack) {
-      Iterable<Object>? information;
+      Map<String, Object>? information;
       if (err is CustomError) {
         information = err.information;
       }
-      recordFatalError(err, stack, information: information);
+      recordError(err, stack, information: information);
       emit(state.copyWith(
         backupRestoreLoading: false,
       ));

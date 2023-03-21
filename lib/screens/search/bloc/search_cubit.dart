@@ -178,10 +178,10 @@ class SearchCubit extends Cubit<SearchState> {
   void handleError(state, err, stack) {
     emit(state);
 
-    Iterable<Object>? information;
+    Map<String, Object>? information;
     if (err is CustomError) {
       information = err.information;
     }
-    recordFatalError(err, stack, information: information);
+    recordError(err, stack, information: information);
   }
 }

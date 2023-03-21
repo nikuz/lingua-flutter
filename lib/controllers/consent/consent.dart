@@ -118,11 +118,11 @@ Future<void> acquire({
         throw CustomError(
           code: 500,
           message: 'Can\'t acquire cookie consent',
-          information: [
-            err,
-            url,
-            parsingSchema,
-          ],
+          information: {
+            'err': err,
+            'url': url,
+            'parsingSchema': parsingSchema,
+          },
         );
       }
     }
@@ -130,11 +130,11 @@ Future<void> acquire({
     throw CustomError(
       code: 500,
       message: 'Can\'t acquire cookie consent',
-      information: [
-        url,
-        parsingSchema,
-        cookieString ?? '',
-      ],
+      information: {
+        'url': url,
+        'parsingSchema': parsingSchema,
+        'cookieString': cookieString ?? '',
+      },
     );
   }
 }

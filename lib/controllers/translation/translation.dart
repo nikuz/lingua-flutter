@@ -94,13 +94,13 @@ Future<TranslationContainer?> cloudTranslate({
       throw CustomError(
         code: 500,
         message: 'Can\'t retrieve translation using "current" parsing schema',
-        information: [
-          err,
-          word,
-          parsingSchema.toJson(),
-          translateFrom.toJson(),
-          translateTo.toJson(),
-        ],
+        information: {
+          'err': err,
+          'word': word,
+          'parsingSchema': parsingSchema.toJson(),
+          'translateFrom': translateFrom.toJson(),
+          'translateTo': translateTo.toJson(),
+        },
       );
     }
   } catch (err) {
@@ -116,15 +116,15 @@ Future<TranslationContainer?> cloudTranslate({
       throw CustomError(
         code: 500,
         message: 'Can\'t create TranslationContainer with new downloaded "current" schema',
-        information: [
-          err,
-          word,
-          translationResult ?? '',
-          parsingSchema,
-          currentParsingSchema.version,
-          translateFrom.toJson(),
-          translateTo.toJson(),
-        ],
+        information: {
+          'err': err,
+          'word': word,
+          'translationResult': translationResult ?? '',
+          'parsingSchema': parsingSchema,
+          'currentParsingSchema': currentParsingSchema.version,
+          'translateFrom': translateFrom.toJson(),
+          'translateTo': translateTo.toJson(),
+        },
       );
     }
   }

@@ -109,11 +109,11 @@ Future<Session?> get({
       throw CustomError(
         code: 500,
         message: 'Can\'t retrieve session',
-        information: [
-          err,
-          requestWord,
-          parsingSchema,
-        ],
+        information: {
+          'err': err,
+          'requestWord': requestWord,
+          'parsingSchema': parsingSchema,
+        },
       );
     }
   }

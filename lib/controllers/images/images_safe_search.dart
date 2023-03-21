@@ -58,10 +58,10 @@ Future<void> enableImagesSaveSearch({
       throw CustomError(
         code: 500,
         message: 'Can\'t set images save search ON',
-        information: [
-          err,
-          parsingSchema,
-        ],
+        information: {
+          'err': err,
+          'parsingSchema': parsingSchema,
+        },
       );
     }
   }

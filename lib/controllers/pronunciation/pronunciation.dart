@@ -76,12 +76,12 @@ Future<String?> retrieve({
       throw CustomError(
         code: 500,
         message: 'Can\'t retrieve pronunciation using provided parsing schema',
-        information: [
-          err,
-          word,
-          language.toJson(),
-          parsingSchema,
-        ],
+        information: {
+          'err': err,
+          'word': word,
+          'language': language.toJson(),
+          'parsingSchema': parsingSchema,
+        },
       );
     }
   }

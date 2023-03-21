@@ -6,7 +6,7 @@ part 'error.g.dart';
 class CustomError implements Exception {
   final String message;
   final int? code;
-  final Iterable<Object>? information;
+  final Map<String, Object>? information;
 
   const CustomError({
     required this.message,
@@ -18,7 +18,7 @@ class CustomError implements Exception {
 
   @override
   String toString() {
-    return '$code: $message\n${information?.join('\n')}';
+    return '$code: $message\n${information?.keys}';
   }
 
   factory CustomError.fromJson(Map<String, dynamic> json) => _$CustomErrorFromJson(json);
