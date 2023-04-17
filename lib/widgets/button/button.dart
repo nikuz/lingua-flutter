@@ -94,7 +94,7 @@ class Button extends StatelessWidget {
     }
 
     if (elevated) {
-      textColor = theme.brightness == Brightness.light ? Styles.colors.white : Styles.colors.fakeBlack;
+      textColor = this.textColor ?? (theme.brightness == Brightness.light ? Styles.colors.white : Styles.colors.fakeBlack);
       highlightColor = Styles.colors.white.withOpacity(0.1);
       splashColor = Styles.colors.white.withOpacity(0.2);
       elevation = !disabled ? 3 : 0;

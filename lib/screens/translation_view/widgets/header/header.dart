@@ -136,10 +136,8 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
     String? transcription = translation.transcription;
     final alreadySaved = !isNewWord && !state.imageIsUpdated && !state.translationIsUpdated;
 
-    if (isNewWord) {
-      iconName = Icons.save_alt;
-    } else if (state.imageIsUpdated || state.translationIsUpdated) {
-      iconName = Icons.update;
+    if (isNewWord || state.imageIsUpdated || state.translationIsUpdated) {
+      iconName = Icons.save;
     }
 
     if (transcription != null && transcription.length > 100) {
@@ -174,6 +172,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
                 ? Colors.white
                 : theme.colors.focusBackground,
             disabled: state.translation == null || state.imageLoading || state.pronunciationLoading,
+            elevated: toSave && !state.updateLoading,
             loading: state.updateLoading,
             outlined: false,
             shape: ButtonShape.oval,
