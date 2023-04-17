@@ -12,19 +12,20 @@ import 'package:lingua_flutter/styles/styles.dart';
 import '../bloc/translation_view_cubit.dart';
 import '../bloc/translation_view_state.dart';
 
-class TranslationViewImagePicker extends StatefulWidget {
+@RoutePage()
+class TranslationViewImagePickerScreen extends StatefulWidget {
   final String word;
 
-  const TranslationViewImagePicker({
+  const TranslationViewImagePickerScreen({
     Key? key,
     required this.word,
   }) : super(key: key);
 
   @override
-  State<TranslationViewImagePicker> createState() => _TranslationViewImagePickerState();
+  State<TranslationViewImagePickerScreen> createState() => _TranslationViewImagePickerScreenState();
 }
 
-class _TranslationViewImagePickerState extends State<TranslationViewImagePicker> {
+class _TranslationViewImagePickerScreenState extends State<TranslationViewImagePickerScreen> {
   late TranslationViewCubit _translationViewCubit;
   final itemKey = GlobalKey();
   late TextEditingController _textController;

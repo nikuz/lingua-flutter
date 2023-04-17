@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/widgets/typography/typography.dart';
 import 'package:lingua_flutter/widgets/link/link.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/app_config.dart' as config;
 
-class Terms extends StatelessWidget {
-  const Terms({Key? key}) : super(key: key);
+@RoutePage()
+class TermsScreen extends StatelessWidget {
+  const TermsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

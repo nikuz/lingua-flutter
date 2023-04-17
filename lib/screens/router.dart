@@ -1,68 +1,61 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:lingua_flutter/models/translation_container/translation_container.dart';
-
-import './root.dart';
-import './landing/landing.dart';
-import './search/search.dart';
-import './translation_view/translation_view.dart';
-import './translation_view/pages/images_picker.dart';
-import './games/games.dart';
-import './settings/settings.dart';
-import './terms/terms.dart';
+import './router.gr.dart';
 
 abstract class Routes {
-  static const landing = '/landing';
+  static const landing = '/';
   static const home = '/home';
   static const search = 'search';
-  static const translationView = 'translation_view';
-  static const translationViewImages = 'translation_view/images';
   static const games = 'games';
   static const settings = 'settings';
-  static const terms = 'terms';
+  static const translationView = '/translation_view';
+  static const translationViewImages = '/translation_view/images';
+  static const terms = '/terms';
 }
 
-@MaterialAutoRouter(
-  routes: <AutoRoute>[
+@AutoRouterConfig()
+class AppRouter extends $AppRouter {
+  @override
+  RouteType get defaultRouteType => const RouteType.material();
+
+  @override
+  List<AutoRoute> get routes => [
     AutoRoute(
       path: Routes.landing,
-      page: Landing,
-      initial: true,
+      page: LandingRoute.page,
       maintainState: false,
     ),
     CustomRoute(
       path: Routes.home,
-      page: Root,
+      page: RootRoute.page,
       transitionsBuilder: TransitionsBuilders.fadeIn,
       children: [
         AutoRoute(
           path: Routes.search,
-          page: Search,
+          page: SearchRoute.page,
         ),
         AutoRoute(
           path: Routes.games,
-          page: Games,
+          page: GamesRoute.page,
           maintainState: false,
         ),
         AutoRoute(
           path: Routes.settings,
-          page: Settings,
+          page: SettingsRoute.page,
           maintainState: false,
         ),
       ],
     ),
-    AutoRoute<TranslationContainer>(
+    AutoRoute(
       path: Routes.translationView,
-      page: TranslationView,
+      page: TranslationViewRoute.page,
     ),
     AutoRoute(
       path: Routes.translationViewImages,
-      page: TranslationViewImagePicker,
+      page: TranslationViewImagePickerRoute.page,
     ),
     AutoRoute(
       path: Routes.terms,
-      page: Terms,
+      page: TermsRoute.page,
     ),
-  ],
-)
-
-class $AppRouter {}
+  ];
+}

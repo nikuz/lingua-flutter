@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/listeners/rating_listener.dart';
-import 'package:lingua_flutter/listeners/purchase_listener.dart';
-import 'package:lingua_flutter/screens/router.gr.dart';
+import './router.gr.dart';
 
-class Root extends StatelessWidget {
-  const Root({super.key});
+@RoutePage()
+class RootScreen extends StatelessWidget {
+  const RootScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,6 @@ class Root extends StatelessWidget {
             },
           ),
           const RatingListener(),
-          const PurchaseListener(),
         ],
       ),
     );

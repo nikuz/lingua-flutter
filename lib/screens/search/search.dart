@@ -28,14 +28,15 @@ import './widgets/url_translation/url_translation.dart';
 import './search_state.dart';
 import './search_constants.dart';
 
-class Search extends StatefulWidget {
-  const Search({Key? key}) : super(key: key);
+@RoutePage()
+class SearchScreen extends StatefulWidget {
+  const SearchScreen({Key? key}) : super(key: key);
 
   @override
-  State<Search> createState() => _SearchState();
+  State<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _SearchState extends State<Search> with WidgetsBindingObserver {
+class _SearchScreenState extends State<SearchScreen> with WidgetsBindingObserver {
   final Map<String, Function> _scrollListeners = {};
   late TextEditingController _textController;
   late FocusNode _focusNode;

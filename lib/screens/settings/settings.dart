@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lingua_flutter/widgets/language_selector/language_selector.dart';
 import 'package:lingua_flutter/styles/styles.dart';
@@ -11,8 +12,9 @@ import './widgets/dark_mode/dark_mode.dart';
 import './widgets/search_results/search_results.dart';
 import './widgets/about/about.dart';
 
-class Settings extends StatelessWidget {
-  const Settings({super.key});
+@RoutePage()
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

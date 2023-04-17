@@ -12,14 +12,15 @@ import 'package:lingua_flutter/screens/router.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 import 'package:lingua_flutter/styles/styles.dart';
 
-class Landing extends StatefulWidget {
-  const Landing({Key? key}) : super(key: key);
+@RoutePage()
+class LandingScreen extends StatefulWidget {
+  const LandingScreen({Key? key}) : super(key: key);
 
   @override
-  State<Landing> createState() => _LandingState();
+  State<LandingScreen> createState() => _LandingScreenState();
 }
 
-class _LandingState extends State<Landing> {
+class _LandingScreenState extends State<LandingScreen> {
   Map<String, String>? _languages;
   bool _loading = true;
   SharedPreferences? _prefs;

@@ -15,36 +15,36 @@ publish_to: none
 version: 1.0.0+41
 
 environment:
-  sdk: '>=2.18.0 <3.0.0'
+  sdk: '>=2.19.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
   bloc: ^8.1.0
-  flutter_bloc: ^8.1.1
+  flutter_bloc: ^8.1.2
   equatable: ^2.0.5
-  dio: ^5.0.0
-  audioplayers: ^1.1.1
+  dio: ^5.1.1
+  audioplayers: ^4.0.1
   flutter_html: ^3.0.0-alpha.6
-  shared_preferences: ^2.0.17
-  path_provider: ^2.0.11
-  sqflite: ^2.2.0+3
-  connectivity_plus: ^3.0.3
-  auto_route: ^5.0.2
-  json_annotation: ^4.7.0
+  shared_preferences: ^2.1.0
+  path_provider: ^2.0.14
+  sqflite: ^2.2.6
+  connectivity_plus: ^3.0.4
+  auto_route: ^6.2.0
+  json_annotation: ^4.8.0
   jmespath: ^2.0.1
   collection: ^1.16.0
-  url_launcher: ^6.1.7
-  archive: ^3.3.5
+  url_launcher: ^6.1.10
+  archive: ^3.3.7
   file_picker_writable:
     git:
       url: https://github.com/nikuz/file_picker_writable
-  share_plus: ^6.3.0
+  share_plus: ^6.3.2
   in_app_review: ^2.0.6
-  in_app_purchase: ^3.1.1
+  in_app_purchase: ^3.1.5
   convert: ^3.1.1
-  pointycastle: ^3.6.2
-  sentry_flutter: ^7.2.0
+  pointycastle: ^3.7.3
+  sentry_flutter: ^7.4.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -53,13 +53,13 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  auto_route_generator: ^5.0.3
+  auto_route_generator: ^6.2.0
 #  flutter packages pub run build_runner build --delete-conflicting-outputs
   build_runner: ^2.3.3
-  json_serializable: ^6.5.4
+  json_serializable: ^6.6.1
   flutter_lints: ^2.0.1
-  flutter_launcher_icons: ^0.11.0
-  flutter_native_splash: ^2.2.16
+  flutter_launcher_icons: ^0.13.0
+  flutter_native_splash: ^2.2.19
   sentry_dart_plugin: ^1.1.0
 #  flutter packages pub run sentry_dart_plugin
 

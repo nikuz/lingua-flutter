@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lingua_flutter/app_config.dart' as config;
 import 'package:lingua_flutter/controllers/connectivity/connectivity.dart';
-import 'package:lingua_flutter/screens/router.gr.dart';
+import 'package:lingua_flutter/screens/router.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_cubit.dart';
 import 'package:lingua_flutter/screens/settings/bloc/settings_state.dart';
 import 'package:lingua_flutter/screens/search/bloc/search_cubit.dart';
@@ -109,8 +109,7 @@ class _AppViewState extends State<AppView> with WidgetsBindingObserver {
           title: config.appName,
           darkTheme: ThemeData.dark(),
           themeMode: themeMode,
-          routerDelegate: _appRouter.delegate(),
-          routeInformationParser: _appRouter.defaultRouteParser(),
+          routerConfig: _appRouter.config(),
           // debugShowCheckedModeBanner: false,
         );
       },

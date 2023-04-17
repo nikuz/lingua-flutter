@@ -21,13 +21,14 @@ import './widgets/no_additional_data/no_additional_data.dart';
 import './widgets/powered_by/powered_by.dart';
 import './translation_view_state.dart';
 
-class TranslationView extends StatefulWidget {
+@RoutePage<TranslationContainer>()
+class TranslationViewScreen extends StatefulWidget {
   final String word;
   final Language translateFrom;
   final Language translateTo;
   final QuickTranslation? quickTranslation;
 
-  const TranslationView({
+  const TranslationViewScreen({
     Key? key,
     required this.word,
     required this.translateFrom,
@@ -36,10 +37,10 @@ class TranslationView extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<TranslationView> createState() => _TranslationViewState();
+  State<TranslationViewScreen> createState() => _TranslationViewScreenState();
 }
 
-class _TranslationViewState extends State<TranslationView> with WidgetsBindingObserver {
+class _TranslationViewScreenState extends State<TranslationViewScreen> with WidgetsBindingObserver {
   final headerKey = GlobalKey();
   late TranslationViewCubit _translationViewCubit;
   late ScrollController _scrollController;
@@ -78,7 +79,7 @@ class _TranslationViewState extends State<TranslationView> with WidgetsBindingOb
   }
 
   @override
-  void didUpdateWidget(covariant TranslationView oldWidget) {
+  void didUpdateWidget(covariant TranslationViewScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (
       oldWidget.word != widget.word

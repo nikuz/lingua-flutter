@@ -19,9 +19,8 @@ final StreamController<Source> _audioPlayerSourceChangeStreamController = Stream
 
 final Stream<Source> onAudioPlayerSourceChanged = _audioPlayerSourceChangeStreamController.stream;
 
-final AudioContext _audioContext = AudioContext(
+const AudioContext _audioContext = AudioContext(
   iOS: AudioContextIOS(
-    defaultToSpeaker: false,
     category: AVAudioSessionCategory.playback,
     options: [
       AVAudioSessionOptions.defaultToSpeaker,
@@ -41,5 +40,5 @@ final AudioContext _audioContext = AudioContext(
 );
 
 void setGlobalAudioContext() {
-  AudioPlayer.global.setGlobalAudioContext(_audioContext);
+  AudioPlayer.global.setAudioContext(_audioContext);
 }
