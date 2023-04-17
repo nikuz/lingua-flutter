@@ -81,7 +81,6 @@ class _TranslationViewImagePickerScreenState extends State<TranslationViewImageP
     return BlocBuilder<TranslationViewCubit, TranslationViewState>(
       builder: (context, state) {
         final MyTheme theme = Styles.theme(context);
-        final isInDarkMode = theme.brightness == Brightness.dark;
 
         return Scaffold(
           backgroundColor: theme.colors.background,
@@ -89,10 +88,10 @@ class _TranslationViewImagePickerScreenState extends State<TranslationViewImageP
             automaticallyImplyLeading: false,
             titleSpacing: 4,
             backgroundColor: theme.colors.focusBackground,
-            systemOverlayStyle: SystemUiOverlayStyle(
+            systemOverlayStyle: const SystemUiOverlayStyle(
               statusBarColor: Colors.transparent,
-              statusBarIconBrightness: isInDarkMode ? Brightness.light : Brightness.dark,
-              statusBarBrightness: isInDarkMode ? Brightness.dark : Brightness.light,
+              statusBarIconBrightness: Brightness.light,
+              statusBarBrightness: Brightness.dark,
             ),
             title: CustomTextField(
               controller: _textController,

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'dart:io' show Platform;
 
 const appName = 'Wisual';
 const version = '1.0.1';
@@ -12,7 +13,12 @@ const wordsAmountPurchaseThreshold = 500; // how many words user should add to s
 
 String getApiUrl() {
   if (kDebugMode) {
-    return 'http://localhost:8080';
+    String host = 'localhost';
+    if (Platform.isAndroid) {
+      // host = '10.0.2.2'; // strangely doesn't work
+      host = '192.168.1.76';
+    }
+    return 'http://$host:8080';
   }
   return 'https://wisual.app';
 }

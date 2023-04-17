@@ -232,7 +232,9 @@ class _TranslationViewScreenState extends State<TranslationViewScreen> with Widg
                             ),
                           ),
 
-                        const TranslationViewNoAdditionalData(),
+                        if (!state.translateLoading)
+                          const TranslationViewNoAdditionalData(),
+
                         const TranslationViewAlternativeTranslations(),
                         const TranslationViewDefinitions(),
                         const TranslationViewExamples(),
