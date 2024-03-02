@@ -4,7 +4,7 @@ part 'translation_alternative.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class TranslationAlternativeTranslation {
-  final String speechPart;
+  final String? speechPart;
   final List<TranslationAlternativeTranslationItem> items;
 
   const TranslationAlternativeTranslation({

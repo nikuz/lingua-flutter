@@ -146,7 +146,7 @@ class TranslationContainer {
           }
         }
 
-        if (speechPart != null && items != null) {
+        if (items != null) {
           alternativeTranslations ??= [];
           alternativeTranslations.add(TranslationAlternativeTranslation(
             speechPart: speechPart,
@@ -184,7 +184,7 @@ class TranslationContainer {
           }
         }
 
-        if (speechPart != null && items != null) {
+        if (items != null) {
           definitions ??= [];
           definitions.add(TranslationDefinition(
             speechPart: speechPart,

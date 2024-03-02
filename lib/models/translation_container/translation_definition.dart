@@ -4,7 +4,7 @@ part 'translation_definition.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class TranslationDefinition {
-  final String speechPart;
+  final String? speechPart;
   final List<TranslationDefinitionItem> items;
   final String? type;
 
