@@ -21,6 +21,11 @@ SettingsState _$SettingsStateFromJson(Map<String, dynamic> json) =>
       backupSize: json['backupSize'] as int?,
       backupPreloadSize: json['backupPreloadSize'] as int?,
       showLanguageSource: json['showLanguageSource'] as bool? ?? false,
+      backupCreateLoading: json['backupCreateLoading'] as bool? ?? false,
+      lastBackupAt: json['lastBackupAt'] as int?,
+      backupFileIdentifier: json['backupFileIdentifier'] as String?,
+      backupRestoreLoading: json['backupRestoreLoading'] as bool? ?? false,
+      backupRestoreAt: json['backupRestoreAt'] as int?,
     );
 
 Map<String, dynamic> _$SettingsStateToJson(SettingsState instance) =>
@@ -36,4 +41,9 @@ Map<String, dynamic> _$SettingsStateToJson(SettingsState instance) =>
       'backupSize': instance.backupSize,
       'backupPreloadSize': instance.backupPreloadSize,
       'showLanguageSource': instance.showLanguageSource,
+      'backupCreateLoading': instance.backupCreateLoading,
+      'lastBackupAt': instance.lastBackupAt,
+      'backupFileIdentifier': instance.backupFileIdentifier,
+      'backupRestoreLoading': instance.backupRestoreLoading,
+      'backupRestoreAt': instance.backupRestoreAt,
     };

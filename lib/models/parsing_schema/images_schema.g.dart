@@ -22,6 +22,8 @@ ImagesSchemaFields _$ImagesSchemaFieldsFromJson(Map<String, dynamic> json) =>
       userAgent: json['userAgent'] as String,
       regExp: json['regExp'] as String,
       minSize: json['minSize'] as String,
+      safeSearchUrl: json['safeSearchUrl'] as String,
+      safeSearchSignatureRegExp: json['safeSearchSignatureRegExp'] as String,
     );
 
 Map<String, dynamic> _$ImagesSchemaFieldsToJson(ImagesSchemaFields instance) =>
@@ -30,4 +32,6 @@ Map<String, dynamic> _$ImagesSchemaFieldsToJson(ImagesSchemaFields instance) =>
       'userAgent': instance.userAgent,
       'regExp': instance.regExp,
       'minSize': instance.minSize,
+      'safeSearchUrl': instance.safeSearchUrl,
+      'safeSearchSignatureRegExp': instance.safeSearchSignatureRegExp,
     };

@@ -8,6 +8,10 @@ part of 'schema.dart';
 
 ParsingSchema _$ParsingSchemaFromJson(Map<String, dynamic> json) =>
     ParsingSchema(
+      cookieConsent: CookieConsentSchema.fromJson(
+          json['cookieConsent'] as Map<String, dynamic>),
+      quickTranslation: QuickTranslationSchema.fromJson(
+          json['quickTranslation'] as Map<String, dynamic>),
       translation: TranslationSchema.fromJson(
           json['translation'] as Map<String, dynamic>),
       pronunciation: PronunciationSchema.fromJson(
@@ -17,6 +21,8 @@ ParsingSchema _$ParsingSchemaFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$ParsingSchemaToJson(ParsingSchema instance) =>
     <String, dynamic>{
+      'cookieConsent': instance.cookieConsent.toJson(),
+      'quickTranslation': instance.quickTranslation.toJson(),
       'translation': instance.translation.toJson(),
       'pronunciation': instance.pronunciation.toJson(),
       'images': instance.images.toJson(),

@@ -7,15 +7,16 @@ part of 'error.dart';
 // **************************************************************************
 
 CustomError _$CustomErrorFromJson(Map<String, dynamic> json) => CustomError(
-      code: json['code'] as int,
       message: json['message'] as String,
-      information:
-          (json['information'] as List<dynamic>?)?.map((e) => e as Object),
+      code: json['code'] as int?,
+      information: (json['information'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as Object),
+      ),
     );
 
 Map<String, dynamic> _$CustomErrorToJson(CustomError instance) =>
     <String, dynamic>{
-      'code': instance.code,
       'message': instance.message,
-      'information': instance.information?.toList(),
+      'code': instance.code,
+      'information': instance.information,
     };

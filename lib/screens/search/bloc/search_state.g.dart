@@ -18,8 +18,14 @@ SearchState _$SearchStateFromJson(Map<String, dynamic> json) => SearchState(
       searchText: json['searchText'] as String?,
       quickTranslation: json['quickTranslation'] == null
           ? null
-          : TranslationContainer.fromJson(
+          : QuickTranslation.fromJson(
               json['quickTranslation'] as Map<String, dynamic>),
+      quickTranslationWithAutoLanguage:
+          json['quickTranslationWithAutoLanguage'] == null
+              ? null
+              : QuickTranslation.fromJson(
+                  json['quickTranslationWithAutoLanguage']
+                      as Map<String, dynamic>),
       quickTranslationError: json['quickTranslationError'] == null
           ? null
           : CustomError.fromJson(
@@ -40,6 +46,8 @@ Map<String, dynamic> _$SearchStateToJson(SearchState instance) =>
       'translations': instance.translations,
       'searchText': instance.searchText,
       'quickTranslation': instance.quickTranslation,
+      'quickTranslationWithAutoLanguage':
+          instance.quickTranslationWithAutoLanguage,
       'quickTranslationError': instance.quickTranslationError,
       'quickTranslationLoading': instance.quickTranslationLoading,
       'loading': instance.loading,
