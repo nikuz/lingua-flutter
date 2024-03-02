@@ -11,11 +11,11 @@ class GamesScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Play a game'),
       ),
-      body: SafeArea(
+      body: const SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: const [
+          children: [
             Center(
               child: Text('Play a game'),
             ),

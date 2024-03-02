@@ -1,5 +1,7 @@
-import 'package:lingua_flutter/controllers/parsing_schema/parsing_schema.dart' as parsing_schema_controller;
-import 'package:lingua_flutter/controllers/dictionary/dictionary.dart' as dictionary_controller;
+import 'package:lingua_flutter/controllers/parsing_schema/parsing_schema.dart'
+    as parsing_schema_controller;
+import 'package:lingua_flutter/controllers/dictionary/dictionary.dart'
+    as dictionary_controller;
 import 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
 import 'package:lingua_flutter/models/translation_container/translation_container.dart';
 import 'package:lingua_flutter/models/language/language.dart';
@@ -47,4 +49,6 @@ Future<TranslationContainer?> localTranslate({
       }
     }
   }
+
+  return null;
 }

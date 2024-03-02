@@ -118,13 +118,13 @@ class _LandingScreenState extends State<LandingScreen> {
             ),
 
           if (!_loading)
-            Padding(
-              padding: const EdgeInsets.symmetric(
+            const Padding(
+              padding: EdgeInsets.symmetric(
                 horizontal: 20,
                 vertical: 20,
               ),
               child: Column(
-                children: const [
+                children: [
                   TypographyText(
                     text: 'Welcome! Translate words in a variety of languages with ease and connect them to images',
                     margin: EdgeInsets.only(bottom: 20),

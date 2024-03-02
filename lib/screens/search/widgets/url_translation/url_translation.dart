@@ -23,10 +23,10 @@ class UrlTranslation extends StatelessWidget {
               constraints: const BoxConstraints(
                 minHeight: 75,
               ),
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
                     'URL translation is not available',
                     style: TextStyle(
