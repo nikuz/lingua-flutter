@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:lingua_flutter/listeners/rating_listener.dart';
+import 'package:lingua_flutter/styles/styles.dart';
 import './router.gr.dart';
 
 @RoutePage()
@@ -9,8 +10,10 @@ class RootScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
+    final MyTheme theme = Styles.theme(context);
+
+    return PopScope(
+      canPop: false,
       child: Stack(
         children: [
           AutoTabsScaffold(
@@ -24,6 +27,7 @@ class RootScreen extends StatelessWidget {
               return BottomNavigationBar(
                 elevation: 15,
                 currentIndex: tabsRouter.activeIndex,
+                selectedItemColor: theme.colors.focus,
                 onTap: tabsRouter.setActiveIndex,
                 items: const [
                   BottomNavigationBarItem(

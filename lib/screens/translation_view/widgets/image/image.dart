@@ -31,6 +31,7 @@ class _TranslationViewImageState extends State<TranslationViewImage> {
           return Container();
         }
 
+        final MyTheme theme = Styles.theme(context);
         String? imageSource = translation.image;
         final hasImage = imageSource != null && state.imageError == null;
         const double imageVerticalMargin = 10;
@@ -58,9 +59,10 @@ class _TranslationViewImageState extends State<TranslationViewImage> {
               clipBehavior: Clip.hardEdge,
               children: [
                 if (state.imageLoading)
-                  const Center(
+                  Center(
                     child: CircularProgressIndicator(
                       backgroundColor: Colors.white,
+                      color: theme.colors.focus,
                     ),
                   ),
 

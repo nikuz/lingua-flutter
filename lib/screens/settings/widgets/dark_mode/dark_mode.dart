@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lingua_flutter/styles/styles.dart';
 
 import '../../bloc/settings_cubit.dart';
 import '../../bloc/settings_state.dart';
@@ -40,6 +41,8 @@ class _SettingsDarkModeState extends State<SettingsDarkMode> with WidgetsBinding
 
   @override
   Widget build(BuildContext context) {
+    final MyTheme theme = Styles.theme(context);
+
     return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (context, state) {
         return SettingsCategory(
@@ -49,6 +52,7 @@ class _SettingsDarkModeState extends State<SettingsDarkMode> with WidgetsBinding
               title: 'Dark mode',
               child: Switch(
                 value: state.darkMode,
+                activeColor: theme.colors.focus,
                 onChanged: (value) {
                   _settingsCubit.setDarkMode(value);
                   if (state.autoDarkMode) {
@@ -61,6 +65,7 @@ class _SettingsDarkModeState extends State<SettingsDarkMode> with WidgetsBinding
               title: 'Auto Dark mode',
               child: Switch(
                 value: state.autoDarkMode,
+                activeColor: theme.colors.focus,
                 onChanged: (value) {
                   _settingsCubit.setAutoDarkMode(value);
                   if (value) {

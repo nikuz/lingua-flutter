@@ -17,7 +17,7 @@ class LanguageSelectorItem extends StatelessWidget {
   final Function(Language) onChanged;
 
   const LanguageSelectorItem({
-    Key? key,
+    super.key,
     this.title,
     this.selectorTitle,
     this.titleStyle,
@@ -25,17 +25,12 @@ class LanguageSelectorItem extends StatelessWidget {
     this.language,
     required this.size,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     final MyTheme theme = Styles.theme(context);
-    double buttonHeight = 30;
-
-    if (size == LanguageSelectorSize.large) {
-      buttonHeight = 50;
-    }
-
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -50,7 +45,6 @@ class LanguageSelectorItem extends StatelessWidget {
         Button(
           text: language?.value ?? '---',
           size: size == LanguageSelectorSize.large ? ButtonSize.large : ButtonSize.regular,
-          height: buttonHeight,
           backgroundColor: theme.colors.cardBackground,
           onPressed: () {
             BottomDrawer(

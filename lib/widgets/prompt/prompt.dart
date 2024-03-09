@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lingua_flutter/widgets/modal/modal.dart';
+import 'package:lingua_flutter/styles/styles.dart';
 
 class Prompt {
   final BuildContext context;
@@ -20,6 +21,7 @@ class Prompt {
 
   Future show() {
     bool accepted = false;
+    final MyTheme theme = Styles.theme(context);
 
     return Modal(
       context: context,
@@ -58,7 +60,12 @@ class Prompt {
                       onPressed: () {
                         Navigator.of(context, rootNavigator: true).pop(false);
                       },
-                      child: const Text('CANCEL'),
+                      child: Text(
+                        'CANCEL',
+                        style: TextStyle(
+                          color: theme.colors.focus,
+                        ),
+                      ),
                     ),
                   ),
 
@@ -68,7 +75,12 @@ class Prompt {
                     Navigator.of(context, rootNavigator: true).pop(true);
                     acceptCallback();
                   },
-                  child: const Text('OK'),
+                  child: Text(
+                    'OK',
+                    style: TextStyle(
+                      color: theme.colors.focus,
+                    ),
+                  ),
                 ),
               ],
             ),

@@ -32,7 +32,10 @@ List<Widget> translationViewMenuConstructor({
   return [
     PopupMenuButton<Menu>(
       enabled: !isDisabled,
-      icon: const Icon(Icons.more_vert),
+      icon: const Icon(
+        Icons.more_vert,
+        color: Colors.white,
+      ),
       onSelected: (Menu item) async {
         final state = translationViewCubit.state;
         final word = state.word;

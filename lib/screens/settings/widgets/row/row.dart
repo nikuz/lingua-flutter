@@ -17,7 +17,7 @@ class SettingsRow extends StatelessWidget {
   final Widget child;
 
   const SettingsRow({
-    Key? key,
+    super.key,
     required this.title,
     this.subtitle,
     this.margin,
@@ -26,7 +26,7 @@ class SettingsRow extends StatelessWidget {
     this.type = SettingsRowType.container,
     this.onPressed,
     required this.child,
-  }) : super(key: key);
+  });
 
   SettingsRow copyWith({
     String? title,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lingua_flutter/styles/styles.dart';
 
 import '../../bloc/settings_cubit.dart';
 import '../../bloc/settings_state.dart';
@@ -11,6 +12,8 @@ class SettingsSearchResults extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final MyTheme theme = Styles.theme(context);
+
     return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (context, state) {
         return SettingsCategory(
@@ -20,6 +23,7 @@ class SettingsSearchResults extends StatelessWidget {
               title: 'Show translation languages',
               child: Switch(
                 value: state.showLanguageSource,
+                activeColor: theme.colors.focus,
                 onChanged: (value) {
                   context.read<SettingsCubit>().setShowLanguageSource(value);
                 },

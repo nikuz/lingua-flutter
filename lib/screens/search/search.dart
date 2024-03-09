@@ -155,14 +155,17 @@ class _SearchScreenState extends State<SearchScreen> with WidgetsBindingObserver
   bool _searchTextIsUrl(String? searchText) =>
       (searchText != null && (uriStartReg.hasMatch(searchText) || uriReg.hasMatch(searchText)));
 
-  Widget _buildResultsBody(SearchState state) {
+  Widget _buildResultsBody(BuildContext context, SearchState state) {
+    final MyTheme theme = Styles.theme(context);
     if (
       state.translations.isEmpty
       && state.searchText?.isEmpty != false // show progress indicator only on first results load
       && state.loading
     ) {
-      return const Center(
-        child: CircularProgressIndicator(),
+      return Center(
+        child: CircularProgressIndicator(
+          color: theme.colors.focus,
+        ),
       );
     }
 
@@ -277,7 +280,7 @@ class _SearchScreenState extends State<SearchScreen> with WidgetsBindingObserver
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      _buildResultsBody(state),
+                      _buildResultsBody(context, state),
                       SearchField(
                         translateFrom: _translateFrom,
                         translateTo: _translateTo,

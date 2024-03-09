@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:lingua_flutter/styles/styles.dart';
 import 'package:lingua_flutter/models/translation_container/translation_container.dart';
 import 'package:lingua_flutter/widgets/image_preview/image_preview.dart';
 import 'package:lingua_flutter/utils/files.dart';
@@ -136,6 +137,7 @@ class _SharingImageViewState extends State<SharingImageView> {
 
   @override
   Widget build(BuildContext context) {
+    final MyTheme theme = Styles.theme(context);
     final translation = widget.translation;
     final double? size = translation.image == null ? 300 : null;
 
@@ -143,8 +145,10 @@ class _SharingImageViewState extends State<SharingImageView> {
       type: MaterialType.transparency,
       child: Stack(
         children: [
-          const Center(
-            child: CircularProgressIndicator(),
+          Center(
+            child: CircularProgressIndicator(
+              color: theme.colors.focus,
+            ),
           ),
 
           Positioned(

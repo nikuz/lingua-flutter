@@ -220,6 +220,7 @@ class _SearchFieldState extends State<SearchField> {
                       backgroundColor: theme.colors.cardBackground,
                       elevation: 1,
                       maxLength: 100,
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
                       prefixIcon: Icons.search,
                       onChanged: (text) {
                         final sanitizedWord = removeQuotesFromString(removeSlashFromString(text)).trim();

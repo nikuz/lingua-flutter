@@ -181,12 +181,14 @@ class _TranslationViewScreenState extends State<TranslationViewScreen> with Widg
                 widget.word,
                 style: const TextStyle(
                   fontSize: 20,
+                  color: Colors.white,
                 ),
               ),
               leading: IconButton(
                 icon: const Icon(
                   Icons.arrow_back,
                   size: 25,
+                  color: Colors.white,
                 ),
                 onPressed: () {
                   AutoRouter.of(context).pop();
@@ -216,10 +218,12 @@ class _TranslationViewScreenState extends State<TranslationViewScreen> with Widg
                         ),
 
                         if (state.translateLoading)
-                          const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 70),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 70),
                             child: Center(
-                              child: CircularProgressIndicator(),
+                              child: CircularProgressIndicator(
+                                color: theme.colors.focus,
+                              ),
                             ),
                           ),
 

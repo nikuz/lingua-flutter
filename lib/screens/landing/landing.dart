@@ -14,7 +14,7 @@ import 'package:lingua_flutter/styles/styles.dart';
 
 @RoutePage()
 class LandingScreen extends StatefulWidget {
-  const LandingScreen({Key? key}) : super(key: key);
+  const LandingScreen({ super.key });
 
   @override
   State<LandingScreen> createState() => _LandingScreenState();
@@ -103,8 +103,10 @@ class _LandingScreenState extends State<LandingScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (_loading)
-            const Center(
-              child: CircularProgressIndicator(),
+            Center(
+              child: CircularProgressIndicator(
+                color: theme.colors.focus,
+              ),
             ),
 
           if (!_loading)

@@ -93,8 +93,10 @@ class _ImagePreviewState extends State<ImagePreview> {
         minWidth: 50,
         minHeight: 50,
       ),
-      child: const Center(
-        child: CircularProgressIndicator(),
+      child: Center(
+        child: CircularProgressIndicator(
+          color: theme.colors.focus,
+        ),
       ),
     );
 

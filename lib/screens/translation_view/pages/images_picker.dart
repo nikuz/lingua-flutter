@@ -17,9 +17,9 @@ class TranslationViewImagePickerScreen extends StatefulWidget {
   final String word;
 
   const TranslationViewImagePickerScreen({
-    Key? key,
+    super.key,
     required this.word,
-  }) : super(key: key);
+  });
 
   @override
   State<TranslationViewImagePickerScreen> createState() => _TranslationViewImagePickerScreenState();
@@ -100,6 +100,7 @@ class _TranslationViewImagePickerScreenState extends State<TranslationViewImageP
               textInputAction: TextInputAction.search,
               prefixIcon: Icons.arrow_back,
               maxLength: 100,
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
               borderRadius: BorderRadius.circular(4),
               margin: const EdgeInsets.only(left: 2, right: 2, bottom: 2),
               prefixAction: () {
@@ -127,9 +128,9 @@ class _TranslationViewImagePickerScreenState extends State<TranslationViewImageP
             child: Builder(
               builder: (context) {
                 final images = state.images;
-                Widget imagesList = const Center(
+                Widget imagesList = Center(
                   child: CircularProgressIndicator(
-                    backgroundColor: Colors.white,
+                    color: theme.colors.focus,
                   ),
                 );
 
