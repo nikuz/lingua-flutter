@@ -23,13 +23,13 @@ class _SettingsDarkModeState extends State<SettingsDarkMode> with WidgetsBinding
     super.initState();
     _settingsCubit = context.read<SettingsCubit>();
     WidgetsBinding.instance.addObserver(this);
-    _brightness = WidgetsBinding.instance.window.platformBrightness;
+    _brightness = MediaQuery.of(context).platformBrightness;
   }
 
   @override
   void didChangePlatformBrightness() {
     setState(() {
-      _brightness = WidgetsBinding.instance.window.platformBrightness;
+      _brightness = MediaQuery.of(context).platformBrightness;
     });
   }
 

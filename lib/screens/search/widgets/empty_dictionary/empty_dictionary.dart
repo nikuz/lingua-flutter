@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../search_constants.dart';
 
 class EmptyDictionary extends StatelessWidget {
-  const EmptyDictionary({Key? key}) : super(key: key);
+  const EmptyDictionary({super.key});
 
   @override
   Widget build(BuildContext context) {

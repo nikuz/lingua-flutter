@@ -27,10 +27,10 @@ class ResizeContainer extends SingleChildRenderObjectWidget {
   final Function(Size) onChange;
 
   const ResizeContainer({
-    Key? key,
+    super.key,
     required this.onChange,
-    required Widget child,
-  }) : super(key: key, child: child);
+    required Widget super.child,
+  });
 
   @override
   RenderObject createRenderObject(BuildContext context) {

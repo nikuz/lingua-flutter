@@ -29,12 +29,12 @@ class TranslationViewScreen extends StatefulWidget {
   final QuickTranslation? quickTranslation;
 
   const TranslationViewScreen({
-    Key? key,
+    super.key,
     required this.word,
     required this.translateFrom,
     required this.translateTo,
     this.quickTranslation,
-  }) : super(key: key);
+  });
 
   @override
   State<TranslationViewScreen> createState() => _TranslationViewScreenState();

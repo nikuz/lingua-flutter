@@ -11,10 +11,10 @@ class DefinitionsItem extends StatelessWidget {
   final TranslationDefinitionItem item;
 
   const DefinitionsItem({
-    Key? key,
+    super.key,
     required this.index,
     required this.item,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

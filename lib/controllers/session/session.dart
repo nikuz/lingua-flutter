@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lingua_flutter/controllers/request/request.dart' as request_controller;
-import 'package:lingua_flutter/controllers/request/request.dart' show CancelToken, Options, ResponseType, DioError;
+import 'package:lingua_flutter/controllers/request/request.dart' show CancelToken, Options, ResponseType, DioException;
 import 'package:lingua_flutter/controllers/cookie/cookie.dart' as cookie_controller;
 import 'package:lingua_flutter/controllers/consent/consent.dart' as consent_controller;
 import 'package:lingua_flutter/controllers/parsing_schema/parsing_schema.dart' as parsing_schema_controller;
@@ -93,7 +93,7 @@ Future<Session?> get({
         }
       }
     }
-  } on DioError catch (err) {
+  } on DioException catch (err) {
     final statusCode = err.response?.statusCode;
     if (statusCode != null && statusCode >= 300 && statusCode < 400) {
       await cookie_controller.set(err.response?.headers['set-cookie']);

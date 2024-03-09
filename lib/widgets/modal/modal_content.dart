@@ -8,11 +8,11 @@ class ModalContent extends StatefulWidget {
   final VoidCallback close;
 
   const ModalContent({
-    Key? key,
+    super.key,
     required this.child,
     this.isFramed = true,
     required this.close,
-  }) : super(key: key);
+  });
 
   @override
   State<ModalContent> createState() => _ModalContentState();

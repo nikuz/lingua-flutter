@@ -12,14 +12,14 @@ class TranslationViewSpeechPartWrapper extends StatelessWidget {
   final Widget Function(BuildContext, int) itemBuilder;
 
   const TranslationViewSpeechPartWrapper({
-    Key? key,
+    super.key,
     required this.name,
     required this.items,
     required this.maxItemsToShow,
     required this.expanded,
     this.padding,
     required this.itemBuilder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

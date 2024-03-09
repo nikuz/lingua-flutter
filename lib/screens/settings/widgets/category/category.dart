@@ -9,11 +9,11 @@ class SettingsCategory extends StatelessWidget {
   final List<SettingsRow> children;
 
   const SettingsCategory({
-    Key? key,
+    super.key,
     this.title,
     this.margin,
     required this.children,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

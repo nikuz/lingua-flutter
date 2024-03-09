@@ -52,7 +52,7 @@ class _AppViewState extends State<AppView> with WidgetsBindingObserver {
     super.initState();
     _settingsCubit = context.read<SettingsCubit>();
     WidgetsBinding.instance.addObserver(this);
-    _brightness = WidgetsBinding.instance.window.platformBrightness;
+    _brightness = MediaQuery.of(context).platformBrightness;
     _connectivitySubscription = initiateNetworkChangeSubscription();
     _setSettingsBrightness();
   }
@@ -60,7 +60,7 @@ class _AppViewState extends State<AppView> with WidgetsBindingObserver {
   @override
   void didChangePlatformBrightness() {
     setState(() {
-      _brightness = WidgetsBinding.instance.window.platformBrightness;
+      _brightness = MediaQuery.of(context).platformBrightness;
     });
     Future.delayed(const Duration(milliseconds: 300), () {
       if (mounted) {

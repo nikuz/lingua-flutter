@@ -1,5 +1,5 @@
 import 'package:lingua_flutter/controllers/request/request.dart' as request_controller;
-import 'package:lingua_flutter/controllers/request/request.dart' show CancelToken, Options, DioError;
+import 'package:lingua_flutter/controllers/request/request.dart' show CancelToken, Options, DioException;
 import 'package:lingua_flutter/controllers/parsing_schema/parsing_schema.dart' as parsing_schema_controller;
 import 'package:lingua_flutter/controllers/cookie/cookie.dart' as cookie_controller;
 import 'package:lingua_flutter/controllers/session/session.dart' as session_controller;
@@ -59,7 +59,7 @@ Future<QuickTranslation?> quickTranslate({
       translateFrom: translateFrom,
       translateTo: translateTo,
     );
-  } on DioError catch (err) {
+  } on DioException catch (err) {
     final statusCode = err.response?.statusCode;
     if (statusCode != null && statusCode >= 300 && statusCode < 400) {
       await cookie_controller.set(err.response?.headers['set-cookie']);

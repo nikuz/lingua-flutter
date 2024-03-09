@@ -7,9 +7,9 @@ class EmptySearch extends StatelessWidget {
   final bool hasInternetConnection;
 
   const EmptySearch({
-    Key? key,
+    super.key,
     required this.hasInternetConnection,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

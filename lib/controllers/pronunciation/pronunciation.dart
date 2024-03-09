@@ -1,6 +1,6 @@
 import 'package:jmespath/jmespath.dart' as jmespath;
 import 'package:lingua_flutter/controllers/request/request.dart' as request_controller;
-import 'package:lingua_flutter/controllers/request/request.dart' show CancelToken, Options, ResponseType, DioError;
+import 'package:lingua_flutter/controllers/request/request.dart' show CancelToken, Options, ResponseType, DioException;
 import 'package:lingua_flutter/controllers/cookie/cookie.dart' as cookie_controller;
 import 'package:lingua_flutter/controllers/translation/translation.dart' as translation_controller;
 import 'package:lingua_flutter/controllers/session/session.dart' as session_controller;
@@ -58,7 +58,7 @@ Future<String?> retrieve({
         }
       }
     }
-  } on DioError catch (err) {
+  } on DioException catch (err) {
     final statusCode = err.response?.statusCode;
     if (statusCode != null && statusCode >= 300 && statusCode < 400) {
       await cookie_controller.set(err.response?.headers['set-cookie']);

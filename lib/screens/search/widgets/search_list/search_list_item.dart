@@ -18,10 +18,10 @@ class SearchListItem extends StatefulWidget {
   final bool isLast;
 
   const SearchListItem({
-    Key? key,
+    super.key,
     required this.translationItem,
     required this.isLast,
-  }) : super(key: key);
+  });
 
   @override
   State<SearchListItem> createState() => _SearchListItemState();

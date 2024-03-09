@@ -8,7 +8,7 @@ import 'package:lingua_flutter/app_config.dart' as config;
 
 @RoutePage()
 class TermsScreen extends StatelessWidget {
-  const TermsScreen({Key? key}) : super(key: key);
+  const TermsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

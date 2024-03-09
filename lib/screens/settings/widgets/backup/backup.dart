@@ -77,11 +77,13 @@ class _SettingsBackupState extends State<SettingsBackup> {
     try {
       backupInfo = await backup_controller.getBackupFileInfo(backupFileIdentifier);
     } catch (err) {
-      CustomSnackBar(
-        context: context,
-        message: err.toString(),
-        type: CustomSnackBarType.error,
-      ).show();
+      if (mounted) {
+        CustomSnackBar(
+          context: context,
+          message: err.toString(),
+          type: CustomSnackBarType.error,
+        ).show();
+      }
     }
 
     settingsState.setRestoreBackupLoading(false);
@@ -89,7 +91,7 @@ class _SettingsBackupState extends State<SettingsBackup> {
     if (backupInfo != null && backupInfo.filePath != null) {
       final amountOfSavedWords = await dictionary_controller.getListLength();
 
-      if (amountOfSavedWords > 0) {
+      if (mounted && amountOfSavedWords > 0) {
         Prompt(
           context: context,
           child: Container(
@@ -165,7 +167,6 @@ class _SettingsBackupState extends State<SettingsBackup> {
                 ),
               ],
             ),
-
             SettingsCategory(
               title: 'Restore',
               children: [

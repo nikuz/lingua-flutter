@@ -23,7 +23,7 @@ class LanguageSelector extends StatefulWidget {
   final Function(Language) onToChanged;
 
   const LanguageSelector({
-    Key? key,
+    super.key,
     this.from,
     this.fromTitle,
     this.selectorFromTitle,
@@ -34,7 +34,7 @@ class LanguageSelector extends StatefulWidget {
     required this.onFromChanged,
     required this.onSwapped,
     required this.onToChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<LanguageSelector> createState() => _LanguageSelectorState();

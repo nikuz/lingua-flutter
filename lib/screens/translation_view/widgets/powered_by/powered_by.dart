@@ -6,7 +6,7 @@ import '../../bloc/translation_view_cubit.dart';
 import '../../bloc/translation_view_state.dart';
 
 class TranslationViewPoweredBy extends StatelessWidget {
-  const TranslationViewPoweredBy({Key? key}) : super(key: key);
+  const TranslationViewPoweredBy({super.key});
 
   @override
   Widget build(BuildContext context) {

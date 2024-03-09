@@ -19,7 +19,7 @@ class PronunciationWidget extends StatefulWidget {
   final Color? splashColor;
 
   const PronunciationWidget({
-    Key? key,
+    super.key,
     this.pronunciationSource,
     this.size,
     this.iconColor,
@@ -27,7 +27,7 @@ class PronunciationWidget extends StatefulWidget {
     this.autoPlay,
     this.highlightColor,
     this.splashColor,
-  }) : super(key: key);
+  });
 
   @override
   State<PronunciationWidget> createState() => _PronunciationWidgetState();

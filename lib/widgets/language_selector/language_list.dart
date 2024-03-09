@@ -13,13 +13,13 @@ class LanguageList extends StatefulWidget {
   final Function(Language) onSelected;
 
   const LanguageList({
-    Key? key,
+    super.key,
     required this.title,
     this.language,
     required this.scrollController,
     required this.languages,
     required this.onSelected,
-  }) : super(key: key);
+  });
 
   @override
   State<LanguageList> createState() => _LanguageListState();

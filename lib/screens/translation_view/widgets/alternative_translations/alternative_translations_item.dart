@@ -12,10 +12,10 @@ class TranslationViewAlternativeTranslationsItem extends StatelessWidget {
   final bool isLast;
 
   const TranslationViewAlternativeTranslationsItem({
-    Key? key,
+    super.key,
     required this.item,
     required this.isLast,
-  }) : super(key: key);
+  });
 
   Widget _buildWordsList(BuildContext context, List<String> words) {
     final MyTheme theme = Styles.theme(context);

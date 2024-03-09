@@ -65,7 +65,9 @@ class _SharingImageViewState extends State<SharingImageView> {
             _share(filePath);
           }
         } catch(err) {
-          Sharing.dismiss(context);
+          if (mounted) {
+            Sharing.dismiss(context);
+          }
           rethrow;
         }
       }

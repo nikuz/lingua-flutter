@@ -32,7 +32,7 @@ class CustomTextField extends StatefulWidget {
   final Function(String value)? onSubmitted;
 
   const CustomTextField({
-    Key? key,
+    super.key,
     this.defaultValue,
     this.prefix,
     this.prefixIcon,
@@ -57,7 +57,7 @@ class CustomTextField extends StatefulWidget {
     this.onClearPressed,
     this.onChanged,
     this.onSubmitted,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();

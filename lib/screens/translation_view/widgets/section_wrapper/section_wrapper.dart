@@ -13,14 +13,14 @@ class TranslationViewSectionWrapper extends StatefulWidget {
   final Function childBuilder;
 
   const TranslationViewSectionWrapper({
-    Key? key,
+    super.key,
     required this.name,
     this.word,
     required this.itemsAmount,
     required this.maxItemsToShow,
     this.padding,
     required this.childBuilder,
-  }) : super(key: key);
+  });
 
   @override
   State<TranslationViewSectionWrapper> createState() => _TranslationViewSectionWrapperState();
@@ -133,12 +133,12 @@ class TranslationViewSectionWrapperExpandButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const TranslationViewSectionWrapperExpandButton({
-    Key? key,
+    super.key,
     required this.expanded,
     required this.name,
     this.amount,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -9,7 +9,7 @@ import './definitions_item.dart';
 import './constants.dart';
 
 class TranslationViewDefinitions extends StatelessWidget {
-  const TranslationViewDefinitions({Key? key}) : super(key: key);
+  const TranslationViewDefinitions({super.key});
 
   @override
   Widget build(BuildContext context) {

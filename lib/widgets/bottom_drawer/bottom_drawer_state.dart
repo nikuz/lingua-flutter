@@ -8,8 +8,8 @@ class BottomDrawerInheritedState extends InheritedWidget {
     super.key,
     required this.subscribeToDrag,
     required this.unsubscribeFromDrag,
-    required Widget child,
-  }) : super(child: child);
+    required super.child,
+  });
 
   static BottomDrawerInheritedState? of(BuildContext context) => (
       context.dependOnInheritedWidgetOfExactType<BottomDrawerInheritedState>()

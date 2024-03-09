@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lingua_flutter/controllers/request/request.dart' show CancelToken, DioError;
+import 'package:lingua_flutter/controllers/request/request.dart' show CancelToken, DioException;
 import 'package:lingua_flutter/models/quick_translation/quick_translation.dart';
 import 'package:lingua_flutter/models/translation_container/translation_container.dart';
 import 'package:lingua_flutter/models/error/error.dart';
@@ -76,7 +76,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
           translateLoading: false,
         ));
       }
-    } on DioError catch (err, stack) {
+    } on DioException catch (err, stack) {
       if (!CancelToken.isCancel(err)) {
         handleError(state.copyWith(
           error: Wrapped.value(CustomError(
@@ -128,7 +128,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
             : state.translation,
         imageIsUpdated: selectFirstImage ? true : state.imageIsUpdated,
       ));
-    } on DioError catch (err, stack) {
+    } on DioException catch (err, stack) {
       if (!CancelToken.isCancel(err)) {
         handleError(state.copyWith(
           imageError: Wrapped.value(CustomError(
@@ -183,7 +183,7 @@ class TranslationViewCubit extends Cubit<TranslationViewState> {
           pronunciationLoading: false,
         ));
       }
-    } on DioError catch (err, stack) {
+    } on DioException catch (err, stack) {
       if (!CancelToken.isCancel(err)) {
         handleError(state.copyWith(
           pronunciationError: Wrapped.value(CustomError(

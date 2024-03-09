@@ -46,11 +46,11 @@ class ImagePreviewModalContent extends StatefulWidget {
   final VoidCallback close;
 
   const ImagePreviewModalContent({
-    Key? key,
+    super.key,
     required this.child,
     this.isFramed = true,
     required this.close,
-  }) : super(key: key);
+  });
 
   @override
   State<ImagePreviewModalContent> createState() => _ImagePreviewModalContentState();

@@ -9,7 +9,7 @@ import 'package:lingua_flutter/app_config.dart' as config;
 const prefName = 'askToRateUs';
 
 class RatingListener extends StatefulWidget {
-  const RatingListener({Key? key}) : super(key: key);
+  const RatingListener({super.key});
 
   @override
   State<RatingListener> createState() => _RatingListenerState();

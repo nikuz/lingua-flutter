@@ -10,14 +10,14 @@ class Tag extends StatelessWidget {
   final Function(String)? onPressed;
 
   const Tag({
-    Key? key,
+    super.key,
     required this.text,
     this.prefix,
     this.suffix,
     this.child,
     this.margin,
     this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -8,7 +8,7 @@ import './examples_item.dart';
 import './constants.dart';
 
 class TranslationViewExamples extends StatelessWidget {
-  const TranslationViewExamples({Key? key}) : super(key: key);
+  const TranslationViewExamples({super.key});
 
   @override
   Widget build(BuildContext context) {

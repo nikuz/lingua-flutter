@@ -1,6 +1,6 @@
 import 'dart:developer' as developer;
 import 'package:lingua_flutter/controllers/request/request.dart' as request_controller;
-import 'package:lingua_flutter/controllers/request/request.dart' show Response, Options, CancelToken, ResponseType, DioError;
+import 'package:lingua_flutter/controllers/request/request.dart' show Response, Options, CancelToken, ResponseType, DioException;
 import 'package:lingua_flutter/controllers/parsing_schema/parsing_schema.dart' as parsing_schema_controller;
 import 'package:lingua_flutter/controllers/cookie/cookie.dart' as cookie_controller;
 import 'package:lingua_flutter/models/parsing_schema/stored_schema.dart';
@@ -109,7 +109,7 @@ Future<void> acquire({
       } else {
         developer.log('-------- Error: Cookie consent saving returned unexpected status code: $statusCode');
       }
-    } on DioError catch (err) {
+    } on DioException catch (err) {
       final statusCode = err.response?.statusCode;
       // successful consent save request should return redirect
       if (statusCode != null && statusCode >= 300 && statusCode < 400) {

@@ -17,7 +17,7 @@ class SearchInheritedState extends InheritedWidget {
   final double Function() getPaddingTop;
 
   const SearchInheritedState({
-    Key? key,
+    super.key,
     required this.textController,
     required this.focusNode,
     required this.hasInternetConnection,
@@ -26,8 +26,8 @@ class SearchInheritedState extends InheritedWidget {
     required this.unsubscribeFromListScroll,
     required this.broadcastListScroll,
     required this.getPaddingTop,
-    required Widget child,
-  }) : super(key: key, child: child);
+    required super.child,
+  });
 
   static SearchInheritedState? of(BuildContext context) => (
       context.dependOnInheritedWidgetOfExactType<SearchInheritedState>()

@@ -9,8 +9,8 @@ class TranslationViewInheritedState extends InheritedWidget {
     super.key,
     required this.headerKey,
     required this.cancelToken,
-    required Widget child,
-  }) : super(child: child);
+    required super.child,
+  });
 
   static TranslationViewInheritedState? of(BuildContext context) => (
       context.dependOnInheritedWidgetOfExactType<TranslationViewInheritedState>()

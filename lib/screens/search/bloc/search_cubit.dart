@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lingua_flutter/controllers/request/request.dart' show CancelToken, DioError;
+import 'package:lingua_flutter/controllers/request/request.dart' show CancelToken, DioException;
 import 'package:lingua_flutter/controllers/dictionary/dictionary.dart' as dictionary_controller;
 import 'package:lingua_flutter/controllers/translation/translation.dart' as translation_controller;
 import 'package:lingua_flutter/models/error/error.dart';
@@ -108,7 +108,7 @@ class SearchCubit extends Cubit<SearchState> {
           ));
         }
       }
-    } on DioError catch (err, stack) {
+    } on DioException catch (err, stack) {
       if (!CancelToken.isCancel(err)) {
         handleError(state.copyWith(
           quickTranslationError: Wrapped.value(CustomError(

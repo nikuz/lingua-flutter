@@ -19,9 +19,9 @@ class TranslationViewHeader extends StatefulWidget {
   final String word;
 
   const TranslationViewHeader({
-    Key? key,
+    super.key,
     required this.word,
-  }) : super(key: key);
+  });
 
   @override
   State<TranslationViewHeader> createState() => _TranslationViewHeaderState();

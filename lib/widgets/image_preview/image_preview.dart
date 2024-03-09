@@ -25,7 +25,7 @@ class ImagePreview extends StatefulWidget {
   final Function? onPreviewClose;
 
   const ImagePreview({
-    Key? key,
+    super.key,
     this.width,
     this.height,
     this.imageSource,
@@ -35,7 +35,7 @@ class ImagePreview extends StatefulWidget {
     this.fit = BoxFit.contain,
     this.onTap,
     this.onPreviewClose,
-  }) : super(key: key);
+  });
 
   @override
   State<ImagePreview> createState() => _ImagePreviewState();

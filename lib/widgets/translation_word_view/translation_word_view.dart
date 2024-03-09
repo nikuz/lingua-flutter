@@ -6,10 +6,10 @@ class TranslationWordView extends StatelessWidget {
   final TextStyle? textStyle;
 
   const TranslationWordView({
-    Key? key,
+    super.key,
     required this.translation,
     this.textStyle,
-  }) : super(key: key);
+  });
 
   Widget _buildSentence(TranslationSentence sentence, bool isLast) {
     return Text(

@@ -11,7 +11,7 @@ import './search_list_item.dart';
 import './search_list_bottom_loader.dart';
 
 class SearchList extends StatefulWidget {
-  const SearchList({Key? key}) : super(key: key);
+  const SearchList({super.key});
 
   @override
   State<SearchList> createState() => _SearchListState();
