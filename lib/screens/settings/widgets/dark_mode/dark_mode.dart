@@ -16,14 +16,13 @@ class SettingsDarkMode extends StatefulWidget {
 
 class _SettingsDarkModeState extends State<SettingsDarkMode> with WidgetsBindingObserver {
   late SettingsCubit _settingsCubit;
-  late Brightness _brightness;
+  Brightness _brightness = Brightness.light;
 
   @override
   void initState() {
     super.initState();
     _settingsCubit = context.read<SettingsCubit>();
     WidgetsBinding.instance.addObserver(this);
-    _brightness = MediaQuery.of(context).platformBrightness;
   }
 
   @override
@@ -31,6 +30,7 @@ class _SettingsDarkModeState extends State<SettingsDarkMode> with WidgetsBinding
     setState(() {
       _brightness = MediaQuery.of(context).platformBrightness;
     });
+    super.didChangeDependencies();
   }
 
   @override

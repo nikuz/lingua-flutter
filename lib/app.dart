@@ -44,7 +44,7 @@ class AppView extends StatefulWidget {
 class _AppViewState extends State<AppView> with WidgetsBindingObserver {
   final _appRouter = AppRouter();
   late SettingsCubit _settingsCubit;
-  late Brightness _brightness;
+  Brightness _brightness = Brightness.light;
   late StreamSubscription _connectivitySubscription;
 
   @override
@@ -52,9 +52,16 @@ class _AppViewState extends State<AppView> with WidgetsBindingObserver {
     super.initState();
     _settingsCubit = context.read<SettingsCubit>();
     WidgetsBinding.instance.addObserver(this);
-    _brightness = MediaQuery.of(context).platformBrightness;
     _connectivitySubscription = initiateNetworkChangeSubscription();
     _setSettingsBrightness();
+  }
+
+  @override
+  void didChangeDependencies() {
+    setState(() {
+      _brightness = MediaQuery.of(context).platformBrightness;
+    });
+    super.didChangeDependencies();
   }
 
   @override
