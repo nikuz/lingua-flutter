@@ -38,13 +38,14 @@ Future<String?> getBackupFilePath(String? fileIdentifier) async {
 
 Future<BackupInfo?> getBackupFileInfo(String? fileIdentifier) async {
   final backupFilePath = await getBackupFilePath(fileIdentifier);
+  final databaseReg = RegExp(r'\.SQLITE3$');
   int wordsAmount = 0;
 
   if (backupFilePath != null) {
     // check if database file exists in the archive
     InputFileStream input = InputFileStream(backupFilePath);
     final files = TarDecoder().decodeBuffer(input);
-    final dataBaseFile = files.firstWhereOrNull((item) => item.name.contains('SQLITE3'));
+    final dataBaseFile = files.firstWhereOrNull((item) => databaseReg.firstMatch(item.name) != null);
     if (dataBaseFile != null && dataBaseFile.isFile) {
       // extract database file from the archive
       final documentsPath = await getDocumentsPath();
