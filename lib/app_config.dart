@@ -15,7 +15,8 @@ String getApiUrl() {
   if (kDebugMode) {
     String host = 'localhost';
     if (Platform.isAndroid) {
-      host = '10.0.2.2';
+      // host = '10.0.2.2';
+      host = '192.168.1.75'; // for a phisical device only
     }
     return 'http://$host:8080';
   }

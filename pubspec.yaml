@@ -53,14 +53,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   auto_route_generator: ^7.3.2
-#  flutter packages pub run build_runner build --delete-conflicting-outputs
+#  dart run pub run build_runner build --delete-conflicting-outputs
   build_runner: ^2.4.8
   json_serializable: ^6.7.1
   flutter_lints: ^3.0.1
   flutter_launcher_icons: ^0.13.1
   flutter_native_splash: ^2.2.19
   sentry_dart_plugin: ^1.7.1
-#  flutter packages pub run sentry_dart_plugin
+#  dart run pub run sentry_dart_plugin
 
 
 # For information on the generic Dart part of this file, see the
@@ -104,15 +104,17 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
 
-#  flutter pub run flutter_launcher_icons
-flutter_icons:
+#  dart run flutter_launcher_icons
+flutter_launcher_icons:
   image_path: "assets/app_icon/icon.png"
+  adaptive_icon_background: "assets/app_icon/icon-adaptive.png"
+  adaptive_icon_foreground: "assets/app_icon/icon-adaptive.png"
   android: true
   min_sdk_android: 21
   ios: 'AppIcon'
   remove_alpha_ios: true
 
-#  flutter pub run flutter_native_splash:create
+#  dart run flutter_native_splash:create
 flutter_native_splash:
   color: "#FFFFFF"
   image: "assets/splash_screen/splash_screen.png"
