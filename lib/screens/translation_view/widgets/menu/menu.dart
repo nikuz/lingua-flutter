@@ -51,7 +51,7 @@ List<Widget> translationViewMenuConstructor({
                 if (translationId != null) {
                   context.read<SearchCubit>().removeTranslation(translationId);
                 }
-                AutoRouter.of(context).pop();
+                AutoRouter.of(context).maybePop();
               },
             ).show();
             break;

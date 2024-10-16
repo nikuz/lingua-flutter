@@ -18,7 +18,7 @@ class Sharing {
   });
 
   static dismiss(BuildContext context) {
-    Navigator.of(context, rootNavigator: true).pop();
+    Navigator.of(context, rootNavigator: true).maybePop();
   }
 
   Future share() {

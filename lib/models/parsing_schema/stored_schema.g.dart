@@ -11,8 +11,8 @@ StoredParsingSchema _$StoredParsingSchemaFromJson(Map<String, dynamic> json) =>
       version: json['version'] as String,
       schema: ParsingSchema.fromJson(json['schema'] as Map<String, dynamic>),
       current: json['current'] as bool,
-      createdAt: json['createdAt'] as int,
-      updatedAt: json['updatedAt'] as int?,
+      createdAt: (json['createdAt'] as num).toInt(),
+      updatedAt: (json['updatedAt'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$StoredParsingSchemaToJson(

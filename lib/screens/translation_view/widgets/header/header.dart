@@ -42,7 +42,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
 
     if (isNewWord) {
       context.read<TranslationViewCubit>().save(translation, translationViewState?.cancelToken).then((dynamic) {
-        AutoRouter.of(context).pop<TranslationContainer>(translation);
+        AutoRouter.of(context).maybePop<TranslationContainer>(translation);
         CustomSnackBar(context: context, message: 'Word is saved successfully').show();
       }).catchError((err) {
         CustomSnackBar(
@@ -53,7 +53,7 @@ class _TranslationViewHeaderState extends State<TranslationViewHeader> with Auto
       });
     } else if (state.imageIsUpdated || state.translationIsUpdated) {
       context.read<TranslationViewCubit>().update(translation, translationViewState?.cancelToken).then((dynamic) {
-        AutoRouter.of(context).pop<TranslationContainer>(translation.copyWith(
+        AutoRouter.of(context).maybePop<TranslationContainer>(translation.copyWith(
           updatedAt: DateTime.now().toString(),
         ));
         CustomSnackBar(context: context, message: 'Word is updated successfully').show();

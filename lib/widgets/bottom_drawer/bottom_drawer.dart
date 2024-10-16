@@ -17,7 +17,7 @@ class BottomDrawer {
   });
 
   static dismiss(BuildContext context) {
-    Navigator.of(context, rootNavigator: true).pop();
+    Navigator.of(context, rootNavigator: true).maybePop();
   }
 
   void _subscribeToDrag(String name, Function callback) {

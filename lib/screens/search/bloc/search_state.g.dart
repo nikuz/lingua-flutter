@@ -7,9 +7,9 @@ part of 'search_state.dart';
 // **************************************************************************
 
 SearchState _$SearchStateFromJson(Map<String, dynamic> json) => SearchState(
-      from: json['from'] as int? ?? 0,
-      to: json['to'] as int? ?? SearchConstants.itemsPerPage,
-      totalAmount: json['totalAmount'] as int? ?? 0,
+      from: (json['from'] as num?)?.toInt() ?? 0,
+      to: (json['to'] as num?)?.toInt() ?? SearchConstants.itemsPerPage,
+      totalAmount: (json['totalAmount'] as num?)?.toInt() ?? 0,
       translations: (json['translations'] as List<dynamic>?)
               ?.map((e) =>
                   TranslationContainer.fromJson(e as Map<String, dynamic>))

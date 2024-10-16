@@ -8,9 +8,9 @@ part of 'translation_list.dart';
 
 TranslationList _$TranslationListFromJson(Map<String, dynamic> json) =>
     TranslationList(
-      from: json['from'] as int,
-      to: json['to'] as int,
-      totalAmount: json['totalAmount'] as int,
+      from: (json['from'] as num).toInt(),
+      to: (json['to'] as num).toInt(),
+      totalAmount: (json['totalAmount'] as num).toInt(),
       translations: (json['translations'] as List<dynamic>)
           .map((e) => TranslationContainer.fromJson(e as Map<String, dynamic>))
           .toList(),

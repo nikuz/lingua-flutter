@@ -9,7 +9,7 @@ part of 'translation_definition.dart';
 TranslationDefinition _$TranslationDefinitionFromJson(
         Map<String, dynamic> json) =>
     TranslationDefinition(
-      speechPart: json['speechPart'] as String,
+      speechPart: json['speechPart'] as String?,
       items: (json['items'] as List<dynamic>)
           .map((e) =>
               TranslationDefinitionItem.fromJson(e as Map<String, dynamic>))

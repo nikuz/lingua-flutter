@@ -9,7 +9,7 @@ part of 'translation_alternative.dart';
 TranslationAlternativeTranslation _$TranslationAlternativeTranslationFromJson(
         Map<String, dynamic> json) =>
     TranslationAlternativeTranslation(
-      speechPart: json['speechPart'] as String,
+      speechPart: json['speechPart'] as String?,
       items: (json['items'] as List<dynamic>)
           .map((e) => TranslationAlternativeTranslationItem.fromJson(
               e as Map<String, dynamic>))
@@ -29,7 +29,7 @@ TranslationAlternativeTranslationItem
         TranslationAlternativeTranslationItem(
           genre: json['genre'] as String?,
           translation: json['translation'] as String,
-          frequency: json['frequency'] as int,
+          frequency: (json['frequency'] as num).toInt(),
           words:
               (json['words'] as List<dynamic>).map((e) => e as String).toList(),
         );

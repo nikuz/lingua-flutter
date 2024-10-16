@@ -17,15 +17,15 @@ SettingsState _$SettingsStateFromJson(Map<String, dynamic> json) =>
       autoDarkMode: json['autoDarkMode'] as bool? ?? true,
       backupLoading: json['backupLoading'] as bool? ?? false,
       backupError: json['backupError'] as bool? ?? false,
-      backupTime: json['backupTime'] as int?,
-      backupSize: json['backupSize'] as int?,
-      backupPreloadSize: json['backupPreloadSize'] as int?,
+      backupTime: (json['backupTime'] as num?)?.toInt(),
+      backupSize: (json['backupSize'] as num?)?.toInt(),
+      backupPreloadSize: (json['backupPreloadSize'] as num?)?.toInt(),
       showLanguageSource: json['showLanguageSource'] as bool? ?? false,
       backupCreateLoading: json['backupCreateLoading'] as bool? ?? false,
-      lastBackupAt: json['lastBackupAt'] as int?,
+      lastBackupAt: (json['lastBackupAt'] as num?)?.toInt(),
       backupFileIdentifier: json['backupFileIdentifier'] as String?,
       backupRestoreLoading: json['backupRestoreLoading'] as bool? ?? false,
-      backupRestoreAt: json['backupRestoreAt'] as int?,
+      backupRestoreAt: (json['backupRestoreAt'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$SettingsStateToJson(SettingsState instance) =>

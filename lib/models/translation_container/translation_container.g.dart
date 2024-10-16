@@ -9,8 +9,8 @@ part of 'translation_container.dart';
 TranslationContainer _$TranslationContainerFromJson(
         Map<String, dynamic> json) =>
     TranslationContainer(
-      id: json['id'] as int?,
-      cloudId: json['cloudId'] as int?,
+      id: (json['id'] as num?)?.toInt(),
+      cloudId: (json['cloudId'] as num?)?.toInt(),
       word: json['word'] as String,
       autoSpelling: json['autoSpelling'] as String?,
       autoLanguage: json['autoLanguage'] as String?,

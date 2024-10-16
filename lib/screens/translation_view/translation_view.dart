@@ -21,7 +21,7 @@ import './widgets/no_additional_data/no_additional_data.dart';
 import './widgets/powered_by/powered_by.dart';
 import './translation_view_state.dart';
 
-@RoutePage<TranslationContainer>()
+@RoutePage()
 class TranslationViewScreen extends StatefulWidget {
   final String word;
   final Language translateFrom;
@@ -191,7 +191,7 @@ class _TranslationViewScreenState extends State<TranslationViewScreen> with Widg
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  AutoRouter.of(context).pop();
+                  AutoRouter.of(context).maybePop();
                 },
               ),
               elevation: 0,

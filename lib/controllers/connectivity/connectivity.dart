@@ -8,8 +8,8 @@ Future<bool> isInternetConnected() async {
   return _isConnected(connectivityResult);
 }
 
-StreamSubscription<ConnectivityResult> initiateNetworkChangeSubscription() {
-  return Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+StreamSubscription<List<ConnectivityResult>> initiateNetworkChangeSubscription() {
+  return Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
     bool isConnected = _isConnected(result);
     _listeners.forEach((String key, Function listener) {
       listener(isConnected);
@@ -25,4 +25,4 @@ void unsubscribeFromNetworkChange(String name) {
   _listeners.remove(name);
 }
 
-bool _isConnected(ConnectivityResult result) => result != ConnectivityResult.none;
+bool _isConnected(List<ConnectivityResult> result) => result.contains(ConnectivityResult.none);

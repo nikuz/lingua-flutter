@@ -104,7 +104,7 @@ class _TranslationViewImagePickerScreenState extends State<TranslationViewImageP
               borderRadius: BorderRadius.circular(4),
               margin: const EdgeInsets.only(left: 2, right: 2, bottom: 2),
               prefixAction: () {
-                AutoRouter.of(context).pop();
+                AutoRouter.of(context).maybePop();
               },
               onChanged: (text) {
                 setState(() {
@@ -209,7 +209,7 @@ class _TranslationViewImagePickerScreenState extends State<TranslationViewImageP
                               withPreviewOverlay: false,
                               onTap: () {
                                 _translationViewCubit.setImage(imageSource);
-                                AutoRouter.of(context).pop();
+                                AutoRouter.of(context).maybePop();
                               },
                             ),
                           ),
